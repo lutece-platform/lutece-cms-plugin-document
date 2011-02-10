@@ -1,0 +1,95 @@
+<div class="content-box" >
+    
+    <h2>#i18n{document.modify_document_type_attribute.titleAddAttribute} </h2>
+    
+    <form method="post" action="jsp/admin/plugins/document/DoModifyDocumentTypeAttribute.jsp">
+
+        <p>
+            <label for="name" >#i18n{document.modify_document_type_attribute.labelName}* :</label>
+            <input type="text" name="name" id="name" tabindex="1" value="${attribute.name}"/>
+            #i18n{document.modify_document_type_attribute.helpName}
+        </p>
+        <p>
+            <label for="code" >#i18n{document.modify_document_type_attribute.labelCode}* :</label>
+            <input type="text" name="code" id="code" tabindex="2" value="${attribute.code}" readonly="readonly"/>
+            #i18n{document.modify_document_type_attribute.helpCode}
+        </p>
+        <p>
+            <label for="description" >#i18n{document.modify_document_type_attribute.labelDescription}* :</label>
+            <input type="text" name="description" id="description" tabindex="3" value="${attribute.description}" />
+            #i18n{document.modify_document_type_attribute.helpDescription}
+        </p>
+        <p>
+            <label for="required" >#i18n{document.modify_document_type_attribute.labelRequired}* :</label>
+            <input class="checkbox" type="checkbox" name="required" id="required" tabindex="4" <#if attribute.required >checked</#if> />
+            #i18n{document.modify_document_type_attribute.helpRequired}
+        </p>
+        <p>
+            <label for="searchable" >#i18n{document.modify_document_type_attribute.labelSearchable}* :</label>
+            <input class="checkbox" type="checkbox" name="searchable" id="searchable" tabindex="5" <#if attribute.searchable >checked</#if> />
+            #i18n{document.modify_document_type_attribute.helpSearchable}
+        </p>
+        ${attribute_parameters}
+        <input type="hidden" name="attribute_id" value="${attribute.id}" />
+        <input type="hidden" name="attribute_type_code" value="${attribute_type_code}" />
+        <input type="submit" value="#i18n{document.modify_document_type_attribute.buttonAddAttribute}" class="button" />
+        <input class="button" type="submit" name="cancel" value="#i18n{portal.admin.message.buttonCancel}" />
+    </form>
+</div>
+
+<#if attribute_type_code != "listbox">
+	<div class="content-box">
+		<h2>#i18n{document.modify_document_type_attribute.manageRegularExpression.title}</h2>
+		<div class="highlight-box">
+			<p style="text-align:right; margin-right:20px;">
+				#i18n{document.modify_document_type_attribute.manageRegularExpression.labelNumberRegularExpression} : <b>${nb_regular_expression}</b>
+			</p>
+			<form method="post" action="jsp/admin/plugins/document/DoInsertRegularExpression.jsp">
+				<input type="hidden" name="attribute_id" value="${attribute.id}" />
+				<p>
+					<label for="expression_id">#i18n{document.modify_document_type_attribute.manageRegularExpression.labelInsert}</label>
+					<@combo name="expression_id" items=regular_expression_to_add_list default_value=-1 />
+					<input type="submit" class="button" value="#i18n{document.modify_document_type_attribute.manageRegularExpression.buttonInsert}" />
+				</p>
+				<p>
+					<label>&nbsp;</label>
+					#i18n{document.modify_document_type_attribute.manageRegularExpression.labelInsertComment}
+				</p>
+			</form>
+		</div>
+		
+		<form method="post" action="jsp/admin/plugins/document/ModifyDocumentTypeAttribute.jsp">
+			<input type="hidden" name="attribute_id" value="${attribute.id}" />
+	        
+	        <@paginationAdmin paginator=paginator form=0 />
+		</form>
+		
+		<table>
+			<tbody>
+				<tr>
+					<th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowTitle}</th>
+					<th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowInformationMessage}</th>
+					<th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowValidExemple}</th>
+					<th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowAction}</th>
+				</tr>
+				<#list regular_expression_added_list as regular_expression>
+					<tr>
+						<td>${regular_expression.title}</td>
+			            <td>${regular_expression.informationMessage}</td>
+			            <td>${regular_expression.validExemple}</td>
+			            <td>
+			            	<form method="post" action="jsp/admin/plugins/document/DoDeleteRegularExpression.jsp">
+			            		<input type="hidden" name="attribute_id" value="${attribute.id}" />
+			            		<input type="hidden" name="expression_id" value="${regular_expression.idExpression}" />
+	        					
+	        					<input type="image" src="images/admin/skin/actions/delete.png" style="border:none;"
+	        						alt="#i18n{document.modify_document_type_attribute.manageRegularExpression.titleDelete}"
+	        						title="#i18n{document.modify_document_type_attribute.manageRegularExpression.titleDelete}" />
+			            	</form>
+			             </td>
+					</tr>
+				</#list>
+			</tbody>
+		</table>
+	</div>
+</#if>

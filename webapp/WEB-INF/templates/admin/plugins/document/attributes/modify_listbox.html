@@ -1,0 +1,13 @@
+<p>
+    <label for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
+   	<select id="${attribute.code}" name="${attribute.code}" >			
+			<#list parameters.items as item>
+				<#if attribute.textValue="${item}">
+      				<option selected="selected" value="${item}" >${item}</option>    			    			
+      			<#else>
+      				<option value="${item}" >${item}</option>
+      			</#if>
+    		</#list>		
+	</select>
+    ${attribute.description}
+</p>

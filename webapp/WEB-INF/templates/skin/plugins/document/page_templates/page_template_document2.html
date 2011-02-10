@@ -1,0 +1,46 @@
+<div id="content" >
+    <div id="one-zone-first">
+        <div id="one-zone-first-content">
+           <div class="document">
+				    <div class="document-content">
+                    ${document}
+				    </div>
+			   </div>
+				
+				
+			<div class="document-comments">
+				<a name="comments"></a>
+				${document_comments}
+			</div>            
+		
+		<div>
+				<#if portlet?has_content >
+					${portlet}
+				</#if>
+			</div>		
+		
+		</div>
+	</div>
+</div>
+<div id="sidebar"> 
+  <div class="site-buttons" id="button-send">
+          <a class="tt" href="jsp/site/plugins/document/SendDocument.jsp?document_id=${document_id}">&nbsp;<span class="tooltip"><span class="top"></span><span class="middle">#i18n{document.document_content_service.buttonSend}</span><span class="bottom"></span></span></a>
+      </div>
+      
+      <div class="site-buttons" id="button-print">
+        <a class="tt" href="jsp/site/plugins/document/PrintDocument.jsp?document_id=${document_id}" target="_print">&nbsp;<span class="tooltip"><span class="top"></span><span class="middle">#i18n{document.document_content_service.buttonPrint}</span><span class="bottom"></span></span></a>
+    </div>
+    
+    <#if accept_comment = 1>
+    <div class="site-buttons" id="button-comment">
+      <a class="tt" href="jsp/site/Portal.jsp?document_id=${document_id}&amp;portlet_id=${portlet_id}&amp;comment=1#comments">&nbsp;<span class="tooltip"><span class="top"></span><span class="middle">#i18n{document.document_content_service.buttonComment}</span><span class="bottom"></span></span></a>
+    </div>
+    
+</#if>
+  <div class="site-buttons" id="button-return">
+    <a class="tt" href="javascript:history.back();">&nbsp;<span class="tooltip"><span class="top"></span><span class="middle">#i18n{document.document_content_service.buttonBack}</span><span class="bottom"></span></span></a>
+  </div>
+  
+</div>
+
+

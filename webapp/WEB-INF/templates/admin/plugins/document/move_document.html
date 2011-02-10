@@ -1,0 +1,23 @@
+<div class="content-box" >
+    
+    <h2>#i18n{document.move_document.title} ${document.title}</h2>
+    
+    <form name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveDocument.jsp" enctype="multipart/form-data" >
+    	<input type="hidden" name="id_document" value="${document.id}" />
+		<div class="highlight-box" >
+			<p>
+				<#if submit_button_disabled >
+					#i18n{document.move_document.labelMove} :
+				</#if>
+				${spaces_browser}
+			</p>
+		</div>
+		<input type="submit" value="#i18n{document.move_document.buttonMove}" class="button" 
+			<#if submit_button_disabled >
+				disabled
+			</#if>
+		/>
+        <input class="button" type="button" onclick="this.form.action='jsp/admin/plugins/document/ManageDocuments.jsp';this.form.submit();" value="#i18n{portal.admin.message.buttonCancel}" />
+    </form>
+    
+</div>

@@ -1,0 +1,45 @@
+<div class="insert-service">
+	<h2>#i18n{document.insertService.name}</h2>
+
+	<#if pages_list?size = 0>
+		<p>
+			#i18n{document.selector.page.noPage}
+		</p>
+		<p>
+			<input type="button" class="button" onclick="javascript:history.go(-1);"
+				value="#i18n{portal.util.labelBack}" />
+		</p>
+	<#else>
+		<form method="post" name="fsubmit"
+			action="jsp/admin/plugins/document/DoSelectPage.jsp">
+			<h3>#i18n{document.selector.page.pageChoice}</h3>
+			
+			<p>
+			<table>
+				<tr>
+					<th></th>
+					<th>#i18n{document.selector.page.colTitle}</th>
+					<th>#i18n{document.selector.page.colDescription}</th>
+				</tr>
+				<#list pages_list as page>
+				<tr>
+					<td>
+						<input class="radio" type="radio" id="page_id_${page.id}"
+							name="page_id" value="${page.id}" />
+					</td>
+					<td><a href="jsp/admin/plugins/document/SelectPage.jsp?page_id=${page.id}&input=${input}">${page.name}</a></td>
+					<td>${page.description}</td>
+				</tr>
+				</#list>
+			</table>
+			</p>
+			<p>
+			<input type="submit" class="button" value="#i18n{portal.util.labelValidate}" /> 
+			<input type="button"
+				class="button" onclick="javascript:history.go(-1);"
+				value="#i18n{portal.util.labelBack}" />
+			</p>
+			<input type="hidden" name="input" value="${input}" />
+		</form>
+	</#if>
+</div>

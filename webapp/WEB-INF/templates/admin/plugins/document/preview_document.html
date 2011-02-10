@@ -1,0 +1,93 @@
+<div id="left">
+    <div class="content-box" >
+        <table>
+            <tr>
+                <th>#i18n{document.preview_document.columnTitleId} -
+                    #i18n{document.preview_document.columnTitleTitle}
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    ${document.id} - ${document.title} 
+                </td>
+            </tr>
+            <tr>
+                <th>#i18n{document.preview_document.columnTitleType}</th>
+            </tr>
+            <tr>
+                <td>${document.type}</td>
+            </tr>
+            <tr>
+                <th>#i18n{document.preview_document.columnTitleState}</th>
+            </tr>
+            <tr>
+                <td>${document.state}</td>
+            </tr>
+            <tr>
+                <th>#i18n{document.preview_document.columnTitleDateValidity}</th>
+            </tr>
+            <tr>
+                <td>
+                    <#assign dateBegin="">
+                    <#if document.dateValidityBegin?has_content>
+                        <#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
+                    </#if>    
+                    <#assign dateEnd="">
+                    <#if document.dateValidityEnd?has_content>
+                        <#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
+                    </#if>                        
+                    <#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
+                    <#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
+                    <#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
+                    <#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
+                
+                    <#if dateBegin?has_content && dateEnd?has_content>
+                        ${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}
+                    <#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
+                        #i18n{document.preview_document.labelDateValidityNotDefined}
+                    <#elseif dateBegin?has_content && !( dateEnd?has_content )>
+                        ${labelBeginSince} ${dateBegin} 
+                    <#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
+                        ${labelEndUntil} ${dateEnd} 
+                     </#if> 
+                    
+   
+                         
+                </td>
+            </tr>            
+            <tr>
+                <th>#i18n{document.preview_document.columnTitleDateCreation}</th>
+            </tr>
+            <tr>
+                <td>${document.dateCreation}</td>
+            </tr>
+            <tr>
+                <th>#i18n{document.preview_document.columnTitleDateModification}</th>
+            </tr>
+            <tr>
+                <td>${document.dateModification}</td>
+            </tr>
+            <tr>
+                <th>#i18n{document.preview_document.columnTitleActions}</th>
+            </tr>
+            <tr>
+                <td>
+                    <#list document.actions as action >
+	                    <#if action.url?exists>
+		                    <a href="${action.url}id_document=${document.id}&id_action=${action.idAction}">
+		                        <img src="${action.iconUrl}" alt="${action.description}" title="${action.description}" />
+		                    </a>
+		                </#if>
+                    </#list>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div id="right">
+
+    <div class="content-box" >
+        ${preview}
+    </div>    
+</div>

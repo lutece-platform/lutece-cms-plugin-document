@@ -1,0 +1,66 @@
+<div class="insert-service">
+	<h2>#i18n{document.insertService.name}</h2>
+
+	<#if documents_list?size = 0>
+		<p>
+			#i18n{document.selector.document.noDocument}
+		</p>
+		<p>
+			<input type="button" class="button" onclick="javascript:history.go(-1);"
+				value="#i18n{portal.util.labelBack}" />
+		</p>
+	<#else>
+		<form method="post" name="fsubmit"
+			action="jsp/admin/plugins/document/DoInsertDocumentLink.jsp">
+		
+			<h3>#i18n{document.selector.document.insertListTitle}</h3>
+			
+			<p>
+				<label for="alt">#i18n{document.selector.document.captionTitle}</label>
+				<input type="text" name="alt" id="alt" value="" size="30" maxlength="50" />
+			</p>
+			<p>
+				<label for="target">#i18n{document.selector.document.captionTarget}</label>
+				<select name="target" id="target" size=1>
+					<option value="_self">#i18n{document.selector.document.target.self}</option>
+					<option value="_blank">#i18n{document.selector.document.target.blank}</option>
+					<option value="_parent">#i18n{document.selector.document.target.parent}</option>
+					<option value="_top">#i18n{document.selector.document.target.top}</option>
+				</select>
+			<p>
+				<label for="name">#i18n{document.selector.document.linkName}</label>
+				<input type="text" name="name" id="name" value="" size="30" maxlength="50" />
+			</p>
+			
+			<h3>#i18n{document.selector.document.documentChoiceTitle}</h3>
+			
+			<p>
+			<table>
+				<tr>
+					<th></th>
+					<th>#i18n{document.selector.document.colTitle}</th>
+					<th>#i18n{document.selector.document.colSummary}</th>
+				</tr>
+				<#list documents_list as document>
+				<tr>
+					<td>
+						<input class="radio" type="radio" id="document_id_${document.id}"
+							name="document_id" value="${document.id}" />
+					</td>
+					<td>${document.title?if_exists}</td>
+					<td>${document.summary?if_exists}</td>
+				</tr>
+				</#list>
+			</table>
+			</p>
+			<p>
+			<input type="submit" class="button" value="#i18n{portal.util.labelValidate}" /> 
+			<input type="button"
+				class="button" onclick="javascript:history.go(-1);"
+				value="#i18n{portal.util.labelBack}" />
+			</p>
+			<input type="hidden" name="input" value="${input}" />
+			<input type="hidden" name="portlet_id" value="${portlet_id}" />
+		</form>
+	</#if>
+</div>

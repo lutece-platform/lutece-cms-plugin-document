@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+	<head>
+	<base href="${base_url}" />
+	
+	<title>#i18n{document.page_send_document.labelSendDocument}</title>
+	<link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print" />
+	<!--[if IE]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+	<link rel="stylesheet" href="css/commons.css" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="css/page_template_styles.css" type="text/css" media="screen, projection" />
+	
+	<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body>
+<div class="windows-header">
+	${portal_domain}
+</div>
+<br />
+<br />
+<div class="windows-content">
+	${preview}
+<br />
+<div class="alert">
+	${alert}
+</div>
+</div>
+
+<form name="document_form" action="jsp/site/plugins/document/DoSendDocument.jsp" method="post">
+	<div class="windows-form">
+		<input type="hidden" name="document_id" value="${document.id}" />
+		<p>
+			#i18n{document.page_send_document.labelInformation}
+		</p>
+		<#assign style_email = "" , style_last_name = "", style_first_name = "", style_recipient_email = "" >
+		<table>
+			<tr>
+				<td>
+					<label>#i18n{document.page_send_document.labelEmail} * :</label>
+				</td>
+				<td>
+					<#if visitor_email = "">
+						<#assign style_email = "mandatory">
+					</#if>
+					<input type="text" name="visitor_email" value="${visitor_email}"size="30" maxlength="100" class="${style_email}" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label>#i18n{document.page_send_document.labelName} * :</label>
+				</td>
+				<td>
+					<#if visitor_last_name = "">
+						<#assign style_last_name = "mandatory">
+					</#if>
+					<input type="text" name="visitor_last_name"  value="${visitor_last_name}" size="30" maxlength="50" class="${style_last_name}" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label>#i18n{document.page_send_document.labelFirstName} * :</label>
+				</td>
+				<td>
+					<#if visitor_first_name = "">
+						<#assign style_first_name = "mandatory">
+					</#if>
+	    	        <input type="text" name="visitor_first_name"  value="${visitor_first_name}" size="30" maxlength="50" class="${style_first_name}" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label>#i18n{document.page_send_document.labelRecipient} * :</label>
+				</td>
+				<td>
+					<#if recipient_email = "">
+						<#assign style_recipient_email = "mandatory">
+					</#if>
+	    	       	<input type="text" name="recipient_email" value="${recipient_email}" size="30" maxlength="100" class="${style_recipient_email}" />
+		    	</td>
+			</tr>
+			<tr>
+				<td>
+			        <label>#i18n{document.page_send_document.labelComment} :</label>
+				</td>
+				<td>
+		        	<textarea type="text" name="comment" cols="40" rows="15" style="float:left;">${comment}</textarea>
+				</td>
+		    </tr>
+		</table>
+</div>
+<br />
+<div class="windows-form">
+    <div align="center">
+        <input class="-lutece-input -lutece-border-radius-mini" id="button-send" type="submit" value="#i18n{document.page_send_document.buttonSend}"/>   
+        <a href="${base_url}jsp/site/plugins/document/SendDocument.jsp?document_id=${document.id}">
+            <input class="-lutece-input -lutece-border-radius-mini" id="button-reset" type="submit"  value="#i18n{document.page_send_document.buttonReset}" border="0" />
+        </a>
+    </div>
+</div>
+</form>
+    <div align="right">
+		<a href="javascript:window.close();"><strong>&gt;&gt; #i18n{document.page_send_document.labelClose}</strong></a>
+    </div>
+</body>
+</html>

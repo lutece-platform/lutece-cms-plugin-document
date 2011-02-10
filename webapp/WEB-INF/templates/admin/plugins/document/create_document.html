@@ -1,0 +1,107 @@
+<#include "/admin/util/editor/editor.html" />
+
+<#escape x as x?html>
+
+<form method="post" action="jsp/admin/plugins/document/DoCreateDocument.jsp" enctype="multipart/form-data" >
+<input type="hidden" name="document_type_code" value="${document_type}" />    
+
+        <div class="content-box" >
+            
+            <h2>#i18n{document.create_document.title} &#34; ${document_type} &#34;</h2>
+            <table>
+                <tr>
+                    <td width="63%" valign="top">
+                        <p>
+                            <label for="document_title">#i18n{document.create_document.labelDocumentTitle}* : </label>
+                            <input type="text" name="document_title" id="document_title" size="72" maxlength="255"/> 
+                            <br />
+                            <label>&nbsp;</label>
+                            #i18n{document.create_document.helpDocumentTitle}
+                        </p>
+                        <p>
+                            <label for="document_summary">#i18n{document.create_document.labelDocumentSummary}* : </label>
+                            <textarea type="text" name="document_summary" id="document_summary" cols="60" rows="2" ></textarea> 
+                            <br />
+                            <label>&nbsp;</label>
+                            #i18n{document.create_document.helpDocumentSummary}
+                        </p>
+                        
+                        <p>
+                            <label for="document_comment">#i18n{document.create_document.labelDocumentComment} : </label>
+                            <textarea type="text" name="document_comment" id="document_comment" cols="60" rows="2" ></textarea> 
+                            <br />
+                            <label>&nbsp;</label>
+                            #i18n{document.create_document.helpDocumentComment}
+                        </p>     
+                        <p>
+                            <label for="document_page_template">#i18n{document.create_document.labelDocumentPageTemplate} : </label>
+                            <table><tr>
+                                    <#noescape>${page_template_list}</#noescape> 
+                            </tr></table>
+                            <br />
+                            <label>&nbsp;</label>
+                            #i18n{document.create_document.helpDocumentPageTemplate}                            
+                        </p>                            
+                    </td>
+                    <td width="38%" valign="top">
+                        
+                        <div class="highlight-box">            
+                            <h2>#i18n{document.create_document.advancedPropertiesTitle}</h2>                            
+							<h3>#i18n{document.create_document.labelDocumentValidity}</h3>
+							<p>
+								#i18n{document.create_document.labelDocumentValidityBegin} : <input type="text" name="document_validity_begin" id="document_validity_begin" size="10" />                             
+								#i18n{document.create_document.labelDocumentValidityEnd} : <input type="text" name="document_validity_end" id="document_validity_end" size="10" />
+    	                    </p>
+                            <#if is_commentable == "0">
+                            <h3>
+                                <a href="javascript:displayId('comments');"><img src="images/admin/skin/open_block.gif" alt="" border="0"></a>
+                                <a href="javascript:hideId('comments');"><img src="images/admin/skin/closed_block.gif" alt="" border="0"></a>
+                                #i18n{document.create_document.labelDocumentCommentable}
+                            </h3>
+
+                            <div style="visibility:hidden; display:none;" id="comments">
+	                            <p>
+	    	                        <input class="checkbox" type="checkbox" name="accept_site_comments" id="accept_site_comments" value="1" title="#i18n{document.create_document.helpDocumentCommentable}"/>
+									#i18n{document.create_document.labelDocumentCommentable}
+	    	                        <br />
+		                            <input class="checkbox" type="checkbox" name="is_moderated_comment" id="is_moderated_comment" value="1" title="#i18n{document.create_document.helpCommentIsModerated}"/>
+		                            #i18n{document.create_document.labelCommentIsModerated}
+		                            <br />
+									<#if mailinglists_list?has_content>
+	                                    <input class="checkbox" type="checkbox" name="is_email_notified_comment" id="is_email_notified_comment" value="1" title="#i18n{document.create_document.helpCommentIsEmailNotified}"/>&nbsp;
+	                                    <@combo name="mailinglists" default_value="" items=mailinglists_list />
+	                                    #i18n{document.create_document.labelCommentIsEmailNotified}
+	                                <#else>
+	                                	<em>#i18n{document.create_document.messageNotificationListNotExist}</em>
+	                                </#if>
+	                            </p>
+                            </div>
+                            </#if>
+                            <#if is_votable?has_content>
+                        		<#include "/admin/plugins/rating/create_resource_add_on.html" />
+                        	</#if>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            
+        <#noescape>${category}</#noescape>
+        
+        <#noescape>${metadata}</#noescape>
+        
+        
+        <div class="highlight-box">   
+            <h2>
+                #i18n{document.create_document.attributTitle}
+            </h2>    
+            <#noescape>${fields}</#noescape>
+		</div>	
+            <input type="submit" value="#i18n{document.create_document.buttonCreate}" class="button" />
+            <input class="button" type="button" onclick="javascript:history.go(-1)" value="#i18n{portal.admin.message.buttonCancel}" />        
+        
+    </div>
+</form>
+</#escape>
+
+<@initEditor />
+<@getDatePickerRange idFieldFrom="document_validity_begin" idFieldTo="document_validity_end" language=locale />

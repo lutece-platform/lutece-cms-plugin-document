@@ -1,0 +1,55 @@
+
+<div class="portlet-background">
+    
+    <form name="addCommentForm" action="jsp/site/plugins/document/modules/comment/DoAddComment.jsp" method="post">    
+        <input type="hidden" name="document_id" value="${document_id}">
+        <input type="hidden" name="portlet_id" value="${portlet_id}">
+        <input type="hidden" name="mailinglist" value="${mailinglist}">
+
+        <#if mandatory_field_message = "1" >
+            <h4>#i18n{module.document.comment.add_document_comment.messageMandatoryField}</h4>
+        </#if>        
+        
+        <#if xss_error_message = "1" >
+            <h4>#i18n{module.document.comment.add_document_comment.messageXssError}</h4>
+        </#if>
+
+        <#if check_email_message = "1" >
+            <h4>#i18n{module.document.comment.add_document_comment.messageCheckEmail}</h4>
+        </#if>        
+
+        <br />
+        <h3>#i18n{module.document.comment.add_document_comment.labelAddComment}</h3>
+            
+        <label>#i18n{module.document.comment.add_document_comment.labelMandatoryFields}.</label>
+        
+	<p>
+		<label for="email">#i18n{module.document.comment.add_document_comment.labelEmail} :</label> 
+		<#if lutece_user_email?exists>
+			<input type="text" name="email" size="60" maxlength="80" value="${lutece_user_email}">
+		<#else>
+			<input type="text" name="email" size="60" maxlength="80">
+		</#if>
+	</p>
+	<p>
+		<label for="name">#i18n{module.document.comment.add_document_comment.labelName} :</label>
+		<#if lutece_user_name?exists>
+			<input type="text" name="name" size="60" maxlength="100" value="${lutece_user_name}">
+		<#else>
+			<input type="text" name="name" size="60" maxlength="100">
+		</#if>
+		
+	</p>
+	<p>
+		<label for="content">#i18n{module.document.comment.add_document_comment.labelComment} : </label>
+	</p>
+	<p>	
+            <textarea name="content"  rows="8" cols="45"></textarea>
+	</p>
+	<p>
+            <input type="submit" value="#i18n{module.document.comment.add_document_comment.buttonAddComment}" />
+	</p>	
+    </form>
+</div>
+
+

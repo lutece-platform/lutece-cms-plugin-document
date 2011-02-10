@@ -1,0 +1,214 @@
+<script type="text/javascript"> 
+	function toggle_checkboxes() {
+	    if (!document.getElementById){ return; }
+	    if (!document.getElementsByTagName){ return; }
+	    var inputs = document.getElementById("documents_form").getElementsByTagName("input");
+	    for(var x=0; x < inputs.length; x++) {
+	        if ( (inputs[x].type == 'checkbox') && (inputs[x].name != "select_all" ) ) {
+	            inputs[x].checked = !inputs[x].checked;
+	        }
+	    }
+	} 
+</script>
+
+<div id="left">
+    <div class="content-box" >
+        <h2>#i18n{document.manage_documents.labelSpaces}</h2>
+        ${spaces_tree}
+        <#if space_actions_list?size != 0 >
+        <table>
+            <tr>
+                <th width="20%">#i18n{document.manage_documents.labelActions}</th>
+            </tr>
+            <tr>
+                <td>
+                    <#list space_actions_list as space_action>
+                    <a href="${space_action.url}?id_space=${space.id}">
+                        <img src="${space_action.iconUrl}" alt="${space_action.description}" title="${space_action.description}" />
+                    </a>
+                    </#list>
+                </td>
+            </tr>
+        </table>
+        </#if>
+    </div>
+</div>
+
+<div id="right">
+    <div class="content-box" >
+            <div class="highlight-box">
+                <form method="post" name="SearchDocumentById" action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
+                    <p>
+                        #i18n{document.manage_documents.labelSearchById} :
+                        <input type="text" name="id_document" size="5" maxlength="10" />
+                        <input type="submit" class="button" value="#i18n{document.manage_documents.buttonSearch}" />
+                    </p>
+                </form>
+                
+                <form method="post" name="FullTextSearchDocument" action="jsp/admin/plugins/document/DocumentSearch.jsp">
+                    <p>
+                        #i18n{document.manage_documents.labelFullTextSearch} :
+                        <input type="text" name="query" size="10" maxlength="50" />
+                        <input type="submit" class="button" value="#i18n{document.manage_documents.buttonSearch}" />
+                    </p>
+                </form>
+                
+            </div>
+            <#if space?has_content >
+	            <#if space.documentCreationAllowed >
+		            <#if document_types_list?has_content >
+			            <div class="highlight-box" >
+			                
+			                <form method="post" name="CreateDocument" action="jsp/admin/plugins/document/CreateDocument.jsp" >
+			                    <p>
+			                        #i18n{document.manage_documents.labelCreate} :
+			                        <@combo name="document_type_code" default_value="" items=document_types_list />
+			                        <input type="submit" class="button" value="#i18n{document.manage_documents.buttonCreate}" />
+			                    </p>
+			                </form>
+			                
+			            </div>
+		            </#if>
+	            </#if>
+	            
+	            <#if document_types_filter_list?size &gt; 1 >
+	                <h2>#i18n{document.manage_documents.listTitle}</h2>
+	                
+	                <div class="highlight-box">
+	                    <form method="post" name="FilterDocumentsForm" action="jsp/admin/plugins/document/ManageDocuments.jsp">
+	                        #i18n{document.manage_documents.labelType} :
+	                        <@combo name="document_type_code_filter" default_value="${default_document_type}" items=document_types_filter_list />
+	                        #i18n{document.manage_documents.labelState} :
+	                        <@combo name="id_state_filter" default_value="${default_state}" items=states_filter_list />
+	                        <input type="submit" class="button" value="#i18n{document.manage_documents.buttonFilter}" />
+	                    </form>
+	                </div>
+	                <#if documents_list?size = 0 >
+	                    <h3>#i18n{document.manage_documents.noDocument}</h3>
+	                <#else>
+	                        <form  method="post" action="jsp/admin/plugins/document/ManageDocuments.jsp">
+                                <div id="lutece-paginator">
+                                    <p>
+                                    <#if (paginator.pagesCount > 1) >
+                                    <span>
+                                        <@paginationPageLinks paginator=paginator />
+                                    </span>
+                                    </#if>
+                                    #i18n{document.manage_documents.labelViewType} :
+                                    <@combo name="view_type" default_value="${view_type}" items=view_types_list />
+                                    <@paginationItemCount paginator=paginator combo=1 />
+                                    </p>
+                                </div>
+	                        </form>
+							
+	                        <#if view_type = "detail" >
+	                        <form id="documents_form" name="documents_form" method="post" action="jsp/admin/plugins/document/DoActionSelectionDocument.jsp">
+	                       	<table>
+	                            <tr>
+	                            	<th width="5%"><input id="select_all" name="select_all" type="checkbox" onclick="toggle_checkboxes();" /></th>
+	                                <th width="65%">#i18n{document.manage_documents.labelDocument}</th>
+	                                <th width="10%">	                                
+	                                	#i18n{document.manage_documents.labelPublishedStatus}
+	                                	<@sort jsp_url="jsp/admin/plugins/document/ManageDocuments.jsp" attribute="publishedStatus" />
+	                                </th>
+	                                <th width="25%">#i18n{document.manage_documents.labelActions}</th>
+	                            </tr>
+	
+	                            <#list documents_list as document >
+	                            <tr>
+		                            <td>						
+										<input id="document_selection" name="document_selection" type="checkbox" value="${document.id}" />
+									</td>
+	                                <td width="65%">
+	                                    <img src="${document.thumbnail}" alt="${document.title}" width="40" height="40" align="left" hspace="15" />
+	                                    ${document.id} - ${document.title}<br />
+	                                    ${document.type} - <strong>#i18n{document.manage_documents.labelState} : </strong>${document.state}                                              
+                                        <br />                                                
+	                                    <strong>#i18n{document.manage_documents.labelDateModification} : </strong>${document.dateModification}
+	                                </td>
+	                                <td width="10%">
+		                                <#if document.publishedStatus = 0> 
+						            		<img src="images/admin/skin/enable.png" alt="#i18n{document.manage_documents.PublishedStatus}" title="#i18n{document.manage_documents.PublishedStatus}">
+						            	<#else>
+						            		<img src="images/admin/skin/disable.png" alt="#i18n{document.manage_documents.UnPublishedStatus}" title="#i18n{document.manage_documents.UnPublishedStatus}">
+						            	</#if>
+	                                </td>
+	                                <td width="25%">
+	                                    <#list document.actions as action >
+		                                    <#if action.url?exists>
+			                                    <a href="${action.url}id_document=${document.id}&id_action=${action.idAction}">
+			                                        <img src="${action.iconUrl}" alt="${action.description}" title="${action.description}" />
+			                                    </a>
+			                                </#if>
+	                                    </#list>
+	                                </td>
+	                            </tr>
+	                            </#list>
+	
+	                        </table>
+                         	<p> #i18n{document.manage_documents.applyToSelection} :
+								<select id="selection" name="selection">
+									<option value="validate">#i18n{document.manage_document.validate}</option>
+									<option value="submit">#i18n{document.manage_document.submit}</option>
+									<option value="refuse">#i18n{document.manage_document.refuse}</option>
+									<option value="remove">#i18n{document.manage_document.remove}</option>
+									<option value="archive">#i18n{document.manage_document.archive}</option>
+									<option value="unarchive">#i18n{document.manage_document.unarchive}</option>
+								</select>					
+					    		<input type="submit" tabindex="10" class="button" />
+							</p>
+	                        </form>
+	                        </#if>
+	
+	                        <#if view_type = "thumbnail">
+	                        <div class="thumbnail">
+	                            <#list documents_list as document >
+	                            <div class="thumbnail-element">
+	                                <p>
+	                                    <img src="${document.thumbnail}" alt="${document.title}" width="150" height="150" align="middle" />
+	                                    <br />
+	                                    ${document.id} - ${document.title}
+	                                    <br />
+	                                    ${document.type}
+	                                </p>
+	                                <p>
+	                                    <#list document.actions as action >
+	                                    	<#if action.url?has_content>
+			                                    <a href="${action.url}id_document=${document.id}&id_action=${action.idAction}">
+			                                        <img src="${action.iconUrl}" alt="${action.description}" title="${action.description}" />
+			                                    </a>
+			                            	</#if>
+	                                    </#list>
+	                                </p>
+	                            </div>
+	                            </#list>
+	                            
+	                        </div>
+	                        </#if>
+                                <div  style="clear:both;" />
+                                <@paginationAdmin paginator=paginator combo=1 />
+
+	        
+	                </#if>
+	            <#else>
+	                <#if child_spaces_list?size != 0 >
+	                    <h2>#i18n{document.manage_documents.childSpacesList} :</h2>
+	                    <ul>
+	                        <#list child_spaces_list as child_space>
+	                        <li>
+	                            <h3>
+	                                <img src="${child_space.iconUrl}" alt=""/>
+	                                <a href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${child_space.id}" >
+	                                    ${child_space.name}
+	                                </a>
+	                            </h3>
+	                            ${child_space.description}
+	                        </li>
+	                        </#list>
+	                    </ul>
+	                </#if>
+	            </#if>
+            </#if>
+    </div>
+</div>
+

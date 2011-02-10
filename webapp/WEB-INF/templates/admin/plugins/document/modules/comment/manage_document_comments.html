@@ -1,0 +1,105 @@
+<#if document?exists>
+	<div id="left">
+	    <div class="content-box" >
+	        <table>
+	            <tr>
+	                <th>#i18n{module.document.comment.manage_document_comments.columnTitleId} -
+	                    #i18n{module.document.comment.manage_document_comments.columnTitleTitle}
+	                </th>
+	            </tr>
+	            <tr>
+	                <td>
+	                    ${document.id} - ${document.title}
+	                </td>
+	            </tr>
+	            <tr>
+	                <th>#i18n{module.document.comment.manage_document_comments.columnTitleType}</th>
+	            </tr>
+	            <tr>
+	                <td>${document.type}</td>
+	            </tr>
+	            <tr>
+	                <th>#i18n{module.document.comment.manage_document_comments.columnTitleDateCreation}</th>
+	            </tr>
+	            <tr>
+	                <td>${document.dateCreation}</td>
+	            </tr>
+	            <tr>
+	                <th>#i18n{module.document.comment.manage_document_comments.columnTitleDateModification}</th>
+	            </tr>
+	            <tr>
+	                <td>${document.dateModification}</td>
+	            </tr>
+	            <tr>
+	                <th>#i18n{module.document.comment.manage_document_comments.columnManageDocumentAccess}</th>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <a href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" >
+	                        <img src="images/admin/skin/plugins/document/manage_documents.png" width="24" height="24" alt="#i18n{module.document.comment.manage_document_comments.labelManageDocumentAccess}" title="#i18n{module.document.comment.manage_document_comments.labelManageDocumentAccess}"/>
+	                    </a>
+	                    <a href="jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${document.id}" >
+	                        <img src="images/admin/skin/plugins/document/actions/view.png" width="24" height="24" alt="#i18n{document.workflow.action.previewDocument.description}" title="#i18n{document.workflow.action.previewDocument.description}"/>    
+	                    </a>                    
+	                </td>
+	            </tr>
+	        </table>
+	    </div>
+	</div>
+	
+	<div id="right">
+	    <div class="content-box">
+	        <h2>#i18n{module.document.comment.manage_document_comments.labelComment} ${document.title}</h2>
+	        <#if document.acceptSiteComments = 1>
+	        <#list document_comments_list as comments>        
+	        <p>
+	            <strong>#i18n{module.document.comment.manage_document_comments.labelAuthor} :</strong> <br />
+	            #i18n{module.document.comment.manage_document_comments.labelName} : ${comments.name} - #i18n{module.document.comment.manage_document_comments.labelDateComment} : ${comments.dateComment} <br /> 
+	            #i18n{module.document.comment.manage_document_comments.labelEmail} : ${comments.email} - #i18n{module.document.comment.manage_document_comments.labelIpAddress} : ${comments.ipAddress} <br /> 
+	        </p>
+	        <p>
+	            <strong>#i18n{module.document.comment.manage_document_comments.labelComment} : </strong><br />
+	            ${comments.comment}
+	        </p>       
+	        <p>
+	            <#if comments.status = 0>
+	            <form method="post" name="publishing" action="jsp/admin/plugins/document/modules/comment/DoModifyCommentStatus.jsp">
+	                <td width="2%" align="right">
+	                    <img src="images/admin/skin/disable.png" alt="" align="left"/>
+	                </td>
+	                <td width="10%">                   
+	                    <input type="hidden" name="id_comment" value="${comments.commentId}" />
+	                    <input type="hidden" name="id_document" value="${document.id}" />
+	                    <input type="hidden" name="status" value="1" />	
+	                    <input type="submit" value="#i18n{module.document.comment.manage_document_comments.buttonPublish}" class="button" />
+	                    <a href="jsp/admin/plugins/document/modules/comment/DoRemoveComment.jsp?id_document=${document.id}&amp;id_comment=${comments.commentId}" >
+	                        <img src="images/admin/skin/actions/delete.png" style="border:0;vertical-align:bottom;" alt="#i18n{module.document.comment.manage_document_comments.buttonDelete}" title="#i18n{module.document.comment.manage_document_comments.buttonDelete}"/>
+	                    </a> 
+	                </td>
+	            </form>
+	            <#else>
+	            <form method="post" name="unpublishing" action="jsp/admin/plugins/document/modules/comment/DoModifyCommentStatus.jsp">
+	                <td width="2%" align="right">
+	                    <img src="images/admin/skin/enable.png" alt="" align="left"/>
+	                </td>
+	                <td width="10%" >
+	                    <input type="hidden" name="status" value="0" />	
+	                    <input type="hidden" name="id_document" value="${document.id}" />
+	                    <input type="hidden" name="id_comment" value="${comments.commentId}" />
+	                    <input type="submit" value="#i18n{module.document.comment.manage_document_comments.buttonUnPublish}" class="button" />
+	                    <a href="jsp/admin/plugins/document/modules/comment/DoRemoveComment.jsp?id_document=${document.id}&amp;id_comment=${comments.commentId}" >
+	                        <img src="images/admin/skin/actions/delete.png" style="border:0;vertical-align:bottom;" alt="#i18n{module.document.comment.manage_document_comments.buttonDelete}" title="#i18n{module.document.comment.manage_document_comments.buttonDelete}"/>
+	                    </a>             
+	                </td>
+	            </form>
+	            </#if>            
+	        </p>
+	        <hr />  
+	        </#list>
+	        <#else>
+	            #i18n{module.document.comment.manage_document_comments.noAcceptComment}
+	        </#if>
+	    </div>
+	</div>
+</div>
+</#if>

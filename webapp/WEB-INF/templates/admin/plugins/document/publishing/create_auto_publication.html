@@ -1,0 +1,24 @@
+<div class="content-box">
+	<h2>#i18n{document.create_auto_publication.boxTitle}</h2>
+	
+	<form name="formCreateAutoPublication" method="get" action="jsp/admin/plugins/document/DoCreateAutoPublication.jsp" enctype="multipart/form-data" >
+		<p>
+		<input type="hidden" name="id_portlet" value="${portlet_id}" />
+		<input type="hidden" name="mode_publication" value="1" />
+		<div class="highlight-box" >
+			<p>
+				<#if submit_button_disabled >
+					#i18n{document.create_auto_publication.spaceChoice} :
+				</#if>
+				${spaces_browser}
+			</p>
+		</div>
+		<input type="submit" value="#i18n{document.create_auto_publication.submitButton}" class="button" 
+			<#if submit_button_disabled >
+				disabled="disabled"
+			</#if>
+		/>
+        <input class="button" type="button" onclick="this.form.action='jsp/admin/plugins/document/ManagePublishing.jsp';this.form.submit();" value="#i18n{portal.admin.message.buttonCancel}" />
+        </p>
+    </form>
+</div>

@@ -1,0 +1,8 @@
+<#list parameters as parameter>
+<p>
+    <label for="${parameter.name}" >${parameter.label} :</label>
+    <input type="text" name="${parameter.name}" tabindex="${parameter_index + 5}"
+    	value="<#list parameter.defaultValue as values >${values}</#list>"  />
+    ${parameter.description}
+</p>
+</#list>

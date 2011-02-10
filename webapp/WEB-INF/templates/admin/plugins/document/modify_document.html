@@ -1,0 +1,117 @@
+<#include "/admin/util/editor/editor.html" />
+
+<#escape x as x?html>
+
+<form method="post" action="jsp/admin/plugins/document/DoModifyDocument.jsp" enctype="multipart/form-data" >
+    
+    <input type="hidden" name="id_document" value="${document.id}" />
+    <input type="hidden" name="id_state" value="${id_state}" />
+    
+    <div class="content-box" >
+        
+        <h2>#i18n{document.modify_document.title} &#34; ${document.title} &#34;</h2>
+        
+        <table>
+            <tr>
+                <td width="63%" valign="top">
+                    <p>
+                        <label for="document_title">#i18n{document.modify_document.labelDocumentTitle}* : </label>
+                        <input type="text" name="document_title" id="document_title"  size="72" maxlength="255" value="${document.title}"/>
+                        <br />
+                        <label>&nbsp;</label>                        
+                        #i18n{document.modify_document.helpDocumentTitle}
+                    </p>
+                    <p>
+                        <label for="document_summary">#i18n{document.modify_document.labelDocumentSummary}* : </label>
+                        <textarea type="text" name="document_summary" id="document_summary" cols="60" rows="2" >${document.summary}</textarea> 
+                        <br />
+                        <label>&nbsp;</label>
+                        #i18n{document.modify_document.helpDocumentSummary}
+                    </p>
+                    <p>
+                        <label for="document_comment">#i18n{document.modify_document.labelDocumentComment} : </label>
+                        <textarea type="text" name="document_comment"  id="document_comment" cols="60" rows="2" >${document.comment}</textarea> 
+                        <br />
+                        <label>&nbsp;</label>
+                        #i18n{document.modify_document.helpDocumentComment}
+                    </p>
+                    <p>
+                        <label for="document_page_template">#i18n{document.modify_document.labelDocumentPageTemplate} : </label>
+                        <table><tr>
+                                <#noescape>${page_template_list}</#noescape>
+                        </tr></table>
+                        <br />
+                        <label>&nbsp;</label>
+                        #i18n{document.modify_document.helpDocumentPageTemplate}                            
+                    </p>            
+                </td>
+                <td width="38%" valign="top">
+                    <div class="highlight-box">            
+                        <h2>#i18n{document.modify_document.advancedPropertiesTitle}</h2>                            
+						<h3>#i18n{document.modify_document.labelDocumentValidity}</h3>
+						<p>
+							#i18n{document.modify_document.labelDocumentValidityBegin} : <input type="text" name="document_validity_begin" id="document_validity_begin" size="10"  value="${date_validity_begin}"/>
+							#i18n{document.modify_document.labelDocumentValidityEnd} : <input type="text" name="document_validity_end" id="document_validity_end" size="10" value="${date_validity_end}" />
+	                    </p>
+                        <#if is_commentable == "0">
+                        <h3>
+                            <a href="javascript:displayId('comments');"><img src="images/admin/skin/open_block.gif" alt="" border="0"></a>
+                            <a href="javascript:hideId('comments');"><img src="images/admin/skin/closed_block.gif" alt="" border="0"></a>
+                            #i18n{document.modify_document.labelDocumentCommentable}
+                        </h3>
+                        <div style="visibility:hidden; display:none;" id="comments">
+                            <p>
+                           		<#assign checked = "" />
+                                <#if accept_site_comments = 1 >
+                                	<#assign checked >checked="checked"</#assign>
+                                </#if>
+    	                        <input class="checkbox" type="checkbox" name="accept_site_comments" value="1" ${checked} title="#i18n{document.modify_document.helpDocumentCommentable}"/>
+								#i18n{document.modify_document.labelDocumentCommentable}
+    	                        <br />
+	                            <#assign checked = "" />				 	
+                                <#if is_moderated_comment = 1 >
+                                	<#assign checked >checked="checked"</#assign>  
+                                </#if>
+	                            <input class="checkbox" type="checkbox" name="is_moderated_comment" value="1" ${checked} title="#i18n{document.modify_document.helpCommentIsModerated}"/>
+	                             #i18n{document.modify_document.labelCommentIsModerated}
+	                            <br />
+								<#if mailinglists_list?has_content>
+									<#assign checked = "" />				 	
+                                    <#if is_email_notified_comment = 1 >
+                                    	<#assign checked >checked="checked"</#assign>  
+                                    </#if>
+                                    <input class="checkbox" type="checkbox" name="is_email_notified_comment" value="1" ${checked} title="#i18n{document.modify_document.helpCommentIsEmailNotified}"/>&nbsp;
+                                    <@combo name="mailinglists" default_value="${document.mailingListId}" items=mailinglists_list />
+                                    #i18n{document.modify_document.labelCommentIsEmailNotified}
+                                <#else>
+                                	<em>#i18n{document.modify_document.messageNotificationListNotExist}</em>
+                                </#if>
+                            </p>
+                        </div>
+                        </#if>
+                        <#if is_votable?has_content>
+                        	<#include "/admin/plugins/rating/modify_resource_add_on.html" />
+                        </#if>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        
+        <#noescape>${category}</#noescape>
+        
+        <#noescape>${metadata}</#noescape>
+        <div class="highlight-box">
+            <#noescape>${fields}</#noescape>
+        </div>
+        
+        <input type="submit" value="#i18n{document.modify_document.buttonModify}" class="button" />
+        <input class="button" type="button" onclick="javascript:history.go(-1)" value="#i18n{portal.admin.message.buttonCancel}" />
+    </div>
+</form>
+
+
+
+</#escape>
+
+<@initEditor />
+<@getDatePickerRange idFieldFrom="document_validity_begin" idFieldTo="document_validity_end" language=locale />

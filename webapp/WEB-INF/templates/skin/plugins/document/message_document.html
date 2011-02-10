@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+<base href="${portal_url}/" />
+</head>
+<body>
+<b>#i18n{document.message_document.label} <a href="${portal_url}"> ${portal_name} </a>#i18n{document.message_document.label2} : </b><br/>
+
+&nbsp;&nbsp;${visitor_first_name} &nbsp;&nbsp;${visitor_last_name}
+&nbsp;&nbsp;( ${visitor_email} ) <br/><br/>
+
+<b>Date :</b>&nbsp;${current_date}<br/>
+<br/><br/>
+<hr/>
+<b>Document : </b><br/><br/>
+${preview}
+<hr/>
+<center>
+	<font size="1">#i18n{document.message_document.label3} <strong> <a href="${portal_url}"> ${portal_name} </a> </strong>
+	<br/>
+	<strong>#i18n{document.message_document.label4}</strong> #i18n{document.message_document.label5}<br/>
+	#i18n{document.message_document.label6}</font>
+</center>
+</body>
+</html>

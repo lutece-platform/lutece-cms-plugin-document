@@ -1,0 +1,95 @@
+<script>
+function clear() {
+	document.getElementById("advanced_search_form").elements["searchinput"].value = "";
+	document.getElementById("advanced_search_form").elements["title"].checked = false;
+	document.getElementById("advanced_search_form").elements["summary"].checked = false;
+	document.getElementById("advanced_search_form").elements["date"].value = "";
+	document.getElementById("advanced_search_form").elements["document_type"].selectedIndex = 0;
+}
+</script>
+<div class="span-15 prepend-1 append-1 prepend-top" id="one-zone-first">
+<div class="portlet-background append-bottom">
+	<div class="portlet-background-header -lutece-border-radius-top">
+		#i18n{document.advanced_search.title}   
+		<!--  <a class="info" href="javascript:void;">
+			<img  src="images/local/skin/plugins/document/help.gif" />
+			<span><pre><strong>+</strong>:#i18n{document.advanced_search.help1}<br /><strong>-</strong>:#i18n{document.advanced_search.help2}<br /><strong>*</strong>:#i18n{document.advanced_search.help3}<br /><strong>&quot; &quot;</strong>:#i18n{document.advanced_search.help4}</pre></span>
+		</a>	-->
+	</div>
+	<div class="portlet-background-content">
+		<form id="advanced_search_form" name="advanced_search_form" action="${url}?page=advanced_search&search_query=true" method="post">
+			<label for="searchinput">#i18n{document.advanced_search.query}:</label><input name="query" id="searchinput" type="text" value="<#if query??>${query}</#if>"/>
+			<br />
+			<br />
+			<label for="title">#i18n{document.advanced_search.limit}:</label>
+			#i18n{document.advanced_search.checkbox.title}<input name="title" id="title" type="checkbox" <#if title??>checked</#if>/>
+			#i18n{document.advanced_search.checkbox.summary}<input name="summary" id="summary" type="checkbox" <#if summary??>checked</#if>/>
+			<br /><br />
+			<span class="datepicker_wrap"><label for="date">#i18n{document.advanced_search.checkbox.date}:</label><input type="text" name="date" id="date" size="10"  value="<#if date_query??>${date_query}</#if>"/>
+			<img class="datepicker_trigger" src="js/jquery/plugins/ui/datepicker/calendar.png" id="button_date" name="button_date" title="Choisir une date" alt="Choisir une date" />
+			</span><br />
+			<#if date_error??><div id="error">${date_error}</div></#if>
+			<br />
+			<label for="document_type">#i18n{document.advanced_search.list.type}:</label><@combo name="document_type"  items=document_type_list default_value=selected_type />
+			<br />
+			<center>
+				<input id="searchsubmit" class="site-buttons" type="submit" value="#i18n{document.advanced_search.button.search}"/>
+				<input id="button-erase" class="site-buttons" type="button"  onclick="window.clear()" value="#i18n{document.advanced_search.button.erase}"/>
+			</center>
+		</form>
+	</div>			
+</div>
+<#if query??>
+<div class="portlet-colored">
+	
+	<div class="portlet-background-header -lutece-border-radius-top">
+		#i18n{document.advanced_search.result}   	
+	</div>
+    <div class="portlet-background-content">
+    	<ul>
+    	<#if content??>
+		<#list content as document>
+			<li>
+				<#if document.idPortlet != (-1) >
+			        <a href="${url}?document_id=${document.docSearchItem.id}&#38;portlet_id=${document.idPortlet}">
+			            ${document.docSearchItem.title}
+					</a> 
+				</#if>          
+				<br />
+				<div>
+					 ${document.docSearchItem.type}
+				</div>  
+				      ${document.docSearchItem.summary}
+				<br /> 
+		    </li>
+	    </#list>
+	    <#else>
+	    	<strong>#i18n{document.advanced_search.noresult}</strong>
+	    </#if>
+	    </ul>			
+	</div>
+	
+</div>
+</div>
+</#if>
+	
+
+
+<!-- main calendar program -->
+<script type="text/javascript" src="js/jscalendar/calendar.js"></script>
+<!-- language for the calendar -->
+<script type="text/javascript" src="js/jscalendar/lang/calendar-fr.js"></script>
+<!-- the following script defines the Calendar.setup helper function, which makes
+       adding a calendar a matter of 1 or 2 lines of code. -->
+<script type="text/javascript" src="js/jscalendar/calendar-setup.js"></script>
+<script type="text/javascript">
+    Calendar.setup({
+    inputField     :    "date",      // id of the input field
+    ifFormat       :    "%d/%m/%y",       // format of the input field
+    showsTime      :    false,            // will display a time selector
+    button         :    "button_date",   // trigger for the calendar (button ID)
+    singleClick    :    true,           // double-click mode
+    step           :    1                // show all years in drop-down boxes (instead of every other year as default)
+    });
+</script>
+

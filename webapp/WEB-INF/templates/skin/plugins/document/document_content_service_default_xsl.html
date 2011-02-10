@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+    <xsl:output method="html" indent="yes"/>
+    <xsl:template match="document">
+        <xsl:value-of select="document-title" /><br /><br />
+        <xsl:value-of select="document-summary" />
+    </xsl:template>
+    <xsl:template match="${document_type.code}">
+        <p>            
+            <strong><xsl:value-of select="document-title" /></strong>
+        </p>
+        <p>           
+            <xsl:value-of select="document-summary" />
+        </p>        
+        <#list document_type.attributes as attribute>
+        <p>
+            <xsl:choose>
+                <xsl:when test="${document_type.code}-${attribute.code}/file-resource!=''">
+                    <xsl:apply-templates select="${document_type.code}-${attribute.code}/file-resource" />
+                </xsl:when>
+                <xsl:otherwise>
+                     <xsl:value-of disable-output-escaping="yes" select="${document_type.code}-${attribute.code}" />
+                </xsl:otherwise>
+            </xsl:choose>
+        </p>
+        </#list>
+    </xsl:template>
+
+    <xsl:template match="file-resource">
+        <xsl:choose>
+            <xsl:when test="(resource-content-type='image/jpeg' or resource-content-type='image/jpg' or  resource-content-type='image/pjpeg' or resource-content-type='image/gif' or resource-content-type='image/png')">
+                <img src="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}" align="right" />
+            </xsl:when>
+            <xsl:when test="(resource-content-type='application/pdf')">
+                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
+                    <img src="images/admin/skin/plugins/document/filetypes/pdf.png" />
+                </a>
+            </xsl:when>
+            <xsl:when test="(resource-content-type='application/binary')">
+                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
+                    <img src="images/admin/skin/plugins/document/filetypes/compressed.png" />
+                </a>
+            </xsl:when>
+            <xsl:when test="(resource-content-type='video/mpeg')">
+                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
+                    <img src="images/admin/skin/plugins/document/filetypes/video.png" />
+                </a>
+            </xsl:when>
+            <xsl:when test="(resource-content-type='audio/mpeg')">
+                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
+                    <img src="images/admin/skin/plugins/document/filetypes/audio.png" />
+                </a>
+            </xsl:when>
+            <xsl:otherwise>
+                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
+                    <img src="images/admin/skin/plugins/document/filetypes/file.png" />
+                </a>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+</xsl:stylesheet>
+

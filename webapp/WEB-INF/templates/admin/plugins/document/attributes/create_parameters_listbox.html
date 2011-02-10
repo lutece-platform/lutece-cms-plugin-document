@@ -1,0 +1,84 @@
+<#list parameters as parameter>
+    <#if parameter_index = 0>
+    	<#assign defaultValue = parameter>
+    </#if>
+
+    <#if parameter_index = 1>
+    	<#assign items = parameter>
+    </#if>
+</#list>
+<p>
+<label for="${items.name}_value" >${items.label} :</label>
+<input type="text" id="${items.name}_value" name="${items.name}_value" tabindex="6" />
+<input class="button" type="button" name="add" value="#i18n{document.attributeType.listbox.btnAddItem}"
+	onclick="manageItems(1);" tabindex="7" />
+    ${items.description}
+</p>
+<p>
+    <label for="${items.name}_select" >&nbsp;</label>
+	<select id="${items.name}_select" name="${items.name}_select" size="4" style='width:200px;' tabindex="8">
+		<#list items.defaultValue as values >
+  					<option value="${values}" >${values}</option>
+   		</#list>
+	</select>
+	<p style="display:none">
+		<select id="${items.name}" name="${items.name}" size="4" style='width:200px;' multiple="multiple" >
+			<#list items.defaultValue as values >
+   				<option value="${values}" selected="selected">${values}</option>
+    		</#list>		
+		</select>
+	</p>
+</p>
+<p>
+    <label for="items" >&nbsp;</label>
+    <input class="button" type="button" name="delete" value="#i18n{document.attributeType.listbox.btnDelItem}" 
+    	onclick="manageItems(-1)" tabindex="9" />
+	<input class="button" type="button" name="bydefault" value="#i18n{document.attributeType.listbox.btnDefItem}" 
+		onclick="setByDefault('${items.name}_select');" tabindex="10" />
+
+<input type="text" id="${defaultValue.name}" name="${defaultValue.name}" 
+	value="<#list defaultValue.defaultValue as values >${values}</#list>" readonly="readonly" tabindex="11" />
+</p>
+
+<script type="text/javascript">
+function manageItems( actionItem )
+{
+	objVisible = document.getElementsByName('${items.name}_select')[0];
+	objHidden = document.getElementsByName('${items.name}')[0];
+	objValue = document.getElementsByName('${items.name}_value')[0];
+	objDefaultValue = document.getElementsByName('${defaultValue.name}')[0];
+
+	objHidden.selectedIndex = objVisible.selectedIndex;	
+	
+	// add an option into list
+	if( actionItem == 1)
+	{
+		addOption(objVisible, objValue.value, objValue.value, false);
+		addOption(objHidden, objValue.value, objValue.value, false);
+		objValue.value='';
+		objValue.focus();
+	}
+	// delete an option from list
+	else
+	{
+		if( objDefaultValue.value == objVisible.options[objVisible.selectedIndex].value )
+		{
+			objDefaultValue.value = '';
+		}
+		removeSelectedOptions(objVisible);
+		removeSelectedOptions(objHidden);
+	}
+	
+	selectAllOptions(objHidden);
+}
+
+function setByDefault(objName)
+{
+	objSelect = document.getElementsByName(objName)[0];
+	choice = objSelect.selectedIndex;
+	if(choice > -1)
+	{
+		document.getElementsByName("${defaultValue.name}")[0].value = objSelect.options[choice].text;
+	}		
+}
+</script>

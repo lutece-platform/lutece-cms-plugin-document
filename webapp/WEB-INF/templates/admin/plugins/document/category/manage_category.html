@@ -1,0 +1,35 @@
+<div class="content-box">
+    <h2>#i18n{document.manage_category.boxTitle}</h2>
+	<table>
+        <tr>
+            <th>#i18n{document.manage_category.columnTitleName}</th>
+            <th>#i18n{document.manage_category.columnTitleDescription}</th>
+            <th>#i18n{document.manage_category.columnTitleCountLinkedDocuments}</th>
+			<th>#i18n{document.manage_category.columnTitleActions}</th>
+        </tr>
+        <#if category_list?has_content >
+	        <#list category_list as categoryDisplay >
+	        <tr>
+	            <td><img src=${categoryDisplay.iconUrl!} width="24" height="24" alt="${(categoryDisplay.category).name}" />
+	            <a href="jsp/admin/plugins/document/ModifyCategory.jsp?category_id=${(categoryDisplay.category).id}">${(categoryDisplay.category).name}</a></td>
+	            <td>${(categoryDisplay.category).description!}</td>
+	            <td>${categoryDisplay.countLinkedDocuments!}
+	            </td>
+	            <td>
+	                <form method="post"  action="jsp/admin/plugins/document/RemoveCategory.jsp">
+	                    <input type="hidden" name="category_id"  value="${(categoryDisplay.category).id}" />
+	                    <input type="image" src="images/admin/skin/actions/delete.png"  
+	                    	style="border:0;vertical-align:bottom;" alt="#i18n{document.manage_category.linkLabelRemove}" 
+                    		title="#i18n{workgroup.manage_workgroups.linkLabelRemove}" />
+	                </form>
+	            </td>
+	        </tr>
+	        </#list>
+        </#if>
+    </table>    
+   	<form method="post" action="jsp/admin/plugins/document/CreateCategory.jsp">
+        <p>
+        	<input type="submit" value="#i18n{document.manage_category.buttonLabelCreate}" class="button" />
+        </p>
+    </form>
+</div>

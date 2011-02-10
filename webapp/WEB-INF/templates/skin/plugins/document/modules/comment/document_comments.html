@@ -1,0 +1,28 @@
+<#if document.isModeratedComment == 1 >
+    #i18n{module.document.comment.document_comments.messageModeratedComment}
+</#if>
+
+    <h3>&nbsp;<img src="images/local/skin/arrows.gif" alt="#i18n{module.document.comment.document_comments.labelComments}" />&nbsp;#i18n{module.document.comment.document_comments.labelComments}</h3>
+    ${document_comment_form}
+
+<#list document_comments_list as comment >
+    <#if comment?has_content >
+        <div class="portlet-comment">
+            <div class="portlet-comment-header">&nbsp;
+                
+            </div>
+            <div class="portlet-comment-content">
+            <p class="posted">
+            #i18n{module.document.comment.document_comments.labelPostedOn} ${comment.dateComment} #i18n{module.document.comment.document_comments.labelBy} ${comment.name}
+            </p>
+           
+		${comment.comment}
+            </div>
+             <div class="portlet-comment-footer">
+             &nbsp;
+            </div>
+       </div>
+    <#else>
+        #i18n{module.document.comment.document_comments.messageNoComment}
+    </#if>
+</#list>

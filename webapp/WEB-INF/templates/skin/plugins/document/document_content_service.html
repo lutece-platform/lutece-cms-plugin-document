@@ -1,0 +1,44 @@
+<#--
+Available objects :
+ - String 				document 			The HTML code for the document (Xsl transformation result)
+ - String 				portlet				The HTML code for documents list portlet containing the document
+ - String 				categories			The HTML code for category list portlet linked with the document
+ - String 				document_comments	The HTML code for the comments area
+ - String 				document_id			The document id
+ - String 				portlet_id			The portlet id
+ - int					accept_comment		Specify if document accept comment
+ - DocumentPublication 	publication 		The publication object. 
+ 											How to display the date publication : ${publication.datePublishing?date} or ${publication.datePublishing?datetime}
+-->
+
+<div id="sidebar" class="span-6 prepend-1 append-1 append-bottom">
+	<#if portlet?has_content >
+       	${portlet}
+	</#if>
+</div>
+<div id="content" class="span-15 append-1 append-bottom last">
+	<div class="portlet -lutece-border-radius">
+		<div class="document-content">${document}</div>
+		<#if is_download_stat?has_content>
+			<br />
+			#i18n{rating.resource_vote.labelDownloadCount} : ${resource_download_stat}
+		</#if>
+		<#if is_view_count?has_content>
+			<img src="jsp/site/plugins/rating/CountView.jsp?type_resource=document&id_resource=${document_id}"/>
+		</#if>
+		<#if is_votable?has_content>
+			${template_vote_content}
+			<br />
+			<hr width="100%">
+		</#if>
+		<div class="document-comments">${document_comments}</div>
+		<div>
+			<a href="jsp/site/plugins/document/SendDocument.jsp?document_id=${document_id}">#i18n{document.document_content_service.buttonSend}</a> | 
+			<a href="jsp/site/plugins/document/PrintDocument.jsp?document_id=${document_id}" target="_print">#i18n{document.document_content_service.buttonPrint}</a> | 
+			<#if accept_comment = 1>
+				<a href="jsp/site/Portal.jsp?document_id=${document_id}&amp;portlet_id=${portlet_id}&amp;comment=1#comments">#i18n{document.document_content_service.buttonComment}</a> | 
+			</#if>
+			<a href="javascript:history.back();">#i18n{document.document_content_service.buttonBack}</a>
+		</div>
+	</div>
+</div>

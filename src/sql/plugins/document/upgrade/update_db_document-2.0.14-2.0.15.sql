@@ -1,0 +1,1 @@
+UPDATE document_workflow_action SET action_url= 'jsp/admin/plugins/document/modules/comment/ManageDocumentComments.jsp?' WHERE id_action = 17;

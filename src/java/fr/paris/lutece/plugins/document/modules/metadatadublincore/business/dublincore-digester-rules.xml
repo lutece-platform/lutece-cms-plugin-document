@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!DOCTYPE digester-rules PUBLIC
+   "-//Jakarta Apache //DTD digester-rules XML V1.0//EN"
+   "digester-rules.dtd">
+
+
+<digester-rules>
+    <pattern value="metadata">
+        
+        <bean-property-setter-rule pattern="name" />
+        <bean-property-setter-rule pattern="title" />
+        <bean-property-setter-rule pattern="creator" />
+        <bean-property-setter-rule pattern="subject" />
+        <bean-property-setter-rule pattern="description" />
+        <bean-property-setter-rule pattern="publisher" />
+        <bean-property-setter-rule pattern="contributor" />
+        <bean-property-setter-rule pattern="date" />
+        <bean-property-setter-rule pattern="type" />
+        <bean-property-setter-rule pattern="format" />
+        <bean-property-setter-rule pattern="identifier" />
+        <bean-property-setter-rule pattern="source" />
+        <bean-property-setter-rule pattern="language" />
+        <bean-property-setter-rule pattern="relation" />
+        <bean-property-setter-rule pattern="coverage" />
+        <bean-property-setter-rule pattern="rights" />
+        
+    </pattern>
+</digester-rules>
+

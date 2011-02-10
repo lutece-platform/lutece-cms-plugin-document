@@ -1,0 +1,32 @@
+<div class="content-box" >
+    <h2>#i18n{document.manage_rules.listTitle}</h2>
+    <table>
+        <tr>
+            <th width="80%">#i18n{document.manage_rules.columnRule}</th>
+            <th width="20%">#i18n{document.manage_rules.columnActions}</th>
+        </tr>
+                
+        <#list rules_list as rule >
+        <tr>
+            <td width="80%">${rule.rule}</td>
+            <td width="20%">
+                <a href="jsp/admin/plugins/document/DeleteRule.jsp?id_rule=${rule.id}">
+                    <img src="images/admin/skin/plugins/document/actions/delete.png" alt="#i18n{document.manage_rules.tooltipDelete}" title="#i18n{document.manage_rules.tooltipDelete}" />
+                </a>
+            </td>
+        </tr>
+        </#list>
+                
+    </table>
+
+    <div class="highlight-box">
+        <form method="post" name="AddRule" action="jsp/admin/plugins/document/CreateRule.jsp">
+            <p>
+                <label for="attribute_type_code" >#i18n{document.manage_rules.labelCreate} </label> 
+                <@combo name="id_rule_type" default_value="" items=rule_types_list />
+                <input type="submit" class="button" value="#i18n{document.manage_rules.buttonCreate}" />
+            </p>
+        </form>
+    </div>
+</div>
+

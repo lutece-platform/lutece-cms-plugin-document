@@ -1,0 +1,10 @@
+<div class="content-box" >
+    <h2>#i18n{document.create_rule.title}</h2>
+  <form method="post" name="createRule" action="jsp/admin/plugins/document/DoCreateRule.jsp">
+        <input type="hidden" name="id_rule_type" value="${rule_type_id}">
+        ${create_form}
+    
+        <input type="submit" value="#i18n{document.create_rule.buttonCreate}" class="button" />
+        <input type="submit" class="button" name="cancel"   value="#i18n{portal.admin.message.buttonCancel}" />
+    </form>
+</div>    

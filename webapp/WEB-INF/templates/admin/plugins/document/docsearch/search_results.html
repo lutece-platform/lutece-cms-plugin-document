@@ -1,0 +1,103 @@
+<div id="left">
+    
+    <div class="content-box" >
+        <h2 class="page-title" >#i18n{document.search_results.labelSearch} </h2>
+        
+        <div class="highlight-box">
+            <form name="search" method="post" action="jsp/admin/plugins/document/DocumentSearch.jsp<#if advanced_search??>?advanced_search=true</#if>">
+                <p>
+                    <input type="hidden" name="page" value="search" />
+                    <input type="text" name="query" size="30" value="<#if query??>${query}</#if>" />
+                </p>
+                <p>
+                    <#-- Number of documents per page selector -->
+                    #i18n{document.search_results.labelNbDocsPerPage} : 
+                    <@NbItemsPerPageSelectorCombo nb_items_per_page />
+                </p>
+                <#if advanced_search??>
+                <p><label for="">#i18n{document.advanced_search.limit}:</label>
+                	<input name="title" id="title" type="checkbox" <#if title??>checked</#if>/>#i18n{document.advanced_search.checkbox.title}
+					<input name="summary" id="summary" type="checkbox" <#if summary??>checked</#if>/>#i18n{document.advanced_search.checkbox.summary}
+				</p>
+				<p>
+					<span class="datepicker_wrap">						<label for="date">#i18n{document.advanced_search.checkbox.date}:</label>						<input type="text" name="date" id="date" size="10"  value="<#if date_query??>${date_query}</#if>"/>										</span>
+				</p>
+				<p>
+					<label for="document_type">#i18n{document.advanced_search.list.type}:</label><@combo name="document_type"  items=document_type_list default_value=selected_type />
+					<br />
+				</p>
+				<#else>
+					<p>
+	                	<a href=jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true<#if query??>&query=${query}</#if>>Recherche avancée</a>
+	                </p>
+				</#if>
+                
+                <p>
+                    <div align="right"><input type="submit" class="button" value="#i18n{document.search_results.buttonSearch}"  /></div>
+                </p>
+            </form>
+        </div>
+    </div>  
+</div>
+
+
+<div id="right">
+    <div class="content-box" >
+        
+            <h2>#i18n{document.search_results.labelDocumentsList}</h2>
+            <div class="error"> ${error} </div>
+            <@paginationAdmin paginator=paginator />
+            
+            <table>
+                <tr>
+                    <th>#i18n{document.search_results.labelDocument}</th>
+                    <th>#i18n{document.search_results.labelType}</th>
+                    <th>#i18n{document.search_results.labelDate}</th>
+                </tr>
+                <#list results_list as result>
+                <tr>
+                    <td width="90%">
+                        <a href="jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${result.id}" class="bullet-link">${result.title}</a>
+                        - <em> ${result.summary} </em>
+                    </td>
+                    <td width="10%">
+                        ${result.type}
+                    </td>
+                    <td width="10%">
+                        ${result.date}
+                    </td>
+                </tr>            
+                </#list>
+            </table>
+            <@paginationAdmin paginator=paginator />
+    </div>
+</div>
+
+<#-- Freemarker macros -->
+
+<#-- Number of items per page selector - Combo Box implementation -->
+<#macro NbItemsPerPageSelectorCombo nb_items_per_page>
+<select name="items_per_page">
+    <#list [ "10" , "20" , "50" , "100" ] as nb>
+    <#if nb_items_per_page = nb >
+    <option selected="selected" value="${nb}">${nb}</option>
+    <#else>
+    <option value="${nb}">${nb}</option>
+    </#if>
+    </#list>
+</select>
+</#macro>
+
+<#-- Number of items per page selector - Radio List implementation -->
+<#macro NbItemsPerPageSelectorRadioList nb_items_per_page>
+<#list [ "5" , "10" , "20" , "50" ] as nb>
+<#if nb = nb_items_per_page > 
+<input value="${nb}" id="items_per_page${nb}" name="items_per_page" type="radio" class="radio" checked /><label for="items_per_page${nb}">${nb}</label>
+<#else>
+<input value="${nb}" id="items_per_page${nb}" name="items_per_page" type="radio" class="radio" /><label for="items_per_page${nb}">${nb}</label>
+</#if>
+</#list>
+</#macro>
+
+<#if advanced_search??>
+	<@getDatePicker idField="date"  language=locale /></#if>

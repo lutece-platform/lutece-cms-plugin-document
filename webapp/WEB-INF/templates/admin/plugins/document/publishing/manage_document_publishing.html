@@ -1,0 +1,149 @@
+<#if document?exists>
+	<div id="left">
+	    <div class="content-box" >
+	        <table>
+	            <tr>
+	                <th>#i18n{document.manage_document_publishing.columnTitleId} -
+	                    #i18n{document.manage_document_publishing.columnTitleTitle}
+	                </th>
+	            </tr>
+	            <tr>
+	                <td>
+	                    ${document.id} - ${document.title}
+	                </td>
+	            </tr>
+	            <tr>
+	                <th>#i18n{document.manage_document_publishing.columnTitleType}</th>
+	            </tr>
+	            <tr>
+	                <td>${document.type}</td>
+	            </tr>
+	            <tr>
+	                <th>#i18n{document.manage_document_publishing.columnTitleDateCreation}</th>
+	            </tr>
+	            <tr>
+	                <td>${document.dateCreation}</td>
+	            </tr>
+	            <tr>
+	                <th>#i18n{document.manage_document_publishing.columnTitleDateModification}</th>
+	            </tr>
+	            <tr>
+	                <td>${document.dateModification}</td>
+	            </tr>
+	            <tr>
+	                <th>#i18n{document.manage_document_publishing.columnManageDocumentAccess}</th>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <a href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" >
+	                        <img src="images/admin/skin/plugins/document/manage_documents.png" width="24" height="24" alt="#i18n{document.manage_document_publishing.labelManageDocumentAccess}" title="#i18n{document.manage_document_publishing.labelManageDocumentAccess}"/>
+	                    </a>
+	                    <a href="jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${document.id}" >
+	                        <img src="images/admin/skin/plugins/document/actions/view.png" width="24" height="24" alt="#i18n{document.workflow.action.previewDocument.description}" title="#i18n{document.workflow.action.previewDocument.description}"/>    
+	                    </a>                    
+	                </td>
+	            </tr>
+	        </table>
+	    </div>
+	</div>
+	<div id="right">
+	           <div class="content-box">
+	               <h2>#i18n{document.manage_document_publishing.labelPublishTitle} ${document.title}</h2>
+	               <div class="multibox"  width="100%">		
+	                   <#if portlet_list?size &gt; 0 >	
+	                   
+		                   <table width="100%" >
+		                       <tr>
+		                           <th>
+		                               #i18n{document.manage_document_publishing.labelAvailablePortlet}
+		                           </th>
+		                       </tr>
+		                       <form name="assignDocument" method="post" action="jsp/admin/plugins/document/DoAssignedDocument.jsp">                        
+		                           <tr>					
+		                               <td>
+		                               		<@comboWithParamsAndLength name="list_portlet_ids" default_value="" additionalParameters="multiple='multiple' size='10' style='width:100%;'" items=portlet_list max_length=175 />		    
+		                               </td>
+		                           </tr>
+		                           <tr>
+		                               <td align="center">
+		                                   <input type="hidden" name="id_document" value="${document.id}" />
+		                                   <input type="hidden" name="status" value="${status_unpublished}" />	
+	                                  		<#if permission_assign?exists>
+		                                   		<input type="submit" value="#i18n{document.manage_document_publishing.buttonAssignedOnPortlet}" class="button" onClick="document.forms['assignDocument']['status'].value=${status_unpublished};"/>										
+		                                   	</#if>	                                   		
+			                               	<#if permission_publish?exists>
+			                                	<input type="submit" value="#i18n{document.manage_document_publishing.buttonAssignedAndPublisheOnPortlet}"  class="button" onClick="document.forms['assignDocument']['status'].value=${status_published};"/>
+			                                </#if>
+		                               </td>
+		                           </tr>
+		                       </form>
+		                   </table>	
+	                   
+	                   <#else>
+	                   <p>
+	                       #i18n{document.manage_document_publishing.messagePortletNotExist}
+	                   </p>
+	                   </#if>
+	               </div>	
+	           </div>
+	
+	       <div class="content-box"> 
+	             <p>
+	                    <strong>#i18n{document.manage_document_publishing.labelPublishedPortletList} &#171; ${document.title} &#187; </strong>
+	                </p>
+	
+	                        <#list assigned_portlet_list as assigned_portlet_publication>
+	                            <table width="80%">
+	                                <tr>
+	                                    <td width="80%">
+	                                        ID : ${assigned_portlet_publication.portlet.id} - ${assigned_portlet_publication.portlet.name}
+	                                    </td>
+	                                	<#if permission_publish?exists>
+		                                    <#if assigned_portlet_publication.publication.status == status_unpublished>
+		                                    <form method="post" name="publishing" action="jsp/admin/plugins/document/DoAssignedDocument.jsp">
+		                                        <td width="2%" align="right">
+		                                            <img src="images/admin/skin/disable.png" alt="" align="left"/>
+		                                        </td>
+		                                        <td width="10%">
+		                                            <input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
+		                                            <input type="hidden" name="id_document" value="${document.id}" />
+		                                            <input type="hidden" name="status" value="${status_published}" />	
+		                                            <input type="submit" value="#i18n{document.manage_document_publishing.buttonPublish}" class="button" />
+		                                        </td>
+		                                    </form>
+		                                    <#else>
+		                                    <form method="post" name="unpublishing" action="jsp/admin/plugins/document/DoUnAssignedDocument.jsp">
+		                                        <td width="2%" align="right">
+		                                            <img src="images/admin/skin/enable.png" alt="" align="left"/>
+		                                        </td>
+		                                        <td width="10%" >
+		                                            <input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
+		                                            <input type="hidden" name="status" value="${assigned_portlet_publication.publication.status}" />	
+		                                            <input type="hidden" name="id_document" value="${document.id}" />
+		                                            <input type="submit" value="#i18n{document.manage_document_publishing.buttonUnPublish}" class="button" />
+		                                        </td>
+		                                    </form>
+		                                    </#if>
+		                                </#if>
+		                                <#if permission_assign?exists>
+		                                    <form method="post" name="managePublishing" action="jsp/admin/plugins/document/ManagePublishing.jsp">
+		                                        <td width="2%" >
+		                                            <input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
+		                                            <input type="image" src="images/admin/skin/plugins/document/actions/portlet_publish.png" style="border:0;vertical-align:bottom;" alt="#i18n{document.manage_document_publishing.labelManagePortlet}" title="#i18n{document.manage_document_publishing.labelManagePortlet}" />
+		                                        </td>
+		                                    </form>		                                                                    
+		                                    <form method="post" name="unassignDocument" action="jsp/admin/plugins/document/DoUnAssignedDocument.jsp">
+		                                        <td width="2%" >
+		                                            <input type="hidden" name="id_document" value="${document.id}" />
+		                                            <input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
+		                                            <input type="hidden" name="status" value="${status_unpublished}" />	                                            
+		                                            <input type="image" src="images/admin/skin/actions/delete.png" style="border:0;vertical-align:bottom;" alt="#i18n{document.manage_document_publishing.labelUnAssigned}" title="#i18n{document.manage_document_publishing.labelUnAssigned}"/>
+		                                        </td>
+		                                    </form>
+		                            	</#if>
+	                                </tr>
+	                            </table>
+	                        </#list>	
+	           </div>
+	 </div>
+</#if>

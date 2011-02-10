@@ -1,0 +1,80 @@
+<#if selected_space?has_content>
+	<p>
+     	<p>
+     		<a href="javascript:modifyChoice();"><img src="images/admin/skin/up.png" alt="#i18n{document.browse_spaces.go_up_link}" hspace="5" /> #i18n{document.browse_spaces.go_up_link}</a>
+     	</p>
+     	<p>
+		    <input type="hidden" name="browser_selected_space_id" value="${selected_space.id}" />
+			<img src="${selected_space.iconUrl}" alt="${selected_space.name}" hspace="5" />${selected_space.name}
+		</p>
+	</p>
+<#else>
+	     <input type="hidden" name="browser_id_space" value="${space.id}" />
+	     <#if space.id != -1 && go_up >
+	     	<p>
+	     		<a href="javascript:goUp();"><img src="images/admin/skin/up.png" alt="#i18n{document.browse_spaces.go_up_link}" hspace="5" /> #i18n{document.browse_spaces.go_up_link}</a>
+	     	</p>
+	     </#if>
+	     <p>
+	     <#list spaces_list as item_space >
+				<input type="radio" class="radio" name="browser_selected_space_id" value="${item_space.id}"/>
+	            <img src="${item_space.iconUrl}" alt="${item_space.name}" hspace="5" />
+				<#if has_childs?seq_contains(item_space.id)>
+					<a href="javascript:openSpace(${item_space.id});">${item_space.name}</a>
+				<#else>
+					${item_space.name}
+	          	</#if>
+	          	<br />
+	     </#list>
+         </p>
+	     <p>
+		     <input type="submit" value="#i18n{document.browse_spaces.validate}" class="button" onclick="this.form.action='${action}';" />
+	     </p>
+</#if>
+
+<script language="javascript">
+formId = 0;
+function goUp()
+{ 
+	document.forms[formId].action='${action}';
+	document.forms[formId].browser_id_space.value='${space.idParent}';
+	unselectRadioBtn( formId );
+	document.forms[formId].submit();
+}
+
+function openSpace(idSpace)
+{
+	document.forms[formId].action='${action}';
+	document.forms[formId].browser_id_space.value=idSpace;
+	unselectRadioBtn( formId );
+	document.forms[formId].submit();
+}
+
+function unselectRadioBtn( formId )
+{
+	if(document.forms[formId].browser_selected_space_id != undefined)
+	{
+		if( document.forms[formId].browser_selected_space_id.length > 0 )
+		{
+		    for( var i=0; i<document.forms[formId].browser_selected_space_id.length; i++ )
+		    {
+		    	if (document.forms[formId].browser_selected_space_id[i].checked)
+		    	{
+					document.forms[formId].browser_selected_space_id[i].checked=false;
+		        }
+		    }
+		}
+		else
+		{
+			document.forms[formId].browser_selected_space_id.checked=false;
+		}
+	}
+}
+
+function modifyChoice()
+{
+	document.forms[formId].browser_selected_space_id.value=null;
+	document.forms[formId].action='${action}';
+	document.forms[formId].submit();
+}
+</script>

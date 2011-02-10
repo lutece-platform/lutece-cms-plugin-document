@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ 
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+<base href="${base_url}" />
+
+<link rel="stylesheet"  href="css/print_template_styles.css" type="text/css"  media="print" />
+<link rel="stylesheet"  href="css/print_template_structure.css" type="text/css"  media="print" />
+
+<title>#i18n{document.page_print_document.labelPrintPreview}</title>
+<link rel="stylesheet" href="css/print_template_styles.css" type="text/css" />
+</head>
+<body>
+
+<div class="window-header">
+	${portal_domain}
+</div>
+
+<div class="window-content">
+	${preview}
+</div>
+<div class="site-buttons" id="button-print">
+    <a href="javascript:window.print();">#i18n{document.document_content_service.buttonPrint}</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+
+<input type="hidden" name="rule_attribute_selected" value="">
+<p>
+    #i18n{module.document.rulemovespace.create_rule_move_space.ruleText1} 
+   <em>
+    <#if id_space_source?exists> 
+    	${path_space_source}  
+   		<input type="hidden" name="id_space_source" value="${id_space_source}">
+    <#else>
+    	 #i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}
+  	</#if>
+  	</em> 
+		<input class="button" type="button" name="select" onclick="selectSpace('id_space_source')" value=" #i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}" />
+</p>
+<p>
+    #i18n{module.document.rulemovespace.create_rule_move_space.ruleText2} 
+    <#if id_state?exists >
+    	<@combo name="id_state" default_value="${id_state}" items=states_list />
+    <#else>
+    	<@combo name="id_state" default_value="" items=states_list />
+    </#if>	
+</p>
+<p>
+    #i18n{module.document.rulemovespace.create_rule_move_space.ruleText3}
+    <em>
+     <#if id_space_destination?exists> 
+    	${path_space_destination}  
+    	<input type="hidden" name="id_space_destination" value="${id_space_destination}">
+   	<#else>
+    	 #i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}
+  	</#if>
+  	</em>
+   	<input class="button" type="button" name="select" onclick="selectSpace('id_space_destination')" value=" #i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}" />
+	
+</p>
+<p>
+    #i18n{module.document.rulemovespace.create_rule_move_space.ruleText4}
+</p>
+
+<script language="javascript">
+
+ function selectSpace(select)
+ {
+ 	
+ 	document.forms['createRule'].action='jsp/admin/plugins/document/SelectSpaceRule.jsp';
+ 	document.forms['createRule'].rule_attribute_selected.value=select;
+ 	document.forms['createRule'].submit();
+ 	
+ }
+
+</script>

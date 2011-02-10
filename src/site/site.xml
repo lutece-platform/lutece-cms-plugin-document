@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Lutece">
+   	<version />
+    <body>
+	    <links>
+			<item name="FR" href="/fr/index.html" />
+        </links>
+	
+        <menu name="Plugin document">
+            <item name="Introduction" href="index.html"/>
+        </menu>
+        
+        <menu name="document manuals">
+		<!-- TODO not defined
+			<item name="Administration" href="document-admin.html"/>
+            <item name="User guide" href="document-userguide.html"/>
+             -->
+        </menu>
+	      
+	      <menu name="Downloads" inherit="bottom">
+			     <item name="Released versions" href="../../stable_builds/plugins/plugin-document/"/>
+			     <item name="Nightly builds" href="../../nightly_builds/plugins/plugin-document/" />
+		    </menu>
+	      
+	      <menu ref="reports"/>
+	      
+    </body>
+</project>

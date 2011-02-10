@@ -1,0 +1,32 @@
+<div class="content-box" >
+   
+   <h2>#i18n{document.create_document_type.titleProperties}</h2>
+   
+   <form method="post" action="jsp/admin/plugins/document/DoCreateDocumentType.jsp">
+
+        <p>
+            <label for="code" >#i18n{document.create_document_type.labelCode}* :</label>
+            <input type="text" name="code" id="code" tabindex="1" maxlength="30"/>
+            #i18n{document.create_document_type.helpCode}
+        </p>
+        <p>
+            <label for="name" >#i18n{document.create_document_type.labelName}* :</label>
+            <input type="text" name="name" id="name" tabindex="2" maxlength="100"/>
+            #i18n{document.create_document_type.helpName}
+        </p>
+        <p>
+            <label for="name" >#i18n{document.create_document_type.labelDescription}* :</label>
+            <input type="text" name="description" id="description" tabindex="3" />
+            #i18n{document.create_document_type.helpDescription}
+        </p>
+        <p>
+            <label for="name" >#i18n{document.create_document_type.labelMetadata}* :</label>
+            <@combo name="metadata" items=metadata_handlers_list default_value="" />
+            #i18n{document.create_document_type.helpMetadata}
+        </p>
+
+        <input type="submit" value="#i18n{document.create_document_type.buttonSaveAndAddAttributes}" class="button" />
+        <input class="button" type="button" onclick="javascript:history.go(-1)" value="#i18n{portal.admin.message.buttonCancel}" />
+    </form>
+
+</div>

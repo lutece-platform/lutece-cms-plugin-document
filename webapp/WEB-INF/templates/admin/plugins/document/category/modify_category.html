@@ -1,0 +1,35 @@
+<div class="content-box" >
+
+    <h2>#i18n{document.modify_category.boxTitle}</h2>
+		      
+    <form method="post" action="jsp/admin/plugins/document/DoModifyCategory.jsp" enctype="multipart/form-data" >
+       <p>
+       		<label for="category_name">#i18n{document.modify_category.labelName} * :</label>
+            <input type="text" id="category_name" name="category_name" value="${categoryDisplay.category.name}" size="20" maxlength="100" />
+       </p>
+       <p>
+            <label for="category_description">#i18n{document.modify_category.labelDescription} * :</label>
+            <input type="text" id="category_description" name="category_description" value="${categoryDisplay.category.description!}" 
+           		size="50" maxlength="255" />
+       </p>
+       <p>
+		    <label for="workgroup_key">#i18n{document.modify_category.labelWorkgroup} : </label>
+		     <#if categoryDisplay.category.workgroup?has_content > 
+				<@combo name="workgroup_key"  items=user_workgroup_list default_value=categoryDisplay.category.workgroup />
+			<#else>
+				<@combo name="workgroup_key"  items=user_workgroup_list default_value=0 />
+			 </#if>
+		</p>
+       <p>
+            <label for="category_icon">#i18n{document.modify_category.labelIcon} :</label>
+            <img src=${categoryDisplay.iconUrl} width="80" height="80" border="1" alt="#i18n{document.modify_category.altIcon}" />
+	        #i18n{document.modify_category.labelUpdateIcon} : <input class="checkbox" type="checkbox" name="update_icon" />
+            <input type="file" id="category_icon" name="category_icon" size="32" />
+       </p>
+       <p>
+            <input type="hidden" name="category_id" value="${categoryDisplay.category.id}" />
+	       	<input class="button" type="submit" value="#i18n{document.modify_category.buttonLabelModify}" />
+		    <input class="button" type="button" onclick="javascript:history.go(-1)" value="#i18n{portal.admin.message.buttonCancel}" />
+       </p>
+    </form>
+</div>

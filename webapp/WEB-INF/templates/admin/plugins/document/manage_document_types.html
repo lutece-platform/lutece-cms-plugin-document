@@ -1,0 +1,36 @@
+<div class="content-box" >
+    <h2>#i18n{document.manage_document_types.listTitle}</h2>
+        
+    <table>
+        <tr>
+            <th width="30%">#i18n{document.manage_document_types.columnTitleName}</th>
+            <th width="50%">#i18n{document.manage_document_types.columnTitleDescription}</th>
+            <th width="20%">#i18n{document.manage_document_types.columnTitleActions}</th>
+        </tr>
+                
+        <#list document_types_list?sort_by('name') as type >
+        <tr>
+            <td width="30%">
+                <a href="jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${type.code}" class="admin-menu">
+                    ${type.name}
+                </a>
+            </td>
+            <td width="50%">
+                ${type.description}
+            </td>
+            <td width="20%">
+                <a href="jsp/admin/plugins/document/DoConfirmDeleteDocumentType.jsp?document_type_code=${type.code}">
+                    <img src="images/admin/skin/plugins/document/actions/delete.png" alt="#i18n{document.manage_document_types.buttonDelete}" title="#i18n{document.manage_document_types.buttonDelete}" />
+                </a>
+            </td>
+        </tr>
+        </#list>
+    
+    </table>
+
+    <form method="post" action="jsp/admin/plugins/document/CreateDocumentType.jsp">
+        <input type="submit" value="#i18n{document.manage_document_types.buttonCreate}" class="button" />
+    </form>
+
+</div>
+

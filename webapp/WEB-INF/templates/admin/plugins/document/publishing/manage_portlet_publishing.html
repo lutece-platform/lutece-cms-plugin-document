@@ -1,0 +1,124 @@
+<div id="left">
+    <div class="content-box" >
+        <table>
+            <tr>
+                <th>#i18n{document.manage_portlet_publishing.columnTitleId} -
+                    #i18n{document.manage_portlet_publishing.columnTitleTitle}
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    ${portlet.id} - ${portlet.name}
+                </td>
+            </tr>
+            <tr>
+                <th>#i18n{document.manage_portlet_publishing.columnTitlePage}</th>
+            </tr>
+            <tr>
+                <td>
+                    ${portlet.pageId} - ${page_name}
+                </td>
+            </tr>
+            <tr>
+                <th>#i18n{document.manage_portlet_publishing.columnTitleState}</th>
+            </tr>
+            <tr>
+                <td>
+                    <#if portlet.status = 0>
+                    <img src="images/admin/skin/enable.png" alt="" style="border:0;vertical-align:bottom;" />
+                    #i18n{document.manage_portlet_publishing.labelStatusPublished}
+                    <#else>
+                    <img src="images/admin/skin/disable.png" alt="" style="border:0;vertical-align:bottom;" />
+                    #i18n{document.manage_portlet_publishing.labelStatusUnPublished}
+                    </#if>
+                </td>
+            </tr>
+   			<tr>
+                <th>
+	               #i18n{document.manage_portlet_publishing.labelModePublication}
+                </th>
+            </tr>
+            <tr>
+            	<td>
+					<form name="formModifyModePublication" method="post" action="jsp/admin/plugins/document/DoConfirmChangeModePublication.jsp" enctype="multipart/form-data" >
+			                <#if mode_publication = 0>
+		            			<input type="radio" name="mode_publication" id="standard_publication" value="0" checked="checked" />
+		                    <#else>
+		            			<input type="radio" name="mode_publication" id="standard_publication" value="0" />
+		                    </#if>
+	  						#i18n{document.manage_portlet_publishing.radioStandardPublication}
+	  						<br />
+		   	                <#if mode_publication = 1>
+		            			<input type="radio" name="mode_publication" id="auto_publication" value="1" checked="checked" />
+		                    <#else>
+		            			<input type="radio" name="mode_publication" id="auto_publication" value="1" />
+		                    </#if>
+		   	                #i18n{document.manage_portlet_publishing.radioAutoPublication}
+		                    <br />
+							<input type="hidden" name="id_portlet" value="${portlet.id}" />
+							<input type="hidden" name="old_mode_publication" value="${mode_publication}" />
+			        		<input type="submit" class="button" name="modify_mode_publication" value="#i18n{document.manage_portlet_publishing.buttonValidateModePublication}" />
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <th>#i18n{document.manage_portlet_publishing.columnAdminSiteAccess}</th>
+            </tr>
+            <tr>
+                <td>
+                    <a href="jsp/admin/site/AdminSite.jsp?page_id=${portlet.pageId}" >
+                        <img src="images/admin/skin/features/admin_site.png" width="24" height="24" alt="#i18n{document.manage_portlet_publishing.labelAdminSiteAccess}" title="#i18n{document.manage_portlet_publishing.labelAdminSiteAccess}"/>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<#if mode_publication = 0>
+	<div id="right">
+	    <div class="content-box">
+	        <h2>#i18n{document.manage_portlet_publishing.labelDocumentList} &#171; ${portlet.name} &#187;</h2>
+	        
+	        <strong>#i18n{document.manage_portlet_publishing.labelPublishedDocumentsList}</strong>
+	        ${published_document_list}
+	    </div>
+	    <div class="content-box">
+	        <p>
+	            <strong>#i18n{document.manage_portlet_publishing.labelAssignedDocumentsList}</strong>
+	            ${assigned_document_list}    
+	        </p>           
+	    </div>
+	</div>
+<#else>
+	<div id="right">
+	    <div class="content-box">
+	        <h2>#i18n{document.manage_portlet_publishing.labelAutoPublication}</h2>
+	        
+	        <table>
+	        	<tr>
+	        		<th>#i18n{document.manage_portlet_publishing.colSpaceName}</th>
+	        		<th>#i18n{document.manage_portlet_publishing.colNumPublishedDocuments}</th>
+	        		<th>#i18n{document.manage_portlet_publishing.colActions}</th>
+	        	</tr>
+	        	<#list list_auto_publication as auto_publication >
+		        	<tr>
+		        		<td>${auto_publication.space_name}</td>
+		        		<td>${auto_publication.number_auto_published_documents}</td>
+		        		<td>
+		        			<a href="jsp/admin/plugins/document/DeleteAutoPublication.jsp?id_portlet=${auto_publication.document_auto_publication.idPortlet}&id_space=${auto_publication.document_auto_publication.idSpace}&mode_publication=1" ><input type="image" src="images/admin/skin/actions/delete.png"  style="border:0;vertical-align:bottom;" 
+		        				alt="#i18n{document.manage_portlet_publishing.actionDelete}" 
+                    			title="#i18n{document.manage_portlet_publishing.actionDelete}" />
+                   			</a>
+		        		</td>
+		        	</tr>
+	        	</#list>
+	        </table>
+				<form name="formAddSpaceAutoPublication" method="post" action="jsp/admin/plugins/document/CreateDocumentAutoPublication.jsp" enctype="multipart/form-data" >
+					<input type="hidden" name="id_portlet" value="${portlet.id}" />
+					<input type="hidden" name="mode_publication" value="1" />
+	        		<input type="submit" class="button" name="add_document_auto_publication" value="#i18n{document.manage_portlet_publishing.buttonAddAutoPublication}" />
+				</form>
+	    </div>
+	</div>
+</#if>

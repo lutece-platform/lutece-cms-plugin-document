@@ -1,0 +1,37 @@
+<#if category_list?has_content >
+	<div class="highlight-box">
+	    <h2>
+	        <a href="javascript:displayId('category');"><img src="images/admin/skin/open_block.gif" alt="" border="0"></a>
+	        <a href="javascript:hideId('category');"><img src="images/admin/skin/closed_block.gif" alt="" border="0"></a>
+	        
+	        #i18n{document.list_category.boxTitle}
+	    </h2>
+	    <div style="visibility:hidden; display:none;" id="category" >
+			<table>
+				<#assign rowTab = 0>
+	
+			        <#list category_list as categoryDisplay >
+				        <#if rowTab = 0>
+					      <tr>
+				        </#if>
+			            <td><input class="checkbox" type="checkbox" name="category_id" <#if categoryDisplay.assigned = true>checked="checked"</#if> value="${categoryDisplay.category.id}" />
+			            <img src=${categoryDisplay.iconUrl!} width="24" height="24" alt="${categoryDisplay.category.name}" /> ${categoryDisplay.category.name}&nbsp;
+			            <#if categoryDisplay.category.description?has_content>
+				            (${categoryDisplay.category.description!})
+			            </#if>
+			            </td>
+				        <#if rowTab = 0>
+			        		<#assign rowTab = 1>
+			       		<#else>
+					        </tr>
+							<#assign rowTab = 0>
+				        </#if>
+			        </#list>
+			        <#if rowTab = 1>
+				        <tr>
+			        </#if>
+		    </table>
+		    &nbsp;  
+	    </div>
+	</div>
+</#if>

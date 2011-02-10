@@ -1,0 +1,20 @@
+<div class="content-box" >
+    <h2>#i18n{document.select_space_rule.title}</h2>
+    <form name="formSelect" method="get" action="jsp/admin/plugins/document/DoSelectSpace.jsp" >
+   <div class="highlight-box" >
+			<p>
+				<#if submit_button_disabled >
+					#i18n{document.move_space.labelMove} :
+				</#if>
+				${spaces_browser}
+			</p>
+		</div>
+		<input type="submit" value="#i18n{document.select_space_rule.buttonSelect}" class="button" 
+			<#if submit_button_disabled >
+				disabled
+			</#if>
+		/>
+        <input class="button" type="button" onclick="this.form.action='jsp/admin/plugins/document/CreateRuleSession.jsp';this.form.submit();" value="#i18n{portal.admin.message.buttonCancel}" />
+    </form>
+    
+</div>

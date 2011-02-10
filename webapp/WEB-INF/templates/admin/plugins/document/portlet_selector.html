@@ -1,0 +1,43 @@
+<div class="insert-service">
+	<h2>#i18n{document.insertService.name}</h2>
+
+	<#if portlets_list?size = 0>
+		<p>
+			#i18n{document.selector.portlet.noPortlet}
+		</p>
+		<p>
+			<input type="button" class="button" onclick="javascript:history.go(-1);"
+				value="#i18n{portal.util.labelBack}" />
+		</p>
+	<#else>
+		<form method="post" name="fsubmit"
+			action="jsp/admin/plugins/document/DoSelectPortlet.jsp">
+			<h3>#i18n{document.selector.portlet.portletChoice}</h3>
+			
+			<p>
+			<table>
+				<tr>
+					<th></th>
+					<th>#i18n{document.selector.portlet.colTitle}</th>
+				</tr>
+				<#list portlets_list as portlet>
+				<tr>
+					<td>
+						<input class="radio" type="radio" id="portlet_id_${portlet.id}"
+							name="portlet_id" value="${portlet.id}" />
+					</td>
+					<td>${portlet.name}</td>
+				</tr>
+				</#list>
+			</table>
+			</p>
+			<p>
+			<input type="submit" class="button" value="#i18n{portal.util.labelValidate}" /> 
+			<input type="button"
+				class="button" onclick="javascript:history.go(-1);"
+				value="#i18n{portal.util.labelBack}" />
+			</p>
+			<input type="hidden" name="input" value="${input}" />
+		</form>
+	</#if>
+</div>

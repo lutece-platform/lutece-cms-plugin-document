@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>
+              Lutèce : Introduction
+        </title>
+    </properties>
+    <body>
+        <section name="Plugin Document">
+            <p>
+              Le plugin Document constitue l'application de gestion de conte­nu d'un portail Lutèce.
+            </p>
+            <p>
+            Ses principales fonctionnalités sont : 
+            </p>
+            <p>
+                <ul>
+                    <li>La création dynamique de documents structurés. Un type de document est créé en définissant différents attributs : champs texte simples ou enrichis, dates, objets multimédia, pièces jointes, valeurs à choisir dans une liste, ...
+                    </li>
+                    <li>Le cycle de vie des documents (création, validation, publication, archivage, ...) se déroule à l'intérieur d'espaces de classement organisés à la manière de répertoires. Les opérations sur les documents et les espaces sont soumises à des droits d'accès entièrement paramétrables et intégrées dans la gestion de la sécurité de Lutèce.
+                    </li>
+                    <li>Un moteur de règles permet de créer dynamiquement des opérations de gestion des documents telles que des déplacements d'espaces ou des notifications à des listes de diffusion par courrier électronique.
+                    </li>
+                    <li>Les documents sont également catégorisables sur la base d'un thésaurus et peuvent bénéficier d’un système de métadonnées extensible (Dublin Core ou autre).
+                    </li>
+                    <li>Pour la publication, le plugin fournit également deux portlets permettant de publier un ou une liste de documents. Il gère des dates de mise en ligne et de retrait automatique, ainsi qu’un ordonnancement ou une suspension manuel de chacun des documents.
+                    </li>
+                    <li>Les documents sont accessibles par le moteur de recherche. Celui-ci indexe en texte intégral les zones de contenu définies comme « à indexer » dans le type du document. </li>
+                </ul>
+            </p>
+        </section>
+    </body>
+</document>
+          

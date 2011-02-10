@@ -1,0 +1,38 @@
+<div class="content-box" >
+   
+   <h2>#i18n{document.add_document_type_attribute.titleAddAttribute} </h2>
+   
+   <form method="post" name="docTypeAttr" action="jsp/admin/plugins/document/DoAddDocumentTypeAttribute.jsp">
+     
+        <p>
+            <label for="name" >#i18n{document.add_document_type_attribute.labelName}* :</label>
+            <input type="text" name="name" id="name" tabindex="1" />
+            #i18n{document.add_document_type_attribute.helpName}
+        </p>
+        <p>
+            <label for="code" >#i18n{document.add_document_type_attribute.labelCode}* :</label>
+            <input type="text" name="code" id="code" tabindex="2" />
+            #i18n{document.add_document_type_attribute.helpCode}
+        </p>
+        <p>
+            <label for="description" >#i18n{document.add_document_type_attribute.labelDescription}* :</label>
+            <input type="text" name="description" id="description" tabindex="3" />
+            #i18n{document.add_document_type_attribute.helpDescription}
+        </p>
+        <p>
+            <label for="required" >#i18n{document.add_document_type_attribute.labelRequired}* :</label>
+            <input class="checkbox" type="checkbox" name="required" id="required" tabindex="4" />
+            #i18n{document.add_document_type_attribute.helpRequired}
+        </p>
+        <p>
+            <label for="searchable" >#i18n{document.add_document_type_attribute.labelSearchable}* :</label>
+            <input class="checkbox" type="checkbox" name="searchable" id="searchable" tabindex="5" />
+            #i18n{document.add_document_type_attribute.helpSearchable}
+        </p>
+        ${attribute_parameters}
+        <input type="hidden" name="attribute_type_code" value="${attribute_type_code}" />
+        <input type="submit" value="#i18n{document.add_document_type_attribute.buttonAddAttribute}" class="button" />
+        <input class="button" type="submit" name="apply" value="#i18n{document.add_document_type_attribute.buttonApply}" />
+        <input class="button" type="button" onclick="javascript:history.go(-1)" value="#i18n{portal.admin.message.buttonCancel}" />
+    </form>
+</div>
