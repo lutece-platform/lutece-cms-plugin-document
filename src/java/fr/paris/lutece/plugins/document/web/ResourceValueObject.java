@@ -33,11 +33,13 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
+import java.io.Serializable;
+
 
 /**
  * Resource Value Object
  */
-public class ResourceValueObject
+public class ResourceValueObject implements Serializable
 {
     // Variables declarations
     private int _nIdObject;
