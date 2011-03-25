@@ -46,6 +46,7 @@ public class ResourceValueObject implements Serializable
     private byte[] _content;
     private String _strContentType;
     private String _strFilename;
+    private long _lLastModified;
 
     /**
      * Returns the IdObject
@@ -117,5 +118,23 @@ public class ResourceValueObject implements Serializable
     public void setFilename( String strFilename )
     {
         _strFilename = strFilename;
+    }
+
+    /**
+     * Sets the Last modified time
+     * @param strFilename The Last modified time
+     */
+    public void setLastModified( long lLastModified )
+    {
+        _lLastModified = lLastModified;
+    }
+
+    /**
+     * Returns the Last modified time
+     * @return The Last modified time
+     */
+    public long getLastModified()
+    {
+        return _lLastModified;
     }
 }

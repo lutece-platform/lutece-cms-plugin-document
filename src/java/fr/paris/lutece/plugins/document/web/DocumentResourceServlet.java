@@ -37,13 +37,11 @@ import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentResource;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -79,10 +77,21 @@ public class DocumentResourceServlet extends HttpServlet
     {
         long lLastModified = -1;
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
+        String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
 
-        if ( strDocumentId != null )
+        if ( (strDocumentId != null) && (strAttributeId != null ))
         {
-            Document document = DocumentHome.loadLastModifiedAttributes( Integer.valueOf( strDocumentId ) );
+            int nDocumentId = Integer.parseInt( strDocumentId );
+            int nAttributeId = Integer.parseInt( strAttributeId );
+            String strKey = getCacheKey( nDocumentId, nAttributeId );
+
+            ResourceValueObject resource = _cache.get( strKey );
+            if (  _cache.isCacheEnable(  ) && ( _cache.get( strKey ) != null ) )
+            {
+                return resource.getLastModified();
+            }
+
+            Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
 
             // Because Internet Explorer 6 has bogus behavior with PDF and proxy or HTTPS
             if ( ( document != null ) &&
@@ -108,7 +117,7 @@ public class DocumentResourceServlet extends HttpServlet
      */
     public static void putInCache( int nDocumentId, int nAttributeId )
     {
-        String strCacheKey = nDocumentId + "-" + nAttributeId;
+        String strCacheKey = getCacheKey( nDocumentId , nAttributeId );
 
         DocumentResource resource;
 
@@ -127,6 +136,8 @@ public class DocumentResourceServlet extends HttpServlet
 
         strContentType = resource.getContentType(  );
         content = resource.getContent(  );
+        Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
+        long lLastModified = document.getDateModification(  ).getTime(  );
 
         if ( _cache.isCacheEnable(  ) )
         {
@@ -134,9 +145,11 @@ public class DocumentResourceServlet extends HttpServlet
             r.setContent( content );
             r.setContentType( strContentType );
             r.setFilename( strFilename );
+            r.setLastModified( lLastModified );
             _cache.put( strCacheKey, r );
         }
     }
+
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -151,10 +164,10 @@ public class DocumentResourceServlet extends HttpServlet
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         int nDocumentId = Integer.parseInt( strDocumentId );
         String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
-
+        int nAttributeId = Integer.parseInt( strAttributeId );
         Boolean bWorkingContent = ( request.getParameter( PARAMETER_WORKING_CONTENT ) != null );
 
-        String strCacheKey = strDocumentId + "-" + strAttributeId;
+        String strCacheKey = getCacheKey( nDocumentId , nAttributeId );
         byte[] content;
         String strContentType;
         String strFilename;
@@ -172,8 +185,6 @@ public class DocumentResourceServlet extends HttpServlet
 
             if ( strAttributeId != null )
             {
-                int nAttributeId = Integer.parseInt( strAttributeId );
-
                 if ( bWorkingContent )
                 {
                     resource = DocumentHome.getWorkingResource( nDocumentId, nAttributeId );
@@ -211,10 +222,13 @@ public class DocumentResourceServlet extends HttpServlet
 
             if ( _cache.isCacheEnable(  ) && !bWorkingContent )
             {
+                Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
+                long lLastModified = document.getDateModification(  ).getTime(  );
                 ResourceValueObject r = new ResourceValueObject(  );
                 r.setContent( content );
                 r.setContentType( strContentType );
                 r.setFilename( strFilename );
+                r.setLastModified( lLastModified );
                 _cache.put( strCacheKey, r );
             }
         }
@@ -277,5 +291,12 @@ public class DocumentResourceServlet extends HttpServlet
     public String getServletInfo(  )
     {
         return "Servlet serving file resources of documents";
+    }
+
+    private static String getCacheKey(int nDocumentId, int nAttributeId)
+    {
+        StringBuilder sbKey = new StringBuilder();
+        sbKey.append( "[doc_id:").append( nDocumentId).append( "][attr_id:").append( nAttributeId).append( "]");
+        return sbKey.toString();
     }
 }

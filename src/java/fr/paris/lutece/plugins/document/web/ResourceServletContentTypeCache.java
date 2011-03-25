@@ -40,6 +40,7 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 /**
  * ResourceServletCache
+ * @deprecated This class will be removed after v2.5
  */
 public class ResourceServletContentTypeCache extends AbstractCacheableService
 {
