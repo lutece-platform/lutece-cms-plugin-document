@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
+import fr.paris.lutece.plugins.document.business.DocumentResource;
 import java.io.Serializable;
 
 
@@ -41,12 +42,38 @@ import java.io.Serializable;
  */
 public class ResourceValueObject implements Serializable
 {
+    private static final String DEFAULT_FILENAME = "document";
+
     // Variables declarations
     private int _nIdObject;
     private byte[] _content;
     private String _strContentType;
     private String _strFilename;
     private long _lLastModified;
+
+    /**
+     * Basic constructor
+     */
+    public ResourceValueObject()
+    {
+
+    }
+
+    /**
+     * Constructor using a document resource object
+     * @param resource The document resource
+     */
+    public ResourceValueObject( DocumentResource resource )
+    {
+            _strFilename = resource.getName();
+
+            if ((_strFilename == null) || _strFilename.equals(""))
+            {
+                _strFilename = DEFAULT_FILENAME;
+            }
+            _strContentType = resource.getContentType();
+            _content = resource.getContent();
+    }
 
     /**
      * Returns the IdObject
@@ -77,7 +104,7 @@ public class ResourceValueObject implements Serializable
 
     /**
      * Sets the Content
-     * @param Content The Content
+     * @param content The content
      */
     public void setContent( byte[] content )
     {
@@ -122,7 +149,7 @@ public class ResourceValueObject implements Serializable
 
     /**
      * Sets the Last modified time
-     * @param strFilename The Last modified time
+     * @param lLastModified Last modified time
      */
     public void setLastModified( long lLastModified )
     {

@@ -48,63 +48,62 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
  * Servlet serving document file resources
  */
 public class DocumentResourceServlet extends HttpServlet
 {
+
     private static final long serialVersionUID = -7512201287826936428L;
     private static final String PARAMETER_DOCUMENT_ID = "id";
     private static final String PARAMETER_ATTRIBUTE_ID = "id_attribute";
     private static final String PARAMETER_WORKING_CONTENT = "working_content";
-    private static final String DEFAULT_FILENAME = "document";
     private static final String DEFAULT_EXPIRES_DELAY = "180000";
     private static final String PROPERTY_RESOURCE_TYPE = "document";
     private static final String PROPERTY_EXPIRES_DELAY = "document.resourceServlet.cacheControl.expires";
-    private static final String STRING_DELAY_IN_SECOND = AppPropertiesService.getProperty( PROPERTY_EXPIRES_DELAY,
-            DEFAULT_EXPIRES_DELAY );
-    private static final Long LONG_DELAY_IN_MILLISECOND = Long.parseLong( STRING_DELAY_IN_SECOND ) * 1000;
-    private static final ResourceServletCache _cache = new ResourceServletCache(  );
+    private static final String STRING_DELAY_IN_SECOND = AppPropertiesService.getProperty(PROPERTY_EXPIRES_DELAY,
+            DEFAULT_EXPIRES_DELAY);
+    private static final Long LONG_DELAY_IN_MILLISECOND = Long.parseLong(STRING_DELAY_IN_SECOND) * 1000;
+    private static final ResourceServletCache _cache = new ResourceServletCache();
 
     /**
      * Processes request HTTP <code>GET if-modified-since</code> methods
-     * @param servlet request
+     * @param request The HTTP request
      * @return document last modified date
      */
     @Override
-    public long getLastModified( HttpServletRequest request )
+    public long getLastModified(HttpServletRequest request)
     {
         long lLastModified = -1;
-        String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
+        String strDocumentId = request.getParameter(PARAMETER_DOCUMENT_ID);
+        String strAttributeId = request.getParameter(PARAMETER_ATTRIBUTE_ID);
 
-        if ( (strDocumentId != null) && (strAttributeId != null ))
+        if ((strDocumentId != null) && (strAttributeId != null))
         {
-            int nDocumentId = Integer.parseInt( strDocumentId );
-            int nAttributeId = Integer.parseInt( strAttributeId );
-            String strKey = getCacheKey( nDocumentId, nAttributeId );
+            int nDocumentId = Integer.parseInt(strDocumentId);
+            int nAttributeId = Integer.parseInt(strAttributeId);
+            String strKey = getCacheKey(nDocumentId, nAttributeId);
 
-            ResourceValueObject resource = _cache.get( strKey );
-            if (  _cache.isCacheEnable(  ) && ( _cache.get( strKey ) != null ) )
+            ResourceValueObject resource = _cache.get(strKey);
+            if (_cache.isCacheEnable() && (_cache.get(strKey) != null))
             {
                 return resource.getLastModified();
             }
 
-            Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
+            Document document = DocumentHome.loadLastModifiedAttributes(nDocumentId);
 
             // Because Internet Explorer 6 has bogus behavior with PDF and proxy or HTTPS
-            if ( ( document != null ) &&
-                    !Document.CODE_DOCUMENT_TYPE_DOWNLOAD.equals( document.getCodeDocumentType(  ) ) &&
-                    ( document.getDateModification(  ) != null ) )
+            if ((document != null)
+                    && !Document.CODE_DOCUMENT_TYPE_DOWNLOAD.equals(document.getCodeDocumentType())
+                    && (document.getDateModification() != null))
             {
-                lLastModified = document.getDateModification(  ).getTime(  );
+                lLastModified = document.getDateModification().getTime();
             }
         }
 
-        if ( lLastModified == -1 )
+        if (lLastModified == -1)
         {
-            lLastModified = super.getLastModified( request );
+            lLastModified = super.getLastModified(request);
         }
 
         return lLastModified;
@@ -115,41 +114,21 @@ public class DocumentResourceServlet extends HttpServlet
      * @param nDocumentId The document id
      * @param nAttributeId The attribut id
      */
-    public static void putInCache( int nDocumentId, int nAttributeId )
+    public static void putInCache(int nDocumentId, int nAttributeId)
     {
-        String strCacheKey = getCacheKey( nDocumentId , nAttributeId );
-
-        DocumentResource resource;
-
-        byte[] content;
-        String strContentType;
-        String strFilename;
-
-        resource = DocumentHome.getValidatedResource( nDocumentId, nAttributeId );
-
-        strFilename = resource.getName(  );
-
-        if ( ( strFilename == null ) || strFilename.equals( "" ) )
+        if (!_cache.isCacheEnable())
         {
-            strFilename = DEFAULT_FILENAME;
+            return;
         }
 
-        strContentType = resource.getContentType(  );
-        content = resource.getContent(  );
-        Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
-        long lLastModified = document.getDateModification(  ).getTime(  );
+        DocumentResource resource = DocumentHome.getValidatedResource(nDocumentId, nAttributeId);
+        ResourceValueObject res = new ResourceValueObject(resource);
+        Document document = DocumentHome.loadLastModifiedAttributes(nDocumentId);
+        long lLastModified = document.getDateModification().getTime();
+        res.setLastModified(lLastModified);
+        _cache.put( getCacheKey(nDocumentId, nAttributeId) , res);
 
-        if ( _cache.isCacheEnable(  ) )
-        {
-            ResourceValueObject r = new ResourceValueObject(  );
-            r.setContent( content );
-            r.setContentType( strContentType );
-            r.setFilename( strFilename );
-            r.setLastModified( lLastModified );
-            _cache.put( strCacheKey, r );
-        }
     }
-
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -158,101 +137,60 @@ public class DocumentResourceServlet extends HttpServlet
      * @throws ServletException the servlet Exception
      * @throws IOException the io exception
      */
-    protected void processRequest( HttpServletRequest request, HttpServletResponse response )
-        throws ServletException, IOException
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException
     {
-        String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        int nDocumentId = Integer.parseInt( strDocumentId );
-        String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
-        int nAttributeId = Integer.parseInt( strAttributeId );
-        Boolean bWorkingContent = ( request.getParameter( PARAMETER_WORKING_CONTENT ) != null );
+        String strDocumentId = request.getParameter(PARAMETER_DOCUMENT_ID);
+        int nDocumentId = Integer.parseInt(strDocumentId);
+        String strAttributeId = request.getParameter(PARAMETER_ATTRIBUTE_ID);
 
-        String strCacheKey = getCacheKey( nDocumentId , nAttributeId );
-        byte[] content;
-        String strContentType;
-        String strFilename;
+        int nAttributeId = (strAttributeId != null) ? Integer.parseInt(strAttributeId) : -1;
+        Boolean bWorkingContent = (request.getParameter(PARAMETER_WORKING_CONTENT) != null);
 
-        if ( !bWorkingContent && _cache.isCacheEnable(  ) && ( _cache.get( strCacheKey ) != null ) )
+        String strCacheKey = getCacheKey(nDocumentId, nAttributeId);
+        ResourceValueObject res;
+
+        if (!bWorkingContent && _cache.isCacheEnable() && (_cache.get(strCacheKey) != null))
         {
-            ResourceValueObject resource = _cache.get( strCacheKey );
-            content = resource.getContent(  );
-            strContentType = resource.getContentType(  );
-            strFilename = resource.getFilename(  );
-        }
-        else
+            res = _cache.get(strCacheKey);
+        } else
         {
-            DocumentResource resource;
-
-            if ( strAttributeId != null )
+            DocumentResource resource = getResource(nDocumentId, nAttributeId, bWorkingContent);
+            if (resource == null)
             {
-                if ( bWorkingContent )
-                {
-                    resource = DocumentHome.getWorkingResource( nDocumentId, nAttributeId );
-
-                    if ( resource == null )
-                    {
-                        resource = DocumentHome.getValidatedResource( nDocumentId, nAttributeId );
-                    }
-                }
-                else
-                {
-                    resource = DocumentHome.getValidatedResource( nDocumentId, nAttributeId );
-                }
-            }
-            else
-            {
-                resource = DocumentHome.getResource( nDocumentId );
-            }
-
-            if ( resource == null )
-            { //nothing to do if document no longer in DB
-
                 return;
             }
+            res = new ResourceValueObject(resource);
 
-            strFilename = resource.getName(  );
 
-            if ( ( strFilename == null ) || strFilename.equals( "" ) )
+            if (_cache.isCacheEnable() && !bWorkingContent)
             {
-                strFilename = DEFAULT_FILENAME;
-            }
-
-            strContentType = resource.getContentType(  );
-            content = resource.getContent(  );
-
-            if ( _cache.isCacheEnable(  ) && !bWorkingContent )
-            {
-                Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
-                long lLastModified = document.getDateModification(  ).getTime(  );
-                ResourceValueObject r = new ResourceValueObject(  );
-                r.setContent( content );
-                r.setContentType( strContentType );
-                r.setFilename( strFilename );
-                r.setLastModified( lLastModified );
-                _cache.put( strCacheKey, r );
+                Document document = DocumentHome.loadLastModifiedAttributes(nDocumentId);
+                long lLastModified = document.getDateModification().getTime();
+                res.setLastModified(lLastModified);
+                _cache.put(strCacheKey, res);
             }
         }
 
-        ResourceEnhancer.doDownloadResourceAddOn( request, PROPERTY_RESOURCE_TYPE, nDocumentId );
+        ResourceEnhancer.doDownloadResourceAddOn(request, PROPERTY_RESOURCE_TYPE, nDocumentId);
 
         // Sets content type and filename of the resource into the response
-        response.setContentType( strContentType );
+        response.setContentType(res.getContentType());
 
-        if ( !( strContentType.equals( "image/jpeg" ) || strContentType.equals( "image/gif" ) ||
-                strContentType.equals( "image/png" ) || strContentType.equals( "application/x-shockwave-flash" ) ) )
+        if (!isGraphicalContent(res.getContentType()))
         {
-            // Add the filename only if the resource isn't a flash document
-            response.setHeader( "Content-Disposition", "attachment;filename=\"" + strFilename + "\"" );
+            // Add the filename only if the resource isn't a flash document or an image
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + res.getFilename() + "\"");
         }
 
         // Add Cache Control HTTP header
-        response.setHeader( "Cache-Control", "max-age=" + STRING_DELAY_IN_SECOND ); // HTTP 1.1
-        response.setDateHeader( "Expires", System.currentTimeMillis(  ) + LONG_DELAY_IN_MILLISECOND ); // HTTP 1.0
-        response.setContentLength( content.length ); // Keep Alive connexion
+        response.setHeader("Cache-Control", "max-age=" + STRING_DELAY_IN_SECOND); // HTTP 1.1
+        response.setDateHeader("Expires", System.currentTimeMillis() + LONG_DELAY_IN_MILLISECOND); // HTTP 1.0
+        response.setContentLength(res.getContent().length); // Keep Alive connexion
 
         // Write the resource content
-        OutputStream out = response.getOutputStream(  );
-        out.write( content );
+        OutputStream out = response.getOutputStream();
+        out.write(res.getContent());
 
         //out.flush( );        
         //out.close(); Disabled : allow Keep Alive connexion
@@ -265,10 +203,10 @@ public class DocumentResourceServlet extends HttpServlet
      * @throws IOException the io exception
      */
     @Override
-    protected void doGet( HttpServletRequest request, HttpServletResponse response )
-        throws ServletException, IOException
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException
     {
-        processRequest( request, response );
+        processRequest(request, response);
     }
 
     /** Handles the HTTP <code>POST</code> method.
@@ -278,25 +216,76 @@ public class DocumentResourceServlet extends HttpServlet
      * @throws IOException the io exception
      */
     @Override
-    protected void doPost( HttpServletRequest request, HttpServletResponse response )
-        throws ServletException, IOException
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException
     {
-        processRequest( request, response );
+        processRequest(request, response);
     }
 
     /** Returns a short description of the servlet.
      * @return message
      */
     @Override
-    public String getServletInfo(  )
+    public String getServletInfo()
     {
         return "Servlet serving file resources of documents";
     }
 
+    /**
+     * Caclculate the cache key
+     * @param nDocumentId The document id
+     * @param nAttributeId The attribute id
+     * @return The key
+     */
     private static String getCacheKey(int nDocumentId, int nAttributeId)
     {
         StringBuilder sbKey = new StringBuilder();
-        sbKey.append( "[doc_id:").append( nDocumentId).append( "][attr_id:").append( nAttributeId).append( "]");
+        sbKey.append("[doc:").append(nDocumentId).append("][attr:").append(nAttributeId).append("]");
         return sbKey.toString();
+    }
+
+    /**
+     * Get the document resource
+     * @param nDocumentId The document id
+     * @param nAttributeId The attribute id
+     * @param bWorkingContent is a working content
+     * @return The document resource
+     */
+    private DocumentResource getResource(int nDocumentId, int nAttributeId, boolean bWorkingContent)
+    {
+        DocumentResource resource;
+        if (nAttributeId != -1)
+        {
+            if (bWorkingContent)
+            {
+                resource = DocumentHome.getWorkingResource(nDocumentId, nAttributeId);
+
+                if (resource == null)
+                {
+                    resource = DocumentHome.getValidatedResource(nDocumentId, nAttributeId);
+                }
+            } else
+            {
+                resource = DocumentHome.getValidatedResource(nDocumentId, nAttributeId);
+            }
+        } else
+        {
+            resource = DocumentHome.getResource(nDocumentId);
+        }
+        return resource;
+
+    }
+
+    /**
+     * Is the document an image or a flash object according the content type
+     * @param strContentType The content type
+     * @return True for an image or a flash object, otherwise false
+     */
+    private boolean isGraphicalContent(String strContentType)
+    {
+        return ( strContentType.equals("image/jpeg") ||
+                strContentType.equals("image/gif") ||
+                strContentType.equals("image/png") ||
+                strContentType.equals("application/x-shockwave-flash"));
     }
 }

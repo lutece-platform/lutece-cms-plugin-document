@@ -896,6 +896,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         return url.getUrl(  );
     }
 
+    /**
+     * Remove selection
+     * @param request The HTTP request
+     * @return The forward url
+     */
     public String doRemoveSelection( HttpServletRequest request )
     {
         int nDocumentId;

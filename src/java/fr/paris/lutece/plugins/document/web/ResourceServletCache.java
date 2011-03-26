@@ -34,8 +34,6 @@
 package fr.paris.lutece.plugins.document.web;
 
 import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
-import fr.paris.lutece.portal.service.portal.PortalService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 
 /**
@@ -44,27 +42,18 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 public class ResourceServletCache extends AbstractCacheableService
 {
     private static final String NAME = "Document ResourceServlet Cache";
-    private static final String PROPERTY_CACHE = "document.resourceServlet.cache.enabled";
 
-    /**
-     * Constructor
-     */
-    public ResourceServletCache(  )
+    public ResourceServletCache()
     {
-        String strCache = AppPropertiesService.getProperty( PROPERTY_CACHE, "true" );
-
-        if ( strCache.equalsIgnoreCase( "true" ) )
-        {
-            initCache( NAME );
-            PortalService.registerCacheableService( NAME, this );
-        }
+        initCache( getName() );
     }
+
 
     /**
      * Gets the cache name
      * @return The cache name
      */
-    public String getName(  )
+    public final String getName(  )
     {
         return NAME;
     }
