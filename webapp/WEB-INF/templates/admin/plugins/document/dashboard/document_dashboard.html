@@ -1,0 +1,71 @@
+<!-- LAST MODIFIED DOCUMENT -->
+<table>
+   	<tr>
+   		<th>#i18n{document.dashboard.columnLastModifiedDocument}</th>
+   		<th>#i18n{document.dashboard.columnStatus}</th>
+   		<th>#i18n{document.dashboard.columnActions}</th>
+   	</tr>
+   	<#if last_modified_document??>
+    	<tr>
+			<td width="65%">
+				<img src="${last_modified_document.thumbnail}" alt="${last_modified_document.title}" width="40" height="40" align="left" hspace="15" />
+				${last_modified_document.id} - ${last_modified_document.title}<br />
+				${last_modified_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_modified_document.state}
+				<br />
+				<strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_modified_document.dateModification}
+			</td>
+			<td width="10%">
+				<#if last_modified_document.publishedStatus = 0> 
+					<img src="images/admin/skin/enable.png" alt="#i18n{document.dashboard.PublishedStatus}" title="#i18n{document.dashboard.PublishedStatus}">
+				<#else>
+					<img src="images/admin/skin/disable.png" alt="#i18n{document.dashboard.UnPublishedStatus}" title="#i18n{document.dashboard.UnPublishedStatus}">
+				</#if>			     
+			</td>
+            <td width="25%">
+				<#list last_modified_document.actions as action>
+					<#if action.url?exists>
+						<a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}">
+							<img src="${action.iconUrl}" alt="${action.description}" title="${action.description}" />
+						</a>
+					</#if>
+				</#list>
+            </td>
+    	</tr>
+    </#if>
+</table>
+
+<!-- LAST PUBLISHED DOCUMENT -->
+<table>
+   	<tr>
+   		<th>#i18n{document.dashboard.columnLastPublishedDocument}</th>
+   		<th>#i18n{document.dashboard.columnStatus}</th>
+   		<th>#i18n{document.dashboard.columnActions}</th>
+   	</tr>
+   	<#if last_published_document??>
+    	<tr>
+			<td width="65%">
+				<img src="${last_published_document.thumbnail}" alt="${last_published_document.title}" width="40" height="40" align="left" hspace="15" />
+				${last_published_document.id} - ${last_published_document.title}<br />
+				${last_published_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_published_document.state}
+				<br />
+				<strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_published_document.dateModification}
+			</td>
+			<td width="10%">
+				<#if last_published_document.publishedStatus = 0> 
+					<img src="images/admin/skin/enable.png" alt="#i18n{document.dashboard.PublishedStatus}" title="#i18n{document.dashboard.PublishedStatus}">
+				<#else>
+					<img src="images/admin/skin/disable.png" alt="#i18n{document.dashboard.UnPublishedStatus}" title="#i18n{document.dashboard.UnPublishedStatus}">
+				</#if>			     
+			</td>
+            <td width="25%">
+				<#list last_published_document.actions as action>
+					<#if action.url?exists>
+						<a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}">
+							<img src="${action.iconUrl}" alt="${action.description}" title="${action.description}" />
+						</a>
+					</#if>
+				</#list>
+            </td>
+    	</tr>
+    </#if>
+</table>

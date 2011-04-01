@@ -157,11 +157,26 @@ public interface IDocumentDAO
      * @param nDocumentId
      * @return the document
      */
-    public Document loadLastModifiedAttributes( int nDocumentId );
+    Document loadLastModifiedAttributes( int nDocumentId );
 
     /**
      * Validate the document attributes
      * @param nDocumentId the Id of the document
      */
-    public void validateAttributes( int nDocumentId );
+    void validateAttributes( int nDocumentId );
+    
+    /**
+     * Load the data of last Document the user worked in from the table
+     *
+     * @param strUserName the user name
+     * @return the instance of the Document
+     */
+    Document loadLastModifiedDocumentFromUser( String strUserName );
+    
+    /**
+     * Load the data of last Document the user worked in from the table
+     *
+     * @return the instance of the Document
+     */
+    Document loadLastPublishedDocument(  );
 }

@@ -151,4 +151,13 @@ public final class DocumentCommentHome
     {
         return _dao.checkCommentNb( strDocumentId, plugin );
     }
+    
+    /**
+     * Load the data of DocumentComment from the table
+     * @return the instance of the DocumentComment
+     */
+    public static DocumentComment findLastComment(  )
+    {
+    	return _dao.loadLastComment( plugin );
+    }
 }

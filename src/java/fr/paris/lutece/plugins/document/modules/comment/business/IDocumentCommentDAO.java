@@ -90,4 +90,11 @@ public interface IDocumentCommentDAO
      * @return the nb of document
      **/
     int checkCommentNb( int nDocumentId, Plugin plugin );
+    
+    /**
+     * Load the data of DocumentComment from the table
+	 * @param plugin the plugin
+     * @return the instance of the DocumentComment
+     */
+    DocumentComment loadLastComment( Plugin plugin );
 }

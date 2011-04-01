@@ -62,6 +62,8 @@ public final class DocumentCommentDAO implements IDocumentCommentDAO
         " FROM document_comment WHERE id_document = ? ";
     private static final String SQL_QUERY_UPDATE_COMMENT_STATUS = "UPDATE document_comment SET status = ?, date_comment = ? WHERE id_comment = ?  ";
     private static final String SQL_QUERY_SELECT_NB_COMMENT_BY_DOCUMENT = " SELECT count(*) FROM document_comment WHERE id_document = ? ";
+    private static final String SQL_QUERY_SELECT_LAST_COMMENT = " SELECT id_comment, id_document, date_comment, document_comment_name, email, ip_address, document_comment_comment, status " +
+        " FROM document_comment ORDER BY date_comment DESC LIMIT 1 ";
 
     /**
      * Generates a new primary key
@@ -256,5 +258,36 @@ public final class DocumentCommentDAO implements IDocumentCommentDAO
         daoUtil.free(  );
 
         return nCount;
+    }
+    
+    /**
+     * Load the data of DocumentComment from the table
+	 * @param plugin the plugin
+     * @return the instance of the DocumentComment
+     */
+    public DocumentComment loadLastComment( Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_LAST_COMMENT, plugin );
+        daoUtil.executeQuery(  );
+
+        DocumentComment documentComment = null;
+
+        if ( daoUtil.next(  ) )
+        {
+        	int nIndex = 1;
+            documentComment = new DocumentComment(  );
+            documentComment.setCommentId( daoUtil.getInt( nIndex++ ) );
+            documentComment.setDocumentId( daoUtil.getInt( nIndex++ ) );
+            documentComment.setDateComment( daoUtil.getTimestamp( nIndex++ ) );
+            documentComment.setName( daoUtil.getString( nIndex++ ) );
+            documentComment.setEmail( daoUtil.getString( nIndex++ ) );
+            documentComment.setIpAddress( daoUtil.getString( nIndex++ ) );
+            documentComment.setComment( daoUtil.getString( nIndex++ ) );
+            documentComment.setStatus( daoUtil.getInt( nIndex++ ) );
+        }
+
+        daoUtil.free(  );
+
+        return documentComment;
     }
 }

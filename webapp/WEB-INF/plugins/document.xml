@@ -282,4 +282,12 @@
 		<css-stylesheet>../../js/jscalendar/calendar-lutece.css</css-stylesheet> 
 	</css-stylesheets>
 
+	<!-- Dashboard  components -->
+    <dashboard-components>
+        <dashboard-component>
+            <dashboard-component-name>DOCUMENT</dashboard-component-name>
+            <dashboard-component-class>fr.paris.lutece.plugins.document.web.DocumentDashboardComponent</dashboard-component-class>
+            <dashboard-feature-right>DOCUMENT_MANAGEMENT</dashboard-feature-right>
+        </dashboard-component>
+    </dashboard-components>
 </plug-in>

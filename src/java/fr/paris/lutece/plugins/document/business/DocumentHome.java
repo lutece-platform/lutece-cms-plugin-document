@@ -275,4 +275,25 @@ public final class DocumentHome
     {
         return _dao.loadLastModifiedAttributes( nDocumentId );
     }
+    
+    /**
+     * Load the data of last Document the user worked in from the table
+     *
+     * @param strUserName the user name
+     * @return the instance of the Document
+     */
+    public static Document loadLastModifiedDocumentFromUser( String strUserName )
+    {
+    	return _dao.loadLastModifiedDocumentFromUser( strUserName );
+    }
+    
+    /**
+     * Load the data of last Document the user worked in from the table
+     *
+     * @return the instance of the Document
+     */
+    public static Document loadLastPublishedDocument(  )
+    {
+    	return _dao.loadLastPublishedDocument(  );
+    }
 }

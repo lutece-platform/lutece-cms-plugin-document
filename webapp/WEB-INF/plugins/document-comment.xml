@@ -27,4 +27,13 @@
 		</rbac-resource-type>
 	</rbac-resource-types>
 	
+	<!-- Dashboard  components -->
+    <dashboard-components>
+        <dashboard-component>
+            <dashboard-component-name>DOCUMENT_COMMENT</dashboard-component-name>
+            <dashboard-component-class>fr.paris.lutece.plugins.document.modules.comment.web.DocumentCommentDashboardComponent</dashboard-component-class>
+            <dashboard-feature-right>DOCUMENT_MANAGEMENT</dashboard-feature-right>
+        </dashboard-component>
+    </dashboard-components>
+    
 </plug-in>
