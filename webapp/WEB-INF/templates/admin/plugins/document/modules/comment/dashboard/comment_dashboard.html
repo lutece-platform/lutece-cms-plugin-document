@@ -2,9 +2,7 @@
    	<tr>
    		<th>#i18n{module.document.comment.dashboard.columnDocument}</th>
    		<th>#i18n{module.document.comment.dashboard.columnAuthor}</th>
-   		<th>#i18n{module.document.comment.dashboard.columnEmail}</th>
    		<th>#i18n{module.document.comment.dashboard.columnComment}</th>
-   		<th>#i18n{module.document.comment.dashboard.columnStatus}</th>
    		<th>#i18n{module.document.comment.dashboard.columnActions}</th>
    	</tr>
    	<#if last_comment?? && document??>
@@ -14,43 +12,25 @@
 				${document.type}
 			</td>
 			<td>
-				${last_comment.name}
-			</td>
-			<td>
+				${last_comment.name}<br />
 				${last_comment.email}
 			</td>
 			<td>
 				${last_comment.comment}
 			</td>
-			<td>
-				<#if last_comment.status = 0>
-					<img src="images/admin/skin/disable.png" alt="#i18n{module.document.comment.dashboard.labelDisable}" title="#i18n{module.document.comment.dashboard.labelDisable}" />
-				<#else>
-					<img src="images/admin/skin/enable.png" alt="#i18n{module.document.comment.dashboard.labelEnable}" title="#i18n{module.document.comment.dashboard.labelEnable}" />
-				</#if>
-			</td>
             <td>
 				<#if last_comment.status = 0>
-	            	<form method="post" name="publishing" action="jsp/admin/plugins/document/modules/comment/DoModifyCommentStatus.jsp">
-	                    <input type="hidden" name="id_comment" value="${last_comment.commentId}" />
-	                    <input type="hidden" name="id_document" value="${document.id}" />
-	                    <input type="hidden" name="status" value="1" />	
-	                    <input type="submit" value="#i18n{module.document.comment.manage_document_comments.buttonPublish}" class="button" />
-	                    <a href="jsp/admin/plugins/document/modules/comment/DoRemoveComment.jsp?id_document=${document.id}&amp;id_comment=${last_comment.commentId}" >
-	                        <img src="images/admin/skin/actions/delete.png" alt="#i18n{module.document.comment.dashboard.buttonDelete}" title="#i18n{module.document.comment.dashboard.buttonDelete}"/>
-	                    </a>
-	            	</form>
+					<a href="jsp/admin/plugins/document/modules/comment/DoModifyCommentStatus.jsp?id_comment=${last_comment.commentId}&amp;id_document=${document.id}&amp;status=1">
+						<img src="images/admin/skin/enable.png" alt="#i18n{module.document.comment.dashboard.labelPublish}" title="#i18n{module.document.comment.dashboard.labelPublish}" />
+					</a>
 	            <#else>
-		            <form method="post" name="unpublishing" action="jsp/admin/plugins/document/modules/comment/DoModifyCommentStatus.jsp">
-	                    <input type="hidden" name="id_comment" value="${last_comment.commentId}" />
-	                    <input type="hidden" name="id_document" value="${document.id}" />
-	                    <input type="hidden" name="status" value="0" />	
-	                    <input type="submit" value="#i18n{module.document.comment.manage_document_comments.buttonUnPublish}" class="button" />
-	                    <a href="jsp/admin/plugins/document/modules/comment/DoRemoveComment.jsp?id_document=${document.id}&amp;id_comment=${last_comment.commentId}" >
-	                        <img src="images/admin/skin/actions/delete.png" alt="#i18n{module.document.comment.dashboard.buttonDelete}" title="#i18n{module.document.comment.dashboard.buttonDelete}"/>
-						</a>
-		            </form>
+	            	<a href="jsp/admin/plugins/document/modules/comment/DoModifyCommentStatus.jsp?id_comment=${last_comment.commentId}&amp;id_document=${document.id}&amp;status=0">
+						<img src="images/admin/skin/disable.png" alt="#i18n{module.document.comment.dashboard.labelUnpublish}" title="#i18n{module.document.comment.dashboard.labelUnpublish}" />
+					</a>
 	            </#if>
+	            <a href="jsp/admin/plugins/document/modules/comment/DoRemoveComment.jsp?id_document=${document.id}&amp;id_comment=${last_comment.commentId}" >
+                        <img src="images/admin/skin/actions/delete.png" alt="#i18n{module.document.comment.dashboard.buttonDelete}" title="#i18n{module.document.comment.dashboard.buttonDelete}"/>
+					</a>
             </td>
     	</tr>
     </#if>
