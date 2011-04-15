@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.document.service.search;
 
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
+import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
@@ -50,6 +51,7 @@ import fr.paris.lutece.portal.service.search.SearchItem;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.lucene.demo.html.HTMLParser;
@@ -71,7 +73,7 @@ import java.util.List;
  */
 public class DocumentIndexer implements SearchIndexer
 {
-    public static final String INDEXER_NAME = "DocumentIndexer";
+	public static final String INDEXER_NAME = "DocumentIndexer";
     public static final String SHORT_NAME = "dcm";
     private static final String INDEXER_DESCRIPTION = "Indexer service for documents";
     private static final String INDEXER_VERSION = "1.0.0";
@@ -79,6 +81,7 @@ public class DocumentIndexer implements SearchIndexer
     private static final String PROPERTY_INDEXER_ENABLE = "document.documentIndexer.enable";
     private static final String PARAMETER_DOCUMENT_ID = "document_id";
     private static final String PARAMETER_PORTLET_ID = "portlet_id";
+    private static final String JSP_PAGE_ADVANCED_SEARCH = "jsp/site/Portal.jsp?page=advanced_search";
 
     /**
      * index all lucene documents
@@ -252,9 +255,12 @@ public class DocumentIndexer implements SearchIndexer
         // separately.
         doc.add( new Field( SearchItem.FIELD_TITLE, document.getTitle(  ), Field.Store.YES, Field.Index.NO ) );
 
-        doc.add( new Field( SearchItem.FIELD_TYPE, document.getType(  ), Field.Store.YES, Field.Index.ANALYZED ) );
+        doc.add( new Field( SearchItem.FIELD_TYPE, document.getType(  ), Field.Store.YES, Field.Index.NOT_ANALYZED ) );
 
         doc.add( new Field( SearchItem.FIELD_ROLE, strRole, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
+        
+        // add metadata (mapped to summary)
+        doc.add( new Field( SearchItem.FIELD_METADATA, document.getSummary(), Field.Store.NO, Field.Index.ANALYZED ) );
 
         // return the document
         return doc;
@@ -277,8 +283,8 @@ public class DocumentIndexer implements SearchIndexer
                 if ( !attribute.isBinary(  ) )
                 {
                     // Text attributes
+                	sbContentToIndex.append( " " );
                     sbContentToIndex.append( attribute.getTextValue(  ) );
-                    sbContentToIndex.append( " " );
                 }
                 else
                 {
@@ -292,8 +298,8 @@ public class DocumentIndexer implements SearchIndexer
                         try
                         {
                             ByteArrayInputStream bais = new ByteArrayInputStream( attribute.getBinaryValue(  ) );
-                            sbContentToIndex.append( indexer.getContentToIndex( bais ) );
                             sbContentToIndex.append( " " );
+                            sbContentToIndex.append( indexer.getContentToIndex( bais ) );
                             bais.close(  );
                         }
                         catch ( IOException e )
@@ -306,8 +312,30 @@ public class DocumentIndexer implements SearchIndexer
         }
 
         // Index Metadata
+        sbContentToIndex.append( " " );
         sbContentToIndex.append( document.getXmlMetadata(  ) );
 
         return sbContentToIndex.toString(  );
     }
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<String> getListType(  )
+	{
+		List<String> typeList = new ArrayList<String>(  );
+		for( ReferenceItem item : DocumentTypeHome.getDocumentTypesList(  ) )
+		{
+			typeList.add( item.getName(  ) );
+		}
+		return typeList;
+	}
+
+/**
+	 * {@inheritDoc}
+	 */
+	public String getSpecificSearchAppUrl(  )
+	{
+		return JSP_PAGE_ADVANCED_SEARCH;
+	}
 }
