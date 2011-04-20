@@ -33,6 +33,11 @@
  */
 package fr.paris.lutece.plugins.document.service.publishing;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Locale;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentFilter;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
@@ -41,6 +46,7 @@ import fr.paris.lutece.plugins.document.business.publication.DocumentPublication
 import fr.paris.lutece.plugins.document.business.publication.DocumentPublicationHome;
 import fr.paris.lutece.plugins.document.service.DocumentPlugin;
 import fr.paris.lutece.plugins.document.service.search.DocumentIndexer;
+import fr.paris.lutece.plugins.document.utils.DocumentIndexerUtils;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletType;
@@ -48,11 +54,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.search.IndexationService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Locale;
 
 
 /**
@@ -124,8 +125,11 @@ public class PublishingService
                 .changeDocumentOrder( documentPublication.getDocumentId(  ), documentPublication.getPortletId(  ), 1 );
         }
 
-        IndexationService.addIndexerAction( Integer.toString( nDocumentId ), DocumentIndexer.INDEXER_NAME,
+        String strIdDocument = Integer.toString( nDocumentId );
+        IndexationService.addIndexerAction( strIdDocument, DocumentIndexer.INDEXER_NAME,
             IndexerAction.TASK_MODIFY, nPortletId );
+        
+        DocumentIndexerUtils.addIndexerAction( strIdDocument, IndexerAction.TASK_MODIFY, nPortletId );
     }
 
     /**
@@ -154,8 +158,11 @@ public class PublishingService
             _manager.notifyListeners( event );
         }
 
-        IndexationService.addIndexerAction( Integer.toString( nDocumentId ) + "_" + DocumentIndexer.SHORT_NAME,
+        String strIdDocument = Integer.toString( nDocumentId );
+        IndexationService.addIndexerAction( strIdDocument + "_" + DocumentIndexer.SHORT_NAME,
             DocumentIndexer.INDEXER_NAME, IndexerAction.TASK_DELETE, nPortletId );
+        
+        DocumentIndexerUtils.addIndexerAction( strIdDocument, IndexerAction.TASK_DELETE, nPortletId );
     }
 
     /**

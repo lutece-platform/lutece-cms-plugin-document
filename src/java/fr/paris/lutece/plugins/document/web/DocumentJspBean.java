@@ -33,6 +33,17 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.Source;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentFilter;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
@@ -41,9 +52,6 @@ import fr.paris.lutece.plugins.document.business.DocumentPageTemplateHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.IndexerAction;
-import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
-import fr.paris.lutece.plugins.document.business.category.Category;
-import fr.paris.lutece.plugins.document.business.category.CategoryHome;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
 import fr.paris.lutece.plugins.document.business.spaces.SpaceActionHome;
@@ -52,8 +60,6 @@ import fr.paris.lutece.plugins.document.business.workflow.DocumentActionHome;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentStateHome;
 import fr.paris.lutece.plugins.document.modules.comment.service.DocumentCommentPlugin;
-import fr.paris.lutece.plugins.document.service.AttributeManager;
-import fr.paris.lutece.plugins.document.service.AttributeService;
 import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.plugins.document.service.DocumentService;
 import fr.paris.lutece.plugins.document.service.DocumentTypeResourceIdService;
@@ -63,6 +69,7 @@ import fr.paris.lutece.plugins.document.service.metadata.MetadataHandler;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.plugins.document.service.search.DocumentIndexer;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
+import fr.paris.lutece.plugins.document.utils.DocumentIndexerUtils;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
@@ -88,24 +95,7 @@ import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.sort.AttributeComparator;
-import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
-
-import org.apache.commons.fileupload.FileItem;
-
-import java.sql.Timestamp;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.xml.transform.Source;
 
 
 /**
@@ -832,9 +822,12 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             return getErrorMessageUrl( request, e.getI18nMessage(  ) );
         }
 
-        IndexationService.addIndexerAction( Integer.toString( nDocumentId ), DocumentIndexer.INDEXER_NAME,
+        String strIdDocument = Integer.toString( nDocumentId );
+        IndexationService.addIndexerAction( strIdDocument, DocumentIndexer.INDEXER_NAME,
             IndexerAction.TASK_MODIFY, IndexationService.ALL_DOCUMENT );
 
+        DocumentIndexerUtils.addIndexerAction( strIdDocument, IndexerAction.TASK_MODIFY, IndexationService.ALL_DOCUMENT );
+        
         /*Collection<Portlet> portlets = PublishingService.getInstance().getPortletsByDocumentId(Integer.toString(nDocumentId));
         for(Portlet portlet : portlets)
         {
