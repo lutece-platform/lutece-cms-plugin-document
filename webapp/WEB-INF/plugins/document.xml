@@ -281,7 +281,7 @@
     <!-- Specific plugin CSS stylesheet -->
     <css-stylesheets>
         <css-stylesheets-scope>portal</css-stylesheets-scope>
-        <css-stylesheet>../../js/jscalendar/calendar-lutece.css</css-stylesheet>
+        <css-stylesheet>jscalendar/calendar-lutece.css</css-stylesheet>
     </css-stylesheets>
 
     <!-- Dashboard components -->
