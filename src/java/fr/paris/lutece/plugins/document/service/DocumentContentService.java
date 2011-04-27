@@ -174,9 +174,9 @@ public final class DocumentContentService extends ContentService implements Cach
         }
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        String strPortletId = request.getParameter( Parameters.PORTLET_ID );
+        String strPortletId = request.getParameter( Parameters.PORTLET_ID );	
         String strKey = getKey( strDocumentId, strPortletId, nMode );
-        String strPage = (String) getFromCache( strKey );
+        String strPage = ( String ) getFromCache( strKey );
 
         if ( strPage == null )
         {
@@ -184,7 +184,7 @@ public final class DocumentContentService extends ContentService implements Cach
             synchronized ( strKey )
             {
                 // can be useful if an other thread had evaluate the page
-                strPage = (String) getFromCache( strKey );
+                strPage = ( String ) getFromCache( strKey );
 
                 // ignore CheckStyle, this double verification is useful when page cache has been created when thread is
                 // blocked on synchronized
@@ -300,6 +300,7 @@ public final class DocumentContentService extends ContentService implements Cach
             mapXslParams.put( PARAMETER_PUBLICATION_DATE,
                 DateUtil.getDateString( documentPublication.getDatePublishing(  ), request.getLocale(  ) ) );
             model.put( MARK_PUBLICATION, documentPublication );
+
         }
 
         if ( bPortletExist )
@@ -344,17 +345,28 @@ public final class DocumentContentService extends ContentService implements Cach
                 }
             }
 
+            // Get request paramaters and store them in a hashtable
+            Enumeration<?> enumParam = request.getParameterNames(  );
+            Hashtable<String, String> htParamRequest = new Hashtable<String, String>(  );
+            String paramName = "";
+
+            while ( enumParam.hasMoreElements(  ) )
+            {
+                paramName = (String) enumParam.nextElement(  );
+                htParamRequest.put( paramName, request.getParameter( paramName ) );
+            }          
+
             XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
             String strDocument = xmlTransformerService.transformBySourceWithXslCache( document.getXmlValidatedContent(  ),
                     type.getContentServiceXslSource(  ), DOCUMENT_STYLE_PREFIX_ID + type.getStyleSheetId( nMode ),
-                    null, null );
+                    htParamRequest, null );
 
             model.put( MARK_DOCUMENT, strDocument );
             model.put( MARK_ACCEPT_COMMENT, document.getAcceptSiteComments(  ) );
             model.put( MARK_PORTLET, getPortlet( request, strPortletId, nMode ) );
             model.put( MARK_CATEGORY, getRelatedDocumentsPortlet( request, document, nPortletId, nMode ) );
             model.put( MARK_DOCUMENT_ID, strDocumentId );
-            model.put( MARK_PORTLET_ID, strPortletId );
+            model.put( MARK_PORTLET_ID, strPortletId );            
             model.put( MARK_DOCUMENT_COMMENTS, getComments( strDocumentId, strPortletId, nMode, request ) );
 
             // additionnal page info
