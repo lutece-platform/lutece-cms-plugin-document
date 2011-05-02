@@ -205,11 +205,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             {
                 DocumentAction docAction = (DocumentAction) action;
 
-                if ( docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_ASSIGN ) )
+                if ( DocumentTypeResourceIdService.PERMISSION_ASSIGN.equals( docAction.getPermission(  ) ) )
                 {
                     model.put( MARK_PERMISSION_ASSIGN, 1 );
                 }
-                else if ( docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_PUBLISH ) )
+                else if ( DocumentTypeResourceIdService.PERMISSION_PUBLISH.equals( docAction.getPermission(  ) ) )
                 {
                     model.put( MARK_PERMISSION_PUBLISH, 1 );
                 }
