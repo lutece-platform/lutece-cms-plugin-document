@@ -27,7 +27,7 @@
 						<input class="radio" type="radio" id="page_id_${page.id}"
 							name="page_id" value="${page.id}" />
 					</td>
-					<td><a href="jsp/admin/plugins/document/SelectPage.jsp?page_id=${page.id}&input=${input}">${page.name}</a></td>
+					<td><a href="jsp/admin/plugins/document/SelectPage.jsp?page_id=${page.id}&input=${input}&subcategory=${type_filter}">${page.name}</a></td>
 					<td>${page.description}</td>
 				</tr>
 				</#list>
@@ -40,6 +40,7 @@
 				value="#i18n{portal.util.labelBack}" />
 			</p>
 			<input type="hidden" name="input" value="${input}" />
+			<input type="hidden" name="subcategory" value="${type_filter}" />
 		</form>
 	</#if>
 </div>

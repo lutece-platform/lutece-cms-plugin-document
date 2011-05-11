@@ -33,8 +33,21 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
+import fr.paris.lutece.plugins.document.business.DocumentType;
+import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
+import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortlet;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.portal.business.page.Page;
@@ -51,16 +64,9 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.insert.InsertServiceJspBean;
 import fr.paris.lutece.portal.web.insert.InsertServiceSelectionBean;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
-
-import org.apache.commons.lang.StringEscapeUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -93,6 +99,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
     private static final String PARAMETER_TARGET = "target";
     private static final String PARAMETER_NAME = "name";
     private static final String PARAMETER_INPUT = "input";
+    private static final String PARAMETER_SUBCATEGORY = "subcategory";
 
     // Marker
     private static final String MARK_DOCUMENTS_LIST = "documents_list";
@@ -100,15 +107,20 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
     private static final String MARK_PAGES_LIST = "pages_list";
     private static final String MARK_PORTLET_ID = "portlet_id";
     private static final String MARK_INPUT = "input";
+    private static final String MARK_TYPE_FILTER = "type_filter";
     private static final String MARK_URL = "url";
     private static final String MARK_TARGET = "target";
     private static final String MARK_ALT = "alt";
     private static final String MARK_NAME = "name";
 
+    /** The empty string */
+    private static final String EMPTY_STRING = "";
+    
     // private
     private AdminUser _user;
     private String _input;
-
+    private String _strTypeFilter;
+    
     /**
      * Initialize data
      *
@@ -118,6 +130,24 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
     {
         _user = AdminUserService.getAdminUser( request );
         _input = request.getParameter( PARAMETER_INPUT );
+        _strTypeFilter = request.getParameter( PARAMETER_SUBCATEGORY );
+    }
+    
+    /**
+     * 
+     *{@inheritDoc}
+     */
+    @Override
+    public ReferenceList getSubCategories()
+    {
+    	ReferenceList refList = new ReferenceList();
+    	
+    	for ( DocumentType type : DocumentTypeHome.findAll() )
+    	{
+    		refList.addItem( type.getCode(), type.getDescription() );
+    	}
+    	
+    	return refList;
     }
 
     /**
@@ -159,7 +189,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
             listPages = AdminWorkgroupService.getAuthorizedCollection( listPages, user );
         }
 
-        HashMap model = getDefaultModel(  );
+        Map<String, Object> model = getDefaultModel(  );
 
         model.put( MARK_PAGES_LIST, listPages );
 
@@ -208,6 +238,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
         UrlItem url = new UrlItem( JSP_SELECT_PORTLET );
         url.addParameter( PARAMETER_PAGE_ID, nPageId );
         url.addParameter( PARAMETER_INPUT, _input );
+        url.addParameter( PARAMETER_SUBCATEGORY, getTypeFilter() );
 
         return url.getUrl(  );
     }
@@ -238,13 +269,25 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
         {
             if ( portlet.getPortletTypeId(  ).equals( DocumentListPortletHome.getInstance(  ).getPortletTypeId(  ) ) )
             {
-                listPortlets.add( portlet );
+            	if ( StringUtils.isNotBlank( getTypeFilter(  ) ) )
+            	{
+            		// filter by type
+            		if ( getTypeFilter(  ).equals( ( (DocumentListPortlet) portlet ).getDocumentTypeCode() ) )
+            		{
+            			listPortlets.add( portlet );
+            		}
+            	}
+            	else
+            	{
+            		// no type filter
+            		listPortlets.add( portlet );
+            	}
             }
         }
 
         listPortletsAll.clear(  );
 
-        HashMap model = getDefaultModel(  );
+        Map<String, Object> model = getDefaultModel(  );
 
         model.put( MARK_PORTLETS_LIST, listPortlets );
 
@@ -293,6 +336,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
         UrlItem url = new UrlItem( JSP_SELECT_DOCUMENT );
         url.addParameter( PARAMETER_PORTLET_ID, nPortletId );
         url.addParameter( PARAMETER_INPUT, _input );
+        url.addParameter( PARAMETER_SUBCATEGORY, getTypeFilter(  ) );
 
         return url.getUrl(  );
     }
@@ -318,7 +362,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
         Collection<Document> listDocuments = PublishingService.getInstance(  )
                                                               .getPublishedDocumentsByPortletId( nPortletId );
 
-        HashMap model = getDefaultModel(  );
+        Map<String, Object> model = getDefaultModel(  );
 
         model.put( MARK_DOCUMENTS_LIST, listDocuments );
         model.put( MARK_PORTLET_ID, nPortletId );
@@ -367,16 +411,36 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
 
         return insertUrl( request, _input, StringEscapeUtils.escapeJavaScript( template.getHtml(  ) ) );
     }
+    
+    /**
+     * Gets the filter for the document type.
+     * @return the document type, empty string otherwise.
+     */
+    public String getTypeFilter()
+    {
+    	return _strTypeFilter == null ? EMPTY_STRING : _strTypeFilter;
+    }
+    
+    /**
+     * Sets the filter for the document type.
+     * @param strTypeFilter the document type, empty string otherwise.
+     */
+    public void setTypeFilter( String strTypeFilter )
+    {
+    	_strTypeFilter = strTypeFilter;
+    }
+
 
     /**
      * Get the default model for selection templates
      *
      * @return The default model
      */
-    private HashMap getDefaultModel(  )
+    private Map<String, Object> getDefaultModel(  )
     {
-        HashMap model = new HashMap(  );
+    	Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_INPUT, _input );
+        model.put( MARK_TYPE_FILTER, getTypeFilter(  ) );
 
         return model;
     }
