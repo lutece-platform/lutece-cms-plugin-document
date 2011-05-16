@@ -55,6 +55,7 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
         "LEFT JOIN document_published c ON b.id_portlet = c.id_portlet AND c.id_document= ? " +
         "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet " +
         "LEFT OUTER JOIN document_category_portlet d ON b.id_portlet = d.id_portlet " +
+        "INNER JOIN core_page f ON a.id_page = f.id_page " +
         "WHERE c.id_portlet IS NULL AND b.code_document_type = ? AND (d.id_category IN (SELECT e.id_category " +
         "FROM document_category_link e WHERE e.id_document = ?) OR d.id_category IS NULL) ";
     private static final String SQL_QUERY_CHECK_IS_ALIAS = "SELECT id_alias FROM core_portlet_alias WHERE id_alias = ?";
@@ -238,14 +239,17 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     }
 
     /**
-     * Load the list of documentTypes
-     * @param strCodeDocumentType The code
-     * @return The Collection of the DocumentTypes
+     * Returns a list of couple id_portlet/name filtered by documentType and category
+     * @param nDocumentId the Document ID
+     * @param strCodeDocumentType the code
+     * @param pOrder the order of the portlets
+     * @return A collection of referenceItem
      */
-    public Collection<ReferenceItem> selectDocumentTypeListByCodeAndCategory( int nDocumentId,
-        String strCodeDocumentType )
+    public Collection<ReferenceItem> selectByDocumentOdAndDocumentType( int nDocumentId,
+        String strCodeDocumentType, PortletOrder pOrder )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY );
+    	String strSQL = SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY + pOrder.getSQLOrderBy(  );
+        DAOUtil daoUtil = new DAOUtil( strSQL );
         daoUtil.setInt( 1, nDocumentId );
         daoUtil.setString( 2, strCodeDocumentType );
         daoUtil.setInt( 3, nDocumentId );

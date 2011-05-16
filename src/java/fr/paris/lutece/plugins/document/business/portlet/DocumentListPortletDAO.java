@@ -33,12 +33,13 @@
  */
 package fr.paris.lutece.plugins.document.business.portlet;
 
-import fr.paris.lutece.portal.business.portlet.Portlet;
-import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.util.sql.DAOUtil;
-
 import java.util.ArrayList;
 import java.util.Collection;
+
+import fr.paris.lutece.portal.business.portlet.Portlet;
+import fr.paris.lutece.util.ReferenceItem;
+import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.sql.DAOUtil;
 
 
 /**
@@ -56,6 +57,7 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
         "LEFT JOIN document_published c ON b.id_portlet = c.id_portlet AND c.id_document= ? " +
         "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet " +
         "LEFT OUTER JOIN document_category_list_portlet d ON b.id_portlet = d.id_portlet " +
+        "INNER JOIN core_page f ON a.id_page = f.id_page " +
         "WHERE c.id_portlet IS NULL AND b.code_document_type = ? AND (d.id_category IN (SELECT e.id_category " +
         "FROM document_category_link e WHERE e.id_document = ?) OR d.id_category IS NULL) ";
     private static final String SQL_QUERY_CHECK_IS_ALIAS = "SELECT id_alias FROM core_portlet_alias WHERE id_alias = ?";
@@ -239,12 +241,15 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
 
     /**
      * Load the list of documentTypes
+     * @param nDocumentId the document ID
      * @param strCodeDocumentType The code
-     * @return The Collection of the DocumentTypes
+     * @param pOrder order of the portlets
+     * @return The Collection of the ReferenceItem
      */
-    public Collection selectDocumentTypeListByCodeAndCategory( int nDocumentId, String strCodeDocumentType )
+    public Collection<ReferenceItem> selectByDocumentIdAndDocumentType( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY );
+    	String strSQL = SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY + pOrder.getSQLOrderBy(  );
+        DAOUtil daoUtil = new DAOUtil( strSQL );
         daoUtil.setInt( 1, nDocumentId );
         daoUtil.setString( 2, strCodeDocumentType );
         daoUtil.setInt( 3, nDocumentId );

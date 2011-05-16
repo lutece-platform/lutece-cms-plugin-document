@@ -33,6 +33,17 @@
  */
 package fr.paris.lutece.plugins.document.web.publishing;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentPageTemplate;
@@ -43,6 +54,7 @@ import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortlet;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentPortlet;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentPortletHome;
+import fr.paris.lutece.plugins.document.business.portlet.PortletOrder;
 import fr.paris.lutece.plugins.document.business.publication.DocumentPublication;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
@@ -71,14 +83,6 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 
 /**
  *
@@ -96,14 +100,16 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_MODE_PUBLICATION = "mode_publication";
     private static final String PARAMETER_OLD_MODE_PUBLICATION = "old_mode_publication";
     private static final String PARAMETER_DOCUMENT_ORDER = "document_order";
-    private static final String PARAMETER_PORTLET_LIST_IDS = "list_portlet_ids";
+    private static final String PARAMETER_DOCUMENT_LIST_PORTLET_IDS = "document_list_portlet_ids";
+    private static final String PARAMETER_DOCUMENT_PORTLET_IDS = "document_portlet_ids";
     private static final String PARAMETER_DOCUMENT_PUBLISHED_STATUS = "status";
+    private static final String PARAMETER_ORDER_PORTLET = "order_portlet";
+    private static final String PARAMETER_ORDER_PORTLET_ASC = "order_portlet_asc";
     private static final String MARK_DOCUMENT = "document";
     private static final String MARK_DOCUMENT_PUBLISHED = "document_published";
     private static final String MARK_DOCUMENT_PUBLISHED_STATUS = "status";
     private static final String MARK_PUBLISHED_STATUS_VALUE = "status_published";
     private static final String MARK_UNPUBLISHED_STATUS_VALUE = "status_unpublished";
-    private static final String MARK_PORTLET_LIST = "portlet_list";
     private static final String MARK_ASSIGNED_PORTLET = "assigned_portlet_list";
     private static final String MARK_ASSIGNED_PUBLICATION = "publication";
     private static final String MARK_PORTLET = "portlet";
@@ -124,6 +130,10 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     private static final String MARK_DOCUMENT_PAGE_TEMPLATE_PICTURE = "page_template_picture";
     private static final String MARK_PERMISSION_PUBLISH = "permission_publish";
     private static final String MARK_PERMISSION_ASSIGN = "permission_assign";
+    private static final String MARK_ORDER_PORTLET = "order_portlet";
+    private static final String MARK_ORDER_PORTLET_ASC = "order_portlet_asc";
+    private static final String MARK_DOCUMENT_PORTLET_LIST = "document_portlet_list";
+    private static final String MARk_DOCUMENT_LIST_PORTLET_LIST = "document_list_portlet_list";
     private static final String PROPERTY_PUBLISHING_SPACE_PAGE_TITLE = "document.assign.pageTitle";
     private static final String PROPERTY_MANAGE_PUBLISHING = "document.portlet.publishing.pageTitle";
     private static final String PROPERTY_CREATE_AUTO_PUBLICATION = "document.portlet.publishing.pageTitle";
@@ -160,23 +170,25 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
                                 .isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
                     DocumentTypeResourceIdService.PERMISSION_VIEW, getUser(  ) ) )
         {
-            Collection<ReferenceItem> listAllPortlets = getListAuthorizedPortlets( document.getId(  ),
-                    document.getCodeDocumentType(  ) );
-
-            // Set page path + portlet name
-            for ( ReferenceItem item : listAllPortlets )
+        	PortletOrder pOrder = new PortletOrder(  );
+        	String strOrderPortlet = request.getParameter( PARAMETER_ORDER_PORTLET );
+        	String strOrderPortletAsc = request.getParameter( PARAMETER_ORDER_PORTLET_ASC );
+        	int nOrderPortlet = -1;
+        	int nOrderPortletAsc = -1;
+            if ( StringUtils.isNotBlank( strOrderPortlet ) && StringUtils.isNumeric( strOrderPortlet ) &&
+            		StringUtils.isNotBlank( strOrderPortletAsc ) && StringUtils.isNumeric( strOrderPortletAsc ) )
             {
-                Map<String, Object> subModel = new HashMap<String, Object>(  );
-                subModel.put( MARK_LIST_PAGE,
-                    PortalService.getPagePath( PortletHome.findByPrimaryKey( Integer.parseInt( item.getCode(  ) ) )
-                                                          .getPageId(  ) ) );
-                subModel.put( MARK_PORTLET, item );
-
-                HtmlTemplate subTemplate = AppTemplateService.getTemplate( TEMPLATE_PORTLET_PAGE_PATH, getLocale(  ),
-                        subModel );
-                item.setName( subTemplate.getHtml(  ) );
+            	nOrderPortlet = Integer.parseInt( strOrderPortlet );
+            	nOrderPortletAsc = Integer.parseInt( strOrderPortletAsc );
+            	pOrder.setTypeOrder( nOrderPortlet );
+            	pOrder.setSortAsc( nOrderPortletAsc == PortletOrder.SORT_ASC );
             }
-
+            
+        	Collection<ReferenceItem> listDocumentListPortlets = getListAuthorizedDocumentListPortlets( document.getId(  ),
+                    document.getCodeDocumentType(  ), pOrder );
+        	Collection<ReferenceItem> listDocumentPortlets = getListAuthorizedDocumentPortlets( document.getId(  ),
+                    document.getCodeDocumentType(  ), pOrder );
+            
             Collection<Portlet> listAssignedPortlet = PublishingService.getInstance(  )
                                                                        .getPortletsByDocumentId( strDocumentId );
 
@@ -214,8 +226,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
                     model.put( MARK_PERMISSION_PUBLISH, 1 );
                 }
             }
-
-            model.put( MARK_PORTLET_LIST, listAllPortlets );
+        	
+        	model.put( MARK_ORDER_PORTLET, nOrderPortlet );
+        	model.put( MARK_ORDER_PORTLET_ASC, nOrderPortletAsc );
+            model.put( MARk_DOCUMENT_LIST_PORTLET_LIST, listDocumentListPortlets );
+            model.put( MARK_DOCUMENT_PORTLET_LIST, listDocumentPortlets );
             model.put( MARK_ASSIGNED_PORTLET, listAssignedPortlets );
             model.put( MARK_PUBLISHED_STATUS_VALUE, DocumentPublication.STATUS_PUBLISHED );
             model.put( MARK_DOCUMENT, document );
@@ -246,37 +261,87 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      * @param strCodeDocumentType The code document type
      * @return A collection of {@link ReferenceItem}
      */
-    private Collection<ReferenceItem> getListAuthorizedPortlets( int nDocumentId, String strCodeDocumentType )
+    private Collection<ReferenceItem> getListAuthorizedDocumentListPortlets( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder )
     {
-        Collection<ReferenceItem> listAllPortlets = new ArrayList<ReferenceItem>(  );
+        Collection<ReferenceItem> listPortlets = new ArrayList<ReferenceItem>(  );
 
         // Check role PERMISSION_MANAGE for DocumentListPortlet
         if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, DocumentListPortlet.RESOURCE_ID,
                     PortletResourceIdService.PERMISSION_MANAGE, getUser(  ) ) )
         {
-            listAllPortlets.addAll( DocumentListPortletHome.findByCodeDocumentTypeAndCategory( nDocumentId,
-                    strCodeDocumentType ) );
+        	listPortlets.addAll( DocumentListPortletHome.findByCodeDocumentTypeAndCategory( nDocumentId,
+                    strCodeDocumentType, pOrder ) );
         }
+
+        //check ROLE PERMISSION_MANAGE for PAGE and WORKGROUP
+        Collection<ReferenceItem> listFilteredPortlets = filterByWorkgroup( listPortlets );
+
+        return listFilteredPortlets;
+    }
+    
+    /**
+     * Get the list of authorized portlets.
+     *
+     * Check :
+     * <ul>
+     *   <li>if user is authorized to manage DocumentListPortlet</li>
+     *   <li>if user is authorized to manage DocumentPortlet</li>
+     *   <li>For each portlet :
+     *     <ul>
+     *       <li>if user is authorized to manage the linked page</li>
+     *       <li>if portlet isn't in autopublication mode</li>
+     *     </ul>
+     *   </li>
+     * </ul>
+     *
+     * @param nDocumentId The document id
+     * @param strCodeDocumentType The code document type
+     * @return A collection of {@link ReferenceItem}
+     */
+    private Collection<ReferenceItem> getListAuthorizedDocumentPortlets( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder )
+    {
+        Collection<ReferenceItem> listPortlets = new ArrayList<ReferenceItem>(  );
 
         // Check role PERMISSION_MANAGE for DocumentPortlet
         if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, DocumentPortlet.RESOURCE_ID,
                     PortletResourceIdService.PERMISSION_MANAGE, getUser(  ) ) )
         {
-            listAllPortlets.addAll( DocumentPortletHome.findByCodeDocumentTypeAndCategory( nDocumentId,
-                    strCodeDocumentType ) );
+        	listPortlets.addAll( DocumentPortletHome.findByCodeDocumentTypeAndCategory( nDocumentId,
+                    strCodeDocumentType, pOrder ) );
         }
 
-        //check ROLE PERMISSION_MANAGE for PAGE and WORKGROUP
+        Collection<ReferenceItem> listFilteredPortlets = filterByWorkgroup( listPortlets );
+        
+        return listFilteredPortlets;
+    }
+    
+    /**
+     * Filter the given portlets list by its workgroup
+     * @param listPortlets a collection of {@link ReferenceItem}
+     * @return a collection of {@link ReferenceItem}
+     */
+    private Collection<ReferenceItem> filterByWorkgroup( Collection<ReferenceItem> listPortlets )
+    {
+    	//check ROLE PERMISSION_MANAGE for PAGE and WORKGROUP
         Collection<ReferenceItem> listFilteredPortlets = new ArrayList<ReferenceItem>(  );
 
         // Check role PERMISSION_MANAGE for workgroup and page and check if portlet isn't autopublished
-        for ( ReferenceItem item : listAllPortlets )
+        for ( ReferenceItem item : listPortlets )
         {
             Portlet portlet = PortletHome.findByPrimaryKey( Integer.parseInt( item.getCode(  ) ) );
 
             if ( !DocumentAutoPublicationHome.isPortletAutoPublished( portlet.getId(  ) ) &&
                     PortletService.getInstance(  ).isAuthorized( portlet, getUser(  ) ) )
             {
+                Map<String, Object> subModel = new HashMap<String, Object>(  );
+                subModel.put( MARK_LIST_PAGE,
+                    PortalService.getPagePath( PortletHome.findByPrimaryKey( Integer.parseInt( item.getCode(  ) ) )
+                                                          .getPageId(  ) ) );
+                subModel.put( MARK_PORTLET, item );
+
+                HtmlTemplate subTemplate = AppTemplateService.getTemplate( TEMPLATE_PORTLET_PAGE_PATH, getLocale(  ),
+                        subModel );
+                item.setName( subTemplate.getHtml(  ) );
                 listFilteredPortlets.add( item );
             }
         }
@@ -296,15 +361,31 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
 
         //retrieve the selected portlets ids
-        String[] arrayPortletIds = request.getParameterValues( PARAMETER_PORTLET_LIST_IDS );
+        String[] arrayDocumentListPortletIds = request.getParameterValues( PARAMETER_DOCUMENT_LIST_PORTLET_IDS );
+        String[] arrayDocumentPortletIds = request.getParameterValues( PARAMETER_DOCUMENT_PORTLET_IDS );
+        List<String> listPortletIds = new ArrayList<String>(  );
+        if ( arrayDocumentListPortletIds != null )
+        {
+        	for ( String strId : arrayDocumentListPortletIds )
+            {
+            	listPortletIds.add( strId );
+            }
+        }
+        if ( arrayDocumentPortletIds != null )
+        {
+	        for ( String strId : arrayDocumentPortletIds )
+	        {
+	        	listPortletIds.add( strId );
+	        }
+        }
 
-        if ( ( arrayPortletIds != null ) || ( strPortletId != null ) )
+        if ( listPortletIds.size(  ) > 0 || strPortletId != null )
         {
             if ( strPortletId == null )
             {
-                for ( int i = 0; i < arrayPortletIds.length; i++ )
+                for ( String strId : listPortletIds )
                 {
-                    int nPortletId = Integer.parseInt( arrayPortletIds[i] );
+                    int nPortletId = Integer.parseInt( strId );
                     int nStatus = Integer.parseInt( request.getParameter( PARAMETER_DOCUMENT_PUBLISHED_STATUS ) );
 
                     if ( !PublishingService.getInstance(  ).isAssigned( nDocumentId, nPortletId ) )

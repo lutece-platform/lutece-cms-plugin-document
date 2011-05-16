@@ -42,10 +42,11 @@
  */
 package fr.paris.lutece.plugins.document.business.portlet;
 
+import java.util.Collection;
+
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 import fr.paris.lutece.portal.business.portlet.Portlet;
-
-import java.util.Collection;
+import fr.paris.lutece.util.ReferenceItem;
 
 
 /**
@@ -81,11 +82,12 @@ public interface IDocumentListPortletDAO extends IPortletInterfaceDAO
 
     /**
      * Load the list of documentTypes
-     *
+     * @param nDocumentId the document ID
      * @param strCodeDocumentType The code
-     * @return The Collection of the DocumentTypes
+     * @param pOrder order of the portlets
+     * @return The Collection of the ReferenceItem
      */
-    Collection selectDocumentTypeListByCodeAndCategory( int nDocumentId, String strCodeDocumentType );
+    Collection<ReferenceItem> selectByDocumentIdAndDocumentType( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder );
 
     /**
      * Update the record in the table

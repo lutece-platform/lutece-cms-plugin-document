@@ -49,23 +49,108 @@
 	<div id="right">
 	           <div class="content-box">
 	               <h2>#i18n{document.manage_document_publishing.labelPublishTitle} ${document.title}</h2>
+	               <p>
+	               		<strong>#i18n{document.manage_document_publishing.labelAvailablePortlet}</strong>
+	               </p>
 	               <div class="multibox"  width="100%">		
-	                   <#if portlet_list?size &gt; 0 >	
-	                   
-		                   <table width="100%" >
-		                       <tr>
-		                           <th>
-		                               #i18n{document.manage_document_publishing.labelAvailablePortlet}
-		                           </th>
-		                       </tr>
-		                       <form name="assignDocument" method="post" action="jsp/admin/plugins/document/DoAssignedDocument.jsp">                        
-		                           <tr>					
-		                               <td>
-		                               		<@comboWithParamsAndLength name="list_portlet_ids" default_value="" additionalParameters="multiple='multiple' size='10' style='width:100%;'" items=portlet_list max_length=175 />		    
-		                               </td>
+	                   <#if document_list_portlet_list?size &gt; 0 || document_portlet_list?size &gt; 0 >
+	                   	   <div class="highlight-box">
+		                   	   <form method="post" action="jsp/admin/plugins/document/ManageDocumentPublishing.jsp">
+		                   	   		<input type="hidden" name="id_document" value="${document.id}" />
+									<b>#i18n{document.manage_document_publishing.labelOrder} : </b>
+									<select name="order_portlet">
+								   		<option value="0"
+								   			<#if !order_portlet?? || order_portlet?? && order_portlet = 0>
+								   				selected="selected"
+								   			</#if>
+								   		>#i18n{document.manage_document_publishing.labelDateUpdatePortlet}</option>
+								   		<option value="1"
+								   			<#if order_portlet?? && order_portlet = 1>
+								   				selected="selected"
+								   			</#if>
+								   		>#i18n{document.manage_document_publishing.labelPageName}</option>
+								   		<option value="2"
+								   			<#if order_portlet?? && order_portlet = 2>
+								   				selected="selected"
+								   			</#if>
+								   		>#i18n{document.manage_document_publishing.labelPageId}</option>
+								   		<option value="3"
+								   			<#if order_portlet?? && order_portlet = 3>
+								   				selected="selected"
+								   			</#if>
+								   		>#i18n{document.manage_document_publishing.labelPortletName}</option>
+									</select>
+									<select name="order_portlet_asc">
+										<option value="0"
+											<#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0>
+								   				selected="selected"
+								   			</#if>
+										>#i18n{document.manage_document_publishing.labelOrderDesc}</option>
+										<option value="1"
+											<#if order_portlet_asc?? && order_portlet_asc = 1>
+								   				selected="selected"
+								   			</#if>
+										>#i18n{document.manage_document_publishing.labelOrderAsc}</option>
+									</select>
+									<input type="submit" value="#i18n{document.manage_document_publishing.buttonValidate}" class="button" />
+		                   	   </form>
+	                   	   </div>
+	                   	   <form name="assignDocument" method="post" action="jsp/admin/plugins/document/DoAssignedDocument.jsp">
+			                   <table width="100%">
+			                       <tr>
+			                       	   <#if document_list_portlet_list?size &gt; 0>
+			                               <td 
+			                               		<#if document_portlet_list?size &gt; 0>
+			                               			width="50%"
+			                               		<#else>
+			                               			colspan="2"
+			                               		</#if>
+			                               >
+			                               		<b>#i18n{document.manage_document_publishing.labelAvailableDocumentListPortlet}</b>
+			                               		<br />
+			                               		#i18n{document.manage_document_publishing.labelAvailableDocumentListPortletComment}
+			                               </td>
+		                               </#if>
+		                               <#if document_portlet_list?size &gt; 0>
+		                               	   	<td 
+		                               			<#if document_list_portlet_list?size &gt; 0>
+			                               			width="50%"
+			                               		<#else>
+			                               			colspan="2"
+			                               		</#if>
+			                           		>
+		                               			<b>#i18n{document.manage_document_publishing.labelAvailableDocumentPortlet}</b>
+		                               			<br />
+		                               			#i18n{document.manage_document_publishing.labelAvailableDocumentPortletComment}
+		                               		</td>
+		                               </#if>
+			                       </tr>
+		                           <tr>
+		                           	   <#if document_list_portlet_list?size &gt; 0>
+			                               <td 
+			                               		<#if document_portlet_list?size &gt; 0>
+			                               			width="50%"
+			                               		<#else>
+			                               			colspan="2"
+			                               		</#if>
+			                               >
+			                               		<@comboWithParamsAndLength name="document_list_portlet_ids" default_value="" additionalParameters="multiple='multiple' size='15' style='width:100%;'" items=document_list_portlet_list max_length=175 />
+			                               </td>
+		                               </#if>
+		                               <#if document_portlet_list?size &gt; 0>
+		                               	   	<td 
+		                               			<#if document_list_portlet_list?size &gt; 0>
+			                               			width="50%"
+			                               		<#else>
+			                               			colspan="2"
+			                               		</#if>
+			                           		>
+		                               			<@comboWithParamsAndLength name="document_portlet_ids" default_value="" additionalParameters="multiple='multiple' size='15' style='width:100%;'" items=document_portlet_list max_length=175 />
+		                               		</td>
+		                               </#if>
 		                           </tr>
 		                           <tr>
-		                               <td align="center">
+		                               <td colspan="2" align="center">
 		                                   <input type="hidden" name="id_document" value="${document.id}" />
 		                                   <input type="hidden" name="status" value="${status_unpublished}" />	
 	                                  		<#if permission_assign?exists>
@@ -76,9 +161,8 @@
 			                                </#if>
 		                               </td>
 		                           </tr>
-		                       </form>
-		                   </table>	
-	                   
+			                   </table>	
+	                   	   </form>
 	                   <#else>
 	                   <p>
 	                       #i18n{document.manage_document_publishing.messagePortletNotExist}

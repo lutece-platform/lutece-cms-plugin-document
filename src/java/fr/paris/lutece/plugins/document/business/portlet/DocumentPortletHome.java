@@ -105,14 +105,16 @@ public class DocumentPortletHome extends PortletHome
 
     /**
      * Returns a list of couple id_portlet/name filtered by documentType and category
+     * @param nDocumentId the Document ID
      * @param strCodeDocumentType the code
-     * @return A collection of documentTypes
+     * @param pOrder the order of the portlets
+     * @return A collection of referenceItem
      */
     public static Collection<ReferenceItem> findByCodeDocumentTypeAndCategory( int nDocumentId,
-        String strCodeDocumentType )
+        String strCodeDocumentType, PortletOrder pOrder )
     {
         //FIXME : method should access to different home business methods
-        return _dao.selectDocumentTypeListByCodeAndCategory( nDocumentId, strCodeDocumentType );
+        return _dao.selectByDocumentOdAndDocumentType( nDocumentId, strCodeDocumentType, pOrder );
     }
 
     public static boolean checkIsAliasPortlet( int nPortletId )

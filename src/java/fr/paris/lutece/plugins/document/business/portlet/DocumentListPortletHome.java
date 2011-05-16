@@ -37,6 +37,7 @@ import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.util.ReferenceItem;
 
 import java.util.Collection;
 
@@ -106,14 +107,16 @@ public class DocumentListPortletHome extends PortletHome
     }
 
     /**
-     * Returns a list of couple id_portlet/name filtered by documentType and category
-     * @param strCodeDocumentType the code
-     * @return A collection of documentTypes
+     * Load the list of documentTypes
+     * @param nDocumentId the document ID
+     * @param strCodeDocumentType The code
+     * @param pOrder order of the portlets
+     * @return The Collection of the ReferenceItem
      */
-    public static Collection findByCodeDocumentTypeAndCategory( int nDocumentId, String strCodeDocumentType )
+    public static Collection<ReferenceItem> findByCodeDocumentTypeAndCategory( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder )
     {
         //FIXME : method should access to different home business methods
-        return _dao.selectDocumentTypeListByCodeAndCategory( nDocumentId, strCodeDocumentType );
+        return _dao.selectByDocumentIdAndDocumentType( nDocumentId, strCodeDocumentType, pOrder );
     }
 
     public static boolean checkIsAliasPortlet( int nPortletId )

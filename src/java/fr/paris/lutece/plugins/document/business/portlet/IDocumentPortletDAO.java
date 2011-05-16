@@ -42,13 +42,14 @@ import java.util.List;
 
 public interface IDocumentPortletDAO extends IPortletInterfaceDAO
 {
-    /**
-        * Load the list of documentTypes
-       *
-       * @param strCodeDocumentType The code
-       * @return The Collection of the DocumentTypes
-       */
-    Collection<ReferenceItem> selectDocumentTypeListByCodeAndCategory( int nDocumentId, String strCodeDocumentType );
+	/**
+	 * Returns a list of couple id_portlet/name filtered by documentType and category
+     * @param nDocumentId the Document ID
+     * @param strCodeDocumentType the code
+     * @param pOrder the order of the portlets
+     * @return A collection of referenceItem
+	 */
+    Collection<ReferenceItem> selectByDocumentOdAndDocumentType( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder );
 
     /**
      * Tests if is a portlet is portlet type alias
