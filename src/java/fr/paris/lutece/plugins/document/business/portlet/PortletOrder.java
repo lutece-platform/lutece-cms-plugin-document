@@ -59,38 +59,66 @@ public class PortletOrder
 	private boolean _bSortAsc;
 	private int _nTypeOrder;
 
+	/**
+	 * Constructor
+	 */
 	public PortletOrder(  )
 	{
 		_bSortAsc = false;
 		_nTypeOrder = DATE_UPDATE_PORTLET;
 	}
 
+	/**
+	 * Constructor
+	 * @param bSortAsc true if it must be sorted ascendingly, false otherwise
+	 * @param nTypeOrder the order type
+	 */
 	public PortletOrder( boolean bSortAsc, int nTypeOrder )
 	{
 		_bSortAsc = bSortAsc;
 		_nTypeOrder = nTypeOrder;
 	}
 
+	/**
+	 * Set the way of sorting the portlets
+	 * @param bSortAsc true if it must be sorted ascendingly, false otherwise
+	 */
 	public void setSortAsc( boolean bSortAsc )
 	{
 		_bSortAsc = bSortAsc;
 	}
 
+	/**
+	 * Return true if it must be sorted ascendingly, false otherwise
+	 * @return true if it must be sorted ascendingly, false otherwise
+	 */
 	public boolean isSortAsc(  )
 	{
 		return _bSortAsc;
 	}
 
+	/**
+	 * Set the order type
+	 * @param nTypeOrder the order type
+	 */
 	public void setTypeOrder( int nTypeOrder )
 	{
 		_nTypeOrder = nTypeOrder;
 	}
 
+	/**
+	 * Get the order type
+	 * @return the order type
+	 */
 	public int getTypeOrder(  )
 	{
 		return _nTypeOrder;
 	}
 
+	/**
+	 * Get the SQL query for ordering the portlet
+	 * @return the SQL query
+	 */
 	public String getSQLOrderBy(  )
 	{
 		StringBuilder sbSQL = new StringBuilder();
