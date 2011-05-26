@@ -1,4 +1,4 @@
 <#list page_list as page>
-	${page.name}<#if page_has_next>&nbsp;&#62;&nbsp;</#if>
+	${page.name}<#if page_has_next>&nbsp;&#62;&nbsp;<#else>&nbsp;(#i18n{document.manage_document_publishing.columnTitleId} : ${page.id})</#if>
 </#list>
 &nbsp;[${portlet.name}]
