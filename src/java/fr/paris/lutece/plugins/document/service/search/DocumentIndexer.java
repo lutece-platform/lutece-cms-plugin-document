@@ -107,11 +107,21 @@ public class DocumentIndexer implements SearchIndexer
                 url.addParameter( PARAMETER_PORTLET_ID, portlet.getId(  ) );
 
                 String strPortletDocumentId = document.getId(  ) + "_" + SHORT_NAME + "&" + portlet.getId(  );
-
-                org.apache.lucene.document.Document doc = getDocument( document, url.getUrl(  ), page.getRole(  ),
-                        strPortletDocumentId );
-
-                IndexationService.write( doc );
+                org.apache.lucene.document.Document doc = null;
+                try
+                {
+                	doc = getDocument( document, url.getUrl(  ), page.getRole(  ),
+                            strPortletDocumentId );
+                }
+                catch ( Exception e )
+                {
+                	AppLogService.error( "Indexer : " + getName(  ) + " - ERROR (document ID : " + 
+                			document.getId(  ) + ", portlet ID : " + portlet.getId(  ) + ") : " + e.getMessage(  ), e );
+                }
+                if ( doc != null )
+                {
+                	IndexationService.write( doc );
+                }
             }
         }
     }
@@ -297,6 +307,7 @@ public class DocumentIndexer implements SearchIndexer
                     {
                         try
                         {
+                        	AppLogService.error( "Document ID : " + document.getId(  ) );
                             ByteArrayInputStream bais = new ByteArrayInputStream( attribute.getBinaryValue(  ) );
                             sbContentToIndex.append( " " );
                             sbContentToIndex.append( indexer.getContentToIndex( bais ) );
