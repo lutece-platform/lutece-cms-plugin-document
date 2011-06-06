@@ -115,8 +115,8 @@ public class DocumentIndexer implements SearchIndexer
                 }
                 catch ( Exception e )
                 {
-                	AppLogService.error( "Indexer : " + getName(  ) + " - ERROR (document ID : " + 
-                			document.getId(  ) + ", portlet ID : " + portlet.getId(  ) + ") : " + e.getMessage(  ), e );
+                	String strMessage = "Document ID : " + document.getId(  ) + " - Portlet ID : " + portlet.getId(  );
+                	IndexationService.error( this, e, strMessage );
                 }
                 if ( doc != null )
                 {
@@ -307,7 +307,6 @@ public class DocumentIndexer implements SearchIndexer
                     {
                         try
                         {
-                        	AppLogService.error( "Document ID : " + document.getId(  ) );
                             ByteArrayInputStream bais = new ByteArrayInputStream( attribute.getBinaryValue(  ) );
                             sbContentToIndex.append( " " );
                             sbContentToIndex.append( indexer.getContentToIndex( bais ) );
