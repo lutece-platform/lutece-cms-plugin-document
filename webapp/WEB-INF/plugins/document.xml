@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
-<plug-in>
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?><plug-in>
     <!-- Plugin Informations -->
     <name>document</name>
     <class>fr.paris.lutece.plugins.document.service.DocumentPlugin</class>
     <version>2.2.2</version>
-    <documentation />
-    <installation />
-    <changes />
-    <user-guide />
+    <documentation/>
+    <installation/>
+    <changes/>
+    <user-guide/>
     <description>document.plugin.description</description>
     <provider>document.plugin.provider</provider>
     <provider-url>http://lutece.paris.fr</provider-url>
@@ -15,7 +14,7 @@
     <copyright>Copyright 2001-20101 Mairie de Paris</copyright>
     <core-version-dependency>
         <min-core-version>2.4.1</min-core-version>
-        <max-core-version />
+        <max-core-version/>
     </core-version-dependency>
     <db-pool-required>1</db-pool-required>
 
@@ -138,8 +137,8 @@
             <portlet-modify-specific-template>
                 /admin/plugins/document/portlet/document_list_portlet_type.html
 			</portlet-modify-specific-template>
-            <portlet-create-specific-form-template />
-            <portlet-modify-specific-form-template />
+            <portlet-create-specific-form-template/>
+            <portlet-modify-specific-form-template/>
         </portlet>
         <portlet>
             <portlet-class>
@@ -171,8 +170,8 @@
             <portlet-modify-specific-template>
                 /admin/plugins/document/portlet/document_portlet_type.html
 			</portlet-modify-specific-template>
-            <portlet-create-specific-form-template />
-            <portlet-modify-specific-form-template />
+            <portlet-create-specific-form-template/>
+            <portlet-modify-specific-form-template/>
         </portlet>
     </portlets>
 
