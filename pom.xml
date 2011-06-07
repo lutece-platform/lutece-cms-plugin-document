@@ -8,7 +8,7 @@
 	<groupId>fr.paris.lutece.plugins</groupId>
 	<artifactId>plugin-document</artifactId>
 	<packaging>lutece-plugin</packaging>
-	<version>2.2.2</version>
+	<version>2.2.3-SNAPSHOT</version>
 	<name>Lutece document plugin</name>
 	<repositories>
 		<repository>
@@ -43,8 +43,8 @@
 		<jiraComponentId>10031</jiraComponentId>
 	</properties>
     <scm>
-        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/tags/plugin-document-2.2.2</connection>
-        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/tags/plugin-document-2.2.2</developerConnection>
-        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/tags/plugin-document-2.2.2</url>
+        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/cms/plugin-document</connection>
+        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/cms/plugin-document</developerConnection>
+        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/cms/plugin-document</url>
     </scm>
 </project>
