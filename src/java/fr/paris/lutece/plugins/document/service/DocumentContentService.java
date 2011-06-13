@@ -33,6 +33,25 @@
  */
 package fr.paris.lutece.plugins.document.service;
 
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+
+import net.sf.ehcache.CacheException;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+import net.sf.ehcache.event.CacheEventListener;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
@@ -48,7 +67,6 @@ import fr.paris.lutece.portal.business.portlet.AliasPortlet;
 import fr.paris.lutece.portal.business.portlet.AliasPortletHome;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
-import fr.paris.lutece.portal.business.resourceenhancer.IResourceDisplayManager;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.business.style.ModeHome;
 import fr.paris.lutece.portal.service.content.ContentService;
@@ -59,7 +77,6 @@ import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -69,28 +86,7 @@ import fr.paris.lutece.portal.web.constants.Parameters;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
-
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.event.CacheEventListener;
-
-import java.io.FileInputStream;
-
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
+import fr.paris.lutece.util.xml.XmlUtil;
 
 
 /**
@@ -107,6 +103,12 @@ public final class DocumentContentService extends ContentService implements Cach
     private static final int MODE_ADMIN = 1;
     private static final String CONSTANT_DEFAULT_PORTLET_DOCUMENT_LIST_XSL = "WEB-INF/xsl/normal/portlet_document_list.xsl";
     private static final String DOCUMENT_STYLE_PREFIX_ID = "document-";
+    private static final String LOCALE_EN = "en";
+    private static final String LOCALE_FR = "fr";
+    
+    // XML tags
+    private static final String XML_TAG_CONTENT = "content";
+    private static final String XML_TAG_SITE_LOCALE = "site_locale";
 
     // Parameters
     private static final String PARAMETER_DOCUMENT_ID = "document_id";
@@ -116,6 +118,7 @@ public final class DocumentContentService extends ContentService implements Cach
     private static final String PARAMETER_CHECK_EMAIL = "checkemail";
     private static final String PARAMETER_SITE_PATH = "site-path";
     private static final String PARAMETER_PUBLICATION_DATE = "publication-date";
+    private static final String PARAMETER_SITE_LOCALE = "site_locale";
 
     // Markers
     private static final String MARK_PUBLICATION = "publication";
@@ -174,8 +177,13 @@ public final class DocumentContentService extends ContentService implements Cach
         }
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        String strPortletId = request.getParameter( Parameters.PORTLET_ID );	
-        String strKey = getKey( strDocumentId, strPortletId, nMode );
+        String strPortletId = request.getParameter( Parameters.PORTLET_ID );
+        String strSiteLocale = request.getParameter( PARAMETER_SITE_LOCALE );
+        if( strSiteLocale == null || !strSiteLocale.equalsIgnoreCase( LOCALE_EN ) )
+        {
+        	strSiteLocale = LOCALE_FR;
+        }
+        String strKey = getKey( strDocumentId, strPortletId, strSiteLocale, nMode );
         String strPage = ( String ) getFromCache( strKey );
 
         if ( strPage == null )
@@ -191,8 +199,8 @@ public final class DocumentContentService extends ContentService implements Cach
                 if ( strPage == null )
                 {
                     AppLogService.debug( " -- Page generation " + strKey + " : doc=" + strDocumentId + " portletid=" +
-                        strPortletId + " nMode=" + nMode );
-                    strPage = buildPage( request, strDocumentId, strPortletId, nMode );
+                        strPortletId + "site_locale=" + strSiteLocale + "nMode=" + nMode );
+                    strPage = buildPage( request, strDocumentId, strPortletId, strSiteLocale, nMode );
 
                     if ( strDocumentId != null )
                     {
@@ -242,12 +250,14 @@ public final class DocumentContentService extends ContentService implements Cach
      * @param request The HTTP Request
      * @param strDocumentId The document ID
      * @param strPortletId The portlet ID
+     * @param strSiteLocale the site locale code
      * @param nMode The current mode
      * @return
      * @throws fr.paris.lutece.portal.service.security.UserNotSignedException
      * @throws fr.paris.lutece.portal.service.message.SiteMessageException
      */
-    private String buildPage( HttpServletRequest request, String strDocumentId, String strPortletId, int nMode )
+    private String buildPage( HttpServletRequest request, String strDocumentId, String strPortletId,
+    		String strSiteLocale, int nMode )
         throws UserNotSignedException, SiteMessageException
     {
         int nPortletId;
@@ -357,7 +367,12 @@ public final class DocumentContentService extends ContentService implements Cach
             }          
 
             XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
-            String strDocument = xmlTransformerService.transformBySourceWithXslCache( document.getXmlValidatedContent(  ),
+            StringBuffer strXml = new StringBuffer(  );
+            XmlUtil.beginElement( strXml, XML_TAG_CONTENT );
+            XmlUtil.addElement( strXml, XML_TAG_SITE_LOCALE, strSiteLocale );
+            strXml.append( document.getXmlValidatedContent(  ) );
+            XmlUtil.endElement( strXml, XML_TAG_CONTENT );
+            String strDocument = xmlTransformerService.transformBySourceWithXslCache( strXml.toString(  ),
                     type.getContentServiceXslSource(  ), DOCUMENT_STYLE_PREFIX_ID + type.getStyleSheetId( nMode ),
                     htParamRequest, null );
 
@@ -528,7 +543,7 @@ public final class DocumentContentService extends ContentService implements Cach
         if ( ( nMode != MODE_ADMIN ) && ( document.getCategories(  ) != null ) &&
                 ( document.getCategories(  ).size(  ) > 0 ) )
         {
-            HashMap model = new HashMap(  );
+            HashMap<String, Object> model = new HashMap<String, Object>(  );
             List<Document> listRelatedDocument = DocumentHome.findByRelatedCategories( document, request.getLocale(  ) );
 
             List<Document> listDocument = new ArrayList<Document>(  );
@@ -586,7 +601,7 @@ public final class DocumentContentService extends ContentService implements Cach
         int nMailingListId = document.getMailingListId(  );
         String strMailingListId = Integer.toString( nMailingListId );
 
-        HashMap model = new HashMap(  );
+        HashMap<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_DOCUMENT, document );
 
         if ( ( nMode != MODE_ADMIN ) && ( document.getAcceptSiteComments(  ) == 1 ) )
@@ -642,7 +657,7 @@ public final class DocumentContentService extends ContentService implements Cach
     private static String getAddCommentForm( HttpServletRequest request, String strDocumentId, String strPortletId,
         String strMailingListId, String strXssError, String strCheckEmail, String strMandatoryField )
     {
-        HashMap model = new HashMap(  );
+        HashMap<String, Object> model = new HashMap<String, Object>(  );
 
         try
         {
@@ -746,9 +761,9 @@ public final class DocumentContentService extends ContentService implements Cach
      * @param user Current Lutece user
      * @return The HashMap key for articles pages as a String.
      */
-    private String getKey( String strDocumentId, String strPortletId, int nMode )
+    private String getKey( String strDocumentId, String strPortletId, String strSiteLocale, int nMode )
     {
-        String key = "D" + strDocumentId + "P" + strPortletId + "M" + nMode;
+        String key = "D" + strDocumentId + "P" + strPortletId + "L" + strSiteLocale + "M" + nMode;
         String keyInMemory = keyMemory.putIfAbsent( key, key );
 
         if ( keyInMemory != null )
@@ -777,7 +792,11 @@ public final class DocumentContentService extends ContentService implements Cach
     {
         if ( getCache(  ) != null )
         {
-            String strKey = getKey( strDocumentId, strPortletId, PortalJspBean.MODE_HTML );
+            String strKey = getKey( strDocumentId, strPortletId, LOCALE_FR, PortalJspBean.MODE_HTML );
+
+            getCache(  ).remove( strKey );
+            
+            strKey = getKey( strDocumentId, strPortletId, LOCALE_EN, PortalJspBean.MODE_HTML );
 
             getCache(  ).remove( strKey );
         }
