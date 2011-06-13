@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.document.business.portlet;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
+import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.util.xml.XmlUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,6 +87,7 @@ public class DocumentListPortlet extends Portlet
         }
 
         XmlUtil.endElement( strXml, TAG_DOCUMENT_LIST_PORTLET );
+        ResourceEnhancer.getXmlAddOn( strXml, DocumentListPortlet.RESOURCE_ID, getId(  ) );
 
         String str = addPortletTags( strXml );
 
