@@ -417,7 +417,8 @@ public class DocumentService
     }
 
     /**
-     * Build an HTML form for the document modification for a given document
+     * Build an HTML form for the document modification for a given document ID.
+     * <b>Warning</b> : This method loads the binaries of the document.
      *
      * @param strDocumentId The Id of the document to modify
      * @param locale The Locale
@@ -427,9 +428,22 @@ public class DocumentService
      */
     public String getModifyForm( String strDocumentId, Locale locale, String strBaseUrl )
     {
-        StringBuffer sbForm = new StringBuffer(  );
         int nDocumentId = Integer.parseInt( strDocumentId );
         Document document = DocumentHome.findByPrimaryKey( nDocumentId );
+        return getModifyForm( document, locale, strBaseUrl );
+    }
+    
+    /**
+     * Build an HTML form for the document modification for a given document
+     * 
+     * @param document The document
+     * @param locale The Locale
+     * @param strBaseUrl The base url
+     * @return The HTML form
+     */
+    public String getModifyForm( Document document, Locale locale, String strBaseUrl )
+    {
+    	StringBuffer sbForm = new StringBuffer(  );
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
 
         for ( DocumentAttribute attribute : documentType.getAttributes(  ) )

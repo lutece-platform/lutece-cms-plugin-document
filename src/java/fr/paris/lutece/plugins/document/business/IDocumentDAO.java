@@ -145,6 +145,13 @@ public interface IDocumentDAO
      * @param document the reference of the document
      */
     void loadAttributes( Document document );
+    
+    /**
+     * Load document attributes
+     * @param document the reference of the document
+     * @param bValidated true if the content of the document must be validated, false otherwise
+     */
+    void loadAttributesWithoutBinaries( Document document, boolean bValidated );
 
     /**
      * Load document pageTemplatePath

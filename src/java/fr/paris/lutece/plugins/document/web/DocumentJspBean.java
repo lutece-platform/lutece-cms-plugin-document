@@ -44,6 +44,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.Source;
 
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentFilter;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
@@ -553,7 +555,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         }
 
         String strStateId = ( request.getParameter( PARAMETER_STATE_ID ) != null )
-            ? request.getParameter( PARAMETER_STATE_ID ) : "";
+            ? request.getParameter( PARAMETER_STATE_ID ) : StringUtils.EMPTY;
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LOCALE, getLocale(  ).getLanguage(  ) );
@@ -561,11 +563,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         // Date Management
         model.put( MARK_DATE_VALIDITY_BEGIN,
-            ( document.getDateValidityBegin(  ) == null ) ? ""
+            ( document.getDateValidityBegin(  ) == null ) ? StringUtils.EMPTY
                                                           : DateUtil.getDateString( 
                 new Date( document.getDateValidityBegin(  ).getTime(  ) ), getLocale(  ) ) );
         model.put( MARK_DATE_VALIDITY_END,
-            ( document.getDateValidityEnd(  ) == null ) ? ""
+            ( document.getDateValidityEnd(  ) == null ) ? StringUtils.EMPTY
                                                         : DateUtil.getDateString( 
                 new Date( document.getDateValidityEnd(  ).getTime(  ) ), getLocale(  ) ) );
 
@@ -597,7 +599,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         model.put( MARK_METADATA, getMetadataModifyForm( request, document ) );
         model.put( MARK_FIELDS,
             DocumentService.getInstance(  )
-                           .getModifyForm( strDocumentId, getLocale(  ), AppPathService.getBaseUrl( request ) ) );
+                           .getModifyForm( document, getLocale(  ), AppPathService.getBaseUrl( request ) ) );
         model.put( MARK_STATE_ID, strStateId );
 
         int nIsCommentable = 1;

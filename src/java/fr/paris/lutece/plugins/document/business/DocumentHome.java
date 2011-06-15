@@ -256,6 +256,16 @@ public final class DocumentHome
     {
         _dao.loadAttributes( document );
     }
+    
+    /**
+     * Load document attributes
+     * @param document the document reference
+     * @param bValidated true if the content of the document must be validated, false otherwise
+     */
+    public static void loadAttributesWithoutBinaries( Document document, boolean bValidated )
+    {
+        _dao.loadAttributesWithoutBinaries( document, bValidated );
+    }
 
     /**
      * Load document pageTemplatePath

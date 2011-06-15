@@ -37,8 +37,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.category.Category;
+import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.plugins.document.modules.comment.business.DocumentCommentHome;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -345,7 +348,14 @@ public final class DocumentDAO implements IDocumentDAO
             }
             else
             {
-                loadAttributesWithoutBinaries( document );
+            	if ( document.getStateId(  ) == DocumentState.STATE_VALIDATE )
+            	{
+            		loadAttributesWithoutBinaries( document, true );
+            	}
+            	else
+            	{
+            		loadAttributesWithoutBinaries( document, false );
+            	}
             }
 
             document.setCategories( selectCategories( document.getId(  ) ) );
@@ -416,7 +426,7 @@ public final class DocumentDAO implements IDocumentDAO
 
             String strContentType = daoUtil.getString( 11 );
 
-            if ( ( strContentType != null ) && ( !strContentType.equals( "" ) ) )
+            if ( StringUtils.isNotBlank( strContentType ) )
             {
                 // File attribute
                 attribute.setBinary( true );
@@ -429,7 +439,7 @@ public final class DocumentDAO implements IDocumentDAO
                 // Text attribute
                 attribute.setBinary( false );
                 attribute.setTextValue( daoUtil.getString( 10 ) );
-                attribute.setValueContentType( "" );
+                attribute.setValueContentType( StringUtils.EMPTY );
             }
 
             listAttributes.add( attribute );
@@ -442,13 +452,14 @@ public final class DocumentDAO implements IDocumentDAO
     /**
      * Load the attributes of Document from the table
      * @param document Document object
+     * @param bValidated true if the content of the document must be validated, false otherwise
      */
-    public void loadAttributesWithoutBinaries( Document document )
+    public void loadAttributesWithoutBinaries( Document document, boolean bValidated )
     {
         List<DocumentAttribute> listAttributes = new ArrayList<DocumentAttribute>(  );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ATTRIBUTES_WITHOUT_BINARIES );
         daoUtil.setInt( 1, document.getId(  ) );
-        daoUtil.setBoolean( 2, false );
+        daoUtil.setBoolean( 2, bValidated );
         daoUtil.executeQuery(  );
 
         while ( daoUtil.next(  ) )
@@ -466,7 +477,7 @@ public final class DocumentDAO implements IDocumentDAO
 
             String strContentType = daoUtil.getString( 11 );
 
-            if ( ( strContentType != null ) && ( !strContentType.equals( "" ) ) )
+            if ( StringUtils.isNotBlank( strContentType ) )
             {
                 // File attribute
                 attribute.setBinary( true );
@@ -478,7 +489,7 @@ public final class DocumentDAO implements IDocumentDAO
                 // Text attribute
                 attribute.setBinary( false );
                 attribute.setTextValue( daoUtil.getString( 10 ) );
-                attribute.setValueContentType( "" );
+                attribute.setValueContentType( StringUtils.EMPTY );
             }
 
             listAttributes.add( attribute );
