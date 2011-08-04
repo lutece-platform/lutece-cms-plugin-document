@@ -40,10 +40,12 @@ import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.modules.comment.business.DocumentComment;
 import fr.paris.lutece.plugins.document.modules.comment.business.DocumentCommentHome;
 import fr.paris.lutece.portal.business.mailinglist.Recipient;
+import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mail.MailService;
 import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -80,6 +82,7 @@ public class DocumentContentJspBean
     private static final String PARAMETER_CONTENT = "content";
     private static final String PARAMETER_MANDATORY_FIELD = "mandatory";
     private static final String PARAMETER_XSS_ERROR = "xsserror";
+    private static final String PARAMETER_CAPTCHA_ERROR = "captcha_error";
     private static final String PARAMETER_CHECK_EMAIL = "checkemail";
 
     // Markers
@@ -115,7 +118,12 @@ public class DocumentContentJspBean
     // Jsp
     private static final String PAGE_PORTAL = "jsp/site/Portal.jsp";
     private static final String PAGE_SEND_DOCUMENT = "SendDocument.jsp";
+    
+    private static final String JCAPTCHA_PLUGIN = "jcaptcha";
     private static final String EMPTY_STRING = "";
+    
+    //Captcha
+    private CaptchaSecurityService _captchaService;    
 
     /////////////////////////////////////////////////////////////////////////////
     // page management of printing document
@@ -302,6 +310,17 @@ public class DocumentContentJspBean
 
         String strPagePortal = AppPathService.getBaseUrl( request ) + PAGE_PORTAL;
 
+        //test the captcha
+        if ( PluginService.isPluginEnable( JCAPTCHA_PLUGIN ) )
+        {
+            _captchaService = new CaptchaSecurityService(  );
+
+            if ( !_captchaService.validate( request ) )
+            {
+                return strPagePortal + "?" + PARAMETER_DOCUMENT_ID + "=" + strDocumentId + "&" + PARAMETER_PORTLET_ID +
+                 "=" + strPortletId + "&" + PARAMETER_COMMENT_DOCUMENT + "=1&" + PARAMETER_CAPTCHA_ERROR + "=1";
+            }
+        }
         // Check XSS characters
         if ( ( strContent != null ) && ( StringUtil.containsXssCharacters( strContent ) ) )
         {

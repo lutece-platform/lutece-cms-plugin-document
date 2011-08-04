@@ -5,7 +5,11 @@
         <input type="hidden" name="document_id" value="${document_id}">
         <input type="hidden" name="portlet_id" value="${portlet_id}">
         <input type="hidden" name="mailinglist" value="${mailinglist}">
-
+        
+		<#if captcha_error_message = "1" >
+            <h4>#i18n{module.document.comment.add_document_comment.messageCaptchaError}</h4>
+        </#if>
+		
         <#if mandatory_field_message = "1" >
             <h4>#i18n{module.document.comment.add_document_comment.messageMandatoryField}</h4>
         </#if>        
@@ -46,6 +50,11 @@
 	<p>	
             <textarea name="content"  rows="8" cols="45"></textarea>
 	</p>
+	<p>
+		<#if is_active_captcha>
+			<div >${captcha}</div>
+		</#if>	
+	</p>			
 	<p>
             <input type="submit" value="#i18n{module.document.comment.add_document_comment.buttonAddComment}" />
 	</p>	

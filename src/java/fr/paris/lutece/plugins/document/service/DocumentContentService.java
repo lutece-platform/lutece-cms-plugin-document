@@ -69,10 +69,12 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.business.style.ModeHome;
+import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.content.ContentService;
 import fr.paris.lutece.portal.service.content.PageData;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
@@ -115,6 +117,7 @@ public final class DocumentContentService extends ContentService implements Cach
     private static final String PARAMETER_COMMENT_DOCUMENT = "comment";
     private static final String PARAMETER_MANDATORY_FIELD = "mandatory";
     private static final String PARAMETER_XSS_ERROR = "xsserror";
+    private static final String PARAMETER_CAPTCHA_ERROR = "captcha_error";
     private static final String PARAMETER_CHECK_EMAIL = "checkemail";
     private static final String PARAMETER_SITE_PATH = "site-path";
     private static final String PARAMETER_PUBLICATION_DATE = "publication-date";
@@ -134,6 +137,7 @@ public final class DocumentContentService extends ContentService implements Cach
     private static final String MARK_DOCUMENT_COMMENTS_LIST = "document_comments_list";
     private static final String MARK_DOCUMENT_CATEGORIES_LIST = "document_categories_list";
     private static final String MARK_XSS_ERROR_MESSAGE = "xss_error_message";
+    private static final String MARK_CAPTCHA_ERROR_MESSAGE = "captcha_error_message";
     private static final String MARK_CHECK_EMAIL_MESSAGE = "check_email_message";
     private static final String MARK_MANDATORY_FIELD_MESSAGE = "mandatory_field_message";
     private static final String MARK_MAILINGLIST = "mailinglist";
@@ -141,6 +145,8 @@ public final class DocumentContentService extends ContentService implements Cach
     private static final String MARK_LUTECE_USER_NAME = "lutece_user_name";
     private static final String MARK_LUTECE_USER_MAIL = "lutece_user_email";
     private static final String MARKER_TARGET = "target";
+    private static final String MARK_CAPTCHA = "captcha";
+    private static final String MARK_IS_ACTIVE_CAPTCHA = "is_active_captcha";
 
     // Templates
     private static final String TEMPLATE_DOCUMENT_PAGE_DEFAULT = "/skin/plugins/document/document_content_service.html";
@@ -153,10 +159,15 @@ public final class DocumentContentService extends ContentService implements Cach
     private static final String PROPERTY_CACHE_ENABLED = "document.cache.enabled";
     private static final String TARGET_TOP = "target=_top";
     private static final String PROPERTY_RESOURCE_TYPE = "document";
+    private static final String JCAPTCHA_PLUGIN = "jcaptcha";    
 
     // Performance patch
     private static ConcurrentMap<String, String> keyMemory = new ConcurrentHashMap<String, String>(  );
     private boolean _bInit;
+    
+    //Captcha
+    private static CaptchaSecurityService _captchaService;
+    
 
     /**
      * Returns the document page for a given document and a given portlet. The page is built from XML data or retrieved
@@ -617,6 +628,10 @@ public final class DocumentContentService extends ContentService implements Cach
             String strXssError = request.getParameter( PARAMETER_XSS_ERROR );
             strXssError = ( strXssError != null ) ? strXssError : "";
 
+            // check xss errors
+            String strCaptchaError = request.getParameter( PARAMETER_CAPTCHA_ERROR );
+            strCaptchaError = ( strCaptchaError != null ) ? strCaptchaError : "";
+            
             // check emails errors
             String strCheckEmail = request.getParameter( PARAMETER_CHECK_EMAIL );
             strCheckEmail = ( strCheckEmail != null ) ? strCheckEmail : "";
@@ -625,7 +640,7 @@ public final class DocumentContentService extends ContentService implements Cach
             {
                 // Generate the add document form
                 model.put( MARK_DOCUMENT_COMMENT_FORM,
-                    getAddCommentForm( request, strDocumentId, strPortletId, strMailingListId, strXssError,
+                    getAddCommentForm( request, strDocumentId, strPortletId, strMailingListId, strXssError, strCaptchaError,
                         strCheckEmail, strMandatoryField ) );
             }
             else
@@ -655,7 +670,7 @@ public final class DocumentContentService extends ContentService implements Cach
      * @return the HTML code of the form
      */
     private static String getAddCommentForm( HttpServletRequest request, String strDocumentId, String strPortletId,
-        String strMailingListId, String strXssError, String strCheckEmail, String strMandatoryField )
+        String strMailingListId, String strXssError, String strCaptchaError, String strCheckEmail, String strMandatoryField )
     {
         HashMap<String, Object> model = new HashMap<String, Object>(  );
 
@@ -681,10 +696,21 @@ public final class DocumentContentService extends ContentService implements Cach
              */
         }
 
+        boolean bIsCaptchaEnabled = PluginService.isPluginEnable( JCAPTCHA_PLUGIN );
+        model.put( MARK_IS_ACTIVE_CAPTCHA, bIsCaptchaEnabled );
+
+        if ( bIsCaptchaEnabled )
+        {
+            _captchaService = new CaptchaSecurityService(  );
+            model.put( MARK_CAPTCHA, _captchaService.getHtmlCode(  ) );
+        }
+
+        
         model.put( MARK_DOCUMENT_ID, strDocumentId );
         model.put( MARK_PORTLET_ID, strPortletId );
         model.put( MARK_MAILINGLIST, strMailingListId );
         model.put( MARK_XSS_ERROR_MESSAGE, strXssError );
+        model.put( MARK_CAPTCHA_ERROR_MESSAGE, strCaptchaError );
         model.put( MARK_CHECK_EMAIL_MESSAGE, strCheckEmail );
         model.put( MARK_MANDATORY_FIELD_MESSAGE, strMandatoryField );
 
