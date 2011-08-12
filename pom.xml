@@ -39,8 +39,8 @@
 	</dependencies>
 	<properties>
 		<componentName>document</componentName>
-		<jiraProjectName>LUTECE</jiraProjectName>
-		<jiraComponentId>10031</jiraComponentId>
+		<jiraProjectName>DOCUMENT</jiraProjectName>
+		<jiraComponentId>10166</jiraComponentId>
 	</properties>
     <scm>
         <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/cms/plugin-document</connection>
