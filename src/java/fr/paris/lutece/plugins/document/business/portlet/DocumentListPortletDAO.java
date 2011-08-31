@@ -33,13 +33,13 @@
  */
 package fr.paris.lutece.plugins.document.business.portlet;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**
@@ -67,6 +67,7 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
     private static final String SQL_QUERY_DELETE_CATEGORY_PORTLET = " DELETE FROM document_category_list_portlet WHERE id_portlet = ? ";
     private static final String SQL_QUERY_DELETE_AUTO_PUBLICATION_PORTLET = " DELETE FROM document_auto_publication WHERE id_portlet = ? ";
     private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_category FROM document_category_list_portlet WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_CASE_AND = " AND ";
 
     ///////////////////////////////////////////////////////////////////////////////////////
     //Access methods to data
@@ -246,13 +247,50 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
      * @param pOrder order of the portlets
      * @return The Collection of the ReferenceItem
      */
-    public Collection<ReferenceItem> selectByDocumentIdAndDocumentType( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder )
+    public Collection<ReferenceItem> selectByDocumentIdAndDocumentType( int nDocumentId, String strCodeDocumentType,
+        PortletOrder pOrder, PortletFilter pFilter )
     {
-    	String strSQL = SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY + pOrder.getSQLOrderBy(  );
-        DAOUtil daoUtil = new DAOUtil( strSQL );
+        StringBuilder strSQl = new StringBuilder(  );
+        strSQl.append( SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY );
+
+        String strFilter = ( pFilter != null ) ? pFilter.getSQLFilter(  ) : null;
+
+        if ( strFilter != null )
+        {
+            strSQl.append( SQL_QUERY_CASE_AND );
+            strSQl.append( strFilter );
+        }
+
+        strSQl.append( pOrder.getSQLOrderBy(  ) );
+
+        DAOUtil daoUtil = new DAOUtil( strSQl.toString(  ) );
+
         daoUtil.setInt( 1, nDocumentId );
         daoUtil.setString( 2, strCodeDocumentType );
         daoUtil.setInt( 3, nDocumentId );
+
+        if ( strFilter != null )
+        {
+            if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PAGE_NAME ) )
+            {
+                for ( int i = 0; i < pFilter.getPageName(  ).length; i++ )
+                {
+                    daoUtil.setString( i + 4, "%" + pFilter.getPageName(  )[i] + "%" );
+                }
+            }
+            else if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PORTLET_NAME ) )
+            {
+                for ( int i = 0; i < pFilter.getPortletName(  ).length; i++ )
+                {
+                    daoUtil.setString( i + 4, "%" + pFilter.getPortletName(  )[i] + "%" );
+                }
+            }
+            else if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PAGE_ID ) )
+            {
+                daoUtil.setInt( 4, pFilter.getIdPage(  ) );
+            }
+        }
+
         daoUtil.executeQuery(  );
 
         ReferenceList list = new ReferenceList(  );

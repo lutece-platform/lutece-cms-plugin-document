@@ -111,10 +111,10 @@ public class DocumentPortletHome extends PortletHome
      * @return A collection of referenceItem
      */
     public static Collection<ReferenceItem> findByCodeDocumentTypeAndCategory( int nDocumentId,
-        String strCodeDocumentType, PortletOrder pOrder )
+        String strCodeDocumentType, PortletOrder pOrder, PortletFilter pFilter )
     {
         //FIXME : method should access to different home business methods
-        return _dao.selectByDocumentOdAndDocumentType( nDocumentId, strCodeDocumentType, pOrder );
+        return _dao.selectByDocumentOdAndDocumentType( nDocumentId, strCodeDocumentType, pOrder, pFilter );
     }
 
     public static boolean checkIsAliasPortlet( int nPortletId )

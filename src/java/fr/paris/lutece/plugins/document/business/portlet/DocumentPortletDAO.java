@@ -61,19 +61,21 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     private static final String SQL_QUERY_CHECK_IS_ALIAS = "SELECT id_alias FROM core_portlet_alias WHERE id_alias = ?";
     private static final String SQL_QUERY_SELECT_PORTLETS_BY_DOCUMENT_ID = "SELECT id_portlet FROM document_published WHERE id_document = ?";
 
-    //Category
+    // Category
     private static final String SQL_QUERY_INSERT_CATEGORY_PORTLET = "INSERT INTO document_category_portlet ( id_portlet , id_category ) VALUES ( ? , ? )";
     private static final String SQL_QUERY_DELETE_CATEGORY_PORTLET = " DELETE FROM document_category_portlet WHERE id_portlet = ? ";
     private static final String SQL_QUERY_DELETE_AUTO_PUBLICATION_PORTLET = " DELETE FROM document_auto_publication WHERE id_portlet = ? ";
     private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_category FROM document_category_portlet WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_CASE_AND = " AND ";
 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //Access methods to data
+    // /////////////////////////////////////////////////////////////////////////////////////
+    // Access methods to data
 
     /**
      * Insert a new record in the table document_portlet
      *
-     * @param portlet the instance of the Portlet object to insert
+     * @param portlet
+     *            the instance of the Portlet object to insert
      */
     public void insert( Portlet portlet )
     {
@@ -91,7 +93,9 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
 
     /**
      * Insert a list of category for a specified portlet
-     * @param portlet the {@link DocumentPortlet} to insert
+     *
+     * @param portlet
+     *            the {@link DocumentPortlet} to insert
      */
     private void insertCategory( Portlet portlet )
     {
@@ -114,11 +118,12 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     }
 
     /**
-    * Deletes records for a portlet identifier in the tables document_portlet, document_published,
-    * document_category_portlet
-    *
-    * @param nPortletId the portlet identifier
-    */
+     * Deletes records for a portlet identifier in the tables document_portlet,
+     * document_published, document_category_portlet
+     *
+     * @param nPortletId
+     *            the portlet identifier
+     */
     public void delete( int nPortletId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
@@ -137,7 +142,9 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
 
     /**
      * Delete categories for the specified portlet
-     * @param nPortletId The portlet identifier
+     *
+     * @param nPortletId
+     *            The portlet identifier
      */
     private void deleteCategories( int nPortletId )
     {
@@ -149,7 +156,9 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
 
     /**
      * Delete auto publication records for the specified portlet
-     * @param nPortletId The portlet identifier
+     *
+     * @param nPortletId
+     *            The portlet identifier
      */
     private void deleteAutoPublication( int nPortletId )
     {
@@ -160,9 +169,11 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     }
 
     /**
-     * Loads the data of Document Portlet whose identifier is specified in parameter
+     * Loads the data of Document Portlet whose identifier is specified in
+     * parameter
      *
-     * @param nPortletId The Portlet identifier
+     * @param nPortletId
+     *            The Portlet identifier
      * @return the DocumentPortlet object
      */
     public Portlet load( int nPortletId )
@@ -188,6 +199,7 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
 
     /**
      * Load a list of Id categories
+     *
      * @param nPortletId
      * @return Array of categories
      */
@@ -220,7 +232,8 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     /**
      * Update the record in the table
      *
-     * @param portlet A portlet
+     * @param portlet
+     *            A portlet
      */
     public void store( Portlet portlet )
     {
@@ -239,20 +252,60 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     }
 
     /**
-     * Returns a list of couple id_portlet/name filtered by documentType and category
-     * @param nDocumentId the Document ID
-     * @param strCodeDocumentType the code
-     * @param pOrder the order of the portlets
+     * Returns a list of couple id_portlet/name filtered by documentType and
+     * category
+     *
+     * @param nDocumentId
+     *            the Document ID
+     * @param strCodeDocumentType
+     *            the code
+     * @param pOrder
+     *            the order of the portlets
      * @return A collection of referenceItem
      */
-    public Collection<ReferenceItem> selectByDocumentOdAndDocumentType( int nDocumentId,
-        String strCodeDocumentType, PortletOrder pOrder )
+    public Collection<ReferenceItem> selectByDocumentOdAndDocumentType( int nDocumentId, String strCodeDocumentType,
+        PortletOrder pOrder, PortletFilter pFilter )
     {
-    	String strSQL = SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY + pOrder.getSQLOrderBy(  );
-        DAOUtil daoUtil = new DAOUtil( strSQL );
+        StringBuilder strSQl = new StringBuilder(  );
+        strSQl.append( SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY );
+
+        String strFilter = ( pFilter != null ) ? pFilter.getSQLFilter(  ) : null;
+
+        if ( strFilter != null )
+        {
+            strSQl.append( SQL_QUERY_CASE_AND );
+            strSQl.append( strFilter );
+        }
+
+        strSQl.append( pOrder.getSQLOrderBy(  ) );
+
+        DAOUtil daoUtil = new DAOUtil( strSQl.toString(  ) );
         daoUtil.setInt( 1, nDocumentId );
         daoUtil.setString( 2, strCodeDocumentType );
         daoUtil.setInt( 3, nDocumentId );
+
+        if ( strFilter != null )
+        {
+            if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PAGE_NAME ) )
+            {
+                for ( int i = 0; i < pFilter.getPageName(  ).length; i++ )
+                {
+                    daoUtil.setString( i + 4, "%" + pFilter.getPageName(  )[i] + "%" );
+                }
+            }
+            else if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PORTLET_NAME ) )
+            {
+                for ( int i = 0; i < pFilter.getPortletName(  ).length; i++ )
+                {
+                    daoUtil.setString( i + 4, "%" + pFilter.getPortletName(  )[i] + "%" );
+                }
+            }
+            else if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PAGE_ID ) )
+            {
+                daoUtil.setInt( 4, pFilter.getIdPage(  ) );
+            }
+        }
+
         daoUtil.executeQuery(  );
 
         ReferenceList list = new ReferenceList(  );
@@ -270,7 +323,8 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     /**
      * Tests if is a portlet is portlet type alias
      *
-     * @param nPortletId The identifier of the document
+     * @param nPortletId
+     *            The identifier of the document
      * @return true if the portlet is alias, false otherwise
      */
     public boolean checkIsAliasPortlet( int nPortletId )
