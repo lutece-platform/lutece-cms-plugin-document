@@ -180,15 +180,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
         {
             nPageId = Integer.parseInt( strPageId );
         }
-
-        Page page = PageHome.findByPrimaryKey( nPageId );
-
-        if ( AdminWorkgroupService.isAuthorized( page, user ) )
-        {
-            listPages = PageHome.getChildPages( nPageId );
-            listPages = AdminWorkgroupService.getAuthorizedCollection( listPages, user );
-        }
-
+        listPages = PageHome.getChildPages( nPageId );
         Map<String, Object> model = getDefaultModel(  );
 
         model.put( MARK_PAGES_LIST, listPages );

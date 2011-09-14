@@ -78,7 +78,7 @@ $(document).ready(function ()
 		                   	   		<input type="hidden" name="id_document" value="${document.id}" />
 									
 									<p>
-										<input type="radio" id="is_display_latest_portlets_true" name="is_display_latest_portlets" value="true" <#if !portlet_filter?? ||portlet_filter.displayLatestPortlets>checked="checked"</#if>/><b> #i18n{document.manage_document_publishing.labelDisplayLatestPortlets}</b>
+										<input type="radio" id="is_display_latest_portlets_true" name="is_display_latest_portlets" value="true" <#if !portlet_filter?? ||portlet_filter.displayLatestPortlets>checked="checked"</#if>/><b> ${label_display_latest_portlets}</b>
 										<input type="radio" id="is_display_latest_portlets_false" name="is_display_latest_portlets" value="false" <#if portlet_filter??  && !portlet_filter.displayLatestPortlets>checked="checked"</#if>/><b> #i18n{document.manage_document_publishing.labelAdvancedSearch}</b>
 							              	
 							             </p>

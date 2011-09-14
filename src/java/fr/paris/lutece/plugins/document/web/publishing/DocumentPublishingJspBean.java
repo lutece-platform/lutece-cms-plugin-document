@@ -33,6 +33,17 @@
  */
 package fr.paris.lutece.plugins.document.web.publishing;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentPageTemplate;
@@ -68,23 +79,11 @@ import fr.paris.lutece.portal.service.portlet.PortletResourceIdService;
 import fr.paris.lutece.portal.service.portlet.PortletService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -142,9 +141,12 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     private static final String MARk_DOCUMENT_LIST_PORTLET_LIST = "document_list_portlet_list";
     private static final String MARK_PORTLET_FILTER_ERROR = "portlet_filter_error";
     private static final String MARK_PORTLET_FILTER = "portlet_filter";
+    private static final String MARK_LABEL_DISPLAY_LATEST_PORTLETS = "label_display_latest_portlets";
+    
     private static final String PROPERTY_PUBLISHING_SPACE_PAGE_TITLE = "document.assign.pageTitle";
     private static final String PROPERTY_MANAGE_PUBLISHING = "document.portlet.publishing.pageTitle";
     private static final String PROPERTY_CREATE_AUTO_PUBLICATION = "document.portlet.publishing.pageTitle";
+    private static final String PROPERTY_DISPLAY_LATEST_PORTLETS="document.manage_document_publishing.labelDisplayLatestPortlets";
     private static final String TEMPLATE_DOCUMENT_PUBLISHING = "/admin/plugins/document/publishing/manage_document_publishing.html";
     private static final String TEMPLATE_PORTLET_PAGE_PATH = "/admin/plugins/document/publishing/portlet_page_path.html";
     private static final String TEMPLATE_PORTLET_PUBLISHING = "/admin/plugins/document/publishing/manage_portlet_publishing.html";
@@ -172,7 +174,8 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     public String getManageDocumentPublishing( HttpServletRequest request )
     {
         setPageTitleProperty( PROPERTY_PUBLISHING_SPACE_PAGE_TITLE );
-
+        Object[] messageNumberOfMaxLatestPortletsDisplay={String.valueOf(PortletFilter.PROPERTY_NUMBER_OF_MAX_LATEST_PORTLETS_DISPLAY)};
+        
         String strErrorFilter = null;
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         Portlet portlet;
@@ -271,6 +274,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             model.put( MARK_DOCUMENT, document );
             model.put( MARK_UNPUBLISHED_STATUS_VALUE, DocumentPublication.STATUS_UNPUBLISHED );
             model.put( MARK_PORTLET_FILTER, portletFilter );
+            model.put(MARK_LABEL_DISPLAY_LATEST_PORTLETS, I18nService.getLocalizedString(PROPERTY_DISPLAY_LATEST_PORTLETS,messageNumberOfMaxLatestPortletsDisplay, getLocale()));
         }
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_PUBLISHING, getLocale(  ), model );
