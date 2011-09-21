@@ -1,7 +1,7 @@
 <#if selected_space?has_content>
 	<p>
      	<p>
-     		<a href="javascript:modifyChoice();"><img src="images/admin/skin/up.png" alt="#i18n{document.browse_spaces.go_up_link}" hspace="5" /> #i18n{document.browse_spaces.go_up_link}</a>
+     		<a href="javascript:modifyChoice();"><img src="images/admin/skin/actions/up.png" alt="#i18n{document.browse_spaces.go_up_link}" hspace="5" /> #i18n{document.browse_spaces.go_up_link}</a>
      	</p>
      	<p>
 		    <input type="hidden" name="browser_selected_space_id" value="${selected_space.id}" />
@@ -12,7 +12,7 @@
 	     <input type="hidden" name="browser_id_space" value="${space.id}" />
 	     <#if space.id != -1 && go_up >
 	     	<p>
-	     		<a href="javascript:goUp();"><img src="images/admin/skin/up.png" alt="#i18n{document.browse_spaces.go_up_link}" hspace="5" /> #i18n{document.browse_spaces.go_up_link}</a>
+	     		<a href="javascript:goUp();"><img src="images/admin/skin/actions/up.png" alt="#i18n{document.browse_spaces.go_up_link}" hspace="5" /> #i18n{document.browse_spaces.go_up_link}</a>
 	     	</p>
 	     </#if>
 	     <p>
