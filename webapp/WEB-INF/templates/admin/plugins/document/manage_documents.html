@@ -1,15 +1,42 @@
 <script type="text/javascript"> 
-	function toggle_checkboxes() {
-	    if (!document.getElementById){ return; }
-	    if (!document.getElementsByTagName){ return; }
-	    var inputs = document.getElementById("documents_form").getElementsByTagName("input");
-	    for(var x=0; x < inputs.length; x++) {
-	        if ( (inputs[x].type == 'checkbox') && (inputs[x].name != "select_all" ) ) {
-	            inputs[x].checked = !inputs[x].checked;
-	        }
-	    }
+jQuery(function($) {
+var spaceid = ${space.id};
+var loc = location.search;
+if ( spaceid != loc ) {
+	if ( loc.indexOf("id_space_filter") > 0 ){ 
+		spaceid =  loc.slice( loc.lastIndexOf("=") + 1 );
 	} 
-</script>
+}
+
+// Set the cookie of jstree
+$.cookie("jstree_select", "#node-" + spaceid );
+$("#tree").jstree({
+	"ui" : {
+		"select_limit" : 1,
+	},
+	"themes" : {
+		"theme" : "classic",
+		"icons" : false
+	},
+	"cookies" : {
+		"save_opened" : false,
+	},
+	"core" : { "initially_open" : [ "node-0" ] },
+	"plugins" : [ "themes", "html_data", "cookies", "ui" ]
+	});
+});
+
+function toggle_checkboxes() {
+if (!document.getElementById){ return; }
+if (!document.getElementsByTagName){ return; }
+var inputs = document.getElementById("documents_form").getElementsByTagName("input");
+for(var x=0; x < inputs.length; x++) {
+    if ( (inputs[x].type == 'checkbox') && (inputs[x].name != "select_all" ) ) {
+        inputs[x].checked = !inputs[x].checked;
+     }
+  }
+} 
+</script> 
 
 <div id="left">
     <div class="content-box" >
