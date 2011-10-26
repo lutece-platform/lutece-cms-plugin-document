@@ -1,9 +1,12 @@
 <script type="text/javascript"> 
 jQuery(function($) {
+// Set space_id
 var spaceid = ${space.id};
+// Get space_id from url parameter
 var loc = location.search;
 if ( spaceid != loc ) {
 	if ( loc.indexOf("id_space_filter") > 0 ){ 
+		// Set space_id from url parameter if exists
 		spaceid =  loc.slice( loc.lastIndexOf("=") + 1 );
 	} 
 }
@@ -214,8 +217,6 @@ for(var x=0; x < inputs.length; x++) {
 	                        </#if>
                                 <div  style="clear:both;" />
                                 <@paginationAdmin paginator=paginator combo=1 />
-
-	        
 	                </#if>
 	            <#else>
 	                <#if child_spaces_list?size != 0 >
