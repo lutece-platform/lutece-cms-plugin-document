@@ -33,13 +33,15 @@
  */
 package fr.paris.lutece.plugins.document.service;
 
-import fr.paris.lutece.plugins.document.business.Document;
-import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
-import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
+import fr.paris.lutece.plugins.document.business.Document;
+import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
+import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 
 
 /**
@@ -84,6 +86,14 @@ public interface AttributeManager
      * @return A part of the HTML form
      */
     String getCreateParametersFormHtml( Locale locale );
+    
+    /**
+     * Gets the part of an HTML form to enter parameters data
+     * @param listParameters list attribute type parameters
+     * @param locale The current Locale
+     * @return A part of the HTML form
+     */
+    String getCreateParametersFormHtml( List<AttributeTypeParameter> listParameters, Locale locale );
 
     /**
      * Gets the part of an HTML form to modify parameters data
@@ -106,7 +116,7 @@ public interface AttributeManager
      * @param nAttributeId
      * @return
      */
-    Collection getExtraParametersValues( Locale locale, int nAttributeId );
+    Collection<AttributeTypeParameter> getExtraParametersValues( Locale locale, int nAttributeId );
 
     /**
      * Validate the value for the attribute
@@ -138,4 +148,12 @@ public interface AttributeManager
      * @return true if the attrubute can be used as Thumbnail, otherwise false
      */
     boolean canBeUsedAsThumbnail(  );
+    
+    /**
+     * Get the value parameters
+     * @param request the HTTP request
+     * @param locale the locale
+     * @return a list of {@link AttributeTypeParameter}
+     */
+    List<AttributeTypeParameter> getValueParameters( HttpServletRequest request, Locale locale );
 }

@@ -33,6 +33,21 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+import org.xml.sax.InputSource;
+
 import fr.paris.lutece.plugins.document.business.DocumentResource;
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
@@ -62,23 +77,6 @@ import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.fileupload.FileItem;
-
-import org.xml.sax.InputSource;
-
-import java.io.ByteArrayInputStream;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 
 /**
  * JSP Bean for document type management
@@ -104,7 +102,6 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
     private static final String PROPERTY_REGULAR_EXPRESSION_PER_PAGE = "document.regularExpressionPerPage";
     private static final String MESSAGE_DOCUMENT_ALREADY_EXIST = "document.message.documentType.errorAlreadyExist";
     private static final String MARK_DOCUMENT_TYPES_LIST = "document_types_list";
-    private static final String MARK_ATTRIBUTES_LIST = "attributes_list";
     private static final String MARK_THUMBNAIL_ATTRIBUTES_LIST = "thumbnail_attributes_list";
     private static final String MARK_DOCUMENT_TYPE = "document_type";
     private static final String MARK_ATTRIBUTE_TYPES_LIST = "attribute_types_list";
@@ -138,10 +135,13 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_EXPRESSION_ID = "expression_id";
     private static final String PARAMETER_APPLY = "apply";
     private static final String PARAMETER_CANCEL = "cancel";
+    private static final String PARAMETER_SAVE = "save";
+    private static final String PARAMETER_SESSION = "session";
     private static final String JSP_MODIFY_DOCUMENT_TYPE = "ModifyDocumentType.jsp";
     private static final String JSP_DELETE_DOCUMENT_TYPE = "jsp/admin/plugins/document/DoDeleteDocumentType.jsp";
     private static final String JSP_DELETE_ATTRIBUTE = "jsp/admin/plugins/document/DoDeleteAttribute.jsp";
     private static final String JSP_MODIFY_DOCUMENT_TYPE_ATTRIBUTE = "ModifyDocumentTypeAttribute.jsp";
+    private static final String JSP_ADD_DOCUMENT_TYPE_ATTRIBUTE = "AddDocumentTypeAttribute.jsp";
     private static final String MESSAGE_STYLESHEET_NOT_VALID = "portal.style.message.stylesheetNotValid";
     private static final String CHECK_ON = "on";
     private static final String STYLESHEET_CONTENT_TYPE = "text/plain";
@@ -149,11 +149,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
     private static final String FILE_EXTENSION = ".xsl";
     private static final Object UPDATE_VALUE = "true";
     private static final int NO_THUMBNAIL_ATTRIBUTE = 0;
-    private ArrayList _attributesList = new ArrayList(  );
     private String _strDocumentTypeCode;
     private int _nItemsPerPage;
     private int _nDefaultItemsPerPage;
     private String _strCurrentPageIndex;
+    private DocumentAttribute _attribute;
 
     /**
      * Gets the Document Types Management Page
@@ -162,7 +162,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
      */
     public String getManageDocumentTypes( HttpServletRequest request )
     {
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_DOCUMENT_TYPES_LIST, DocumentTypeHome.findAll(  ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_DOCUMENT_TYPES, getLocale(  ), model );
@@ -179,9 +179,8 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
     {
         setPageTitleProperty( PROPERTY_PAGE_TITLE_CREATE_DOCUMENT_TYPE );
 
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_METADATA_HANDLERS_LIST, MetadataService.getMetadataHandlersList(  ) );
-        model.put( MARK_ATTRIBUTES_LIST, _attributesList );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_DOCUMENT_TYPE, getLocale(  ), model );
 
@@ -201,7 +200,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         String strMetadata = request.getParameter( PARAMETER_METADATA );
 
         // Mandatory fields
-        if ( strName.equals( "" ) || strDescription.equals( "" ) || strCode.equals( "" ) )
+        if ( StringUtils.isBlank( strName ) || StringUtils.isBlank( strDescription ) || StringUtils.isBlank( strCode ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
@@ -249,7 +248,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strDocumentTypeCode );
         ReferenceList listAttributeTypes = AttributeTypeHome.getAttributeTypesList( getLocale(  ) );
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_DOCUMENT_TYPE, documentType );
         model.put( MARK_THUMBNAIL_ATTRIBUTES_LIST, getThumbnailAttributesList( documentType ) );
         model.put( MARK_METADATA_HANDLERS_LIST, MetadataService.getMetadataHandlersList(  ) );
@@ -282,7 +281,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         }
 
         // Mandatory fields
-        if ( strName.equals( "" ) || strDescription.equals( "" ) || strCode.equals( "" ) )
+        if ( StringUtils.isBlank( strName ) || StringUtils.isBlank( strDescription ) || StringUtils.isBlank( strCode ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
@@ -309,10 +308,22 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 
         String strAttributeTypeCode = request.getParameter( PARAMETER_ATTRIBUTE_TYPE_CODE );
         AttributeManager manager = AttributeService.getInstance(  ).getManager( strAttributeTypeCode );
-        HashMap model = new HashMap(  );
+        
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_ATTRIBUTE_TYPE_CODE, strAttributeTypeCode );
         //        model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS , manager.getExtraParameters(  getLocale() ) );
-        model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getCreateParametersFormHtml( getLocale(  ) ) );
+        
+        String strSession = request.getParameter( PARAMETER_SESSION );
+        if ( StringUtils.isNotBlank( strSession ) )
+        {
+        	model.put( MARK_ATTRIBUTE, _attribute );
+        	model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getCreateParametersFormHtml( _attribute.getParameters(  ), getLocale(  ) ) );
+        }
+        else
+        {
+        	_attribute = new DocumentAttribute(  );
+        	model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getCreateParametersFormHtml( getLocale(  ) ) );
+        }
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADD_ATTRIBUTE, getLocale(  ), model );
 
@@ -326,7 +337,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
      */
     public String doAddAttribute( HttpServletRequest request )
     {
-        DocumentAttribute attribute = new DocumentAttribute(  );
+    	_attribute = new DocumentAttribute(  );
         boolean bIsValid = validateCodeAttribute( request );
 
         if ( !bIsValid )
@@ -335,21 +346,32 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
                 AdminMessage.TYPE_STOP );
         }
 
-        getAttributeData( request, attribute );
+        getAttributeData( request, _attribute );
+        // The user has not clicked on "save", then there are some operations to proceed
+        String strSave = request.getParameter( PARAMETER_SAVE );
+        if ( StringUtils.isBlank( strSave ) )
+        {
+        	String strAttributeTypeCode = request.getParameter( PARAMETER_ATTRIBUTE_TYPE_CODE );
+        	UrlItem url = new UrlItem( JSP_ADD_DOCUMENT_TYPE_ATTRIBUTE );
+        	url.addParameter( PARAMETER_SESSION, PARAMETER_SESSION );
+        	url.addParameter( PARAMETER_ATTRIBUTE_TYPE_CODE, strAttributeTypeCode );
 
-        String strValidateMessage = getAttributeValidationMessage( attribute );
+        	return url.getUrl(  );
+        }
+
+        String strValidateMessage = getAttributeValidationMessage( _attribute );
 
         if ( strValidateMessage != null )
         {
             return AdminMessageService.getMessageUrl( request, strValidateMessage, AdminMessage.TYPE_STOP );
         }
-
-        DocumentAttributeHome.create( attribute );
+        
+        DocumentAttributeHome.create( _attribute );
 
         if ( request.getParameter( PARAMETER_APPLY ) != null )
         {
             UrlItem url = new UrlItem( JSP_MODIFY_DOCUMENT_TYPE_ATTRIBUTE );
-            url.addParameter( PARAMETER_ATTRIBUTE_ID, attribute.getId(  ) );
+            url.addParameter( PARAMETER_ATTRIBUTE_ID, _attribute.getId(  ) );
 
             return url.getUrl(  );
         }
@@ -373,7 +395,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 
         String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
         int nAttributeId = Integer.parseInt( strAttributeId );
-        DocumentAttribute attribute = DocumentAttributeHome.findByPrimaryKey( nAttributeId );
+        _attribute = DocumentAttributeHome.findByPrimaryKey( nAttributeId );
 
         boolean bIsValid = validateCodeAttribute( request );
 
@@ -383,16 +405,27 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
                 AdminMessage.TYPE_STOP );
         }
 
-        getAttributeData( request, attribute );
+        getAttributeData( request, _attribute );
+        
+        // The user has not clicked on "save", then there are some operations to proceed
+        String strSave = request.getParameter( PARAMETER_SAVE );
+        if ( StringUtils.isBlank( strSave ) )
+        {
+        	UrlItem url = new UrlItem( JSP_MODIFY_DOCUMENT_TYPE_ATTRIBUTE );
+        	url.addParameter( PARAMETER_SESSION, PARAMETER_SESSION );
+        	url.addParameter( PARAMETER_ATTRIBUTE_ID, nAttributeId );
 
-        String strValidateMessage = getAttributeValidationMessage( attribute );
+        	return url.getUrl(  );
+        }
+
+        String strValidateMessage = getAttributeValidationMessage( _attribute );
 
         if ( strValidateMessage != null )
         {
             return AdminMessageService.getMessageUrl( request, strValidateMessage, AdminMessage.TYPE_STOP );
         }
 
-        DocumentAttributeHome.update( attribute );
+        DocumentAttributeHome.update( _attribute );
 
         return JSP_MODIFY_DOCUMENT_TYPE;
     }
@@ -407,21 +440,30 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         String strAttributeTypeCode = request.getParameter( PARAMETER_ATTRIBUTE_TYPE_CODE );
         String[] arrayStrValues;
         List<String> listValues = new ArrayList<String>(  );
-
+        List<AttributeTypeParameter> listParameters;
         AttributeManager manager = AttributeService.getInstance(  ).getManager( strAttributeTypeCode );
-        List<AttributeTypeParameter> listParameters = manager.getExtraParameters( getLocale(  ) );
-
-        for ( AttributeTypeParameter parameter : listParameters )
+        
+        String strSave = request.getParameter( PARAMETER_SAVE );
+        if ( StringUtils.isBlank( strSave ) )
         {
-            arrayStrValues = request.getParameterValues( parameter.getName(  ) );
-
-            if ( arrayStrValues != null )
-            {
-                listValues.addAll( Arrays.asList( arrayStrValues ) );
-            }
-
-            parameter.setValueList( listValues );
-            listValues.clear(  );
+        	listParameters = manager.getValueParameters( request, getLocale(  ) );
+        }
+        else
+        {
+        	listParameters = manager.getExtraParameters( getLocale(  ) );
+        	
+        	for ( AttributeTypeParameter parameter : listParameters )
+        	{
+        		arrayStrValues = request.getParameterValues( parameter.getName(  ) );
+        		
+        		if ( arrayStrValues != null )
+        		{
+        			listValues.addAll( Arrays.asList( arrayStrValues ) );
+        		}
+        		
+        		parameter.setValueList( listValues );
+        		listValues.clear(  );
+        	}
         }
 
         attribute.setName( strName );
@@ -471,8 +513,8 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         String strMessage = null;
 
         // Mandatory fields
-        if ( ( attribute.getName(  ).equals( "" ) ) || ( attribute.getDescription(  ).equals( "" ) ) ||
-                ( attribute.getCode(  ).equals( "" ) ) )
+        if ( StringUtils.isBlank( attribute.getName(  ) ) || StringUtils.isBlank( attribute.getDescription(  ) ) ||
+        		StringUtils.isBlank( attribute.getCode(  ) ) )
         {
             return Messages.MANDATORY_FIELDS;
         }
@@ -537,7 +579,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage,
                 _nDefaultItemsPerPage );
 
-        LocalizedPaginator paginator = new LocalizedPaginator( listRegularExpressionAdded, _nItemsPerPage,
+        LocalizedPaginator<RegularExpression> paginator = new LocalizedPaginator<RegularExpression>( listRegularExpressionAdded, _nItemsPerPage,
                 url.getUrl(  ), Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale(  ) );
 
         Map<String, Object> model = new HashMap<String, Object>(  );
@@ -545,9 +587,20 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         model.put( MARK_DOCUMENT_TYPE_CODE, _strDocumentTypeCode );
         model.put( MARK_ATTRIBUTE_TYPE_CODE, attribute.getCodeAttributeType(  ) );
         //        model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS , listParameters );
-        model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getModifyParametersFormHtml( getLocale(  ), nAttributeId ) );
-        model.put( MARK_ATTRIBUTE, attribute );
-
+        
+        String strSession = request.getParameter( PARAMETER_SESSION );
+        if ( StringUtils.isNotBlank( strSession ) )
+        {
+        	model.put( MARK_ATTRIBUTE, _attribute );
+        	model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getCreateParametersFormHtml( _attribute.getParameters(  ), getLocale(  ) ) );
+        }
+        else
+        {
+        	_attribute = new DocumentAttribute(  );
+        	model.put( MARK_ATTRIBUTE, attribute );
+        	model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getModifyParametersFormHtml( getLocale(  ), nAttributeId ) );
+        }
+        
         // Regular expressions
         model.put( MARK_REGULAR_EXPRESSION_TO_ADD_LIST, refListRegularExpressionToAdd );
         model.put( MARK_PAGINATOR, paginator );
@@ -653,7 +706,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         if ( nIndex > 1 )
         {
             DocumentType documentType = DocumentTypeHome.findByPrimaryKey( _strDocumentTypeCode );
-            List list = documentType.getAttributes(  );
+            List<DocumentAttribute> list = documentType.getAttributes(  );
             DocumentAttribute attribute1 = (DocumentAttribute) list.get( nIndex - 1 );
             DocumentAttribute attribute2 = (DocumentAttribute) list.get( nIndex - 2 );
             DocumentTypeHome.reorderAttributes( attribute1.getId(  ), nIndex - 1, attribute2.getId(  ), nIndex );
@@ -672,7 +725,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         String strIndex = request.getParameter( PARAMETER_INDEX );
         int nIndex = Integer.parseInt( strIndex );
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( _strDocumentTypeCode );
-        List list = documentType.getAttributes(  );
+        List<DocumentAttribute> list = documentType.getAttributes(  );
 
         if ( nIndex < list.size(  ) )
         {

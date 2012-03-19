@@ -10,8 +10,8 @@
 <p>
 <label for="${items.name}_value" >${items.label} :</label>
 <input type="text" id="${items.name}_value" name="${items.name}_value" tabindex="6" />
-<input class="button" type="button" name="add" value="#i18n{document.attributeType.listbox.btnAddItem}"
-	onclick="manageItems(1);" tabindex="7" />
+<input class="button" type="submit" name="add" value="#i18n{document.attributeType.listbox.btnAddItem}"
+	onclick="manageItems(1);return false;" tabindex="7" />
     ${items.description}
 </p>
 <p>
@@ -31,14 +31,15 @@
 </p>
 <p>
     <label for="items" >&nbsp;</label>
-    <input class="button" type="button" name="delete" value="#i18n{document.attributeType.listbox.btnDelItem}" 
-    	onclick="manageItems(-1)" tabindex="9" />
-	<input class="button" type="button" name="bydefault" value="#i18n{document.attributeType.listbox.btnDefItem}" 
-		onclick="setByDefault('${items.name}_select');" tabindex="10" />
+    <input class="button" type="submit" name="delete" value="#i18n{document.attributeType.listbox.btnDelItem}" 
+    	onclick="manageItems(-1);return false;" tabindex="9" />
+	<input class="button" type="submit" name="bydefault" value="#i18n{document.attributeType.listbox.btnDefItem}" 
+		onclick="setByDefault('${items.name}_select');return false;" tabindex="10" />
 
 <input type="text" id="${defaultValue.name}" name="${defaultValue.name}" value="<#list defaultValue.valueList as values >${values}</#list>" readonly="readonly" tabindex="11" />
 </p>
 
+<script type="text/javascript" src="js/selectbox.js"></script>
 <script type="text/javascript">
 function manageItems( actionItem )
 {

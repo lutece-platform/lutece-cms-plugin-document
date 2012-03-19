@@ -7,39 +7,59 @@
     	<#assign items = parameter>
     </#if>
 </#list>
+
+<#if items?? && items.valueList?? && items.valueList?has_content>
+	<#assign listValues = items.valueList>
+<#else>
+	<#assign listValues = items.defaultValue>
+</#if>
+
+<#if defaultValue?? && defaultValue.valueList?? && defaultValue?has_content>
+	<#list defaultValue.valueList as value>
+		<#assign valueDefaultValue = value>
+		<#break>
+	</#list>
+<#else>
+	<#list defaultValue.defaultValue as value>
+		<#assign valueDefaultValue = value>
+		<#break>
+	</#list>
+</#if>
+
 <p>
 <label for="${items.name}_value" >${items.label} :</label>
 <input type="text" id="${items.name}_value" name="${items.name}_value" tabindex="6" />
-<input class="button" type="button" name="add" value="#i18n{document.attributeType.listbox.btnAddItem}"
-	onclick="manageItems(1);" tabindex="7" />
+<input class="button" type="submit" name="add" value="#i18n{document.attributeType.listbox.btnAddItem}"
+	onclick="manageItems(1);return false;" tabindex="7" />
     ${items.description}
 </p>
 <p>
     <label for="${items.name}_select" >&nbsp;</label>
 	<select id="${items.name}_select" name="${items.name}_select" size="4" style='width:200px;' tabindex="8">
-		<#list items.defaultValue as values >
-  					<option value="${values}" >${values}</option>
+		<#list listValues as values >
+			<option value="${values}" >${values}</option>
    		</#list>
 	</select>
 	<p style="display:none">
 		<select id="${items.name}" name="${items.name}" size="4" style='width:200px;' multiple="multiple" >
-			<#list items.defaultValue as values >
+			<#list listValues as values >
    				<option value="${values}" selected="selected">${values}</option>
-    		</#list>		
+    		</#list>
 		</select>
 	</p>
 </p>
 <p>
     <label for="items" >&nbsp;</label>
-    <input class="button" type="button" name="delete" value="#i18n{document.attributeType.listbox.btnDelItem}" 
-    	onclick="manageItems(-1)" tabindex="9" />
-	<input class="button" type="button" name="bydefault" value="#i18n{document.attributeType.listbox.btnDefItem}" 
-		onclick="setByDefault('${items.name}_select');" tabindex="10" />
+    <input class="button" type="submit" name="delete" value="#i18n{document.attributeType.listbox.btnDelItem}" 
+    	onclick="manageItems(-1);return false;" tabindex="9" />
+	<input class="button" type="submit" name="bydefault" value="#i18n{document.attributeType.listbox.btnDefItem}" 
+		onclick="setByDefault('${items.name}_select');return false;" tabindex="10" />
 
 <input type="text" id="${defaultValue.name}" name="${defaultValue.name}" 
-	value="<#list defaultValue.defaultValue as values >${values}</#list>" readonly="readonly" tabindex="11" />
+	value="${valueDefaultValue!}" readonly="readonly" tabindex="11" />
 </p>
 
+<script type="text/javascript" src="js/selectbox.js"></script>
 <script type="text/javascript">
 function manageItems( actionItem )
 {

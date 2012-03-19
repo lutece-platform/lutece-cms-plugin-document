@@ -33,6 +33,16 @@
  */
 package fr.paris.lutece.plugins.document.service.attributes;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeHome;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
@@ -43,12 +53,6 @@ import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
 import fr.paris.lutece.portal.service.regularexpression.RegularExpressionService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 
 /**
@@ -64,39 +68,35 @@ public abstract class DefaultManager implements AttributeManager
     private String _strAttributeTypeCode;
 
     /**
-     * Returns the Create HTML template correponding to this attribue
-     * @return The Create HTML template correponding to this attribue
+     * Returns the Create HTML template corresponding to this attribute
+     * @return The Create HTML template corresponding to this attribute
      */
     abstract String getCreateTemplate(  );
 
     /**
-     * Returns the Modify HTML template correponding to this attribue
-     * @return the Modify HTML template correponding to this attribue
+     * Returns the Modify HTML template corresponding to this attribute
+     * @return the Modify HTML template corresponding to this attribute
      */
     abstract String getModifyTemplate(  );
 
     /**
-     * Returns the Create HTML template for parameters correponding to this attribue
-     * @return the Create HTML template for parameters correponding to this attribue
+     * Returns the Create HTML template for parameters corresponding to this attribute
+     * @return the Create HTML template for parameters corresponding to this attribute
      */
     abstract String getCreateParametersTemplate(  );
 
     /**
-     * Returns the Modify HTML template for parameters correponding to this attribue
-     * @return the Modify HTML template for parameters correponding to this attribue
+     * Returns the Modify HTML template for parameters corresponding to this attribute
+     * @return the Modify HTML template for parameters corresponding to this attribute
      */
     abstract String getModifyParametersTemplate(  );
 
     /**
-     * Gets the part of an HTML form to enter attribute data
-     * @param attribute The attribute
-     * @param locale The current Locale
-     * @param strBaseUrl The base url
-     * @return A part of the HTML form
+     * {@inheritDoc}
      */
     public String getCreateFormHtml( DocumentAttribute attribute, Locale locale, String strBaseUrl )
     {
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_ATTRIBUTE, attribute );
         model.put( MARK_ATTRIBUTE_PARAMETERS, getParameters( attribute.getId(  ), locale ) );
         model.put( MARK_LOCALE, locale );
@@ -108,16 +108,11 @@ public abstract class DefaultManager implements AttributeManager
     }
 
     /**
-     * Gets the part of an HTML form to modify attribute data
-     * @param attribute The attribute
-     * @param document The Document Object
-     * @param locale The current Locale
-     * @param strBaseUrl The base url
-     * @return A part of the HTML form
+     * {@inheritDoc}
      */
     public String getModifyFormHtml( DocumentAttribute attribute, Document document, Locale locale, String strBaseUrl )
     {
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_ATTRIBUTE, attribute );
         model.put( MARK_ATTRIBUTE_PARAMETERS, getParameters( attribute.getId(  ), locale ) );
         model.put( MARK_DOCUMENT, document );
@@ -130,18 +125,16 @@ public abstract class DefaultManager implements AttributeManager
     }
 
     /**
-     * Gets the part of an HTML form to enter parameters data
-     * @param locale The current Locale
-     * @return A part of the HTML form
+     * {@inheritDoc}
      */
     public String getCreateParametersFormHtml( Locale locale )
     {
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         String strUrlTemplate = getCreateParametersTemplate(  );
 
         if ( strUrlTemplate == null )
         {
-            return "";
+            return StringUtils.EMPTY;
         }
 
         model.put( MARK_ATTRIBUTE_PARAMETERS, getExtraParameters( locale ) );
@@ -151,21 +144,47 @@ public abstract class DefaultManager implements AttributeManager
 
         return template.getHtml(  );
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getCreateParametersFormHtml( List<AttributeTypeParameter> listParameters, Locale locale )
+    {
+        Map<String, Object> model = new HashMap<String, Object>(  );
+        String strUrlTemplate = getCreateParametersTemplate(  );
+
+        if ( strUrlTemplate == null )
+        {
+            return StringUtils.EMPTY;
+        }
+        
+        if ( listParameters != null && !listParameters.isEmpty(  ) )
+        {
+        	model.put( MARK_ATTRIBUTE_PARAMETERS, listParameters );
+        }
+        else
+        {
+        	model.put( MARK_ATTRIBUTE_PARAMETERS, getExtraParameters( locale ) );
+        }
+
+        model.put( MARK_LOCALE, locale );
+
+        HtmlTemplate template = AppTemplateService.getTemplate( getCreateParametersTemplate(  ), locale, model );
+
+        return template.getHtml(  );
+    }
 
     /**
-     * Gets the part of an HTML form to modify parameters data
-     * @param locale The current Locale
-     * @param nAttributeId Attribute Id
-     * @return A part of the HTML form
+     * {@inheritDoc}
      */
     public String getModifyParametersFormHtml( Locale locale, int nAttributeId )
     {
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         String strUrlTemplate = getModifyParametersTemplate(  );
 
         if ( strUrlTemplate == null )
         {
-            return "";
+            return StringUtils.EMPTY;
         }
 
         model.put( MARK_ATTRIBUTE_PARAMETERS, getExtraParametersValues( locale, nAttributeId ) );
@@ -177,9 +196,7 @@ public abstract class DefaultManager implements AttributeManager
     }
 
     /**
-     * Gets extra parameters for the attribute
-     * @param locale The current Locale
-     * @return A List of attribute parameters
+     * {@inheritDoc}
      */
     public List<AttributeTypeParameter> getExtraParameters( Locale locale )
     {
@@ -187,10 +204,7 @@ public abstract class DefaultManager implements AttributeManager
     }
 
     /**
-     * Gets extra parameters values for the attribute
-     * @param locale The current Locale
-     * @param nAttributeId The attribute identifier
-     * @return a list of parameters
+     * {@inheritDoc}
      */
     public Collection<AttributeTypeParameter> getExtraParametersValues( Locale locale, int nAttributeId )
     {
@@ -206,8 +220,7 @@ public abstract class DefaultManager implements AttributeManager
     }
 
     /**
-     * Define the attribute Type code
-     * @param strCode The Attribute Type Code
+     * {@inheritDoc}
      */
     public void setAttributeTypeCode( String strCode )
     {
@@ -215,8 +228,7 @@ public abstract class DefaultManager implements AttributeManager
     }
 
     /**
-     * Return the attribute Type code
-     * @return The Attribute Type Code
+     * {@inheritDoc}
      */
     public String getAttributeTypeCode(  )
     {
@@ -224,11 +236,7 @@ public abstract class DefaultManager implements AttributeManager
     }
 
     /**
-     * Validate the value for the attribute
-     * @param nAttributeId The attribute identifier
-     * @param strValue The value to check
-     * @param locale The current Locale
-     * @return null if valid, otherwise error message
+     * {@inheritDoc}
      */
     public String validateValue( int nAttributeId, String strValue, Locale locale )
     {
@@ -257,10 +265,7 @@ public abstract class DefaultManager implements AttributeManager
     }
 
     /**
-     * Validate the value for the parameters
-     * @param listParameters The list of parameters to check
-     * @param locale The current Locale
-     * @return null if valid, otherwise message property
+     * {@inheritDoc}
      */
     public String validateValueParameters( List<AttributeTypeParameter> listParameters, Locale locale )
     {
@@ -268,10 +273,7 @@ public abstract class DefaultManager implements AttributeManager
     }
 
     /**
-     * Get the XML data corresponding to the attribute to build the document XML content
-     * @param document The document
-     * @param attribute  The attribute
-     * @return The XML value of the attribute
+     * {@inheritDoc}
      */
     public String getAttributeXmlValue( Document document, DocumentAttribute attribute )
     {
@@ -279,14 +281,27 @@ public abstract class DefaultManager implements AttributeManager
     }
 
     /**
-     * Gets parameters values for the attribute
-     * @param nAttributeId The attribute Id
-     * @param locale The current Locale
-     * @return Collection<AttributeTypeParameter> list of attribute type parameters
+     * {@inheritDoc}
      */
     public Collection<AttributeTypeParameter> getAttributeParametersValues( int nAttributeId, Locale locale )
     {
         return DocumentAttributeHome.getAttributeParametersValues( nAttributeId, locale );
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean canBeUsedAsThumbnail(  )
+    {
+        return false;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public List<AttributeTypeParameter> getValueParameters( HttpServletRequest request, Locale locale )
+    {
+    	return null;
     }
 
     /**
@@ -315,13 +330,5 @@ public abstract class DefaultManager implements AttributeManager
         }
 
         return mapParameters;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean canBeUsedAsThumbnail(  )
-    {
-        return false;
     }
 }
