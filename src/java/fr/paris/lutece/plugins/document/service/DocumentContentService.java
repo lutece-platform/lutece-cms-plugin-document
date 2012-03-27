@@ -33,28 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.service;
 
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.event.CacheEventListener;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
@@ -94,6 +72,30 @@ import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.xml.XmlUtil;
 
+import net.sf.ehcache.CacheException;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+import net.sf.ehcache.event.CacheEventListener;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.io.FileInputStream;
+
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.servlet.http.HttpServletRequest;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+
 
 /**
  *
@@ -110,7 +112,7 @@ public final class DocumentContentService extends ContentService implements Cach
     private static final String DOCUMENT_STYLE_PREFIX_ID = "document-";
     private static final String LOCALE_EN = "en";
     private static final String LOCALE_FR = "fr";
-    
+
     // XML tags
     private static final String XML_TAG_CONTENT = "content";
     private static final String XML_TAG_SITE_LOCALE = "site_locale";
@@ -162,15 +164,14 @@ public final class DocumentContentService extends ContentService implements Cach
     private static final String PROPERTY_CACHE_ENABLED = "document.cache.enabled";
     private static final String TARGET_TOP = "target=_top";
     private static final String PROPERTY_RESOURCE_TYPE = "document";
-    private static final String JCAPTCHA_PLUGIN = "jcaptcha";    
+    private static final String JCAPTCHA_PLUGIN = "jcaptcha";
 
     // Performance patch
     private static ConcurrentMap<String, String> keyMemory = new ConcurrentHashMap<String, String>(  );
-    private boolean _bInit;
-    
+
     //Captcha
     private static CaptchaSecurityService _captchaService;
-    
+    private boolean _bInit;
 
     /**
      * Returns the document page for a given document and a given portlet. The page is built from XML data or retrieved
@@ -193,12 +194,14 @@ public final class DocumentContentService extends ContentService implements Cach
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         String strPortletId = request.getParameter( Parameters.PORTLET_ID );
         String strSiteLocale = request.getParameter( PARAMETER_SITE_LOCALE );
-        if( strSiteLocale == null || !strSiteLocale.equalsIgnoreCase( LOCALE_EN ) )
+
+        if ( ( strSiteLocale == null ) || !strSiteLocale.equalsIgnoreCase( LOCALE_EN ) )
         {
-        	strSiteLocale = LOCALE_FR;
+            strSiteLocale = LOCALE_FR;
         }
+
         String strKey = getKey( strDocumentId, strPortletId, strSiteLocale, nMode );
-        String strPage = ( String ) getFromCache( strKey );
+        String strPage = (String) getFromCache( strKey );
 
         if ( strPage == null )
         {
@@ -206,7 +209,7 @@ public final class DocumentContentService extends ContentService implements Cach
             synchronized ( strKey )
             {
                 // can be useful if an other thread had evaluate the page
-                strPage = ( String ) getFromCache( strKey );
+                strPage = (String) getFromCache( strKey );
 
                 // ignore CheckStyle, this double verification is useful when page cache has been created when thread is
                 // blocked on synchronized
@@ -271,8 +274,7 @@ public final class DocumentContentService extends ContentService implements Cach
      * @throws fr.paris.lutece.portal.service.message.SiteMessageException
      */
     private String buildPage( HttpServletRequest request, String strDocumentId, String strPortletId,
-    		String strSiteLocale, int nMode )
-        throws UserNotSignedException, SiteMessageException
+        String strSiteLocale, int nMode ) throws UserNotSignedException, SiteMessageException
     {
         int nPortletId;
         int nDocumentId;
@@ -324,7 +326,6 @@ public final class DocumentContentService extends ContentService implements Cach
             mapXslParams.put( PARAMETER_PUBLICATION_DATE,
                 DateUtil.getDateString( documentPublication.getDatePublishing(  ), request.getLocale(  ) ) );
             model.put( MARK_PUBLICATION, documentPublication );
-
         }
 
         if ( bPortletExist )
@@ -378,7 +379,7 @@ public final class DocumentContentService extends ContentService implements Cach
             {
                 paramName = (String) enumParam.nextElement(  );
                 htParamRequest.put( paramName, request.getParameter( paramName ) );
-            }          
+            }
 
             XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
             StringBuffer strXml = new StringBuffer(  );
@@ -386,6 +387,7 @@ public final class DocumentContentService extends ContentService implements Cach
             XmlUtil.addElement( strXml, XML_TAG_SITE_LOCALE, strSiteLocale );
             strXml.append( document.getXmlValidatedContent(  ) );
             XmlUtil.endElement( strXml, XML_TAG_CONTENT );
+
             String strDocument = xmlTransformerService.transformBySourceWithXslCache( strXml.toString(  ),
                     type.getContentServiceXslSource(  ), DOCUMENT_STYLE_PREFIX_ID + type.getStyleSheetId( nMode ),
                     htParamRequest, null );
@@ -395,7 +397,7 @@ public final class DocumentContentService extends ContentService implements Cach
             model.put( MARK_PORTLET, getPortlet( request, strPortletId, nMode ) );
             model.put( MARK_CATEGORY, getRelatedDocumentsPortlet( request, document, nPortletId, nMode ) );
             model.put( MARK_DOCUMENT_ID, strDocumentId );
-            model.put( MARK_PORTLET_ID, strPortletId );            
+            model.put( MARK_PORTLET_ID, strPortletId );
             model.put( MARK_DOCUMENT_COMMENTS, getComments( strDocumentId, strPortletId, nMode, request ) );
 
             // additionnal page info
@@ -609,16 +611,17 @@ public final class DocumentContentService extends ContentService implements Cach
      */
     private static String getComments( String strDocumentId, String strPortletId, int nMode, HttpServletRequest request )
     {
-    	if ( IntegerUtils.isNotNumeric( strDocumentId ) )
-    	{
-    		return StringUtils.EMPTY;
-    	}
+        if ( IntegerUtils.isNotNumeric( strDocumentId ) )
+        {
+            return StringUtils.EMPTY;
+        }
+
         int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
-        
+
         if ( document == null )
         {
-        	return StringUtils.EMPTY;
+            return StringUtils.EMPTY;
         }
 
         int nMailingListId = document.getMailingListId(  );
@@ -643,7 +646,7 @@ public final class DocumentContentService extends ContentService implements Cach
             // check xss errors
             String strCaptchaError = request.getParameter( PARAMETER_CAPTCHA_ERROR );
             strCaptchaError = ( strCaptchaError != null ) ? strCaptchaError : StringUtils.EMPTY;
-            
+
             // check emails errors
             String strCheckEmail = request.getParameter( PARAMETER_CHECK_EMAIL );
             strCheckEmail = ( strCheckEmail != null ) ? strCheckEmail : StringUtils.EMPTY;
@@ -652,8 +655,8 @@ public final class DocumentContentService extends ContentService implements Cach
             {
                 // Generate the add document form
                 model.put( MARK_DOCUMENT_COMMENT_FORM,
-                    getAddCommentForm( request, strDocumentId, strPortletId, strMailingListId, strXssError, strCaptchaError,
-                        strCheckEmail, strMandatoryField ) );
+                    getAddCommentForm( request, strDocumentId, strPortletId, strMailingListId, strXssError,
+                        strCaptchaError, strCheckEmail, strMandatoryField ) );
             }
             else
             {
@@ -682,7 +685,8 @@ public final class DocumentContentService extends ContentService implements Cach
      * @return the HTML code of the form
      */
     private static String getAddCommentForm( HttpServletRequest request, String strDocumentId, String strPortletId,
-        String strMailingListId, String strXssError, String strCaptchaError, String strCheckEmail, String strMandatoryField )
+        String strMailingListId, String strXssError, String strCaptchaError, String strCheckEmail,
+        String strMandatoryField )
     {
         HashMap<String, Object> model = new HashMap<String, Object>(  );
 
@@ -717,7 +721,6 @@ public final class DocumentContentService extends ContentService implements Cach
             model.put( MARK_CAPTCHA, _captchaService.getHtmlCode(  ) );
         }
 
-        
         model.put( MARK_DOCUMENT_ID, strDocumentId );
         model.put( MARK_PORTLET_ID, strPortletId );
         model.put( MARK_MAILINGLIST, strMailingListId );
@@ -833,7 +836,7 @@ public final class DocumentContentService extends ContentService implements Cach
             String strKey = getKey( strDocumentId, strPortletId, LOCALE_FR, PortalJspBean.MODE_HTML );
 
             getCache(  ).remove( strKey );
-            
+
             strKey = getKey( strDocumentId, strPortletId, LOCALE_EN, PortalJspBean.MODE_HTML );
 
             getCache(  ).remove( strKey );

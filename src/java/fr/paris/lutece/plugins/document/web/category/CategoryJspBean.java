@@ -33,15 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.web.category;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.category.Category;
 import fr.paris.lutece.plugins.document.business.category.CategoryHome;
 import fr.paris.lutece.plugins.document.service.category.CategoryService;
@@ -58,6 +49,15 @@ import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**

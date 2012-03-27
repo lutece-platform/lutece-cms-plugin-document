@@ -33,13 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.modules.comment.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.modules.comment.business.DocumentComment;
@@ -57,6 +50,13 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * Calendar Dashboard Component
@@ -64,29 +64,30 @@ import fr.paris.lutece.util.url.UrlItem;
  */
 public class DocumentCommentDashboardComponent extends DashboardComponent
 {
-	// PARAMETERS
-	private static final String PARAMETER_PLUGIN_NAME = "plugin_name";
-	// MARKS
+    // PARAMETERS
+    private static final String PARAMETER_PLUGIN_NAME = "plugin_name";
+
+    // MARKS
     private static final String MARK_URL = "url";
     private static final String MARK_ICON = "icon";
     private static final String MARK_LAST_COMMENT = "last_comment";
     private static final String MARK_PERMISSION_COMMENT = "permission_comment";
     private static final String MARK_DOCUMENT = "document";
-    
+
     // CONSTANTS
     private static final int ZONE_1 = 1;
-    
+
     // TEMPALTES
     private static final String TEMPLATE_DASHBOARD_ZONE_1 = "/admin/plugins/document/modules/comment/dashboard/comment_dashboard_zone_1.html";
     private static final String TEMPLATE_DASHBOARD_OTHER_ZONE = "/admin/plugins/document/modules/comment/dashboard/comment_dashboard_other_zone.html";
-    
+
     // JSP
     private static final String JSP_URL_VIEW_PLUGIN_DESCRIPTION = "jsp/admin/system/ViewPluginDescription.jsp";
 
     /**
      * The HTML code of the component
      * @param user The Admin User
-	 * @param request HttpServletRequest
+         * @param request HttpServletRequest
      * @return The dashboard component
      */
     public String getDashboardData( AdminUser user, HttpServletRequest request )
@@ -100,23 +101,25 @@ public class DocumentCommentDashboardComponent extends DashboardComponent
         }
 
         Map<String, Object> model = new HashMap<String, Object>(  );
-        
+
         // Get last comment
         DocumentComment lastComment = DocumentCommentHome.findLastComment(  );
+
         if ( lastComment != null )
         {
-        	Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( lastComment.getDocumentId(  ) );
-        	
-        	model.put( MARK_DOCUMENT, document );
+            Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( lastComment.getDocumentId(  ) );
+
+            model.put( MARK_DOCUMENT, document );
         }
-        
+
         UrlItem url = new UrlItem( JSP_URL_VIEW_PLUGIN_DESCRIPTION );
         url.addParameter( PARAMETER_PLUGIN_NAME, DocumentCommentPlugin.PLUGIN_NAME );
 
         model.put( MARK_LAST_COMMENT, lastComment );
         model.put( MARK_URL, url.getUrl(  ) );
         model.put( MARK_ICON, plugin.getIconUrl(  ) );
-        model.put( MARK_PERMISSION_COMMENT, RBACService.isAuthorized( DocumentComment.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+        model.put( MARK_PERMISSION_COMMENT,
+            RBACService.isAuthorized( DocumentComment.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
                 DocumentCommentResourceIdService.PERMISSION_COMMENT, user ) );
 
         HtmlTemplate t = AppTemplateService.getTemplate( getTemplateDashboard(  ), user.getLocale(  ), model );

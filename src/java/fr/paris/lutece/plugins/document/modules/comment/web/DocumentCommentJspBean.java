@@ -33,12 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.modules.comment.web;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.modules.comment.business.DocumentComment;
@@ -50,6 +44,12 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -103,18 +103,19 @@ public class DocumentCommentJspBean extends PluginAdminPageJspBean
 
         // Retrieve the document from the database :
         int nDocumentId = IntegerUtils.convert( strDocumentId );
-    	Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
+        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-    	if ( ( document != null ) && DocumentService.getInstance(  )
-    			.isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
-    					DocumentTypeResourceIdService.PERMISSION_VIEW, getUser(  ) ) )
-    	{
-    		// Retrieve the comments from the database :
-    		List<DocumentComment> documentComments = DocumentCommentHome.findByDocument( nDocumentId );
+        if ( ( document != null ) &&
+                DocumentService.getInstance(  )
+                                   .isAuthorizedAdminDocument( document.getSpaceId(  ),
+                    document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_VIEW, getUser(  ) ) )
+        {
+            // Retrieve the comments from the database :
+            List<DocumentComment> documentComments = DocumentCommentHome.findByDocument( nDocumentId );
 
-    		model.put( MARK_DOCUMENT, document );
-    		model.put( MARK_DOCUMENT_COMMENTS, documentComments );
-    	}
+            model.put( MARK_DOCUMENT, document );
+            model.put( MARK_DOCUMENT_COMMENTS, documentComments );
+        }
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_DOCUMENT_COMMENTS, getLocale(  ), model );
 
@@ -148,7 +149,7 @@ public class DocumentCommentJspBean extends PluginAdminPageJspBean
     {
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         String strCommentId = request.getParameter( PARAMETER_COMMENTS_ID );
-    	DocumentCommentHome.remove( IntegerUtils.convert( strCommentId ) );
+        DocumentCommentHome.remove( IntegerUtils.convert( strCommentId ) );
 
         UrlItem url = new UrlItem( JSP_DOCUMENT_COMMENTS );
         url.addParameter( PARAMETER_DOCUMENT_ID, IntegerUtils.convert( strDocumentId ) );

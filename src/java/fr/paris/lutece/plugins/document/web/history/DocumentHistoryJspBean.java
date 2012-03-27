@@ -33,12 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.web.history;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.history.HistoryEvent;
@@ -49,6 +43,12 @@ import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**

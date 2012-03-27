@@ -145,7 +145,7 @@ public interface IDocumentDAO
      * @param document the reference of the document
      */
     void loadAttributes( Document document );
-    
+
     /**
      * Load document attributes
      * @param document the reference of the document
@@ -171,7 +171,7 @@ public interface IDocumentDAO
      * @param nDocumentId the Id of the document
      */
     void validateAttributes( int nDocumentId );
-    
+
     /**
      * Load the data of last Document the user worked in from the table
      *
@@ -179,7 +179,7 @@ public interface IDocumentDAO
      * @return the instance of the Document
      */
     Document loadLastModifiedDocumentFromUser( String strUserName );
-    
+
     /**
      * Load the data of last Document the user worked in from the table
      *

@@ -33,18 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.service.search;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.lucene.demo.html.HTMLParser;
-import org.apache.lucene.document.DateTools;
-import org.apache.lucene.document.Field;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
@@ -67,13 +55,26 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.lucene.demo.html.HTMLParser;
+import org.apache.lucene.document.DateTools;
+import org.apache.lucene.document.Field;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 
 /**
  * Document Indexer
  */
 public class DocumentIndexer implements SearchIndexer
 {
-	public static final String INDEXER_NAME = "DocumentIndexer";
+    public static final String INDEXER_NAME = "DocumentIndexer";
     public static final String SHORT_NAME = "dcm";
     private static final String INDEXER_DESCRIPTION = "Indexer service for documents";
     private static final String INDEXER_VERSION = "1.0.0";
@@ -108,19 +109,20 @@ public class DocumentIndexer implements SearchIndexer
 
                 String strPortletDocumentId = document.getId(  ) + "_" + SHORT_NAME + "&" + portlet.getId(  );
                 org.apache.lucene.document.Document doc = null;
+
                 try
                 {
-                	doc = getDocument( document, url.getUrl(  ), page.getRole(  ),
-                            strPortletDocumentId );
+                    doc = getDocument( document, url.getUrl(  ), page.getRole(  ), strPortletDocumentId );
                 }
                 catch ( Exception e )
                 {
-                	String strMessage = "Document ID : " + document.getId(  ) + " - Portlet ID : " + portlet.getId(  );
-                	IndexationService.error( this, e, strMessage );
+                    String strMessage = "Document ID : " + document.getId(  ) + " - Portlet ID : " + portlet.getId(  );
+                    IndexationService.error( this, e, strMessage );
                 }
+
                 if ( doc != null )
                 {
-                	IndexationService.write( doc );
+                    IndexationService.write( doc );
                 }
             }
         }
@@ -139,8 +141,7 @@ public class DocumentIndexer implements SearchIndexer
         List<org.apache.lucene.document.Document> listDocs = new ArrayList<org.apache.lucene.document.Document>(  );
         int nIdDocument = IntegerUtils.convert( strIdDocument );
         Document document = DocumentHome.findByPrimaryKey( nIdDocument );
-        Iterator<Portlet> it = PublishingService.getInstance(  ).getPortletsByDocumentId( strIdDocument )
-                                                .iterator(  );
+        Iterator<Portlet> it = PublishingService.getInstance(  ).getPortletsByDocumentId( strIdDocument ).iterator(  );
         String strBaseUrl = AppPropertiesService.getProperty( PROPERTY_PAGE_BASE_URL );
         Page page;
 
@@ -268,9 +269,9 @@ public class DocumentIndexer implements SearchIndexer
         doc.add( new Field( SearchItem.FIELD_TYPE, document.getType(  ), Field.Store.YES, Field.Index.NOT_ANALYZED ) );
 
         doc.add( new Field( SearchItem.FIELD_ROLE, strRole, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
-        
+
         // add metadata (mapped to summary)
-        doc.add( new Field( SearchItem.FIELD_METADATA, document.getSummary(), Field.Store.NO, Field.Index.ANALYZED ) );
+        doc.add( new Field( SearchItem.FIELD_METADATA, document.getSummary(  ), Field.Store.NO, Field.Index.ANALYZED ) );
 
         // return the document
         return doc;
@@ -293,7 +294,7 @@ public class DocumentIndexer implements SearchIndexer
                 if ( !attribute.isBinary(  ) )
                 {
                     // Text attributes
-                	sbContentToIndex.append( " " );
+                    sbContentToIndex.append( " " );
                     sbContentToIndex.append( attribute.getTextValue(  ) );
                 }
                 else
@@ -328,24 +329,26 @@ public class DocumentIndexer implements SearchIndexer
         return sbContentToIndex.toString(  );
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<String> getListType(  )
-	{
-		List<String> typeList = new ArrayList<String>(  );
-		for( ReferenceItem item : DocumentTypeHome.getDocumentTypesList(  ) )
-		{
-			typeList.add( item.getName(  ) );
-		}
-		return typeList;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public List<String> getListType(  )
+    {
+        List<String> typeList = new ArrayList<String>(  );
 
-/**
-	 * {@inheritDoc}
-	 */
-	public String getSpecificSearchAppUrl(  )
-	{
-		return JSP_PAGE_ADVANCED_SEARCH;
-	}
+        for ( ReferenceItem item : DocumentTypeHome.getDocumentTypesList(  ) )
+        {
+            typeList.add( item.getName(  ) );
+        }
+
+        return typeList;
+    }
+
+    /**
+             * {@inheritDoc}
+             */
+    public String getSpecificSearchAppUrl(  )
+    {
+        return JSP_PAGE_ADVANCED_SEARCH;
+    }
 }

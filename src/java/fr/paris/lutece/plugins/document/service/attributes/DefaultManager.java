@@ -33,16 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.service.attributes;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeHome;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
@@ -53,6 +43,16 @@ import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
 import fr.paris.lutece.portal.service.regularexpression.RegularExpressionService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -144,7 +144,7 @@ public abstract class DefaultManager implements AttributeManager
 
         return template.getHtml(  );
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -157,14 +157,14 @@ public abstract class DefaultManager implements AttributeManager
         {
             return StringUtils.EMPTY;
         }
-        
-        if ( listParameters != null && !listParameters.isEmpty(  ) )
+
+        if ( ( listParameters != null ) && !listParameters.isEmpty(  ) )
         {
-        	model.put( MARK_ATTRIBUTE_PARAMETERS, listParameters );
+            model.put( MARK_ATTRIBUTE_PARAMETERS, listParameters );
         }
         else
         {
-        	model.put( MARK_ATTRIBUTE_PARAMETERS, getExtraParameters( locale ) );
+            model.put( MARK_ATTRIBUTE_PARAMETERS, getExtraParameters( locale ) );
         }
 
         model.put( MARK_LOCALE, locale );
@@ -287,7 +287,7 @@ public abstract class DefaultManager implements AttributeManager
     {
         return DocumentAttributeHome.getAttributeParametersValues( nAttributeId, locale );
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -295,13 +295,13 @@ public abstract class DefaultManager implements AttributeManager
     {
         return false;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public List<AttributeTypeParameter> getValueParameters( HttpServletRequest request, Locale locale )
     {
-    	return null;
+        return null;
     }
 
     /**

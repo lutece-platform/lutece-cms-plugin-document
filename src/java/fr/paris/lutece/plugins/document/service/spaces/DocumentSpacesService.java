@@ -33,20 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.service.spaces;
 
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
@@ -60,6 +46,22 @@ import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.xml.XmlUtil;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.io.FileInputStream;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 
 /**

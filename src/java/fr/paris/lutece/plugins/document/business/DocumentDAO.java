@@ -33,18 +33,18 @@
  */
 package fr.paris.lutece.plugins.document.business;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.category.Category;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.plugins.document.modules.comment.business.DocumentCommentHome;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.sql.DAOUtil;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -90,27 +90,25 @@ public final class DocumentDAO implements IDocumentDAO
         " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
         " LEFT OUTER JOIN document_category_link f ON a.id_document = f.id_document ";
     private static final String SQL_QUERY_SELECT_LAST_MODIFIED_DOCUMENT_FROM_USER = " SELECT a.id_document, a.code_document_type, a.title, a.date_creation, " +
-	    " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
-	    " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
-	    " a.xml_metadata , a.id_creator, a.accept_site_comments, a.is_moderated_comment, a.is_email_notified_comment, a.id_mailinglist, " +
-	    " a.id_page_template_document " +
-	    " FROM document a" +
-	    " INNER JOIN document_space b ON a.id_space = b.id_space" +
-	    " INNER JOIN document_workflow_state c ON a.id_state = c.id_state" +
-	    " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
-	    " INNER JOIN document_history e ON a.id_document = e.id_document " +
-	    " WHERE e.event_user = ? ORDER BY e.event_date DESC LIMIT 1 ";
+        " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
+        " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
+        " a.xml_metadata , a.id_creator, a.accept_site_comments, a.is_moderated_comment, a.is_email_notified_comment, a.id_mailinglist, " +
+        " a.id_page_template_document " + " FROM document a" +
+        " INNER JOIN document_space b ON a.id_space = b.id_space" +
+        " INNER JOIN document_workflow_state c ON a.id_state = c.id_state" +
+        " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
+        " INNER JOIN document_history e ON a.id_document = e.id_document " +
+        " WHERE e.event_user = ? ORDER BY e.event_date DESC LIMIT 1 ";
     private static final String SQL_QUERY_SELECT_LAST_PUBLISHED_DOCUMENT = " SELECT a.id_document, a.code_document_type, a.title, a.date_creation, " +
-	    " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
-	    " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
-	    " a.xml_metadata , a.id_creator, a.accept_site_comments, a.is_moderated_comment, a.is_email_notified_comment, a.id_mailinglist, " +
-	    " a.id_page_template_document " +
-	    " FROM document a" +
-	    " INNER JOIN document_space b ON a.id_space = b.id_space" +
-	    " INNER JOIN document_workflow_state c ON a.id_state = c.id_state" +
-	    " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
-	    " INNER JOIN document_published e ON a.id_document = e.id_document " +
-	    " ORDER BY e.date_publishing DESC LIMIT 1 ";
+        " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
+        " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
+        " a.xml_metadata , a.id_creator, a.accept_site_comments, a.is_moderated_comment, a.is_email_notified_comment, a.id_mailinglist, " +
+        " a.id_page_template_document " + " FROM document a" +
+        " INNER JOIN document_space b ON a.id_space = b.id_space" +
+        " INNER JOIN document_workflow_state c ON a.id_state = c.id_state" +
+        " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
+        " INNER JOIN document_published e ON a.id_document = e.id_document " +
+        " ORDER BY e.date_publishing DESC LIMIT 1 ";
     private static final String SQL_FILTER_WHERE_CLAUSE = " WHERE ";
     private static final String SQL_FILTER_AND = " AND ";
     private static final String SQL_FILTER_DOCUMENT_TYPE = " a.code_document_type = ? ";
@@ -348,14 +346,14 @@ public final class DocumentDAO implements IDocumentDAO
             }
             else
             {
-            	if ( document.getStateId(  ) == DocumentState.STATE_VALIDATE )
-            	{
-            		loadAttributesWithoutBinaries( document, true );
-            	}
-            	else
-            	{
-            		loadAttributesWithoutBinaries( document, false );
-            	}
+                if ( document.getStateId(  ) == DocumentState.STATE_VALIDATE )
+                {
+                    loadAttributesWithoutBinaries( document, true );
+                }
+                else
+                {
+                    loadAttributesWithoutBinaries( document, false );
+                }
             }
 
             document.setCategories( selectCategories( document.getId(  ) ) );
@@ -1117,7 +1115,7 @@ public final class DocumentDAO implements IDocumentDAO
 
         return document;
     }
-    
+
     /**
      * Load the data of last Document the user worked in from the table
      *
@@ -1134,7 +1132,7 @@ public final class DocumentDAO implements IDocumentDAO
 
         if ( daoUtil.next(  ) )
         {
-        	int nIndex = 1;
+            int nIndex = 1;
             document = new Document(  );
             document.setId( daoUtil.getInt( nIndex++ ) );
             document.setCodeDocumentType( daoUtil.getString( nIndex++ ) );
@@ -1165,7 +1163,7 @@ public final class DocumentDAO implements IDocumentDAO
 
         return document;
     }
-    
+
     /**
      * Load the data of last Document the user worked in from the table
      *
@@ -1180,7 +1178,7 @@ public final class DocumentDAO implements IDocumentDAO
 
         if ( daoUtil.next(  ) )
         {
-        	int nIndex = 1;
+            int nIndex = 1;
             document = new Document(  );
             document.setId( daoUtil.getInt( nIndex++ ) );
             document.setCodeDocumentType( daoUtil.getString( nIndex++ ) );

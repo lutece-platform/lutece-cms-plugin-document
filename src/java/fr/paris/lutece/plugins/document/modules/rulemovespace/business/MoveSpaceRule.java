@@ -33,13 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.modules.rulemovespace.business;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.rules.AbstractRule;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentStateHome;
@@ -55,6 +48,13 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.html.HtmlTemplate;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -272,10 +272,11 @@ public class MoveSpaceRule extends AbstractRule
         int nStateId = IntegerUtils.convert( getAttribute( PARAMETER_STATE_ID ) );
         DocumentState state = DocumentStateHome.findByPrimaryKey( nStateId );
         String strState = StringUtils.EMPTY;
+
         if ( state != null )
         {
-        	state.setLocale( getLocale(  ) );
-        	strState = state.getName(  );
+            state.setLocale( getLocale(  ) );
+            strState = state.getName(  );
         }
 
         String[] ruleArgs = { strSourceSpace, strState, strDestinationSpace };

@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.web;
 
 import fr.paris.lutece.plugins.document.business.DocumentResource;
+
 import java.io.Serializable;
 
 
@@ -42,9 +43,8 @@ import java.io.Serializable;
  */
 public class ResourceValueObject implements Serializable
 {
-	private static final long serialVersionUID = -1354905008213695289L;
-
-	private static final String DEFAULT_FILENAME = "document";
+    private static final long serialVersionUID = -1354905008213695289L;
+    private static final String DEFAULT_FILENAME = "document";
 
     // Variables declarations
     private int _nIdObject;
@@ -56,9 +56,8 @@ public class ResourceValueObject implements Serializable
     /**
      * Basic constructor
      */
-    public ResourceValueObject()
+    public ResourceValueObject(  )
     {
-
     }
 
     /**
@@ -67,14 +66,15 @@ public class ResourceValueObject implements Serializable
      */
     public ResourceValueObject( DocumentResource resource )
     {
-            _strFilename = resource.getName();
+        _strFilename = resource.getName(  );
 
-            if ((_strFilename == null) || _strFilename.equals(""))
-            {
-                _strFilename = DEFAULT_FILENAME;
-            }
-            _strContentType = resource.getContentType();
-            _content = resource.getContent();
+        if ( ( _strFilename == null ) || _strFilename.equals( "" ) )
+        {
+            _strFilename = DEFAULT_FILENAME;
+        }
+
+        _strContentType = resource.getContentType(  );
+        _content = resource.getContent(  );
     }
 
     /**
@@ -162,7 +162,7 @@ public class ResourceValueObject implements Serializable
      * Returns the Last modified time
      * @return The Last modified time
      */
-    public long getLastModified()
+    public long getLastModified(  )
     {
         return _lLastModified;
     }

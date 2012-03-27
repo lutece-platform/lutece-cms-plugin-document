@@ -35,79 +35,81 @@ package fr.paris.lutece.plugins.document.utils;
 
 import org.apache.commons.lang.StringUtils;
 
+
 /**
- * 
+ *
  * IntegerUtils
- * 
+ *
  */
 public final class IntegerUtils
 {
-	/** Default value in case the conversion fails */
-	private static final int DEFAULT = -1;
-	
-	/**
-	 * Convert a given String into an integer.
-	 * <br />
-	 * If the String is blank or is not numerical, then it returns {@link #DEFAULT}.
-	 * @param strToParse the String to convert
-	 * @return the numerical value of the String
-	 */
-	public static final int convert( String strToParse )
-	{
-		return convert( strToParse, DEFAULT );
-	}
-	
-	/**
-	 * Convert a given String into an integer.
-	 * <br />
-	 * If the String is blank or is not numerical, then it returns nDefault
-	 * @param strToParse the String to parse
-	 * @param nDefault the default value in case the conversion fails
-	 * @return the numerical value of the String
-	 */
-	public static final int convert( String strToParse, int nDefault )
-	{
-		if ( StringUtils.isNotBlank( strToParse ) && StringUtils.isNumeric( strToParse ) )
-		{
-			return Integer.parseInt( strToParse );
-		}
-		return nDefault;
-	}
-	
-	/**
-	 * Check if the given String is numeric
-	 * @param strToCheck the String to check
-	 * @return true if it is numeric, false otherwise
-	 */
-	public static final boolean isNumeric( String strToCheck )
-	{
-		return StringUtils.isNotBlank( strToCheck ) && StringUtils.isNumeric( strToCheck );
-	}
-	
-	/**
-	 * Check if the given String is not numerical
-	 * @param strToCheck the String to check
-	 * @return true if it is not numeric, false otherwise
-	 */
-	public static final boolean isNotNumeric( String strToCheck )
-	{
-		return !isNumeric( strToCheck );
-	}
-	
-	/**
-	 * Check if the given number is equal to {@link #DEFAULT}
-	 * @param nNumber the number to check
-	 * @return true if it is equal, false otherwise
-	 */
-	public static final boolean isDefault( int nNumber )
-	{
-		return nNumber == DEFAULT;
-	}
-	
-	/**
-	 * Private constructor
-	 */
-	private IntegerUtils(  )
-	{
-	}
+    /** Default value in case the conversion fails */
+    private static final int DEFAULT = -1;
+
+    /**
+     * Private constructor
+     */
+    private IntegerUtils(  )
+    {
+    }
+
+    /**
+     * Convert a given String into an integer.
+     * <br />
+     * If the String is blank or is not numerical, then it returns {@link #DEFAULT}.
+     * @param strToParse the String to convert
+     * @return the numerical value of the String
+     */
+    public static final int convert( String strToParse )
+    {
+        return convert( strToParse, DEFAULT );
+    }
+
+    /**
+     * Convert a given String into an integer.
+     * <br />
+     * If the String is blank or is not numerical, then it returns nDefault
+     * @param strToParse the String to parse
+     * @param nDefault the default value in case the conversion fails
+     * @return the numerical value of the String
+     */
+    public static final int convert( String strToParse, int nDefault )
+    {
+        if ( StringUtils.isNotBlank( strToParse ) && StringUtils.isNumeric( strToParse ) )
+        {
+            return Integer.parseInt( strToParse );
+        }
+
+        return nDefault;
+    }
+
+    /**
+     * Check if the given String is numeric
+     * @param strToCheck the String to check
+     * @return true if it is numeric, false otherwise
+     */
+    public static final boolean isNumeric( String strToCheck )
+    {
+        return StringUtils.isNotBlank( strToCheck ) && StringUtils.isNumeric( strToCheck );
+    }
+
+    /**
+     * Check if the given String is not numerical
+     * @param strToCheck the String to check
+     * @return true if it is not numeric, false otherwise
+     */
+    public static final boolean isNotNumeric( String strToCheck )
+    {
+        return !isNumeric( strToCheck );
+    }
+
+    /**
+     * Check if the given number is equal to {@link #DEFAULT}
+     * @param nNumber the number to check
+     * @return true if it is equal, false otherwise
+     */
+    public static final boolean isDefault( int nNumber )
+    {
+        return nNumber == DEFAULT;
+    }
 }

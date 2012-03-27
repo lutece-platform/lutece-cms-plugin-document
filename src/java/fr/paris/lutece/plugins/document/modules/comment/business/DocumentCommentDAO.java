@@ -33,12 +33,13 @@
  */
 package fr.paris.lutece.plugins.document.modules.comment.business;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+
+import java.sql.Timestamp;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -257,10 +258,10 @@ public final class DocumentCommentDAO implements IDocumentCommentDAO
 
         return nCount;
     }
-    
+
     /**
      * Load the data of DocumentComment from the table
-	 * @param plugin the plugin
+         * @param plugin the plugin
      * @return the instance of the DocumentComment
      */
     public DocumentComment loadLastComment( Plugin plugin )
@@ -272,7 +273,7 @@ public final class DocumentCommentDAO implements IDocumentCommentDAO
 
         if ( daoUtil.next(  ) )
         {
-        	int nIndex = 1;
+            int nIndex = 1;
             documentComment = new DocumentComment(  );
             documentComment.setCommentId( daoUtil.getInt( nIndex++ ) );
             documentComment.setDocumentId( daoUtil.getInt( nIndex++ ) );

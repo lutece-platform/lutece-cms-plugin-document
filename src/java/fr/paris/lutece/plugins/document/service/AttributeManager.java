@@ -33,15 +33,15 @@
  */
 package fr.paris.lutece.plugins.document.service;
 
+import fr.paris.lutece.plugins.document.business.Document;
+import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
+import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-
-import fr.paris.lutece.plugins.document.business.Document;
-import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
-import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 
 
 /**
@@ -86,7 +86,7 @@ public interface AttributeManager
      * @return A part of the HTML form
      */
     String getCreateParametersFormHtml( Locale locale );
-    
+
     /**
      * Gets the part of an HTML form to enter parameters data
      * @param listParameters list attribute type parameters
@@ -148,7 +148,7 @@ public interface AttributeManager
      * @return true if the attrubute can be used as Thumbnail, otherwise false
      */
     boolean canBeUsedAsThumbnail(  );
-    
+
     /**
      * Get the value parameters
      * @param request the HTTP request

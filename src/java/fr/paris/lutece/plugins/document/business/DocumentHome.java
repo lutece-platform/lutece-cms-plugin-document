@@ -255,7 +255,7 @@ public final class DocumentHome
     {
         _dao.loadAttributes( document );
     }
-    
+
     /**
      * Load document attributes
      * @param document the document reference
@@ -284,7 +284,7 @@ public final class DocumentHome
     {
         return _dao.loadLastModifiedAttributes( nDocumentId );
     }
-    
+
     /**
      * Load the data of last Document the user worked in from the table
      *
@@ -293,9 +293,9 @@ public final class DocumentHome
      */
     public static Document loadLastModifiedDocumentFromUser( String strUserName )
     {
-    	return _dao.loadLastModifiedDocumentFromUser( strUserName );
+        return _dao.loadLastModifiedDocumentFromUser( strUserName );
     }
-    
+
     /**
      * Load the data of last Document the user worked in from the table
      *
@@ -303,6 +303,6 @@ public final class DocumentHome
      */
     public static Document loadLastPublishedDocument(  )
     {
-    	return _dao.loadLastPublishedDocument(  );
+        return _dao.loadLastPublishedDocument(  );
     }
 }

@@ -33,17 +33,17 @@
  */
 package fr.paris.lutece.plugins.document.modules.metadatadublincore;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import fr.paris.lutece.plugins.document.modules.metadatadublincore.business.DublinCoreMetadata;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataHandler;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**

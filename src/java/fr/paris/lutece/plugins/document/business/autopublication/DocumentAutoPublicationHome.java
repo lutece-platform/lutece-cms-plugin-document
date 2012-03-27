@@ -47,7 +47,8 @@ import java.util.Collection;
 public class DocumentAutoPublicationHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentAutoPublicationDAO _dao = SpringContextService.getBean( "document.documentAutoPublicationDAO" );
+    private static IDocumentAutoPublicationDAO _dao = SpringContextService.getBean( 
+            "document.documentAutoPublicationDAO" );
 
     /* This class implements the Singleton design pattern. */
     private static DocumentAutoPublicationHome _singleton = null;

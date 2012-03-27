@@ -33,10 +33,10 @@
  */
 package fr.paris.lutece.plugins.document.business.spaces;
 
+import fr.paris.lutece.util.ReferenceList;
+
 import java.util.List;
 import java.util.Locale;
-
-import fr.paris.lutece.util.ReferenceList;
 
 
 /**

@@ -33,15 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.web.docsearch;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.service.docsearch.DocSearchItem;
@@ -55,6 +46,15 @@ import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -190,8 +190,8 @@ public class DocSearchJspBean extends PluginAdminPageJspBean
             url.addParameter( PARAMETER_ADVANCED_SEARCH, "true" );
         }
 
-        LocalizedPaginator<DocSearchItem> paginator = new LocalizedPaginator<DocSearchItem>( listResults, nNbItemsPerPage, url.getUrl(  ),
-                PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
+        LocalizedPaginator<DocSearchItem> paginator = new LocalizedPaginator<DocSearchItem>( listResults,
+                nNbItemsPerPage, url.getUrl(  ), PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
 
         model.put( MARK_RESULTS_LIST, paginator.getPageItems(  ) );
         model.put( MARK_QUERY, strQuery );

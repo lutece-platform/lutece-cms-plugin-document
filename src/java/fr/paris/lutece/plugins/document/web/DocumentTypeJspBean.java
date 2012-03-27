@@ -33,21 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
-import org.xml.sax.InputSource;
-
 import fr.paris.lutece.plugins.document.business.DocumentResource;
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
@@ -77,6 +62,24 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+
+import org.xml.sax.InputSource;
+
+import java.io.ByteArrayInputStream;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 
 /**
@@ -309,21 +312,23 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 
         String strAttributeTypeCode = request.getParameter( PARAMETER_ATTRIBUTE_TYPE_CODE );
         AttributeManager manager = AttributeService.getInstance(  ).getManager( strAttributeTypeCode );
-        
+
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_ATTRIBUTE_TYPE_CODE, strAttributeTypeCode );
+
         //        model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS , manager.getExtraParameters(  getLocale() ) );
-        
         String strSession = request.getParameter( PARAMETER_SESSION );
+
         if ( StringUtils.isNotBlank( strSession ) )
         {
-        	model.put( MARK_ATTRIBUTE, _attribute );
-        	model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getCreateParametersFormHtml( _attribute.getParameters(  ), getLocale(  ) ) );
+            model.put( MARK_ATTRIBUTE, _attribute );
+            model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS,
+                manager.getCreateParametersFormHtml( _attribute.getParameters(  ), getLocale(  ) ) );
         }
         else
         {
-        	_attribute = new DocumentAttribute(  );
-        	model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getCreateParametersFormHtml( getLocale(  ) ) );
+            _attribute = new DocumentAttribute(  );
+            model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getCreateParametersFormHtml( getLocale(  ) ) );
         }
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADD_ATTRIBUTE, getLocale(  ), model );
@@ -338,7 +343,8 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
      */
     public String doAddAttribute( HttpServletRequest request )
     {
-    	_attribute = new DocumentAttribute(  );
+        _attribute = new DocumentAttribute(  );
+
         boolean bIsValid = validateCodeAttribute( request );
 
         if ( !bIsValid )
@@ -348,16 +354,18 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         }
 
         getAttributeData( request, _attribute );
+
         // The user has not clicked on "save", then there are some operations to proceed
         String strSave = request.getParameter( PARAMETER_SAVE );
+
         if ( StringUtils.isBlank( strSave ) )
         {
-        	String strAttributeTypeCode = request.getParameter( PARAMETER_ATTRIBUTE_TYPE_CODE );
-        	UrlItem url = new UrlItem( JSP_ADD_DOCUMENT_TYPE_ATTRIBUTE );
-        	url.addParameter( PARAMETER_SESSION, PARAMETER_SESSION );
-        	url.addParameter( PARAMETER_ATTRIBUTE_TYPE_CODE, strAttributeTypeCode );
+            String strAttributeTypeCode = request.getParameter( PARAMETER_ATTRIBUTE_TYPE_CODE );
+            UrlItem url = new UrlItem( JSP_ADD_DOCUMENT_TYPE_ATTRIBUTE );
+            url.addParameter( PARAMETER_SESSION, PARAMETER_SESSION );
+            url.addParameter( PARAMETER_ATTRIBUTE_TYPE_CODE, strAttributeTypeCode );
 
-        	return url.getUrl(  );
+            return url.getUrl(  );
         }
 
         String strValidateMessage = getAttributeValidationMessage( _attribute );
@@ -366,7 +374,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         {
             return AdminMessageService.getMessageUrl( request, strValidateMessage, AdminMessage.TYPE_STOP );
         }
-        
+
         DocumentAttributeHome.create( _attribute );
 
         if ( request.getParameter( PARAMETER_APPLY ) != null )
@@ -407,16 +415,17 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         }
 
         getAttributeData( request, _attribute );
-        
+
         // The user has not clicked on "save", then there are some operations to proceed
         String strSave = request.getParameter( PARAMETER_SAVE );
+
         if ( StringUtils.isBlank( strSave ) )
         {
-        	UrlItem url = new UrlItem( JSP_MODIFY_DOCUMENT_TYPE_ATTRIBUTE );
-        	url.addParameter( PARAMETER_SESSION, PARAMETER_SESSION );
-        	url.addParameter( PARAMETER_ATTRIBUTE_ID, nAttributeId );
+            UrlItem url = new UrlItem( JSP_MODIFY_DOCUMENT_TYPE_ATTRIBUTE );
+            url.addParameter( PARAMETER_SESSION, PARAMETER_SESSION );
+            url.addParameter( PARAMETER_ATTRIBUTE_ID, nAttributeId );
 
-        	return url.getUrl(  );
+            return url.getUrl(  );
         }
 
         String strValidateMessage = getAttributeValidationMessage( _attribute );
@@ -443,28 +452,29 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         List<String> listValues = new ArrayList<String>(  );
         List<AttributeTypeParameter> listParameters;
         AttributeManager manager = AttributeService.getInstance(  ).getManager( strAttributeTypeCode );
-        
+
         String strSave = request.getParameter( PARAMETER_SAVE );
+
         if ( StringUtils.isBlank( strSave ) )
         {
-        	listParameters = manager.getValueParameters( request, getLocale(  ) );
+            listParameters = manager.getValueParameters( request, getLocale(  ) );
         }
         else
         {
-        	listParameters = manager.getExtraParameters( getLocale(  ) );
-        	
-        	for ( AttributeTypeParameter parameter : listParameters )
-        	{
-        		arrayStrValues = request.getParameterValues( parameter.getName(  ) );
-        		
-        		if ( arrayStrValues != null )
-        		{
-        			listValues.addAll( Arrays.asList( arrayStrValues ) );
-        		}
-        		
-        		parameter.setValueList( listValues );
-        		listValues.clear(  );
-        	}
+            listParameters = manager.getExtraParameters( getLocale(  ) );
+
+            for ( AttributeTypeParameter parameter : listParameters )
+            {
+                arrayStrValues = request.getParameterValues( parameter.getName(  ) );
+
+                if ( arrayStrValues != null )
+                {
+                    listValues.addAll( Arrays.asList( arrayStrValues ) );
+                }
+
+                parameter.setValueList( listValues );
+                listValues.clear(  );
+            }
         }
 
         attribute.setName( strName );
@@ -515,7 +525,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 
         // Mandatory fields
         if ( StringUtils.isBlank( attribute.getName(  ) ) || StringUtils.isBlank( attribute.getDescription(  ) ) ||
-        		StringUtils.isBlank( attribute.getCode(  ) ) )
+                StringUtils.isBlank( attribute.getCode(  ) ) )
         {
             return Messages.MANDATORY_FIELDS;
         }
@@ -580,28 +590,31 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage,
                 _nDefaultItemsPerPage );
 
-        LocalizedPaginator<RegularExpression> paginator = new LocalizedPaginator<RegularExpression>( listRegularExpressionAdded, _nItemsPerPage,
-                url.getUrl(  ), Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale(  ) );
+        LocalizedPaginator<RegularExpression> paginator = new LocalizedPaginator<RegularExpression>( listRegularExpressionAdded,
+                _nItemsPerPage, url.getUrl(  ), Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale(  ) );
 
         Map<String, Object> model = new HashMap<String, Object>(  );
 
         model.put( MARK_DOCUMENT_TYPE_CODE, _strDocumentTypeCode );
         model.put( MARK_ATTRIBUTE_TYPE_CODE, attribute.getCodeAttributeType(  ) );
+
         //        model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS , listParameters );
-        
         String strSession = request.getParameter( PARAMETER_SESSION );
+
         if ( StringUtils.isNotBlank( strSession ) )
         {
-        	model.put( MARK_ATTRIBUTE, _attribute );
-        	model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getCreateParametersFormHtml( _attribute.getParameters(  ), getLocale(  ) ) );
+            model.put( MARK_ATTRIBUTE, _attribute );
+            model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS,
+                manager.getCreateParametersFormHtml( _attribute.getParameters(  ), getLocale(  ) ) );
         }
         else
         {
-        	_attribute = new DocumentAttribute(  );
-        	model.put( MARK_ATTRIBUTE, attribute );
-        	model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getModifyParametersFormHtml( getLocale(  ), nAttributeId ) );
+            _attribute = new DocumentAttribute(  );
+            model.put( MARK_ATTRIBUTE, attribute );
+            model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS,
+                manager.getModifyParametersFormHtml( getLocale(  ), nAttributeId ) );
         }
-        
+
         // Regular expressions
         model.put( MARK_REGULAR_EXPRESSION_TO_ADD_LIST, refListRegularExpressionToAdd );
         model.put( MARK_PAGINATOR, paginator );

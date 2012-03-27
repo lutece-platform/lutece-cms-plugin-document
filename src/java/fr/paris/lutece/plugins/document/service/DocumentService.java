@@ -33,16 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.service;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
@@ -75,6 +65,17 @@ import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.xml.XmlUtil;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+
+import java.sql.Timestamp;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -432,8 +433,9 @@ public class DocumentService
 
         if ( document != null )
         {
-        	return getModifyForm( document, locale, strBaseUrl );
+            return getModifyForm( document, locale, strBaseUrl );
         }
+
         return StringUtils.EMPTY;
     }
 

@@ -33,14 +33,14 @@
  */
 package fr.paris.lutece.plugins.document.modules.rulenotifyusers.business;
 
-import java.util.Collection;
-import java.util.Locale;
-
 import fr.paris.lutece.plugins.document.business.rules.Rule;
 import fr.paris.lutece.plugins.document.business.rules.RuleHome;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.util.RemovalListener;
+
+import java.util.Collection;
+import java.util.Locale;
 
 
 /**
@@ -61,7 +61,7 @@ public class NotifyUsersSpaceRemovalListener implements RemovalListener
         {
             return true;
         }
-        
+
         int nId = IntegerUtils.convert( strId );
 
         // Get the rule type key of the given rule type class

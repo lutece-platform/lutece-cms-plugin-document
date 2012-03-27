@@ -33,14 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.modules.rulenotifyusers.business;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.rules.AbstractRule;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentStateHome;
@@ -66,6 +58,14 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
+
 
 /**
  * This class provides a rule to notify users on document events
@@ -81,7 +81,8 @@ public class NotifyUsersRule extends AbstractRule
     private static final String MARK_SPACE_SOURCE_ID = "id_space_source";
     private static final String MARK_STATE_ID = "id_state";
     private static final String MARK_MAILINGLIST_ID = "id_mailinglist";
-//    private static final String MARK_MESSAGE_TEMPLATE_KEY = "message_template_key";
+
+    //    private static final String MARK_MESSAGE_TEMPLATE_KEY = "message_template_key";
     private static final String MARK_STATES_LIST = "states_list";
     private static final String MARK_MAILINGLISTS_LIST = "mailinglists_list";
     private static final String MARK_MESSAGE_TEMPLATES_LIST = "message_templates_list";
@@ -325,9 +326,10 @@ public class NotifyUsersRule extends AbstractRule
         {
             int nMailingListId = IntegerUtils.convert( strMailingListId );
             MailingList mailinglist = MailingListHome.findByPrimaryKey( nMailingListId );
+
             if ( mailinglist != null )
             {
-            	strMailingList = mailinglist.getDescription(  );
+                strMailingList = mailinglist.getDescription(  );
             }
         }
 
@@ -335,10 +337,11 @@ public class NotifyUsersRule extends AbstractRule
         int nStateId = IntegerUtils.convert( getAttribute( PARAMETER_STATE_ID ) );
         DocumentState state = DocumentStateHome.findByPrimaryKey( nStateId );
         String strState = StringUtils.EMPTY;
+
         if ( state != null )
         {
-        	state.setLocale( getLocale(  ) );
-        	strState = state.getName(  );
+            state.setLocale( getLocale(  ) );
+            strState = state.getName(  );
         }
 
         String[] ruleArgs = { strSourceSpace, strState, strMailingList, strMessageTemplate };

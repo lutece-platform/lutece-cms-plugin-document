@@ -43,11 +43,10 @@ public class ResourceServletCache extends AbstractCacheableService
 {
     private static final String NAME = "Document ResourceServlet Cache";
 
-    public ResourceServletCache()
+    public ResourceServletCache(  )
     {
-        initCache( getName() );
+        initCache( getName(  ) );
     }
-
 
     /**
      * Gets the cache name

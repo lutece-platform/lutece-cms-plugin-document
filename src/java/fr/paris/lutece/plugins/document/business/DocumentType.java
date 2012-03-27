@@ -33,17 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.business;
 
-import java.io.ByteArrayInputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataHandler;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataService;
@@ -52,6 +41,18 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.UniqueIDGenerator;
 import fr.paris.lutece.util.html.HtmlTemplate;
+
+import java.io.ByteArrayInputStream;
+import java.io.StringReader;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 
 /**

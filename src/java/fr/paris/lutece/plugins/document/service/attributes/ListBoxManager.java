@@ -33,6 +33,11 @@
  */
 package fr.paris.lutece.plugins.document.service.attributes;
 
+import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
+import fr.paris.lutece.portal.web.constants.Messages;
+
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,30 +45,25 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
-
-import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
-import fr.paris.lutece.portal.web.constants.Messages;
-
 
 /**
  * Manager for ListBox Attribute
  */
 public class ListBoxManager extends DefaultManager
 {
-	// TEMPLATES
+    // TEMPLATES
     private static final String TEMPLATE_CREATE_ATTRIBUTE = "admin/plugins/document/attributes/create_listbox.html";
     private static final String TEMPLATE_MODIFY_ATTRIBUTE = "admin/plugins/document/attributes/modify_listbox.html";
     private static final String TEMPLATE_CREATE_PARAMETERS_ATTRIBUTE = "admin/plugins/document/attributes/create_parameters_listbox.html";
     private static final String TEMPLATE_MODIFY_PARAMETERS_ATTRIBUTE = "admin/plugins/document/attributes/modify_parameters_listbox.html";
-    
+
     // PARAMETERS
     private static final String PARAMETER_ITEMS_VALUE = "items_value";
     private static final String PARAMETER_ITEMS_SELECT = "items_select";
     private static final String PARAMETER_ADD = "add";
     private static final String PARAMETER_DELETE = "delete";
     private static final String PARAMETER_BY_DEFAULT = "bydefault";
-    
+
     // NAMES
     private static final String NAME_ITEMS = "items";
     private static final String NAME_VALUE = "value";
@@ -122,79 +122,84 @@ public class ListBoxManager extends DefaultManager
 
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public List<AttributeTypeParameter> getValueParameters( HttpServletRequest request, Locale locale )
     {
-    	// Button "Add" new parameter
-    	boolean bAddNewValue = StringUtils.isNotBlank( request.getParameter( PARAMETER_ADD ) );
-    	// Button "Delete" parameters
-    	boolean bDeleteValue = StringUtils.isNotBlank( request.getParameter( PARAMETER_DELETE ) );
-    	boolean bByDefault = StringUtils.isNotBlank( request.getParameter( PARAMETER_BY_DEFAULT ) );
-    	List<AttributeTypeParameter> listParameters = super.getExtraParameters( locale );
-    	
-    	for ( AttributeTypeParameter parameter : listParameters )
-    	{
-    		List<String> listValues = new ArrayList<String>(  );
-    		String[] arrayStrValues = request.getParameterValues( parameter.getName(  ) );
-    		if ( NAME_VALUE.equals( parameter.getName(  ) ) )
-    		{
-    			// Define default value
-        		if ( bByDefault )
-        		{
-        			String strValue = request.getParameter( PARAMETER_ITEMS_SELECT );
-        			if ( StringUtils.isNotBlank( strValue ) )
-        			{
-    					listValues.add( strValue );
-        			}
-        		}
-        		else
-        		{
-        			if ( arrayStrValues != null && arrayStrValues.length > 0 )
-            		{
-            			listValues.addAll( Arrays.asList( arrayStrValues ) );
-            		}
-        		}
-    		}
-    		else if ( NAME_ITEMS.equals( parameter.getName(  ) ) )
-    		{
-    			if ( arrayStrValues != null && arrayStrValues.length > 0 )
-        		{
-        			listValues.addAll( Arrays.asList( arrayStrValues ) );
-        		}
-    			
-    			// Add new value
-        		if ( bAddNewValue )
-        		{
-        			String strNewValue = request.getParameter( PARAMETER_ITEMS_VALUE );
-            		if ( StringUtils.isNotBlank( strNewValue ) )
-            		{
-            			listValues.add( strNewValue );
-            		}
-        		}
-        		
-        		// Remove value
-        		if ( bDeleteValue )
-        		{
-        			String strValue = request.getParameter( PARAMETER_ITEMS_SELECT );
-        			if ( StringUtils.isNotBlank( strValue ) )
-        			{
-    					listValues.remove( strValue );
-    					removeParameterValue( listParameters, strValue );
-        			}
-        		}
-    		}
-    		
-    		parameter.setValueList( listValues );
-    		listValues.clear(  );
-    	}
-    	
-    	return listParameters;
+        // Button "Add" new parameter
+        boolean bAddNewValue = StringUtils.isNotBlank( request.getParameter( PARAMETER_ADD ) );
+
+        // Button "Delete" parameters
+        boolean bDeleteValue = StringUtils.isNotBlank( request.getParameter( PARAMETER_DELETE ) );
+        boolean bByDefault = StringUtils.isNotBlank( request.getParameter( PARAMETER_BY_DEFAULT ) );
+        List<AttributeTypeParameter> listParameters = super.getExtraParameters( locale );
+
+        for ( AttributeTypeParameter parameter : listParameters )
+        {
+            List<String> listValues = new ArrayList<String>(  );
+            String[] arrayStrValues = request.getParameterValues( parameter.getName(  ) );
+
+            if ( NAME_VALUE.equals( parameter.getName(  ) ) )
+            {
+                // Define default value
+                if ( bByDefault )
+                {
+                    String strValue = request.getParameter( PARAMETER_ITEMS_SELECT );
+
+                    if ( StringUtils.isNotBlank( strValue ) )
+                    {
+                        listValues.add( strValue );
+                    }
+                }
+                else
+                {
+                    if ( ( arrayStrValues != null ) && ( arrayStrValues.length > 0 ) )
+                    {
+                        listValues.addAll( Arrays.asList( arrayStrValues ) );
+                    }
+                }
+            }
+            else if ( NAME_ITEMS.equals( parameter.getName(  ) ) )
+            {
+                if ( ( arrayStrValues != null ) && ( arrayStrValues.length > 0 ) )
+                {
+                    listValues.addAll( Arrays.asList( arrayStrValues ) );
+                }
+
+                // Add new value
+                if ( bAddNewValue )
+                {
+                    String strNewValue = request.getParameter( PARAMETER_ITEMS_VALUE );
+
+                    if ( StringUtils.isNotBlank( strNewValue ) )
+                    {
+                        listValues.add( strNewValue );
+                    }
+                }
+
+                // Remove value
+                if ( bDeleteValue )
+                {
+                    String strValue = request.getParameter( PARAMETER_ITEMS_SELECT );
+
+                    if ( StringUtils.isNotBlank( strValue ) )
+                    {
+                        listValues.remove( strValue );
+                        removeParameterValue( listParameters, strValue );
+                    }
+                }
+            }
+
+            parameter.setValueList( listValues );
+            listValues.clear(  );
+        }
+
+        return listParameters;
     }
-    
+
     /**
      * Remove a parameter value from a list
      * @param listParameters the list of parameters
@@ -202,18 +207,19 @@ public class ListBoxManager extends DefaultManager
      */
     private void removeParameterValue( List<AttributeTypeParameter> listParameters, String strValueToRemove )
     {
-    	for ( AttributeTypeParameter parameter : listParameters )
-    	{
-    		if ( NAME_VALUE.equals( parameter.getName(  ) ) )
-    		{
-				if ( StringUtils.isNotBlank( strValueToRemove ) )
-				{
-					List<String> listValues = parameter.getValueList(  );
-					listValues.remove( strValueToRemove );
-					parameter.setValueList( listValues );
-					break;
-				}
-    		}
-    	}
+        for ( AttributeTypeParameter parameter : listParameters )
+        {
+            if ( NAME_VALUE.equals( parameter.getName(  ) ) )
+            {
+                if ( StringUtils.isNotBlank( strValueToRemove ) )
+                {
+                    List<String> listValues = parameter.getValueList(  );
+                    listValues.remove( strValueToRemove );
+                    parameter.setValueList( listValues );
+
+                    break;
+                }
+            }
+        }
     }
 }

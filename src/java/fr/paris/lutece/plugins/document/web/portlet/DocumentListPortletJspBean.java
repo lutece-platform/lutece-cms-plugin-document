@@ -33,17 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.web.portlet;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortlet;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
@@ -58,6 +47,18 @@ import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.io.Serializable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -262,13 +263,14 @@ public class DocumentListPortletJspBean extends PortletJspBean
     {
         String strCodeTypeDocument = StringUtils.EMPTY;
 
-        if ( IntegerUtils.isNumeric(  strPortletId ) )
+        if ( IntegerUtils.isNumeric( strPortletId ) )
         {
             DocumentListPortlet portlet = (DocumentListPortlet) PortletHome.findByPrimaryKey( IntegerUtils.convert( 
                         strPortletId ) );
+
             if ( portlet != null )
             {
-            	strCodeTypeDocument = portlet.getDocumentTypeCode(  );
+                strCodeTypeDocument = portlet.getDocumentTypeCode(  );
             }
         }
 
@@ -296,9 +298,10 @@ public class DocumentListPortletJspBean extends PortletJspBean
         {
             DocumentListPortlet portlet = (DocumentListPortlet) PortletHome.findByPrimaryKey( IntegerUtils.convert( 
                         strPortletId ) );
+
             if ( portlet != null )
             {
-            	listCategoriesDisplay = CategoryService.getAllCategoriesDisplay( portlet.getIdCategory(  ), user );
+                listCategoriesDisplay = CategoryService.getAllCategoriesDisplay( portlet.getIdCategory(  ), user );
             }
         }
         else

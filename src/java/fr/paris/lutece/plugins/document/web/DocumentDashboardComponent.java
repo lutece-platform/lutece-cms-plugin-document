@@ -33,13 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.service.DocumentService;
@@ -54,6 +47,13 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * Calendar Dashboard Component
@@ -61,18 +61,18 @@ import fr.paris.lutece.util.url.UrlItem;
  */
 public class DocumentDashboardComponent extends DashboardComponent
 {
-	// PARAMETERS
-	private static final String PARAMETER_PLUGIN_NAME = "plugin_name";
-	
-	// MARKS
+    // PARAMETERS
+    private static final String PARAMETER_PLUGIN_NAME = "plugin_name";
+
+    // MARKS
     private static final String MARK_URL = "url";
     private static final String MARK_ICON = "icon";
     private static final String MARK_LAST_MODIFIED_DOCUMENT = "last_modified_document";
     private static final String MARK_LAST_PUBLISHED_DOCUMENT = "last_published_document";
-    
+
     // CONSTANTS
     private static final int ZONE_1 = 1;
-    
+
     // TEMPALTES
     private static final String TEMPLATE_DASHBOARD_ZONE_1 = "/admin/plugins/document/dashboard/document_dashboard_zone_1.html";
     private static final String TEMPLATE_DASHBOARD_OTHER_ZONE = "/admin/plugins/document/dashboard/document_dashboard_other_zone.html";
@@ -80,7 +80,7 @@ public class DocumentDashboardComponent extends DashboardComponent
     /**
      * The HTML code of the component
      * @param user The Admin User
-	 * @param request HttpServletRequest
+         * @param request HttpServletRequest
      * @return The dashboard component
      */
     public String getDashboardData( AdminUser user, HttpServletRequest request )
@@ -96,22 +96,24 @@ public class DocumentDashboardComponent extends DashboardComponent
 
         // Get the last document the user was working on
         Document lastModifiedDocument = DocumentHome.loadLastModifiedDocumentFromUser( user.getAccessCode(  ) );
+
         if ( lastModifiedDocument != null )
         {
-        	lastModifiedDocument.setLocale( user.getLocale(  ) );
+            lastModifiedDocument.setLocale( user.getLocale(  ) );
             DocumentService.getInstance(  ).getActions( lastModifiedDocument, user.getLocale(  ), user );
             DocumentService.getInstance(  ).getPublishedStatus( lastModifiedDocument );
         }
-        
+
         // Get the last published document
         Document lastPublishedDocument = DocumentHome.loadLastPublishedDocument(  );
+
         if ( lastPublishedDocument != null )
         {
-        	lastPublishedDocument.setLocale( user.getLocale(  ) );
+            lastPublishedDocument.setLocale( user.getLocale(  ) );
             DocumentService.getInstance(  ).getActions( lastPublishedDocument, user.getLocale(  ), user );
             DocumentService.getInstance(  ).getPublishedStatus( lastPublishedDocument );
         }
-        
+
         UrlItem url = new UrlItem( right.getUrl(  ) );
         url.addParameter( PARAMETER_PLUGIN_NAME, right.getPluginName(  ) );
 

@@ -33,16 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.web.spaces;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentFilter;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
@@ -65,6 +55,16 @@ import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -418,7 +418,7 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
         DocumentSpace spaceToMove = DocumentSpaceHome.findByPrimaryKey( IntegerUtils.convert( strSpaceToMoveId ) );
 
         // Check if selected space isn't the space to move
-        if ( ( space == null ) || ( spaceToMove == null ) || space.getId(  ) == spaceToMove.getId(  ) )
+        if ( ( space == null ) || ( spaceToMove == null ) || ( space.getId(  ) == spaceToMove.getId(  ) ) )
         {
             return AdminMessageService.getMessageUrl( request, MESSAGE_MOVING_SPACE_NOT_AUTHORIZED,
                 AdminMessage.TYPE_STOP );

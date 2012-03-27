@@ -43,18 +43,17 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import java.io.IOException;
 import java.io.OutputStream;
 
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * Servlet serving document file resources
  */
 public class DocumentResourceServlet extends HttpServlet
 {
-
     private static final long serialVersionUID = -7512201287826936428L;
     private static final String PARAMETER_DOCUMENT_ID = "id";
     private static final String PARAMETER_ATTRIBUTE_ID = "id_attribute";
@@ -62,10 +61,10 @@ public class DocumentResourceServlet extends HttpServlet
     private static final String DEFAULT_EXPIRES_DELAY = "180000";
     private static final String PROPERTY_RESOURCE_TYPE = "document";
     private static final String PROPERTY_EXPIRES_DELAY = "document.resourceServlet.cacheControl.expires";
-    private static final String STRING_DELAY_IN_SECOND = AppPropertiesService.getProperty(PROPERTY_EXPIRES_DELAY,
-            DEFAULT_EXPIRES_DELAY);
-    private static final Long LONG_DELAY_IN_MILLISECOND = Long.parseLong(STRING_DELAY_IN_SECOND) * 1000;
-    private static final ResourceServletCache _cache = new ResourceServletCache();
+    private static final String STRING_DELAY_IN_SECOND = AppPropertiesService.getProperty( PROPERTY_EXPIRES_DELAY,
+            DEFAULT_EXPIRES_DELAY );
+    private static final Long LONG_DELAY_IN_MILLISECOND = Long.parseLong( STRING_DELAY_IN_SECOND ) * 1000;
+    private static final ResourceServletCache _cache = new ResourceServletCache(  );
 
     /**
      * Processes request HTTP <code>GET if-modified-since</code> methods
@@ -73,38 +72,39 @@ public class DocumentResourceServlet extends HttpServlet
      * @return document last modified date
      */
     @Override
-    public long getLastModified(HttpServletRequest request)
+    public long getLastModified( HttpServletRequest request )
     {
         long lLastModified = -1;
-        String strDocumentId = request.getParameter(PARAMETER_DOCUMENT_ID);
-        String strAttributeId = request.getParameter(PARAMETER_ATTRIBUTE_ID);
+        String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
+        String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
 
         if ( ( strDocumentId != null ) && ( strAttributeId != null ) )
         {
-            int nDocumentId = IntegerUtils.convert(strDocumentId);
-            int nAttributeId = IntegerUtils.convert(strAttributeId);
-            String strKey = getCacheKey(nDocumentId, nAttributeId);
+            int nDocumentId = IntegerUtils.convert( strDocumentId );
+            int nAttributeId = IntegerUtils.convert( strAttributeId );
+            String strKey = getCacheKey( nDocumentId, nAttributeId );
 
-            ResourceValueObject resource = _cache.get(strKey);
-            if (_cache.isCacheEnable() && (_cache.get(strKey) != null))
+            ResourceValueObject resource = _cache.get( strKey );
+
+            if ( _cache.isCacheEnable(  ) && ( _cache.get( strKey ) != null ) )
             {
-                return resource.getLastModified();
+                return resource.getLastModified(  );
             }
 
-            Document document = DocumentHome.loadLastModifiedAttributes(nDocumentId);
+            Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
 
             // Because Internet Explorer 6 has bogus behavior with PDF and proxy or HTTPS
-            if ((document != null)
-                    && !Document.CODE_DOCUMENT_TYPE_DOWNLOAD.equals(document.getCodeDocumentType())
-                    && (document.getDateModification() != null))
+            if ( ( document != null ) &&
+                    !Document.CODE_DOCUMENT_TYPE_DOWNLOAD.equals( document.getCodeDocumentType(  ) ) &&
+                    ( document.getDateModification(  ) != null ) )
             {
-                lLastModified = document.getDateModification().getTime();
+                lLastModified = document.getDateModification(  ).getTime(  );
             }
         }
 
-        if (lLastModified == -1)
+        if ( lLastModified == -1 )
         {
-            lLastModified = super.getLastModified(request);
+            lLastModified = super.getLastModified( request );
         }
 
         return lLastModified;
@@ -115,20 +115,19 @@ public class DocumentResourceServlet extends HttpServlet
      * @param nDocumentId The document id
      * @param nAttributeId The attribut id
      */
-    public static void putInCache(int nDocumentId, int nAttributeId)
+    public static void putInCache( int nDocumentId, int nAttributeId )
     {
-        if (!_cache.isCacheEnable())
+        if ( !_cache.isCacheEnable(  ) )
         {
             return;
         }
 
-        DocumentResource resource = DocumentHome.getValidatedResource(nDocumentId, nAttributeId);
-        ResourceValueObject res = new ResourceValueObject(resource);
-        Document document = DocumentHome.loadLastModifiedAttributes(nDocumentId);
-        long lLastModified = document.getDateModification().getTime();
-        res.setLastModified(lLastModified);
-        _cache.put( getCacheKey(nDocumentId, nAttributeId) , res);
-
+        DocumentResource resource = DocumentHome.getValidatedResource( nDocumentId, nAttributeId );
+        ResourceValueObject res = new ResourceValueObject( resource );
+        Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
+        long lLastModified = document.getDateModification(  ).getTime(  );
+        res.setLastModified( lLastModified );
+        _cache.put( getCacheKey( nDocumentId, nAttributeId ), res );
     }
 
     /**
@@ -138,60 +137,62 @@ public class DocumentResourceServlet extends HttpServlet
      * @throws ServletException the servlet Exception
      * @throws IOException the io exception
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
+    protected void processRequest( HttpServletRequest request, HttpServletResponse response )
+        throws ServletException, IOException
     {
-        String strDocumentId = request.getParameter(PARAMETER_DOCUMENT_ID);
-        int nDocumentId = IntegerUtils.convert(strDocumentId);
-        String strAttributeId = request.getParameter(PARAMETER_ATTRIBUTE_ID);
+        String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
+        int nDocumentId = IntegerUtils.convert( strDocumentId );
+        String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
 
-        int nAttributeId = IntegerUtils.convert(strAttributeId);
-        Boolean bWorkingContent = (request.getParameter(PARAMETER_WORKING_CONTENT) != null);
+        int nAttributeId = IntegerUtils.convert( strAttributeId );
+        Boolean bWorkingContent = ( request.getParameter( PARAMETER_WORKING_CONTENT ) != null );
 
-        String strCacheKey = getCacheKey(nDocumentId, nAttributeId);
+        String strCacheKey = getCacheKey( nDocumentId, nAttributeId );
         ResourceValueObject res;
 
-        if (!bWorkingContent && _cache.isCacheEnable() && (_cache.get(strCacheKey) != null))
+        if ( !bWorkingContent && _cache.isCacheEnable(  ) && ( _cache.get( strCacheKey ) != null ) )
         {
-            res = _cache.get(strCacheKey);
-        } else
+            res = _cache.get( strCacheKey );
+        }
+        else
         {
-            DocumentResource resource = getResource(nDocumentId, nAttributeId, bWorkingContent);
-            if (resource == null)
+            DocumentResource resource = getResource( nDocumentId, nAttributeId, bWorkingContent );
+
+            if ( resource == null )
             {
                 return;
             }
-            res = new ResourceValueObject(resource);
 
+            res = new ResourceValueObject( resource );
 
-            if (_cache.isCacheEnable() && !bWorkingContent)
+            if ( _cache.isCacheEnable(  ) && !bWorkingContent )
             {
-                Document document = DocumentHome.loadLastModifiedAttributes(nDocumentId);
-                long lLastModified = document.getDateModification().getTime();
-                res.setLastModified(lLastModified);
-                _cache.put(strCacheKey, res);
+                Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
+                long lLastModified = document.getDateModification(  ).getTime(  );
+                res.setLastModified( lLastModified );
+                _cache.put( strCacheKey, res );
             }
         }
 
-        ResourceEnhancer.doDownloadResourceAddOn(request, PROPERTY_RESOURCE_TYPE, nDocumentId);
+        ResourceEnhancer.doDownloadResourceAddOn( request, PROPERTY_RESOURCE_TYPE, nDocumentId );
 
         // Sets content type and filename of the resource into the response
-        response.setContentType(res.getContentType());
+        response.setContentType( res.getContentType(  ) );
 
-        if (!isGraphicalContent(res.getContentType()))
+        if ( !isGraphicalContent( res.getContentType(  ) ) )
         {
             // Add the filename only if the resource isn't a flash document or an image
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + res.getFilename() + "\"");
+            response.setHeader( "Content-Disposition", "attachment;filename=\"" + res.getFilename(  ) + "\"" );
         }
 
         // Add Cache Control HTTP header
-        response.setHeader("Cache-Control", "max-age=" + STRING_DELAY_IN_SECOND); // HTTP 1.1
-        response.setDateHeader("Expires", System.currentTimeMillis() + LONG_DELAY_IN_MILLISECOND); // HTTP 1.0
-        response.setContentLength(res.getContent().length); // Keep Alive connexion
+        response.setHeader( "Cache-Control", "max-age=" + STRING_DELAY_IN_SECOND ); // HTTP 1.1
+        response.setDateHeader( "Expires", System.currentTimeMillis(  ) + LONG_DELAY_IN_MILLISECOND ); // HTTP 1.0
+        response.setContentLength( res.getContent(  ).length ); // Keep Alive connexion
 
         // Write the resource content
-        OutputStream out = response.getOutputStream();
-        out.write(res.getContent());
+        OutputStream out = response.getOutputStream(  );
+        out.write( res.getContent(  ) );
 
         //out.flush( );        
         //out.close(); Disabled : allow Keep Alive connexion
@@ -204,10 +205,10 @@ public class DocumentResourceServlet extends HttpServlet
      * @throws IOException the io exception
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
+    protected void doGet( HttpServletRequest request, HttpServletResponse response )
+        throws ServletException, IOException
     {
-        processRequest(request, response);
+        processRequest( request, response );
     }
 
     /** Handles the HTTP <code>POST</code> method.
@@ -217,17 +218,17 @@ public class DocumentResourceServlet extends HttpServlet
      * @throws IOException the io exception
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
+    protected void doPost( HttpServletRequest request, HttpServletResponse response )
+        throws ServletException, IOException
     {
-        processRequest(request, response);
+        processRequest( request, response );
     }
 
     /** Returns a short description of the servlet.
      * @return message
      */
     @Override
-    public String getServletInfo()
+    public String getServletInfo(  )
     {
         return "Servlet serving file resources of documents";
     }
@@ -238,11 +239,12 @@ public class DocumentResourceServlet extends HttpServlet
      * @param nAttributeId The attribute id
      * @return The key
      */
-    private static String getCacheKey(int nDocumentId, int nAttributeId)
+    private static String getCacheKey( int nDocumentId, int nAttributeId )
     {
-        StringBuilder sbKey = new StringBuilder();
-        sbKey.append("[doc:").append(nDocumentId).append("][attr:").append(nAttributeId).append("]");
-        return sbKey.toString();
+        StringBuilder sbKey = new StringBuilder(  );
+        sbKey.append( "[doc:" ).append( nDocumentId ).append( "][attr:" ).append( nAttributeId ).append( "]" );
+
+        return sbKey.toString(  );
     }
 
     /**
@@ -252,29 +254,32 @@ public class DocumentResourceServlet extends HttpServlet
      * @param bWorkingContent is a working content
      * @return The document resource
      */
-    private DocumentResource getResource(int nDocumentId, int nAttributeId, boolean bWorkingContent)
+    private DocumentResource getResource( int nDocumentId, int nAttributeId, boolean bWorkingContent )
     {
         DocumentResource resource;
-        if (nAttributeId != -1)
-        {
-            if (bWorkingContent)
-            {
-                resource = DocumentHome.getWorkingResource(nDocumentId, nAttributeId);
 
-                if (resource == null)
+        if ( nAttributeId != -1 )
+        {
+            if ( bWorkingContent )
+            {
+                resource = DocumentHome.getWorkingResource( nDocumentId, nAttributeId );
+
+                if ( resource == null )
                 {
-                    resource = DocumentHome.getValidatedResource(nDocumentId, nAttributeId);
+                    resource = DocumentHome.getValidatedResource( nDocumentId, nAttributeId );
                 }
-            } else
-            {
-                resource = DocumentHome.getValidatedResource(nDocumentId, nAttributeId);
             }
-        } else
-        {
-            resource = DocumentHome.getResource(nDocumentId);
+            else
+            {
+                resource = DocumentHome.getValidatedResource( nDocumentId, nAttributeId );
+            }
         }
-        return resource;
+        else
+        {
+            resource = DocumentHome.getResource( nDocumentId );
+        }
 
+        return resource;
     }
 
     /**
@@ -282,11 +287,9 @@ public class DocumentResourceServlet extends HttpServlet
      * @param strContentType The content type
      * @return True for an image or a flash object, otherwise false
      */
-    private boolean isGraphicalContent(String strContentType)
+    private boolean isGraphicalContent( String strContentType )
     {
-        return ( strContentType.equals("image/jpeg") ||
-                strContentType.equals("image/gif") ||
-                strContentType.equals("image/png") ||
-                strContentType.equals("application/x-shockwave-flash"));
+        return ( strContentType.equals( "image/jpeg" ) || strContentType.equals( "image/gif" ) ||
+        strContentType.equals( "image/png" ) || strContentType.equals( "application/x-shockwave-flash" ) );
     }
 }

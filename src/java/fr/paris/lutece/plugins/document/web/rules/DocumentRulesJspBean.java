@@ -33,15 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.web.rules;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.rules.Rule;
 import fr.paris.lutece.plugins.document.business.rules.RuleHome;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
@@ -55,6 +46,15 @@ import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**

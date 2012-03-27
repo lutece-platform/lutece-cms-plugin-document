@@ -33,14 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
@@ -64,6 +56,14 @@ import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.string.StringUtil;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -125,12 +125,11 @@ public class DocumentContentJspBean
     // Jsp
     private static final String PAGE_PORTAL = "jsp/site/Portal.jsp";
     private static final String PAGE_SEND_DOCUMENT = "SendDocument.jsp";
-    
     private static final String JCAPTCHA_PLUGIN = "jcaptcha";
     private static final String EMPTY_STRING = "";
-    
+
     //Captcha
-    private CaptchaSecurityService _captchaService;    
+    private CaptchaSecurityService _captchaService;
 
     /////////////////////////////////////////////////////////////////////////////
     // page management of printing document
@@ -145,10 +144,12 @@ public class DocumentContentJspBean
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
+
         if ( document == null )
         {
-        	return StringUtils.EMPTY;
+            return StringUtils.EMPTY;
         }
+
         DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
 
         XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
@@ -183,10 +184,12 @@ public class DocumentContentJspBean
         int nDocumentId = IntegerUtils.convert( strDocumentId );
 
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
+
         if ( document == null )
         {
-        	return StringUtils.EMPTY;
+            return StringUtils.EMPTY;
         }
+
         DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
         Map<String, Object> model = new HashMap<String, Object>(  );
 
@@ -258,10 +261,12 @@ public class DocumentContentJspBean
 
         Map<String, Object> model = new HashMap<String, Object>(  );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
+
         if ( document == null )
         {
-        	return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_ERROR );
+            return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_ERROR );
         }
+
         DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
 
         XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
@@ -279,8 +284,8 @@ public class DocumentContentJspBean
         String strCurrentDate = DateUtil.getCurrentDateString( request.getLocale(  ) );
 
         // Mandatory Fields
-        if ( StringUtils.isBlank( strVisitorLastName ) || StringUtils.isBlank( strVisitorFirstName ) || StringUtils.isBlank( strVisitorEmail ) ||
-                StringUtils.isBlank( strRecipientEmail ) )
+        if ( StringUtils.isBlank( strVisitorLastName ) || StringUtils.isBlank( strVisitorFirstName ) ||
+                StringUtils.isBlank( strVisitorEmail ) || StringUtils.isBlank( strRecipientEmail ) )
         {
             return PAGE_SEND_DOCUMENT + "?send=empty_field&" + PARAMETER_DOCUMENT_ID + "=" + nDocumentId +
             "&visitor_last_name=" + strVisitorLastName + "&visitor_first_name=" + strVisitorFirstName +
@@ -337,9 +342,10 @@ public class DocumentContentJspBean
             if ( !_captchaService.validate( request ) )
             {
                 return strPagePortal + "?" + PARAMETER_DOCUMENT_ID + "=" + strDocumentId + "&" + PARAMETER_PORTLET_ID +
-                 "=" + strPortletId + "&" + PARAMETER_COMMENT_DOCUMENT + "=1&" + PARAMETER_CAPTCHA_ERROR + "=1";
+                "=" + strPortletId + "&" + PARAMETER_COMMENT_DOCUMENT + "=1&" + PARAMETER_CAPTCHA_ERROR + "=1";
             }
         }
+
         // Check XSS characters
         if ( ( strContent != null ) && ( StringUtil.containsXssCharacters( strContent ) ) )
         {
@@ -365,7 +371,7 @@ public class DocumentContentJspBean
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
         // Only add the comment if the document accepts comments
-        if ( document != null && document.getAcceptSiteComments(  ) == 1 )
+        if ( ( document != null ) && ( document.getAcceptSiteComments(  ) == 1 ) )
         {
             DocumentComment documentComment = new DocumentComment(  );
 

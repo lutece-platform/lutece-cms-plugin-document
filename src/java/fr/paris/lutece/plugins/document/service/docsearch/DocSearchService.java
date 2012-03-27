@@ -266,27 +266,28 @@ public class DocSearchService
                 //delete all incremental action
                 removeAllIndexerAction(  );
 
-                
-               Collection<Integer> listIdDocuments= DocumentHome.findAllPrimaryKeys(  ) ;
-               ArrayList<Integer> luceneDocumentId;
-               for(Integer nIdDocument:listIdDocuments)
-               {
-            	    luceneDocumentId = new ArrayList<Integer>(  );
-	            	luceneDocumentId.add( nIdDocument );
-	            	List<Document> listDocuments = _indexer.getDocuments(luceneDocumentId);
-	            	
-	            	for ( Document doc : listDocuments )
-	                {
-	                    writer.addDocument( doc );
-	                    sbLogs.append( "Indexing " );
-	                    sbLogs.append( doc.get( DocSearchItem.FIELD_TYPE ) );
-	                    sbLogs.append( " #" );
-	                    sbLogs.append( doc.get( DocSearchItem.FIELD_UID ) );
-	                    sbLogs.append( " - " );
-	                    sbLogs.append( doc.get( DocSearchItem.FIELD_TITLE ) );
-	                    sbLogs.append( "\r\n" );
-	                }
-	              }
+                Collection<Integer> listIdDocuments = DocumentHome.findAllPrimaryKeys(  );
+                ArrayList<Integer> luceneDocumentId;
+
+                for ( Integer nIdDocument : listIdDocuments )
+                {
+                    luceneDocumentId = new ArrayList<Integer>(  );
+                    luceneDocumentId.add( nIdDocument );
+
+                    List<Document> listDocuments = _indexer.getDocuments( luceneDocumentId );
+
+                    for ( Document doc : listDocuments )
+                    {
+                        writer.addDocument( doc );
+                        sbLogs.append( "Indexing " );
+                        sbLogs.append( doc.get( DocSearchItem.FIELD_TYPE ) );
+                        sbLogs.append( " #" );
+                        sbLogs.append( doc.get( DocSearchItem.FIELD_UID ) );
+                        sbLogs.append( " - " );
+                        sbLogs.append( doc.get( DocSearchItem.FIELD_TITLE ) );
+                        sbLogs.append( "\r\n" );
+                    }
+                }
             }
 
             writer.optimize(  );
@@ -340,7 +341,8 @@ public class DocSearchService
             _searcher = new IndexSearcher( dir, true );
 
             Query query = null;
-            QueryParser parser = new QueryParser( IndexationService.LUCENE_INDEX_VERSION, DocSearchItem.FIELD_CONTENTS, _analyzer );
+            QueryParser parser = new QueryParser( IndexationService.LUCENE_INDEX_VERSION, DocSearchItem.FIELD_CONTENTS,
+                    _analyzer );
             query = parser.parse( ( strQuery != null ) ? strQuery : "" );
 
             List<DocumentSpace> listSpaces = DocumentSpacesService.getInstance(  ).getUserAllowedSpaces( user );

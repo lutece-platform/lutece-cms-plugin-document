@@ -33,12 +33,12 @@
  */
 package fr.paris.lutece.plugins.document.business.autopublication;
 
-import java.util.Collection;
-import java.util.Locale;
-
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.util.RemovalListener;
+
+import java.util.Collection;
+import java.util.Locale;
 
 
 public class DocumentAutoPublicationDocumentSpaceRemovalListener implements RemovalListener
@@ -56,7 +56,7 @@ public class DocumentAutoPublicationDocumentSpaceRemovalListener implements Remo
         {
             return true;
         }
-        
+
         int nId = IntegerUtils.convert( strId );
 
         Collection<DocumentAutoPublication> listDocumentAutoPublication = DocumentAutoPublicationHome.findAll(  );
