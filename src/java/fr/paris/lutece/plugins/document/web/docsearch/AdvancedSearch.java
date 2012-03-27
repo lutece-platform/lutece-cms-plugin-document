@@ -33,12 +33,23 @@
  */
 package fr.paris.lutece.plugins.document.web.docsearch;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentPortletHome;
 import fr.paris.lutece.plugins.document.service.docsearch.DocSearchItem;
 import fr.paris.lutece.plugins.document.service.docsearch.DocSearchService;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.business.portlet.Portlet;
@@ -50,18 +61,6 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.web.xpages.XPageApplication;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 public class AdvancedSearch implements XPageApplication
@@ -148,7 +147,7 @@ public class AdvancedSearch implements XPageApplication
             {
                 DocSearchItem docSearchItem = i.next(  );
 
-                if ( service.isPublished( Integer.parseInt( docSearchItem.getId(  ) ) ) )
+                if ( service.isPublished( IntegerUtils.convert( docSearchItem.getId(  ) ) ) )
                 {
                     Collection<Portlet> c = service.getPortletsByDocumentId( docSearchItem.getId(  ) );
                     Iterator<Portlet> it = c.iterator(  );
@@ -219,7 +218,7 @@ public class AdvancedSearch implements XPageApplication
 
         try
         {
-            Date d = f.parse( strDate );
+            f.parse( strDate );
 
             return true;
         }

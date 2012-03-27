@@ -33,9 +33,19 @@
  */
 package fr.paris.lutece.plugins.document.web.rules;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.rules.Rule;
 import fr.paris.lutece.plugins.document.business.rules.RuleHome;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -45,12 +55,6 @@ import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -113,7 +117,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
 
         AdminUser user = getUser(  );
 
-        List<Rule> listRules = (List) RuleHome.findAll( getLocale(  ) );
+        List<Rule> listRules = RuleHome.findAll( getLocale(  ) );
         List<Rule> listRulesAuthorized = new ArrayList<Rule>(  );
 
         for ( Rule rule : listRules )
@@ -125,7 +129,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
             }
         }
 
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_RULES_LIST, listRulesAuthorized );
         model.put( MARK_RULE_TYPES_LIST, RuleHome.getRuleTypesList( getLocale(  ) ) );
 
@@ -146,12 +150,12 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
         String strSpaceId = request.getParameter( DocumentSpacesService.PARAMETER_BROWSER_SELECTED_SPACE_ID );
         boolean bSubmitButtonDisabled = Boolean.TRUE;
 
-        if ( ( strSpaceId != null ) && !strSpaceId.equals( "" ) )
+        if ( StringUtils.isNotBlank( strSpaceId ) )
         {
             bSubmitButtonDisabled = Boolean.FALSE;
         }
 
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         // Spaces browser
         model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
         model.put( MARK_SPACES_BROWSER,
@@ -176,8 +180,8 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
-        int nSpaceId = Integer.parseInt( strSpaceId );
-        getRuleSession(  ).setAttribute( getRuleAttributeSelectedSession(  ), "" + nSpaceId );
+        int nSpaceId = IntegerUtils.convert( strSpaceId );
+        getRuleSession(  ).setAttribute( getRuleAttributeSelectedSession(  ), Integer.toString( nSpaceId ) );
 
         return AppPathService.getBaseUrl( request ) + JSP_CREATE_RULE_SESSION;
     }
@@ -205,7 +209,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
             strRuleTypeId = rule.getRuleTypeId(  );
         }
 
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_CREATE_FORM, rule.getCreateForm( getUser(  ), getLocale(  ) ) );
         model.put( MARK_RULE_TYPE_ID, strRuleTypeId );
 
@@ -277,7 +281,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
     public String deleteRule( HttpServletRequest request )
     {
         String strRuleId = request.getParameter( PARAMETER_RULE_ID );
-        Rule rule = RuleHome.findByPrimaryKey( Integer.parseInt( strRuleId ) );
+        Rule rule = RuleHome.findByPrimaryKey( IntegerUtils.convert( strRuleId ) );
         UrlItem url = new UrlItem( JSP_DO_DELETE_RULE );
         url.addParameter( PARAMETER_RULE_ID, strRuleId );
         rule.setLocale( getLocale(  ) );
@@ -296,7 +300,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
     public String doDeleteRule( HttpServletRequest request )
     {
         String strRuleId = request.getParameter( PARAMETER_RULE_ID );
-        RuleHome.remove( Integer.parseInt( strRuleId ) );
+        RuleHome.remove( IntegerUtils.convert( strRuleId ) );
 
         return getHomeUrl( request );
     }

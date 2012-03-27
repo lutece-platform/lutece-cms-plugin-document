@@ -33,15 +33,22 @@
  */
 package fr.paris.lutece.plugins.document.modules.rulenotifyusers.business;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.rules.AbstractRule;
-import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
-import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentStateHome;
 import fr.paris.lutece.plugins.document.service.DocumentEvent;
 import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
 import fr.paris.lutece.plugins.document.service.spaces.SpaceRemovalListenerService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.mailinglist.MailingList;
 import fr.paris.lutece.portal.business.mailinglist.MailingListHome;
 import fr.paris.lutece.portal.business.mailinglist.Recipient;
@@ -50,20 +57,14 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mail.MailService;
 import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.mailinglist.MailingListRemovalListenerService;
-import fr.paris.lutece.portal.service.page.PageService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
+import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.StringTokenizer;
 
 
 /**
@@ -80,7 +81,7 @@ public class NotifyUsersRule extends AbstractRule
     private static final String MARK_SPACE_SOURCE_ID = "id_space_source";
     private static final String MARK_STATE_ID = "id_state";
     private static final String MARK_MAILINGLIST_ID = "id_mailinglist";
-    private static final String MARK_MESSAGE_TEMPLATE_KEY = "message_template_key";
+//    private static final String MARK_MESSAGE_TEMPLATE_KEY = "message_template_key";
     private static final String MARK_STATES_LIST = "states_list";
     private static final String MARK_MAILINGLISTS_LIST = "mailinglists_list";
     private static final String MARK_MESSAGE_TEMPLATES_LIST = "message_templates_list";
@@ -171,7 +172,7 @@ public class NotifyUsersRule extends AbstractRule
                     for ( Recipient recipient : listRecipients )
                     {
                         // Build the mail message
-                        HashMap model = new HashMap(  );
+                        Map<String, Object> model = new HashMap<String, Object>(  );
                         model.put( MARK_USER, event.getUser(  ) );
                         model.put( MARK_DOCUMENT, event.getDocument(  ) );
                         model.put( MARK_URL_PREVIEW, url.getUrl(  ) );
@@ -208,9 +209,9 @@ public class NotifyUsersRule extends AbstractRule
      */
     public String getCreateForm( AdminUser user, Locale locale )
     {
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
 
-        Collection listStates = DocumentStateHome.getDocumentStatesList( locale );
+        Collection<ReferenceItem> listStates = DocumentStateHome.getDocumentStatesList( locale );
         ReferenceList listMailingLists = new ReferenceList(  );
 
         if ( this.getAttribute( PARAMETER_STATE_ID ) != null )
@@ -290,7 +291,7 @@ public class NotifyUsersRule extends AbstractRule
      */
     public boolean isAuthorized( AdminUser user )
     {
-        int nSourceSpaceId = Integer.parseInt( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
+        int nSourceSpaceId = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
 
         if ( !DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( nSourceSpaceId, user ) )
         {
@@ -315,24 +316,31 @@ public class NotifyUsersRule extends AbstractRule
      */
     public String getRule(  )
     {
-        int nSourceSpaceId = Integer.parseInt( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
+        int nSourceSpaceId = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
         String strSourceSpace = DocumentSpacesService.getInstance(  ).getLabelSpacePath( nSourceSpaceId, getUser(  ) );
         String strMailingListId = getAttribute( PARAMETER_MAILINGLIST_ID );
         String strMailingList = null;
 
-        if ( ( strMailingListId != null ) && strMailingListId.matches( REGEX_ID ) )
+        if ( StringUtils.isNotBlank( strMailingListId ) && strMailingListId.matches( REGEX_ID ) )
         {
-            int nMailingListId = Integer.parseInt( strMailingListId );
+            int nMailingListId = IntegerUtils.convert( strMailingListId );
             MailingList mailinglist = MailingListHome.findByPrimaryKey( nMailingListId );
-            strMailingList = mailinglist.getDescription(  );
+            if ( mailinglist != null )
+            {
+            	strMailingList = mailinglist.getDescription(  );
+            }
         }
 
         String strMessageTemplate = getMessageDescription( getAttribute( PARAMETER_MESSAGE_TEMPLATE_KEY ), getLocale(  ) );
-        int nStateId = Integer.parseInt( getAttribute( PARAMETER_STATE_ID ) );
+        int nStateId = IntegerUtils.convert( getAttribute( PARAMETER_STATE_ID ) );
         DocumentState state = DocumentStateHome.findByPrimaryKey( nStateId );
-        state.setLocale( getLocale(  ) );
+        String strState = StringUtils.EMPTY;
+        if ( state != null )
+        {
+        	state.setLocale( getLocale(  ) );
+        	strState = state.getName(  );
+        }
 
-        String strState = state.getName(  );
         String[] ruleArgs = { strSourceSpace, strState, strMailingList, strMessageTemplate };
 
         return I18nService.getLocalizedString( PROPERTY_RULE_DESCRIPTION, ruleArgs, getLocale(  ) );

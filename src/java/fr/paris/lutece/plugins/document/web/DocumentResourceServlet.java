@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.document.web;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentResource;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
@@ -78,10 +79,10 @@ public class DocumentResourceServlet extends HttpServlet
         String strDocumentId = request.getParameter(PARAMETER_DOCUMENT_ID);
         String strAttributeId = request.getParameter(PARAMETER_ATTRIBUTE_ID);
 
-        if ((strDocumentId != null) && (strAttributeId != null))
+        if ( ( strDocumentId != null ) && ( strAttributeId != null ) )
         {
-            int nDocumentId = Integer.parseInt(strDocumentId);
-            int nAttributeId = Integer.parseInt(strAttributeId);
+            int nDocumentId = IntegerUtils.convert(strDocumentId);
+            int nAttributeId = IntegerUtils.convert(strAttributeId);
             String strKey = getCacheKey(nDocumentId, nAttributeId);
 
             ResourceValueObject resource = _cache.get(strKey);
@@ -141,10 +142,10 @@ public class DocumentResourceServlet extends HttpServlet
             throws ServletException, IOException
     {
         String strDocumentId = request.getParameter(PARAMETER_DOCUMENT_ID);
-        int nDocumentId = Integer.parseInt(strDocumentId);
+        int nDocumentId = IntegerUtils.convert(strDocumentId);
         String strAttributeId = request.getParameter(PARAMETER_ATTRIBUTE_ID);
 
-        int nAttributeId = (strAttributeId != null) ? Integer.parseInt(strAttributeId) : -1;
+        int nAttributeId = IntegerUtils.convert(strAttributeId);
         Boolean bWorkingContent = (request.getParameter(PARAMETER_WORKING_CONTENT) != null);
 
         String strCacheKey = getCacheKey(nDocumentId, nAttributeId);

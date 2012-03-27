@@ -33,13 +33,14 @@
  */
 package fr.paris.lutece.plugins.document.modules.rulenotifyusers.business;
 
-import fr.paris.lutece.plugins.document.business.rules.Rule;
-import fr.paris.lutece.plugins.document.business.rules.RuleHome;
-import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.util.RemovalListener;
-
 import java.util.Collection;
 import java.util.Locale;
+
+import fr.paris.lutece.plugins.document.business.rules.Rule;
+import fr.paris.lutece.plugins.document.business.rules.RuleHome;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
+import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.util.RemovalListener;
 
 
 /**
@@ -51,15 +52,17 @@ public class NotifyUsersSpaceRemovalListener implements RemovalListener
 
     /**
     * Check if the object can be safely removed
-    * @param id The object id
+    * @param strId The object id
     * @return true if the pbject can be removed otherwise false
     */
-    public boolean canBeRemoved( String id )
+    public boolean canBeRemoved( String strId )
     {
-        if ( id == null )
+        if ( IntegerUtils.isNotNumeric( strId ) )
         {
             return true;
         }
+        
+        int nId = IntegerUtils.convert( strId );
 
         // Get the rule type key of the given rule type class
         Rule ruleNotifyUser = new NotifyUsersRule(  );
@@ -71,8 +74,9 @@ public class NotifyUsersSpaceRemovalListener implements RemovalListener
         for ( Rule rule : listRule )
         {
             String strSpaceId = rule.getAttribute( NotifyUsersRule.getParameterKeySourceSpaceId(  ) );
+            int nSpaceId = IntegerUtils.convert( strSpaceId );
 
-            if ( ( ( strSpaceId != null ) && ( Integer.parseInt( strSpaceId ) == Integer.parseInt( id ) ) ) )
+            if ( nSpaceId == nId )
             {
                 return false;
             }

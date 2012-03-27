@@ -33,6 +33,16 @@
  */
 package fr.paris.lutece.plugins.document.service;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
@@ -45,10 +55,10 @@ import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentAction;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentActionHome;
-import fr.paris.lutece.plugins.document.service.IDocumentActionsService;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataHandler;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.plugins.document.web.DocumentResourceServlet;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.user.AdminUser;
@@ -65,16 +75,6 @@ import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.xml.XmlUtil;
-
-import org.apache.commons.fileupload.FileItem;
-
-import java.sql.Timestamp;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 
 /**
@@ -119,8 +119,7 @@ public class DocumentService
     /** Creates a new instance of DocumentService */
     private DocumentService(  )
     {
-        _managerEventListeners = (DocumentEventListernersManager) SpringContextService.getPluginBean( "document",
-                "document.documentEventListernersManager" );
+        _managerEventListeners = SpringContextService.getBean( "document.documentEventListernersManager" );
     }
 
     /**
@@ -366,7 +365,7 @@ public class DocumentService
     {
         List<DocumentAction> listActions = DocumentActionHome.getActionsList( document, locale );
         RBACResource documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
-        listActions = (List) RBACService.getAuthorizedActionsCollection( listActions, documentType, user );
+        listActions = (List<DocumentAction>) RBACService.getAuthorizedActionsCollection( listActions, documentType, user );
 
         // Get all beans from the global ApplicationContext
         List<IDocumentActionsService> listActionServices = SpringContextService.getBeansOfType( IDocumentActionsService.class );
@@ -428,10 +427,14 @@ public class DocumentService
      */
     public String getModifyForm( String strDocumentId, Locale locale, String strBaseUrl )
     {
-        int nDocumentId = Integer.parseInt( strDocumentId );
+        int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKey( nDocumentId );
 
-        return getModifyForm( document, locale, strBaseUrl );
+        if ( document != null )
+        {
+        	return getModifyForm( document, locale, strBaseUrl );
+        }
+        return StringUtils.EMPTY;
     }
 
     /**
@@ -522,22 +525,20 @@ public class DocumentService
         String strDocumentComment = mRequest.getParameter( PARAMETER_DOCUMENT_COMMENT );
         String strDateValidityBegin = mRequest.getParameter( PARAMETER_VALIDITY_BEGIN );
         String strDateValidityEnd = mRequest.getParameter( PARAMETER_VALIDITY_END );
-        String strAcceptSiteComments = ( mRequest.getParameter( PARAMETER_ACCEPT_SITE_COMMENTS ) != null )
-            ? mRequest.getParameter( PARAMETER_ACCEPT_SITE_COMMENTS ) : "0";
-        String strIsModeratedComment = ( mRequest.getParameter( PARAMETER_IS_MODERATED_COMMENT ) != null )
-            ? mRequest.getParameter( PARAMETER_IS_MODERATED_COMMENT ) : "0";
-        String strIsEmailNotifiedComment = ( mRequest.getParameter( PARAMETER_IS_EMAIL_NOTIFIED_COMMENT ) != null )
-            ? mRequest.getParameter( PARAMETER_IS_EMAIL_NOTIFIED_COMMENT ) : "0";
-        String strMailingListId = ( mRequest.getParameter( PARAMETER_MAILING_LIST ) != null )
-            ? mRequest.getParameter( PARAMETER_MAILING_LIST ) : "0";
-        int nMailingListId = Integer.parseInt( strMailingListId );
-        String strPageTemplateDocumentId = ( mRequest.getParameter( PARAMETER_PAGE_TEMPLATE_DOCUMENT_ID ) != null )
-            ? mRequest.getParameter( PARAMETER_PAGE_TEMPLATE_DOCUMENT_ID ) : "0";
-        int nPageTemplateDocumentId = Integer.parseInt( strPageTemplateDocumentId );
+        String strAcceptSiteComments = mRequest.getParameter( PARAMETER_ACCEPT_SITE_COMMENTS );
+        int nAcceptSiteComments = IntegerUtils.convert( strAcceptSiteComments, 0 );
+        String strIsModeratedComment = mRequest.getParameter( PARAMETER_IS_MODERATED_COMMENT );
+        int nIsModeratedComment = IntegerUtils.convert( strIsModeratedComment, 0 );
+        String strIsEmailNotifiedComment = mRequest.getParameter( PARAMETER_IS_EMAIL_NOTIFIED_COMMENT );
+        int nIsEmailNotifiedComment = IntegerUtils.convert( strIsEmailNotifiedComment, 0 );
+        String strMailingListId = mRequest.getParameter( PARAMETER_MAILING_LIST );
+        int nMailingListId = IntegerUtils.convert( strMailingListId, 0 );
+        String strPageTemplateDocumentId = mRequest.getParameter( PARAMETER_PAGE_TEMPLATE_DOCUMENT_ID );
+        int nPageTemplateDocumentId = IntegerUtils.convert( strPageTemplateDocumentId, 0 );
         String[] arrayCategory = mRequest.getParameterValues( PARAMETER_CATEGORY );
 
         // Check for mandatory value
-        if ( strDocumentTitle.trim(  ).equals( "" ) || strDocumentSummary.trim(  ).equals( "" ) )
+        if ( StringUtils.isBlank( strDocumentTitle ) || StringUtils.isBlank( strDocumentSummary ) )
         {
             return AdminMessageService.getMessageUrl( mRequest, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
@@ -617,9 +618,9 @@ public class DocumentService
         document.setComment( strDocumentComment );
         document.setDateValidityBegin( dateValidityBegin );
         document.setDateValidityEnd( dateValidityEnd );
-        document.setAcceptSiteComments( Integer.parseInt( strAcceptSiteComments ) );
-        document.setIsModeratedComment( Integer.parseInt( strIsModeratedComment ) );
-        document.setIsEmailNotifiedComment( Integer.parseInt( strIsEmailNotifiedComment ) );
+        document.setAcceptSiteComments( nAcceptSiteComments );
+        document.setIsModeratedComment( nIsModeratedComment );
+        document.setIsEmailNotifiedComment( nIsEmailNotifiedComment );
         document.setMailingListId( nMailingListId );
         document.setPageTemplateDocumentId( nPageTemplateDocumentId );
 
@@ -639,7 +640,7 @@ public class DocumentService
         {
             for ( String strIdCategory : arrayCategory )
             {
-                listCategories.add( CategoryHome.find( Integer.parseInt( strIdCategory ) ) );
+                listCategories.add( CategoryHome.find( IntegerUtils.convert( strIdCategory ) ) );
             }
         }
 

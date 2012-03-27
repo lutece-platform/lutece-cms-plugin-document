@@ -33,14 +33,12 @@
  */
 package fr.paris.lutece.plugins.document.modules.comment.business;
 
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.util.sql.DAOUtil;
-
 import java.sql.Timestamp;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.util.sql.DAOUtil;
 
 
 /**

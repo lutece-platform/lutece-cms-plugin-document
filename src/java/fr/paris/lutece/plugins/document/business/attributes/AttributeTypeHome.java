@@ -48,8 +48,7 @@ import java.util.Locale;
 public final class AttributeTypeHome
 {
     // Static variable pointed at the DAO instance
-    private static IAttributeTypeDAO _dao = (IAttributeTypeDAO) SpringContextService.getPluginBean( "document",
-            "document.attributeTypeDAO" );
+    private static IAttributeTypeDAO _dao = SpringContextService.getBean( "document.attributeTypeDAO" );
 
     /**
      * Private constructor - this class need not be instantiated

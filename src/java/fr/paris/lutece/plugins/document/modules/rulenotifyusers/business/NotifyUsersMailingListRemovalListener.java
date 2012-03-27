@@ -33,13 +33,14 @@
  */
 package fr.paris.lutece.plugins.document.modules.rulenotifyusers.business;
 
-import fr.paris.lutece.plugins.document.business.rules.Rule;
-import fr.paris.lutece.plugins.document.business.rules.RuleHome;
-import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.util.RemovalListener;
-
 import java.util.Collection;
 import java.util.Locale;
+
+import fr.paris.lutece.plugins.document.business.rules.Rule;
+import fr.paris.lutece.plugins.document.business.rules.RuleHome;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
+import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.util.RemovalListener;
 
 
 /**
@@ -51,15 +52,17 @@ public class NotifyUsersMailingListRemovalListener implements RemovalListener
 
     /**
     * Check if the object can be safely removed
-    * @param id The object id
+    * @param strId The object id
     * @return true if the pbject can be removed otherwise false
     */
-    public boolean canBeRemoved( String id )
+    public boolean canBeRemoved( String strId )
     {
-        if ( id == null )
+        if ( IntegerUtils.isNotNumeric( strId ) )
         {
             return true;
         }
+        
+        int nId = IntegerUtils.convert( strId );
 
         // Get the rule type key of the given rule type class
         Rule ruleNotifyUser = new NotifyUsersRule(  );
@@ -72,7 +75,8 @@ public class NotifyUsersMailingListRemovalListener implements RemovalListener
         {
             String strMailingListId = rule.getAttribute( NotifyUsersRule.getParameterKeyMailingListId(  ) );
 
-            if ( ( ( strMailingListId != null ) && ( Integer.parseInt( strMailingListId ) == Integer.parseInt( id ) ) ) )
+            int nMailingListId = IntegerUtils.convert( strMailingListId );
+            if ( nMailingListId == nId )
             {
                 return false;
             }

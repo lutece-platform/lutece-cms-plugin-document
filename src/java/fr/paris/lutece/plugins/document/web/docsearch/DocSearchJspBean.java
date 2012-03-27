@@ -33,10 +33,20 @@
  */
 package fr.paris.lutece.plugins.document.web.docsearch;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.service.docsearch.DocSearchItem;
 import fr.paris.lutece.plugins.document.service.docsearch.DocSearchService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -45,12 +55,6 @@ import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -99,15 +103,15 @@ public class DocSearchJspBean extends PluginAdminPageJspBean
 
         String strQuery = request.getParameter( PARAMETER_QUERY );
         String strSearchPageUrl = AppPropertiesService.getProperty( PROPERTY_SEARCH_PAGE_URL );
-        String strError = "";
-        HashMap model = new HashMap(  );
+        String strError = StringUtils.EMPTY;
+        Map<String, Object> model = new HashMap<String, Object>(  );
         Locale locale = getLocale(  );
 
         // Check XSS characters
         if ( ( strQuery != null ) && ( StringUtil.containsXssCharacters( strQuery ) ) )
         {
             strError = I18nService.getLocalizedString( MESSAGE_INVALID_SEARCH_TERMS, locale );
-            strQuery = "";
+            strQuery = StringUtils.EMPTY;
         }
 
         String strNbItemPerPage = request.getParameter( PARAMETER_NB_ITEMS_PER_PAGE );
@@ -115,11 +119,11 @@ public class DocSearchJspBean extends PluginAdminPageJspBean
                 DEFAULT_RESULTS_PER_PAGE );
         strNbItemPerPage = ( strNbItemPerPage != null ) ? strNbItemPerPage : strDefaultNbItemPerPage;
 
-        int nNbItemsPerPage = Integer.parseInt( strNbItemPerPage );
+        int nNbItemsPerPage = IntegerUtils.convert( strNbItemPerPage );
         String strCurrentPageIndex = request.getParameter( PARAMETER_PAGE_INDEX );
         strCurrentPageIndex = ( strCurrentPageIndex != null ) ? strCurrentPageIndex : DEFAULT_PAGE_INDEX;
 
-        int nPageIndex = Integer.parseInt( strCurrentPageIndex );
+        int nPageIndex = IntegerUtils.convert( strCurrentPageIndex );
         int nStartIndex = ( nPageIndex - 1 ) * nNbItemsPerPage;
         List<DocSearchItem> listResults;
 
@@ -186,7 +190,7 @@ public class DocSearchJspBean extends PluginAdminPageJspBean
             url.addParameter( PARAMETER_ADVANCED_SEARCH, "true" );
         }
 
-        LocalizedPaginator paginator = new LocalizedPaginator( listResults, nNbItemsPerPage, url.getUrl(  ),
+        LocalizedPaginator<DocSearchItem> paginator = new LocalizedPaginator<DocSearchItem>( listResults, nNbItemsPerPage, url.getUrl(  ),
                 PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
 
         model.put( MARK_RESULTS_LIST, paginator.getPageItems(  ) );

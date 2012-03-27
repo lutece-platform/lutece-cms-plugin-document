@@ -33,13 +33,12 @@
  */
 package fr.paris.lutece.plugins.document.modules.comment.business;
 
+import java.util.List;
+
 import fr.paris.lutece.plugins.document.modules.comment.service.DocumentCommentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
-import fr.paris.lutece.util.ReferenceList;
-
-import java.util.List;
 
 
 /**
@@ -49,8 +48,7 @@ import java.util.List;
 public final class DocumentCommentHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentCommentDAO _dao = (IDocumentCommentDAO) SpringContextService.getPluginBean( "document-comment",
-            "document.documentCommentDAO" );
+    private static IDocumentCommentDAO _dao = SpringContextService.getBean( "document.documentCommentDAO" );
     private static Plugin plugin = PluginService.getPlugin( DocumentCommentPlugin.PLUGIN_NAME );
 
     /**

@@ -33,22 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.web.portlet;
 
-import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
-import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortlet;
-import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
-import fr.paris.lutece.plugins.document.service.category.CategoryService;
-import fr.paris.lutece.plugins.document.service.category.CategoryService.CategoryDisplay;
-import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
-import fr.paris.lutece.portal.business.portlet.PortletHome;
-import fr.paris.lutece.portal.business.user.AdminUser;
-import fr.paris.lutece.portal.service.message.AdminMessage;
-import fr.paris.lutece.portal.service.message.AdminMessageService;
-import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.portal.web.portlet.PortletJspBean;
-import fr.paris.lutece.util.html.HtmlTemplate;
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,6 +41,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
+import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
+import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortlet;
+import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
+import fr.paris.lutece.plugins.document.service.category.CategoryService;
+import fr.paris.lutece.plugins.document.service.category.CategoryService.CategoryDisplay;
+import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
+import fr.paris.lutece.portal.business.portlet.PortletHome;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.message.AdminMessage;
+import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.web.portlet.PortletJspBean;
+import fr.paris.lutece.util.html.HtmlTemplate;
 
 
 /**
@@ -106,9 +108,8 @@ public class DocumentListPortletJspBean extends PortletJspBean
         AdminUser user = getUser(  );
 
         HtmlTemplate template = getCreateTemplate( strIdPage, strIdPortletType );
-        template.substitute( COMBO_DOCUMENT_TYPE_LIST, getDocumentTypesList( "" ) );
-        template.substitute( COMBO_DOCUMENT_CATEGORY_LIST, getCategoryList( "", user ) );
-        strIdPage = "";
+        template.substitute( COMBO_DOCUMENT_TYPE_LIST, getDocumentTypesList( StringUtils.EMPTY ) );
+        template.substitute( COMBO_DOCUMENT_CATEGORY_LIST, getCategoryList( StringUtils.EMPTY, user ) );
 
         return template.getHtml(  );
     }
@@ -122,7 +123,7 @@ public class DocumentListPortletJspBean extends PortletJspBean
     public String getModify( HttpServletRequest request )
     {
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
-        int nPortletId = Integer.parseInt( strPortletId );
+        int nPortletId = IntegerUtils.convert( strPortletId );
         AdminUser user = getUser(  );
         DocumentListPortlet portlet = (DocumentListPortlet) PortletHome.findByPrimaryKey( nPortletId );
 
@@ -144,7 +145,7 @@ public class DocumentListPortletJspBean extends PortletJspBean
     {
         DocumentListPortlet portlet = new DocumentListPortlet(  );
         String strIdPage = request.getParameter( PARAMETER_PAGE_ID );
-        int nIdPage = Integer.parseInt( strIdPage );
+        int nIdPage = IntegerUtils.convert( strIdPage );
 
         //gets the identifier of the parent page
         String strDocumentTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
@@ -185,7 +186,7 @@ public class DocumentListPortletJspBean extends PortletJspBean
         String strDocumentTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
         int[] arrayIdCategories = setIdCategory( request );
 
-        int nPortletId = Integer.parseInt( strPortletId );
+        int nPortletId = IntegerUtils.convert( strPortletId );
         DocumentListPortlet portlet = (DocumentListPortlet) DocumentListPortletHome.findByPrimaryKey( nPortletId );
         int[] arrayOldIdCategories = portlet.getIdCategory(  );
 
@@ -243,7 +244,7 @@ public class DocumentListPortletJspBean extends PortletJspBean
 
             for ( String strIdCategory : strArrayIdCategory )
             {
-                nArrayIdCategory[i++] = Integer.parseInt( strIdCategory );
+                nArrayIdCategory[i++] = IntegerUtils.convert( strIdCategory );
             }
 
             return nArrayIdCategory;
@@ -259,13 +260,16 @@ public class DocumentListPortletJspBean extends PortletJspBean
      */
     private String getDocumentTypesList( String strPortletId )
     {
-        String strCodeTypeDocument = "";
+        String strCodeTypeDocument = StringUtils.EMPTY;
 
-        if ( !strPortletId.equals( "" ) )
+        if ( IntegerUtils.isNumeric(  strPortletId ) )
         {
-            DocumentListPortlet portlet = (DocumentListPortlet) PortletHome.findByPrimaryKey( Integer.parseInt( 
+            DocumentListPortlet portlet = (DocumentListPortlet) PortletHome.findByPrimaryKey( IntegerUtils.convert( 
                         strPortletId ) );
-            strCodeTypeDocument = portlet.getDocumentTypeCode(  );
+            if ( portlet != null )
+            {
+            	strCodeTypeDocument = portlet.getDocumentTypeCode(  );
+            }
         }
 
         Map<String, Serializable> model = new HashMap<String, Serializable>(  );
@@ -288,11 +292,14 @@ public class DocumentListPortletJspBean extends PortletJspBean
     {
         Collection<CategoryDisplay> listCategoriesDisplay = new ArrayList<CategoryDisplay>(  );
 
-        if ( !strPortletId.equals( "" ) )
+        if ( IntegerUtils.isNumeric( strPortletId ) )
         {
-            DocumentListPortlet portlet = (DocumentListPortlet) PortletHome.findByPrimaryKey( Integer.parseInt( 
+            DocumentListPortlet portlet = (DocumentListPortlet) PortletHome.findByPrimaryKey( IntegerUtils.convert( 
                         strPortletId ) );
-            listCategoriesDisplay = CategoryService.getAllCategoriesDisplay( portlet.getIdCategory(  ), user );
+            if ( portlet != null )
+            {
+            	listCategoriesDisplay = CategoryService.getAllCategoriesDisplay( portlet.getIdCategory(  ), user );
+            }
         }
         else
         {

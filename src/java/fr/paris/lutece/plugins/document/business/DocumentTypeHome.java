@@ -45,8 +45,7 @@ import java.util.Collection;
 public final class DocumentTypeHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentTypeDAO _dao = (IDocumentTypeDAO) SpringContextService.getPluginBean( "document",
-            "document.documentTypeDAO" );
+    private static IDocumentTypeDAO _dao = SpringContextService.getBean( "document.documentTypeDAO" );
 
     /**
      * Private constructor - this class need not be instantiated

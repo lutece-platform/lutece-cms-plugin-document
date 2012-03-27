@@ -33,11 +33,12 @@
  */
 package fr.paris.lutece.plugins.document.business.autopublication;
 
-import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.util.RemovalListener;
-
 import java.util.Collection;
 import java.util.Locale;
+
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
+import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.util.RemovalListener;
 
 
 public class DocumentAutoPublicationDocumentSpaceRemovalListener implements RemovalListener
@@ -51,16 +52,18 @@ public class DocumentAutoPublicationDocumentSpaceRemovalListener implements Remo
     */
     public boolean canBeRemoved( String strId )
     {
-        if ( strId == null )
+        if ( IntegerUtils.isNotNumeric( strId ) )
         {
             return true;
         }
+        
+        int nId = IntegerUtils.convert( strId );
 
         Collection<DocumentAutoPublication> listDocumentAutoPublication = DocumentAutoPublicationHome.findAll(  );
 
         for ( DocumentAutoPublication documentAutoPublication : listDocumentAutoPublication )
         {
-            if ( documentAutoPublication.getIdSpace(  ) == Integer.parseInt( strId ) )
+            if ( documentAutoPublication.getIdSpace(  ) == nId )
             {
                 return false;
             }

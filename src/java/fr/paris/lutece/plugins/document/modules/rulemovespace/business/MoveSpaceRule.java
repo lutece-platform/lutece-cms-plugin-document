@@ -33,10 +33,14 @@
  */
 package fr.paris.lutece.plugins.document.modules.rulemovespace.business;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.rules.AbstractRule;
-import fr.paris.lutece.plugins.document.business.rules.Rule;
-import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
-import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentStateHome;
 import fr.paris.lutece.plugins.document.service.DocumentEvent;
@@ -44,16 +48,13 @@ import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.plugins.document.service.DocumentService;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
 import fr.paris.lutece.plugins.document.service.spaces.SpaceRemovalListenerService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
+import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.html.HtmlTemplate;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
 
 
 /**
@@ -139,10 +140,10 @@ public class MoveSpaceRule extends AbstractRule
      */
     public String getCreateForm( AdminUser user, Locale locale )
     {
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
 
         //Collection listSpaces = DocumentSpaceHome.getDocumentSpaceList(  );
-        Collection listStates = DocumentStateHome.getDocumentStatesList( locale );
+        Collection<ReferenceItem> listStates = DocumentStateHome.getDocumentStatesList( locale );
         //model.put( MARK_SPACES_LIST, listSpaces );
         model.put( MARK_STATES_LIST, listStates );
 
@@ -201,8 +202,8 @@ public class MoveSpaceRule extends AbstractRule
      */
     public boolean isAuthorized( AdminUser user )
     {
-        int nSourceSpaceId = Integer.parseInt( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
-        int nDestinationSpaceId = Integer.parseInt( getAttribute( PARAMETER_SPACE_DESTINATION_ID ) );
+        int nSourceSpaceId = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
+        int nDestinationSpaceId = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_DESTINATION_ID ) );
 
         if ( !DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( nSourceSpaceId, user ) )
         {
@@ -227,18 +228,18 @@ public class MoveSpaceRule extends AbstractRule
         String strSourceSpaceId = getAttribute( PARAMETER_SPACE_SOURCE_ID );
         String strDestinationSpaceId = getAttribute( PARAMETER_SPACE_DESTINATION_ID );
 
-        if ( strSourceSpaceId == null )
+        if ( IntegerUtils.isNotNumeric( strSourceSpaceId ) )
         {
             return PROPERTY_RULE_ERROR_NOT_SELECT_SPACE_SOURCE;
         }
 
-        if ( strDestinationSpaceId == null )
+        if ( IntegerUtils.isNotNumeric( strDestinationSpaceId ) )
         {
             return PROPERTY_RULE_ERROR_NOT_SELECT_SPACE_DESTINATION;
         }
 
-        int nSourceSpace = Integer.parseInt( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
-        int nDestinationSpace = Integer.parseInt( getAttribute( PARAMETER_SPACE_DESTINATION_ID ) );
+        int nSourceSpace = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
+        int nDestinationSpace = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_DESTINATION_ID ) );
 
         if ( nSourceSpace == nDestinationSpace )
         {
@@ -263,16 +264,20 @@ public class MoveSpaceRule extends AbstractRule
      */
     public String getRule(  )
     {
-        int nSourceSpaceId = Integer.parseInt( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
+        int nSourceSpaceId = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
         String strSourceSpace = DocumentSpacesService.getInstance(  ).getLabelSpacePath( nSourceSpaceId, getUser(  ) );
-        int nDestinationSpaceId = Integer.parseInt( getAttribute( PARAMETER_SPACE_DESTINATION_ID ) );
+        int nDestinationSpaceId = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_DESTINATION_ID ) );
         String strDestinationSpace = DocumentSpacesService.getInstance(  )
                                                           .getLabelSpacePath( nDestinationSpaceId, getUser(  ) );
-        int nStateId = Integer.parseInt( getAttribute( PARAMETER_STATE_ID ) );
+        int nStateId = IntegerUtils.convert( getAttribute( PARAMETER_STATE_ID ) );
         DocumentState state = DocumentStateHome.findByPrimaryKey( nStateId );
-        state.setLocale( getLocale(  ) );
+        String strState = StringUtils.EMPTY;
+        if ( state != null )
+        {
+        	state.setLocale( getLocale(  ) );
+        	strState = state.getName(  );
+        }
 
-        String strState = state.getName(  );
         String[] ruleArgs = { strSourceSpace, strState, strDestinationSpace };
 
         return I18nService.getLocalizedString( PROPERTY_RULE_DESCRIPTION, ruleArgs, getLocale(  ) );

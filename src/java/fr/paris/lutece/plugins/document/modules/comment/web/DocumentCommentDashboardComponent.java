@@ -47,8 +47,6 @@ import fr.paris.lutece.plugins.document.modules.comment.business.DocumentComment
 import fr.paris.lutece.plugins.document.modules.comment.service.DocumentCommentPlugin;
 import fr.paris.lutece.plugins.document.modules.comment.service.DocumentCommentResourceIdService;
 import fr.paris.lutece.portal.business.rbac.RBAC;
-import fr.paris.lutece.portal.business.right.Right;
-import fr.paris.lutece.portal.business.right.RightHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.dashboard.DashboardComponent;
 import fr.paris.lutece.portal.service.database.AppConnectionService;

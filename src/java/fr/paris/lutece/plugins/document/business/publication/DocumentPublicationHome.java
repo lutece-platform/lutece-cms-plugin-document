@@ -48,8 +48,7 @@ public class DocumentPublicationHome
     /////////////////////////////////////////////////////////////////////////////////
     // Constants
     // Static variable pointed at the DAO instance
-    private static IDocumentPublicationDAO _dao = (IDocumentPublicationDAO) SpringContextService.getPluginBean( "document",
-            "document.documentPublicationDAO" );
+    private static IDocumentPublicationDAO _dao = SpringContextService.getBean( "document.documentPublicationDAO" );
 
     /**
      * Create the documentsPublication object

@@ -33,33 +33,33 @@
  */
 package fr.paris.lutece.plugins.document.service.spaces;
 
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
-import fr.paris.lutece.plugins.document.service.DocumentTools;
 import fr.paris.lutece.plugins.document.service.DocumentTypeResourceIdService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.util.html.HtmlTemplate;
-import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.xml.XmlUtil;
-
-import java.io.FileInputStream;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 
 
 /**
@@ -403,7 +403,7 @@ public class DocumentSpacesService
     {
         String strIdSpaceFilter = request.getParameter( PARAMETER_BROWSER_SELECTED_SPACE_ID );
         String strIdSpace = request.getParameter( PARAMETER_BROWSER_SPACE_ID );
-        HashMap<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         DocumentSpace selectedSpace = null;
         DocumentSpace space;
         Collection<DocumentSpace> spacesList = new ArrayList<DocumentSpace>(  );
@@ -413,19 +413,19 @@ public class DocumentSpacesService
         boolean bGoUp = true;
 
         // Selected space
-        if ( ( strIdSpaceFilter != null ) && strIdSpaceFilter.matches( REGEX_ID ) )
+        if ( StringUtils.isNotBlank( strIdSpaceFilter ) && strIdSpaceFilter.matches( REGEX_ID ) )
         {
-            selectedSpace = DocumentSpaceHome.findByPrimaryKey( Integer.parseInt( strIdSpaceFilter ) );
+            selectedSpace = DocumentSpaceHome.findByPrimaryKey( IntegerUtils.convert( strIdSpaceFilter ) );
         }
 
         // if current space doesn't exists then set it up
-        if ( strIdSpace == null )
+        if ( IntegerUtils.isNotNumeric( strIdSpace ) )
         {
             nIdSpace = DocumentSpacesService.getInstance(  ).getUserDefaultSpace( user );
         }
         else
         {
-            nIdSpace = Integer.parseInt( strIdSpace );
+            nIdSpace = IntegerUtils.convert( strIdSpace );
         }
 
         // set space list

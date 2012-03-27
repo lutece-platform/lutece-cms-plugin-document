@@ -65,6 +65,7 @@ import fr.paris.lutece.plugins.document.service.DocumentTypeResourceIdService;
 import fr.paris.lutece.plugins.document.service.autopublication.AutoPublicationService;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.business.portlet.Portlet;
@@ -179,10 +180,10 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         String strErrorFilter = null;
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         Portlet portlet;
-        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( Integer.parseInt( strDocumentId ) );
+        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
         Map<String, Object> model = new HashMap<String, Object>(  );
 
-        if ( DocumentService.getInstance(  )
+        if ( ( document != null ) && DocumentService.getInstance(  )
                                 .isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
                     DocumentTypeResourceIdService.PERMISSION_VIEW, getUser(  ) ) )
         {
@@ -215,8 +216,8 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             if ( StringUtils.isNotBlank( strOrderPortlet ) && StringUtils.isNumeric( strOrderPortlet ) &&
                     StringUtils.isNotBlank( strOrderPortletAsc ) && StringUtils.isNumeric( strOrderPortletAsc ) )
             {
-                nOrderPortlet = Integer.parseInt( strOrderPortlet );
-                nOrderPortletAsc = Integer.parseInt( strOrderPortletAsc );
+                nOrderPortlet = IntegerUtils.convert( strOrderPortlet );
+                nOrderPortletAsc = IntegerUtils.convert( strOrderPortletAsc );
                 pOrder.setTypeOrder( nOrderPortlet );
                 pOrder.setSortAsc( nOrderPortletAsc == PortletOrder.SORT_ASC );
             }
@@ -377,14 +378,14 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         // portlet isn't autopublished
         for ( ReferenceItem item : listPortlets )
         {
-            Portlet portlet = PortletHome.findByPrimaryKey( Integer.parseInt( item.getCode(  ) ) );
+            Portlet portlet = PortletHome.findByPrimaryKey( IntegerUtils.convert( item.getCode(  ) ) );
 
-            if ( !DocumentAutoPublicationHome.isPortletAutoPublished( portlet.getId(  ) ) &&
+            if ( ( portlet != null ) && !DocumentAutoPublicationHome.isPortletAutoPublished( portlet.getId(  ) ) &&
                     PortletService.getInstance(  ).isAuthorized( portlet, getUser(  ) ) )
             {
                 Map<String, Object> subModel = new HashMap<String, Object>(  );
                 subModel.put( MARK_LIST_PAGE,
-                    PortalService.getPagePath( PortletHome.findByPrimaryKey( Integer.parseInt( item.getCode(  ) ) )
+                    PortalService.getPagePath( PortletHome.findByPrimaryKey( IntegerUtils.convert( item.getCode(  ) ) )
                                                           .getPageId(  ) ) );
                 subModel.put( MARK_PORTLET, item );
 
@@ -415,7 +416,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     public String doAssignedDocument( HttpServletRequest request )
     {
         // Recovery of parameters processing
-        int nDocumentId = Integer.parseInt( request.getParameter( PARAMETER_DOCUMENT_ID ) );
+        int nDocumentId = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ID ) );
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
 
         // retrieve the selected portlets ids
@@ -445,8 +446,8 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             {
                 for ( String strId : listPortletIds )
                 {
-                    int nPortletId = Integer.parseInt( strId );
-                    int nStatus = Integer.parseInt( request.getParameter( PARAMETER_DOCUMENT_PUBLISHED_STATUS ) );
+                    int nPortletId = IntegerUtils.convert( strId );
+                    int nStatus = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_PUBLISHED_STATUS ) );
 
                     if ( !PublishingService.getInstance(  ).isAssigned( nDocumentId, nPortletId ) )
                     {
@@ -465,7 +466,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             }
             else
             {
-                int nIdPortlet = Integer.parseInt( strPortletId );
+                int nIdPortlet = IntegerUtils.convert( strPortletId );
                 PublishingService.getInstance(  ).publish( nDocumentId, nIdPortlet );
             }
         }
@@ -484,9 +485,9 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     public String doUnAssignedDocument( HttpServletRequest request )
     {
         // Recovery of parameters processing
-        int nDocumentId = Integer.parseInt( request.getParameter( PARAMETER_DOCUMENT_ID ) );
-        int nPortletId = Integer.parseInt( request.getParameter( PARAMETER_PORTLET_ID ) );
-        int nStatus = Integer.parseInt( request.getParameter( PARAMETER_DOCUMENT_PUBLISHED_STATUS ) );
+        int nDocumentId = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ID ) );
+        int nPortletId = IntegerUtils.convert( request.getParameter( PARAMETER_PORTLET_ID ) );
+        int nStatus = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_PUBLISHED_STATUS ) );
 
         // Remove the document assigned
         if ( nStatus != DocumentPublication.STATUS_PUBLISHED )
@@ -518,7 +519,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         setPageTitleProperty( PROPERTY_MANAGE_PUBLISHING );
 
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
-        int nPortletId = Integer.parseInt( strPortletId );
+        int nPortletId = IntegerUtils.convert( strPortletId );
 
         Portlet portlet = PortletHome.findByPrimaryKey( nPortletId );
 
@@ -544,7 +545,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             return getStandardPublication( request, model, nPortletId );
         }
 
-        nModePublication = Integer.parseInt( strModePublication );
+        nModePublication = IntegerUtils.convert( strModePublication );
 
         model.put( MARK_MODE_PUBLICATION, nModePublication );
 
@@ -570,7 +571,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         String strOldModePublication = request.getParameter( PARAMETER_OLD_MODE_PUBLICATION );
         String strModePublication = request.getParameter( PARAMETER_MODE_PUBLICATION );
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
-        int nPortletId = Integer.parseInt( strPortletId );
+        int nPortletId = IntegerUtils.convert( strPortletId );
         UrlItem url = new UrlItem( JSP_CHANGE_MODE_PUBLICATION );
         url.addParameter( PARAMETER_PORTLET_ID, strPortletId );
         url.addParameter( PARAMETER_MODE_PUBLICATION, strModePublication );
@@ -580,7 +581,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
         if ( !strOldModePublication.equals( strModePublication ) )
         {
-            switch ( Integer.parseInt( strOldModePublication ) )
+            switch ( IntegerUtils.convert( strOldModePublication ) )
             {
                 case MODE_PUBLICATION_AUTO_PUBLICATION:
 
@@ -623,18 +624,18 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         String strModePublication = request.getParameter( PARAMETER_MODE_PUBLICATION );
         String strOldModePublication = request.getParameter( PARAMETER_OLD_MODE_PUBLICATION );
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
-        int nPortletId = Integer.parseInt( strPortletId );
+        int nPortletId = IntegerUtils.convert( strPortletId );
         int nModePublication = MODE_PUBLICATION_STANDARD;
         int nOldModePublication = MODE_PUBLICATION_STANDARD;
 
         if ( ( strModePublication != null ) && strModePublication.matches( REGEX_ID ) )
         {
-            nModePublication = Integer.parseInt( strModePublication );
+            nModePublication = IntegerUtils.convert( strModePublication );
         }
 
         if ( ( strOldModePublication != null ) && strOldModePublication.matches( REGEX_ID ) )
         {
-            nOldModePublication = Integer.parseInt( strOldModePublication );
+            nOldModePublication = IntegerUtils.convert( strOldModePublication );
         }
 
         if ( nOldModePublication != nModePublication )
@@ -679,8 +680,8 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     public String doPublishingDocument( HttpServletRequest request )
     {
         // Recovery of parameters processing
-        int nDocumentId = Integer.parseInt( request.getParameter( PARAMETER_DOCUMENT_ID ) );
-        int nPortletId = Integer.parseInt( request.getParameter( PARAMETER_PORTLET_ID ) );
+        int nDocumentId = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ID ) );
+        int nPortletId = IntegerUtils.convert( request.getParameter( PARAMETER_PORTLET_ID ) );
 
         PublishingService.getInstance(  ).publish( nDocumentId, nPortletId );
 
@@ -698,8 +699,8 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     public String doUnPublishingDocument( HttpServletRequest request )
     {
         // Recovery of parameters processing
-        int nDocumentId = Integer.parseInt( request.getParameter( PARAMETER_DOCUMENT_ID ) );
-        int nPortletId = Integer.parseInt( request.getParameter( PARAMETER_PORTLET_ID ) );
+        int nDocumentId = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ID ) );
+        int nPortletId = IntegerUtils.convert( request.getParameter( PARAMETER_PORTLET_ID ) );
         PublishingService.getInstance(  ).unPublish( nDocumentId, nPortletId );
 
         // Display the page of publishing
@@ -715,9 +716,9 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     public String doModifyDocumentOrder( HttpServletRequest request )
     {
-        int nDocumentId = Integer.parseInt( request.getParameter( PARAMETER_DOCUMENT_ID ) );
-        int nPortletId = Integer.parseInt( request.getParameter( PARAMETER_PORTLET_ID ) );
-        int nNewOrder = Integer.parseInt( request.getParameter( PARAMETER_DOCUMENT_ORDER ) );
+        int nDocumentId = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ID ) );
+        int nPortletId = IntegerUtils.convert( request.getParameter( PARAMETER_PORTLET_ID ) );
+        int nNewOrder = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ORDER ) );
 
         PublishingService.getInstance(  ).changeDocumentOrder( nDocumentId, nPortletId, nNewOrder );
 
@@ -772,8 +773,8 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     {
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         String strSpaceId = request.getParameter( DocumentSpacesService.PARAMETER_BROWSER_SELECTED_SPACE_ID );
-        int nPortletId = Integer.parseInt( strPortletId );
-        int nSpaceId = Integer.parseInt( strSpaceId );
+        int nPortletId = IntegerUtils.convert( strPortletId );
+        int nSpaceId = IntegerUtils.convert( strSpaceId );
         DocumentAutoPublication documentAutoPublication = DocumentAutoPublicationHome.findByPrimaryKey( nPortletId,
                 nSpaceId );
 
@@ -805,8 +806,8 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     {
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         String strSpaceId = request.getParameter( PARAMETER_SPACE_ID );
-        int nPortletId = Integer.parseInt( strPortletId );
-        int nSpaceId = Integer.parseInt( strSpaceId );
+        int nPortletId = IntegerUtils.convert( strPortletId );
+        int nSpaceId = IntegerUtils.convert( strSpaceId );
         UrlItem url = new UrlItem( JSP_DELETE_AUTO_PUBLICATION );
         url.addParameter( PARAMETER_PORTLET_ID, nPortletId );
         url.addParameter( PARAMETER_MODE_PUBLICATION, MODE_PUBLICATION_AUTO_PUBLICATION );
@@ -827,8 +828,8 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     {
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         String strSpaceId = request.getParameter( PARAMETER_SPACE_ID );
-        int nPortletId = Integer.parseInt( strPortletId );
-        int nSpaceId = Integer.parseInt( strSpaceId );
+        int nPortletId = IntegerUtils.convert( strPortletId );
+        int nSpaceId = IntegerUtils.convert( strSpaceId );
 
         // delete auto publication
         DocumentAutoPublicationHome.remove( nPortletId, nSpaceId );
@@ -1053,7 +1054,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     private String getAutoPublicationManagement( HttpServletRequest request, Map<String, Object> model, int nPortletId )
     {
         Collection<DocumentAutoPublication> listDocumentAutoPublication = DocumentAutoPublicationHome.findByPortletId( nPortletId );
-        Collection<Map> listModels = new ArrayList<Map>(  );
+        Collection<Map<String, Object>> listModels = new ArrayList<Map<String, Object>>(  );
         DocumentSpace documentSpace;
         AdminUser user = getUser(  );
 
@@ -1069,10 +1070,9 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
                                               .isAuthorizedViewByWorkgroup( documentAutoPublication.getIdSpace(  ), user ) )
                 {
                     documentSpace = DocumentSpaceHome.findByPrimaryKey( documentAutoPublication.getIdSpace(  ) );
-                    subModel.put( MARK_SPACE_NAME, ( documentSpace != null ) ? documentSpace.getName(  ) : "" );
+                    subModel.put( MARK_SPACE_NAME, ( documentSpace != null ) ? documentSpace.getName(  ) : StringUtils.EMPTY );
 
-                    int nCountDocuments = AutoPublicationService.getInstance(  )
-                                                                .findCountByPortletAndSpace( documentAutoPublication.getIdPortlet(  ),
+                    int nCountDocuments = AutoPublicationService.findCountByPortletAndSpace( documentAutoPublication.getIdPortlet(  ),
                             documentAutoPublication.getIdSpace(  ) );
                     subModel.put( MARK_NUMBER_AUTO_PUBLISHED_DOCUMENTS, nCountDocuments );
                     subModel.put( MARK_DOCUMENT_AUTO_PUBLICATION, documentAutoPublication );
@@ -1115,7 +1115,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             {
                 if ( StringUtils.isNumeric( strValue ) )
                 {
-                    portletFilter.setIdPage( Integer.parseInt( strValue ) );
+                    portletFilter.setIdPage( IntegerUtils.convert( strValue ) );
                 }
                 else
                 {

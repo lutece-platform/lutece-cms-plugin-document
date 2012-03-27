@@ -47,6 +47,7 @@ import fr.paris.lutece.plugins.document.business.publication.DocumentPublication
 import fr.paris.lutece.plugins.document.service.DocumentPlugin;
 import fr.paris.lutece.plugins.document.service.search.DocumentIndexer;
 import fr.paris.lutece.plugins.document.utils.DocumentIndexerUtils;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletType;
@@ -67,8 +68,7 @@ public class PublishingService
     /** Creates a new instance of PublishingService */
     private PublishingService(  )
     {
-        _manager = (PublishingEventListenersManager) SpringContextService.getPluginBean( "document",
-                "document.publishingEventListenersManager" );
+        _manager = SpringContextService.getBean( "document.publishingEventListenersManager" );
     }
 
     /**
@@ -382,7 +382,7 @@ public class PublishingService
      */
     public Collection<Portlet> getPortletsByDocumentId( String strDocumentId )
     {
-        Collection<DocumentPublication> listDocumentPublication = DocumentPublicationHome.findByDocumentId( Integer.parseInt( 
+        Collection<DocumentPublication> listDocumentPublication = DocumentPublicationHome.findByDocumentId( IntegerUtils.convert( 
                     strDocumentId ) );
         Collection<Portlet> listPortlets = new ArrayList<Portlet>(  );
 

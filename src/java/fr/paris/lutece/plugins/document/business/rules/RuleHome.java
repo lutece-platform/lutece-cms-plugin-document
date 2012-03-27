@@ -47,9 +47,8 @@ import java.util.Locale;
  */
 public final class RuleHome
 {
-    private static IRuleDAO _dao = (IRuleDAO) SpringContextService.getPluginBean( "document", "document.ruleDAO" );
-    private static IRuleTypesSet _ruleTypesSet = (IRuleTypesSet) SpringContextService.getPluginBean( "document",
-            "document.ruleTypesSet" );
+    private static IRuleDAO _dao = SpringContextService.getBean( "document.ruleDAO" );
+    private static IRuleTypesSet _ruleTypesSet = SpringContextService.getBean( "document.ruleTypesSet" );
 
     /**
      * Private constructor - this class need not be instantiated

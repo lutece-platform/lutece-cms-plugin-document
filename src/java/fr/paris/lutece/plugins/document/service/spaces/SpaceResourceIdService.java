@@ -33,15 +33,19 @@
  */
 package fr.paris.lutece.plugins.document.service.spaces;
 
+import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.rbac.Permission;
 import fr.paris.lutece.portal.service.rbac.ResourceIdService;
 import fr.paris.lutece.portal.service.rbac.ResourceType;
 import fr.paris.lutece.portal.service.rbac.ResourceTypeManager;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
-
-import java.util.Locale;
 
 
 /**
@@ -135,9 +139,21 @@ public class SpaceResourceIdService extends ResourceIdService
      */
     public String getTitle( String strId, Locale locale )
     {
-        int nSpaceId = Integer.parseInt( strId );
-        DocumentSpace space = DocumentSpaceHome.findByPrimaryKey( nSpaceId );
-
-        return space.getName(  );
+    	if ( IntegerUtils.isNumeric( strId ) )
+    	{
+    		int nSpaceId = IntegerUtils.convert( strId );
+    		DocumentSpace space = DocumentSpaceHome.findByPrimaryKey( nSpaceId );
+    		
+    		if ( space != null )
+    		{
+    			return space.getName(  );
+    		}
+    		AppLogService.error( "SpaceResourceIdService - The space is not found." );
+    	}
+    	else
+    	{
+    		AppLogService.error( "SpaceResourceIdService - The id is blank or is not numeric." );
+    	}
+    	return StringUtils.EMPTY;
     }
 }

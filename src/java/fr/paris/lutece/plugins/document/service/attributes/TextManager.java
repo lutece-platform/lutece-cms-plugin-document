@@ -38,6 +38,8 @@ import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParamet
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * Manager for Text Attribute
@@ -100,7 +102,7 @@ public class TextManager extends DefaultManager
         {
             strValue = parameter.getValueList(  ).iterator(  ).next(  );
 
-            if ( ( strValue != null ) && !strValue.equals( "" ) )
+            if ( StringUtils.isNotBlank( strValue ) )
             {
                 try
                 {

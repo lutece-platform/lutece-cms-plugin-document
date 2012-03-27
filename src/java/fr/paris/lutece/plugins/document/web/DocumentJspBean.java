@@ -56,6 +56,7 @@ import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.IndexerAction;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
+import fr.paris.lutece.plugins.document.business.spaces.SpaceAction;
 import fr.paris.lutece.plugins.document.business.spaces.SpaceActionHome;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentAction;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentActionHome;
@@ -72,6 +73,7 @@ import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.plugins.document.service.search.DocumentIndexer;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
 import fr.paris.lutece.plugins.document.utils.DocumentIndexerUtils;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
@@ -249,9 +251,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         //Check if space is authorized, change space to default space else
         if ( !DocumentSpacesService.getInstance(  )
-                                       .isAuthorizedViewByWorkgroup( Integer.parseInt( _strCurrentSpaceId ), user ) ||
+                                       .isAuthorizedViewByWorkgroup( IntegerUtils.convert( _strCurrentSpaceId ), user ) ||
                 !DocumentSpacesService.getInstance(  )
-                                          .isAuthorizedViewByRole( Integer.parseInt( _strCurrentSpaceId ), user ) )
+                                          .isAuthorizedViewByRole( IntegerUtils.convert( _strCurrentSpaceId ), user ) )
         {
             filter.setIdSpace( DocumentSpacesService.getInstance(  ).getUserDefaultSpace( user ) );
             _strCurrentSpaceId = Integer.toString( filter.getIdSpace(  ) );
@@ -270,15 +272,15 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         String strSpacesTree = xmlTransformerService.transformBySourceWithXslCache( strXmlSpaces, sourceXsl,
                 SPACE_TREE_XSL_UNIQUE_PREFIX, htXslParameters, null );
 
-        List listSpaceActions = SpaceActionHome.getActionsList( getLocale(  ) );
-        int nCurrentSpaceId = Integer.parseInt( _strCurrentSpaceId );
+        List<SpaceAction> listSpaceActions = SpaceActionHome.getActionsList( getLocale(  ) );
+        int nCurrentSpaceId = IntegerUtils.convert( _strCurrentSpaceId );
         DocumentSpace currentSpace = DocumentSpaceHome.findByPrimaryKey( nCurrentSpaceId );
-        listSpaceActions = (List) RBACService.getAuthorizedActionsCollection( listSpaceActions, currentSpace,
+        listSpaceActions = (List<SpaceAction>) RBACService.getAuthorizedActionsCollection( listSpaceActions, currentSpace,
                 getUser(  ) );
 
         // Build filter combos
         // Document Types
-        ReferenceList listDocumentTypes = DocumentSpaceHome.getAllowedDocumentTypes( Integer.parseInt( 
+        ReferenceList listDocumentTypes = DocumentSpaceHome.getAllowedDocumentTypes( IntegerUtils.convert( 
                     _strCurrentSpaceId ) );
         listDocumentTypes = RBACService.getAuthorizedReferenceList( listDocumentTypes, DocumentType.RESOURCE_TYPE,
                 DocumentTypeResourceIdService.PERMISSION_VIEW, user );
@@ -289,16 +291,16 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         listStates.addItem( FILTER_ALL, I18nService.getLocalizedString( PROPERTY_FILTER_ALL, getLocale(  ) ) );
 
         // Childs spaces
-        Collection listChildSpaces = DocumentSpaceHome.findChilds( nCurrentSpaceId );
+        Collection<DocumentSpace> listChildSpaces = DocumentSpaceHome.findChilds( nCurrentSpaceId );
         listChildSpaces = AdminWorkgroupService.getAuthorizedCollection( listChildSpaces, user );
 
         // Creation document types list for the current space
-        ReferenceList listCreateDocumentTypes = DocumentSpaceHome.getAllowedDocumentTypes( Integer.parseInt( 
+        ReferenceList listCreateDocumentTypes = DocumentSpaceHome.getAllowedDocumentTypes( IntegerUtils.convert( 
                     _strCurrentSpaceId ) );
         listCreateDocumentTypes = RBACService.getAuthorizedReferenceList( listCreateDocumentTypes,
                 DocumentType.RESOURCE_TYPE, DocumentTypeResourceIdService.PERMISSION_CREATE, user );
 
-        LocalizedPaginator paginator = new LocalizedPaginator( (List) listDocumentIds, _nItemsPerPage,
+        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( (List<Integer>) listDocumentIds, _nItemsPerPage,
                 getHomeUrl( request ), Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale(  ) );
 
         List<Document> listDocuments = new ArrayList<Document>(  );
@@ -361,7 +363,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         if ( ( _strCurrentSpaceId == null ) ||
                 ( !DocumentService.getInstance(  )
-                                      .isAuthorizedAdminDocument( Integer.parseInt( _strCurrentSpaceId ),
+                                      .isAuthorizedAdminDocument( IntegerUtils.convert( _strCurrentSpaceId ),
                     strDocumentTypeCode, DocumentTypeResourceIdService.PERMISSION_CREATE, getUser(  ) ) ) )
         {
             return getManageDocuments( request );
@@ -502,7 +504,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         String strDocumentTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
 
         if ( !DocumentService.getInstance(  )
-                                 .isAuthorizedAdminDocument( Integer.parseInt( _strCurrentSpaceId ),
+                                 .isAuthorizedAdminDocument( IntegerUtils.convert( _strCurrentSpaceId ),
                     strDocumentTypeCode, DocumentTypeResourceIdService.PERMISSION_CREATE, user ) )
         {
             return getHomeUrl( request );
@@ -518,7 +520,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             return strError;
         }
 
-        document.setSpaceId( Integer.parseInt( _strCurrentSpaceId ) );
+        document.setSpaceId( IntegerUtils.convert( _strCurrentSpaceId ) );
         document.setStateId( 1 );
         document.setCreatorId( getUser(  ).getUserId(  ) );
 
@@ -545,9 +547,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     public String getModifyDocument( HttpServletRequest request )
     {
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( Integer.parseInt( strDocumentId ) );
+        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
 
-        if ( !DocumentService.getInstance(  )
+        if ( document != null && !DocumentService.getInstance(  )
                                  .isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
                     DocumentTypeResourceIdService.PERMISSION_MODIFY, getUser(  ) ) )
         {
@@ -628,9 +630,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         String strDocumentId = multipartRequest.getParameter( PARAMETER_DOCUMENT_ID );
-        Document document = DocumentHome.findByPrimaryKey( Integer.parseInt( strDocumentId ) );
+        Document document = DocumentHome.findByPrimaryKey( IntegerUtils.convert( strDocumentId ) );
 
-        if ( !DocumentService.getInstance(  )
+        if ( document != null && !DocumentService.getInstance(  )
                                  .isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
                     DocumentTypeResourceIdService.PERMISSION_MODIFY, getUser(  ) ) )
         {
@@ -656,9 +658,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         // If a state is defined, it should be set after to the document after the modification
         String strStateId = multipartRequest.getParameter( PARAMETER_STATE_ID );
 
-        if ( ( strStateId != null ) && ( !strStateId.equals( "" ) ) )
+        if ( IntegerUtils.isNumeric( strStateId ) )
         {
-            int nStateId = Integer.parseInt( strStateId );
+            int nStateId = IntegerUtils.convert( strStateId );
 
             try
             {
@@ -683,10 +685,10 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     public String deleteDocument( HttpServletRequest request )
     {
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        int nDocumentId = Integer.parseInt( strDocumentId );
+        int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-        if ( !DocumentService.getInstance(  )
+        if ( document != null && !DocumentService.getInstance(  )
                                  .isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
                     DocumentTypeResourceIdService.PERMISSION_DELETE, getUser(  ) ) )
         {
@@ -709,10 +711,10 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     public String doDeleteDocument( HttpServletRequest request )
     {
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        int nDocumentId = Integer.parseInt( strDocumentId );
+        int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-        if ( !DocumentService.getInstance(  )
+        if ( document != null && !DocumentService.getInstance(  )
                                  .isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
                     DocumentTypeResourceIdService.PERMISSION_DELETE, getUser(  ) ) )
         {
@@ -1005,14 +1007,14 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
             for ( String strIdDocument : _multiSelectionValues )
             {
-                int nIdDocument = Integer.parseInt( strIdDocument );
+                int nIdDocument = IntegerUtils.convert( strIdDocument );
 
                 Document document = DocumentHome.findByPrimaryKey( nIdDocument );
 
                 // Test if the document is published or assigned
                 boolean bPublishedDocument = PublishingService.getInstance(  ).isAssigned( nIdDocument );
 
-                if ( ( document.getStateId(  ) == DocumentState.STATE_VALIDATE ) && ( bPublishedDocument ) )
+                if ( document != null && ( document.getStateId(  ) == DocumentState.STATE_VALIDATE ) && ( bPublishedDocument ) )
                 {
                     return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_ARCHIVE_SELECTION,
                         PATH_JSP + url.getUrl(  ), AdminMessage.TYPE_QUESTION );
@@ -1021,13 +1023,13 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
             for ( String strIdDocument : _multiSelectionValues )
             {
-                int nIdDocument = Integer.parseInt( strIdDocument );
+                int nIdDocument = IntegerUtils.convert( strIdDocument );
 
                 Document document = DocumentHome.findByPrimaryKey( nIdDocument );
 
                 try
                 {
-                    if ( ( document.getStateId(  ) == DocumentState.STATE_VALIDATE ) &&
+                    if ( document != null && ( document.getStateId(  ) == DocumentState.STATE_VALIDATE ) &&
                             isAuthorized( DocumentAction.ACTION_ARCHIVE, document ) )
                     {
                         DocumentService.getInstance(  )
@@ -1044,14 +1046,13 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         {
             for ( String strIdDocument : strIdDocuments )
             {
-                int nIdDocument = Integer.parseInt( strIdDocument );
+                int nIdDocument = IntegerUtils.convert( strIdDocument );
                 int nActionId = -1;
                 Document document = DocumentHome.findByPrimaryKey( nIdDocument );
 
-                int stateId = document.getStateId(  );
-
                 if ( document != null )
                 {
+                	int stateId = document.getStateId(  );
                     if ( ( strAction.equals( CONSTANT_VALIDATE ) ) &&
                             ( ( stateId == DocumentState.STATE_WAITING_FOR_APPROVAL ) ||
                             ( stateId == DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL ) ) )
@@ -1269,7 +1270,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         setPageTitleProperty( PROPERTY_PREVIEW_DOCUMENT_PAGE_TITLE );
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        int nDocumentId = Integer.parseInt( strDocumentId );
+        int nDocumentId = IntegerUtils.convert( strDocumentId );
 
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
@@ -1309,7 +1310,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         setPageTitleProperty( PROPERTY_MOVE_DOCUMENT_PAGE_TITLE );
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( Integer.parseInt( strDocumentId ) );
+        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
 
         if ( ( document == null ) ||
                 !DocumentService.getInstance(  )
@@ -1354,23 +1355,18 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
-        int nSpaceIdDestination = Integer.parseInt( strSpaceId );
+        int nSpaceIdDestination = IntegerUtils.convert( strSpaceId );
         DocumentSpace space = DocumentSpaceHome.findByPrimaryKey( nSpaceIdDestination );
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( Integer.parseInt( strDocumentId ) );
+        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
 
-        // Check if the specified document type is authorized for this space
-        for ( String documentType : space.getAllowedDocumentTypes(  ) )
+        if ( document == null )
         {
-            if ( document.getCodeDocumentType(  ).equals( documentType ) )
-            {
-                bTypeAllowed = Boolean.TRUE;
-            }
+        	return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_ERROR );
         }
 
         // Check if user have rights to create a document into this space
-        if ( ( document == null ) ||
-                !DocumentService.getInstance(  )
+        if ( !DocumentService.getInstance(  )
                                     .isAuthorizedAdminDocument( document.getSpaceId(  ),
                     document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_MOVE, getUser(  ) ) ||
                 !DocumentService.getInstance(  )
@@ -1379,6 +1375,14 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         {
             return getHomeUrl( request );
         }
+        
+    	for ( String documentType : space.getAllowedDocumentTypes(  ) )
+    	{
+    		if ( document.getCodeDocumentType(  ).equals( documentType ) )
+    		{
+    			bTypeAllowed = Boolean.TRUE;
+    		}
+    	}
 
         if ( bTypeAllowed )
         {
@@ -1492,7 +1496,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         if ( !strStateId.equals( FILTER_ALL ) )
         {
-            int nStateId = Integer.parseInt( strStateId );
+            int nStateId = IntegerUtils.convert( strStateId );
             filter.setIdState( nStateId );
         }
 
@@ -1523,11 +1527,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             else
             {
                 int nSpaceId = DocumentSpacesService.getInstance(  ).getUserDefaultSpace( getUser(  ) );
-                strSpaceId = "" + nSpaceId;
+                strSpaceId = Integer.toString( nSpaceId );
             }
         }
 
-        int nSpaceId = Integer.parseInt( strSpaceId );
+        int nSpaceId = IntegerUtils.convert( strSpaceId );
         filter.setIdSpace( nSpaceId );
 
         if ( !strSpaceId.equals( _strCurrentSpaceId ) )
@@ -1556,10 +1560,13 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     private void updateSpaceView( String strViewType )
     {
-        int nSpaceId = Integer.parseInt( _strCurrentSpaceId );
+        int nSpaceId = IntegerUtils.convert( _strCurrentSpaceId );
         DocumentSpace space = DocumentSpaceHome.findByPrimaryKey( nSpaceId );
-        space.setViewType( strViewType );
-        DocumentSpaceHome.update( space );
+        if ( space != null )
+        {
+        	space.setViewType( strViewType );
+        	DocumentSpaceHome.update( space );
+        }
     }
 
     /**

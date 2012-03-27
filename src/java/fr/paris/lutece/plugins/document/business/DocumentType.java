@@ -33,6 +33,17 @@
  */
 package fr.paris.lutece.plugins.document.business;
 
+import java.io.ByteArrayInputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataHandler;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataService;
@@ -41,17 +52,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.UniqueIDGenerator;
 import fr.paris.lutece.util.html.HtmlTemplate;
-
-import java.io.ByteArrayInputStream;
-import java.io.StringReader;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 
 
 /**
@@ -267,7 +267,7 @@ public class DocumentType implements RBACResource
      */
     private String getAdminDefaultXsl(  )
     {
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_DOCUMENT_TYPE, this );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADMIN_DEFAULT_XSL, Locale.getDefault(  ), model );
@@ -281,7 +281,7 @@ public class DocumentType implements RBACResource
      */
     private String getContentServiceDefaultXsl(  )
     {
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_DOCUMENT_TYPE, this );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CONTENT_SERVICE_DEFAULT_XSL,
@@ -426,7 +426,7 @@ public class DocumentType implements RBACResource
                 ( !_strMetadataHandler.equals( MetadataService.NO_HANDLER ) ) )
         {
             String strBeanName = MetadataService.getBeanName( _strMetadataHandler );
-            handler = (MetadataHandler) SpringContextService.getPluginBean( "document", strBeanName );
+            handler = SpringContextService.getBean( strBeanName );
         }
 
         return handler;

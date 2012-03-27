@@ -33,21 +33,23 @@
  */
 package fr.paris.lutece.plugins.document.modules.comment.web;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.modules.comment.business.DocumentComment;
 import fr.paris.lutece.plugins.document.modules.comment.business.DocumentCommentHome;
 import fr.paris.lutece.plugins.document.service.DocumentService;
 import fr.paris.lutece.plugins.document.service.DocumentTypeResourceIdService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
-
-import java.util.HashMap;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -97,22 +99,22 @@ public class DocumentCommentJspBean extends PluginAdminPageJspBean
         setPageTitleProperty( PROPERTY_PAGE_TITLE_MANAGE_DOCUMENT_COMMENT );
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
 
         // Retrieve the document from the database :
-        int nDocumentId = Integer.parseInt( strDocumentId );
-        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
+        int nDocumentId = IntegerUtils.convert( strDocumentId );
+    	Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-        if ( DocumentService.getInstance(  )
-                                .isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
-                    DocumentTypeResourceIdService.PERMISSION_VIEW, getUser(  ) ) )
-        {
-            // Retrieve the comments from the database :
-            List<DocumentComment> documentComments = DocumentCommentHome.findByDocument( nDocumentId );
+    	if ( ( document != null ) && DocumentService.getInstance(  )
+    			.isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
+    					DocumentTypeResourceIdService.PERMISSION_VIEW, getUser(  ) ) )
+    	{
+    		// Retrieve the comments from the database :
+    		List<DocumentComment> documentComments = DocumentCommentHome.findByDocument( nDocumentId );
 
-            model.put( MARK_DOCUMENT, document );
-            model.put( MARK_DOCUMENT_COMMENTS, documentComments );
-        }
+    		model.put( MARK_DOCUMENT, document );
+    		model.put( MARK_DOCUMENT_COMMENTS, documentComments );
+    	}
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_DOCUMENT_COMMENTS, getLocale(  ), model );
 
@@ -129,10 +131,10 @@ public class DocumentCommentJspBean extends PluginAdminPageJspBean
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         String strCommentId = request.getParameter( PARAMETER_COMMENTS_ID );
         String strStatus = request.getParameter( PARAMETER_COMMENT_STATUS );
-        DocumentCommentHome.updateCommentStatus( Integer.parseInt( strCommentId ), Integer.parseInt( strStatus ) );
+        DocumentCommentHome.updateCommentStatus( IntegerUtils.convert( strCommentId ), IntegerUtils.convert( strStatus ) );
 
         UrlItem url = new UrlItem( JSP_DOCUMENT_COMMENTS );
-        url.addParameter( PARAMETER_DOCUMENT_ID, Integer.parseInt( strDocumentId ) );
+        url.addParameter( PARAMETER_DOCUMENT_ID, IntegerUtils.convert( strDocumentId ) );
 
         return url.getUrl(  );
     }
@@ -146,10 +148,10 @@ public class DocumentCommentJspBean extends PluginAdminPageJspBean
     {
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         String strCommentId = request.getParameter( PARAMETER_COMMENTS_ID );
-        DocumentCommentHome.remove( Integer.parseInt( strCommentId ) );
+    	DocumentCommentHome.remove( IntegerUtils.convert( strCommentId ) );
 
         UrlItem url = new UrlItem( JSP_DOCUMENT_COMMENTS );
-        url.addParameter( PARAMETER_DOCUMENT_ID, Integer.parseInt( strDocumentId ) );
+        url.addParameter( PARAMETER_DOCUMENT_ID, IntegerUtils.convert( strDocumentId ) );
 
         return url.getUrl(  );
     }

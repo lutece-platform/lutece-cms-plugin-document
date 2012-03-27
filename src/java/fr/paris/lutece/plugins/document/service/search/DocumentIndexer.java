@@ -33,12 +33,25 @@
  */
 package fr.paris.lutece.plugins.document.service.search;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.lucene.demo.html.HTMLParser;
+import org.apache.lucene.document.DateTools;
+import org.apache.lucene.document.Field;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.plugins.lucene.service.indexer.IFileIndexer;
 import fr.paris.lutece.plugins.lucene.service.indexer.IFileIndexerFactory;
 import fr.paris.lutece.portal.business.page.Page;
@@ -53,19 +66,6 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.url.UrlItem;
-
-import org.apache.lucene.demo.html.HTMLParser;
-import org.apache.lucene.document.DateTools;
-import org.apache.lucene.document.Field;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 
 /**
@@ -137,9 +137,9 @@ public class DocumentIndexer implements SearchIndexer
         throws IOException, InterruptedException
     {
         List<org.apache.lucene.document.Document> listDocs = new ArrayList<org.apache.lucene.document.Document>(  );
-        int nIdDocument = Integer.parseInt( strIdDocument );
+        int nIdDocument = IntegerUtils.convert( strIdDocument );
         Document document = DocumentHome.findByPrimaryKey( nIdDocument );
-        Iterator<Portlet> it = PublishingService.getInstance(  ).getPortletsByDocumentId( Integer.toString( nIdDocument ) )
+        Iterator<Portlet> it = PublishingService.getInstance(  ).getPortletsByDocumentId( strIdDocument )
                                                 .iterator(  );
         String strBaseUrl = AppPropertiesService.getProperty( PROPERTY_PAGE_BASE_URL );
         Page page;

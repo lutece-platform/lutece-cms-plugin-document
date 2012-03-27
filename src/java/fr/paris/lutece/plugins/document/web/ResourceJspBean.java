@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.document.web;
 
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentResource;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -59,10 +60,10 @@ public class ResourceJspBean
     public void loadResource( HttpServletRequest request )
     {
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        int nDocumentId = Integer.parseInt( strDocumentId );
+        int nDocumentId = IntegerUtils.convert( strDocumentId );
 
         String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
-        int nAttributeId = Integer.parseInt( strAttributeId );
+        int nAttributeId = IntegerUtils.convert( strAttributeId );
 
         _resource = DocumentHome.getValidatedResource( nDocumentId, nAttributeId );
     }

@@ -52,6 +52,9 @@ import net.sf.ehcache.CacheException;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.event.CacheEventListener;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
@@ -61,6 +64,7 @@ import fr.paris.lutece.plugins.document.business.publication.DocumentPublication
 import fr.paris.lutece.plugins.document.modules.comment.business.DocumentComment;
 import fr.paris.lutece.plugins.document.modules.comment.business.DocumentCommentHome;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.business.portlet.AliasPortlet;
@@ -99,7 +103,6 @@ public final class DocumentContentService extends ContentService implements Cach
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     // Constants
     private static final String CONTENT_SERVICE_NAME = "Document Content Service";
-    private static final String EMPTY_STRING = "";
     private static final String SLASH = "/";
     private static final String ACCEPT_SITE_COMMENTS = "1";
     private static final int MODE_ADMIN = 1;
@@ -213,9 +216,9 @@ public final class DocumentContentService extends ContentService implements Cach
                         strPortletId + "site_locale=" + strSiteLocale + "nMode=" + nMode );
                     strPage = buildPage( request, strDocumentId, strPortletId, strSiteLocale, nMode );
 
-                    if ( strDocumentId != null )
+                    if ( IntegerUtils.isNumeric( strDocumentId ) )
                     {
-                        int nDocumentId = Integer.parseInt( strDocumentId );
+                        int nDocumentId = IntegerUtils.convert( strDocumentId );
                         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
                         if ( ( document != null ) && ( document.getAcceptSiteComments(  ) == 0 ) )
@@ -490,7 +493,7 @@ public final class DocumentContentService extends ContentService implements Cach
 
             if ( strFilePath == null )
             {
-                return EMPTY_STRING;
+                return StringUtils.EMPTY;
             }
 
             if ( !strFilePath.startsWith( SLASH ) )
@@ -592,7 +595,7 @@ public final class DocumentContentService extends ContentService implements Cach
         }
         else
         {
-            return EMPTY_STRING;
+            return StringUtils.EMPTY;
         }
     }
 
@@ -606,13 +609,22 @@ public final class DocumentContentService extends ContentService implements Cach
      */
     private static String getComments( String strDocumentId, String strPortletId, int nMode, HttpServletRequest request )
     {
-        int nDocumentId = Integer.parseInt( strDocumentId );
+    	if ( IntegerUtils.isNotNumeric( strDocumentId ) )
+    	{
+    		return StringUtils.EMPTY;
+    	}
+        int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
+        
+        if ( document == null )
+        {
+        	return StringUtils.EMPTY;
+        }
 
         int nMailingListId = document.getMailingListId(  );
         String strMailingListId = Integer.toString( nMailingListId );
 
-        HashMap<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_DOCUMENT, document );
 
         if ( ( nMode != MODE_ADMIN ) && ( document.getAcceptSiteComments(  ) == 1 ) )
@@ -622,19 +634,19 @@ public final class DocumentContentService extends ContentService implements Cach
 
             // check mandatory fields
             String strMandatoryField = request.getParameter( PARAMETER_MANDATORY_FIELD );
-            strMandatoryField = ( strMandatoryField != null ) ? strMandatoryField : "";
+            strMandatoryField = ( strMandatoryField != null ) ? strMandatoryField : StringUtils.EMPTY;
 
             // check xss errors
             String strXssError = request.getParameter( PARAMETER_XSS_ERROR );
-            strXssError = ( strXssError != null ) ? strXssError : "";
+            strXssError = ( strXssError != null ) ? strXssError : StringUtils.EMPTY;
 
             // check xss errors
             String strCaptchaError = request.getParameter( PARAMETER_CAPTCHA_ERROR );
-            strCaptchaError = ( strCaptchaError != null ) ? strCaptchaError : "";
+            strCaptchaError = ( strCaptchaError != null ) ? strCaptchaError : StringUtils.EMPTY;
             
             // check emails errors
             String strCheckEmail = request.getParameter( PARAMETER_CHECK_EMAIL );
-            strCheckEmail = ( strCheckEmail != null ) ? strCheckEmail : "";
+            strCheckEmail = ( strCheckEmail != null ) ? strCheckEmail : StringUtils.EMPTY;
 
             if ( ACCEPT_SITE_COMMENTS.equals( strComment ) )
             {
@@ -645,7 +657,7 @@ public final class DocumentContentService extends ContentService implements Cach
             }
             else
             {
-                model.put( MARK_DOCUMENT_COMMENT_FORM, EMPTY_STRING );
+                model.put( MARK_DOCUMENT_COMMENT_FORM, StringUtils.EMPTY );
             }
 
             // Generate the list of comments            
@@ -659,7 +671,7 @@ public final class DocumentContentService extends ContentService implements Cach
         }
         else
         {
-            return EMPTY_STRING;
+            return StringUtils.EMPTY;
         }
     }
 

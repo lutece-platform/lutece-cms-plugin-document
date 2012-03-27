@@ -50,6 +50,7 @@ import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortlet;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.business.portlet.Portlet;
@@ -60,7 +61,6 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.insert.InsertServiceJspBean;
 import fr.paris.lutece.portal.web.insert.InsertServiceSelectionBean;
@@ -171,14 +171,13 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
     {
         init( request );
 
-        AdminUser user = AdminUserService.getAdminUser( request );
         int nPageId = 0;
         Collection<Page> listPages = new ArrayList<Page>(  );
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
 
         if ( ( strPageId != null ) && strPageId.matches( REGEX_ID ) )
         {
-            nPageId = Integer.parseInt( strPageId );
+            nPageId = IntegerUtils.convert( strPageId );
         }
         listPages = PageHome.getChildPages( nPageId );
         Map<String, Object> model = getDefaultModel(  );
@@ -207,7 +206,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
-        int nPageId = Integer.parseInt( strPageId );
+        int nPageId = IntegerUtils.convert( strPageId );
 
         Page page = PageHome.findByPrimaryKey( nPageId );
 
@@ -252,7 +251,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
-        Page page = PageHome.findByPrimaryKey( Integer.parseInt( strPageId ) );
+        Page page = PageHome.findByPrimaryKey( IntegerUtils.convert( strPageId ) );
 
         Collection<Portlet> listPortletsAll = page.getPortlets(  );
         Collection<Portlet> listPortlets = new ArrayList<Portlet>(  );
@@ -305,7 +304,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
-        int nPortletId = Integer.parseInt( strPortletId );
+        int nPortletId = IntegerUtils.convert( strPortletId );
 
         Portlet portlet = PortletHome.findByPrimaryKey( nPortletId );
 
@@ -350,7 +349,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
-        int nPortletId = Integer.parseInt( strPortletId );
+        int nPortletId = IntegerUtils.convert( strPortletId );
         Collection<Document> listDocuments = PublishingService.getInstance(  )
                                                               .getPublishedDocumentsByPortletId( nPortletId );
 
@@ -389,7 +388,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
-        document = DocumentHome.findByPrimaryKeyWithoutBinaries( Integer.parseInt( strDocumentId ) );
+        document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
 
         UrlItem url = new UrlItem( AppPathService.getPortalUrl(  ) );
         url.addParameter( PARAMETER_DOCUMENT_ID, document.getId(  ) );

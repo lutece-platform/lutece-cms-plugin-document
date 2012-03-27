@@ -48,8 +48,7 @@ public class DocumentPortletHome extends PortletHome
     /////////////////////////////////////////////////////////////////////////////////
     // Constants
     // Static variable pointed at the DAO instance
-    private static IDocumentPortletDAO _dao = (IDocumentPortletDAO) SpringContextService.getPluginBean( "document",
-            "document.documentPortletDAO" );
+    private static IDocumentPortletDAO _dao = SpringContextService.getBean( "document.documentPortletDAO" );
 
     /* This class implements the Singleton design pattern. */
     private static DocumentPortletHome _singleton = null;

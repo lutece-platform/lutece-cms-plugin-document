@@ -131,7 +131,7 @@ public class DocSearchService
             throw new AppException( "Analyser class name not found in lucene.properties", null );
         }
 
-        _indexer = (IDocSearchIndexer) SpringContextService.getPluginBean( "document", "document.docSearchIndexer" );
+        _indexer = SpringContextService.getBean( "document.docSearchIndexer" );
 
         try
         {

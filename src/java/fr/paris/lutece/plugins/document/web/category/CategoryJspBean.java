@@ -33,10 +33,20 @@
  */
 package fr.paris.lutece.plugins.document.web.category;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.category.Category;
 import fr.paris.lutece.plugins.document.business.category.CategoryHome;
 import fr.paris.lutece.plugins.document.service.category.CategoryService;
 import fr.paris.lutece.plugins.document.service.category.CategoryService.CategoryDisplay;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -48,14 +58,6 @@ import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
-
-import org.apache.commons.fileupload.FileItem;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -338,11 +340,11 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
     {
         String strCategoryId = request.getParameter( PARAMETER_CATEGORY_ID );
 
-        if ( ( strCategoryId == null ) || !strCategoryId.matches( REGEX_ID ) )
+        if ( StringUtils.isBlank( strCategoryId ) || !strCategoryId.matches( REGEX_ID ) )
         {
             return ERROR_ID_CATEGORY;
         }
 
-        return Integer.parseInt( strCategoryId );
+        return IntegerUtils.convert( strCategoryId );
     }
 }

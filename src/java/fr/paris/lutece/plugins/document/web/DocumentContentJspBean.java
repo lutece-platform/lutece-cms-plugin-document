@@ -33,30 +33,37 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.modules.comment.business.DocumentComment;
 import fr.paris.lutece.plugins.document.modules.comment.business.DocumentCommentHome;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.mailinglist.Recipient;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mail.MailService;
 import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
+import fr.paris.lutece.portal.service.message.AdminMessage;
+import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.string.StringUtil;
-
-import java.util.Collection;
-import java.util.HashMap;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -136,8 +143,12 @@ public class DocumentContentJspBean
     public String getPrintDocumentPage( HttpServletRequest request )
     {
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        int nDocumentId = Integer.parseInt( strDocumentId );
+        int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
+        if ( document == null )
+        {
+        	return StringUtils.EMPTY;
+        }
         DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
 
         XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
@@ -146,7 +157,7 @@ public class DocumentContentJspBean
                 type.getContentServiceXslSource(  ), XSL_UNIQUE_PREFIX + type.getContentServiceStyleSheetId(  ), null,
                 null );
 
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
 
         model.put( MARK_BASE_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_PREVIEW, strPreview );
@@ -169,11 +180,15 @@ public class DocumentContentJspBean
     public String getSendDocumentPage( HttpServletRequest request )
     {
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        int nDocumentId = Integer.parseInt( strDocumentId );
+        int nDocumentId = IntegerUtils.convert( strDocumentId );
 
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
+        if ( document == null )
+        {
+        	return StringUtils.EMPTY;
+        }
         DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
 
         XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
         String strPreview = xmlTransformerService.transformBySourceWithXslCache( document.getXmlValidatedContent(  ),
@@ -181,21 +196,21 @@ public class DocumentContentJspBean
                 null );
 
         String strSendMessage = request.getParameter( PARAMETER_SEND_MESSAGE );
-        String strAlert = "";
+        String strAlert = StringUtils.EMPTY;
         String strVisitorLastName = request.getParameter( PARAMETER_VISITOR_LASTNAME );
-        strVisitorLastName = ( strVisitorLastName != null ) ? strVisitorLastName : "";
+        strVisitorLastName = ( strVisitorLastName != null ) ? strVisitorLastName : StringUtils.EMPTY;
 
         String strVisitorFirstName = request.getParameter( PARAMETER_VISITOR_FIRSTNAME );
-        strVisitorFirstName = ( strVisitorFirstName != null ) ? strVisitorFirstName : "";
+        strVisitorFirstName = ( strVisitorFirstName != null ) ? strVisitorFirstName : StringUtils.EMPTY;
 
         String strVisitorEmail = request.getParameter( PARAMETER_VISITOR_EMAIL );
-        strVisitorEmail = ( strVisitorEmail != null ) ? strVisitorEmail : "";
+        strVisitorEmail = ( strVisitorEmail != null ) ? strVisitorEmail : StringUtils.EMPTY;
 
         String strRecipientEmail = request.getParameter( PARAMETER_RECIPIENT_EMAIL );
-        strRecipientEmail = ( strRecipientEmail != null ) ? strRecipientEmail : "";
+        strRecipientEmail = ( strRecipientEmail != null ) ? strRecipientEmail : StringUtils.EMPTY;
 
         String strCommentDocument = request.getParameter( PARAMETER_COMMENT_DOCUMENT );
-        strCommentDocument = ( strCommentDocument != null ) ? strCommentDocument : "";
+        strCommentDocument = ( strCommentDocument != null ) ? strCommentDocument : StringUtils.EMPTY;
 
         if ( ( strSendMessage != null ) && ( strSendMessage.equals( "done" ) ) )
         {
@@ -239,10 +254,14 @@ public class DocumentContentJspBean
         String strPortalUrl = AppPropertiesService.getProperty( PROPERTY_PORTAL_URL );
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        int nDocumentId = Integer.parseInt( strDocumentId );
+        int nDocumentId = IntegerUtils.convert( strDocumentId );
 
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
+        if ( document == null )
+        {
+        	return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_ERROR );
+        }
         DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
 
         XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
@@ -260,8 +279,8 @@ public class DocumentContentJspBean
         String strCurrentDate = DateUtil.getCurrentDateString( request.getLocale(  ) );
 
         // Mandatory Fields
-        if ( strVisitorLastName.equals( "" ) || strVisitorFirstName.equals( "" ) || strVisitorEmail.equals( "" ) ||
-                strRecipientEmail.equals( "" ) )
+        if ( StringUtils.isBlank( strVisitorLastName ) || StringUtils.isBlank( strVisitorFirstName ) || StringUtils.isBlank( strVisitorEmail ) ||
+                StringUtils.isBlank( strRecipientEmail ) )
         {
             return PAGE_SEND_DOCUMENT + "?send=empty_field&" + PARAMETER_DOCUMENT_ID + "=" + nDocumentId +
             "&visitor_last_name=" + strVisitorLastName + "&visitor_first_name=" + strVisitorFirstName +
@@ -342,11 +361,11 @@ public class DocumentContentJspBean
         }
 
         // Retrieve the document from the database :
-        int nDocumentId = Integer.parseInt( strDocumentId );
+        int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
         // Only add the comment if the document accepts comments
-        if ( document.getAcceptSiteComments(  ) == 1 )
+        if ( document != null && document.getAcceptSiteComments(  ) == 1 )
         {
             DocumentComment documentComment = new DocumentComment(  );
 
@@ -395,7 +414,7 @@ public class DocumentContentJspBean
 
         for ( Recipient recipient : listRecipients )
         {
-            HashMap model = new HashMap(  );
+            Map<String, Object> model = new HashMap<String, Object>(  );
 
             String strSenderEmail = request.getParameter( PARAMETER_EMAIL );
             String strSenderName = request.getParameter( PARAMETER_NAME );

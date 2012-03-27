@@ -42,7 +42,9 @@ import java.io.Serializable;
  */
 public class ResourceValueObject implements Serializable
 {
-    private static final String DEFAULT_FILENAME = "document";
+	private static final long serialVersionUID = -1354905008213695289L;
+
+	private static final String DEFAULT_FILENAME = "document";
 
     // Variables declarations
     private int _nIdObject;

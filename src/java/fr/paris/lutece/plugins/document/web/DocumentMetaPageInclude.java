@@ -33,22 +33,22 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
+import java.io.FileInputStream;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.content.PageData;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.includes.PageInclude;
 import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.util.UniqueIDGenerator;
-
-import java.io.FileInputStream;
-
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 
 
 /**
@@ -71,21 +71,21 @@ public class DocumentMetaPageInclude implements PageInclude
      */
     public void fillTemplate( Map<String, Object> rootModel, PageData data, int nMode, HttpServletRequest request )
     {
-        String strMeta = "";
+        String strMeta = StringUtils.EMPTY;
 
         if ( request != null )
         {
             String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
 
-            if ( strDocumentId != null )
+            if ( IntegerUtils.isNumeric( strDocumentId ) )
             {
-                Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( Integer.parseInt( strDocumentId ) );
+                Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
 
                 if ( document != null )
                 {
                     String strMetadata = document.getXmlMetadata(  );
 
-                    if ( ( strMetadata != null ) && ( !strMetadata.equals( "" ) ) )
+                    if ( StringUtils.isNotBlank( strMetadata ) )
                     {
                         Source xslSource = loadXsl(  );
                         XmlTransformerService xmlTransformerService = new XmlTransformerService(  );

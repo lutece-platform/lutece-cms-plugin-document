@@ -58,6 +58,7 @@ import fr.paris.lutece.plugins.document.business.attributes.DocumentAttributeHom
 import fr.paris.lutece.plugins.document.service.AttributeManager;
 import fr.paris.lutece.plugins.document.service.AttributeService;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataService;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
 import fr.paris.lutece.portal.service.fileupload.FileUploadService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
@@ -271,7 +272,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
         String strIconUrl = request.getParameter( PARAMETER_ICON_URL );
         String strThumbnailAttribute = request.getParameter( PARAMETER_THUMBNAIL_ATTRIBUTE );
-        int nThumbnailAttribute = Integer.parseInt( strThumbnailAttribute );
+        int nThumbnailAttribute = IntegerUtils.convert( strThumbnailAttribute );
         String strMetadata = request.getParameter( PARAMETER_METADATA );
 
         // Check Accentuated Character
@@ -394,7 +395,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         }
 
         String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
-        int nAttributeId = Integer.parseInt( strAttributeId );
+        int nAttributeId = IntegerUtils.convert( strAttributeId );
         _attribute = DocumentAttributeHome.findByPrimaryKey( nAttributeId );
 
         boolean bIsValid = validateCodeAttribute( request );
@@ -541,7 +542,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         setPageTitleProperty( PROPERTY_PAGE_TITLE_MODIFY_ATTRIBUTE );
 
         String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
-        int nAttributeId = Integer.parseInt( strAttributeId );
+        int nAttributeId = IntegerUtils.convert( strAttributeId );
         DocumentAttribute attribute = DocumentAttributeHome.findByPrimaryKey( nAttributeId );
         AttributeManager manager = AttributeService.getInstance(  ).getManager( attribute.getCodeAttributeType(  ) );
 
@@ -687,7 +688,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
     public String doDeleteAttribute( HttpServletRequest request )
     {
         String strId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
-        int nId = Integer.parseInt( strId );
+        int nId = IntegerUtils.convert( strId );
         DocumentAttributeHome.remove( nId );
 
         return JSP_MODIFY_DOCUMENT_TYPE;
@@ -701,7 +702,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
     public String doAttributeMoveUp( HttpServletRequest request )
     {
         String strIndex = request.getParameter( PARAMETER_INDEX );
-        int nIndex = Integer.parseInt( strIndex );
+        int nIndex = IntegerUtils.convert( strIndex );
 
         if ( nIndex > 1 )
         {
@@ -723,7 +724,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
     public String doAttributeMoveDown( HttpServletRequest request )
     {
         String strIndex = request.getParameter( PARAMETER_INDEX );
-        int nIndex = Integer.parseInt( strIndex );
+        int nIndex = IntegerUtils.convert( strIndex );
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( _strDocumentTypeCode );
         List<DocumentAttribute> list = documentType.getAttributes(  );
 
@@ -909,14 +910,14 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
     {
         // Gets the document attribute identifier
         String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
-        int nAttributeId = Integer.parseInt( strAttributeId );
+        int nAttributeId = IntegerUtils.convert( strAttributeId );
 
         // Gets the selected regular expression
         String strExpressionId = request.getParameter( PARAMETER_EXPRESSION_ID );
 
-        if ( ( strExpressionId != null ) && !strExpressionId.equals( "" ) )
+        if ( IntegerUtils.isNumeric( strExpressionId ) )
         {
-            int nExpressionId = Integer.parseInt( strExpressionId );
+            int nExpressionId = IntegerUtils.convert( strExpressionId );
 
             boolean bIsDuplicated = false;
 
@@ -954,11 +955,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
     {
         // Gets the document attribute identifier
         String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
-        int nAttributeId = Integer.parseInt( strAttributeId );
+        int nAttributeId = IntegerUtils.convert( strAttributeId );
 
         // Gets the selected regular expression
         String strExpressionId = request.getParameter( PARAMETER_EXPRESSION_ID );
-        int nExpressionId = Integer.parseInt( strExpressionId );
+        int nExpressionId = IntegerUtils.convert( strExpressionId );
 
         // Deletes a regular expression in the attribute
         DocumentAttributeHome.deleteRegularExpression( nAttributeId, nExpressionId );

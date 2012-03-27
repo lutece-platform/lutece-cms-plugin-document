@@ -698,8 +698,7 @@ public class Document implements Localizable
 
         XmlUtil.beginElement( strXml, TAG_DOCUMENT );
 
-        String strId = Integer.toString( getId(  ) );
-        XmlUtil.addElement( strXml, TAG_DOCUMENT_ID, strId );
+        XmlUtil.addElement( strXml, TAG_DOCUMENT_ID, Integer.toString( getId(  ) ) );
 
         if ( nIdPortlet != -1 )
         {
@@ -713,11 +712,11 @@ public class Document implements Localizable
         // TODO : delete dependency from document-comment module
         if ( DocumentCommentPlugin.getPluginStatus(  ) )
         {
-            XmlUtil.addElement( strXml, TAG_DOCUMENT_COMMENT_NB, getNbComment( Integer.parseInt( strId ) ) );
+            XmlUtil.addElement( strXml, TAG_DOCUMENT_COMMENT_NB, getNbComment( getId(  ) ) );
         }
 
         // additionnal info
-        ResourceEnhancer.getXmlAddOn( strXml, PROPERTY_RESOURCE_TYPE, Integer.parseInt( strId ) );
+        ResourceEnhancer.getXmlAddOn( strXml, PROPERTY_RESOURCE_TYPE, getId(  ) );
 
         //  XmlUtil.addElement( strXml, TAG_DOCUMENT_IS_COMMENTABLE, getAcceptSiteComments(  ) );
         XmlUtil.endElement( strXml, TAG_DOCUMENT );

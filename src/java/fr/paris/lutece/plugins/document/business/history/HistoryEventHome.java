@@ -47,8 +47,7 @@ import java.util.Locale;
 public final class HistoryEventHome
 {
     // Static variable pointed at the DAO instance
-    private static IHistoryEventDAO _dao = (IHistoryEventDAO) SpringContextService.getPluginBean( "document",
-            "document.historyEventDAO" );
+    private static IHistoryEventDAO _dao = SpringContextService.getBean( "document.historyEventDAO" );
 
     /**
      * Private constructor - this class need not be instantiated

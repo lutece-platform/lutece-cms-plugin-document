@@ -42,7 +42,6 @@ import fr.paris.lutece.portal.service.util.RemovalListenerService;
  */
 public class SpaceRemovalListenerService
 {
-    private static final String SPRING_CONTEXT_NAME = "document";
     private static final String BEAN_SPACE_REMOVAL_SERVICE = "document.spaceRemovalService";
 
     /**
@@ -51,7 +50,6 @@ public class SpaceRemovalListenerService
      */
     public static RemovalListenerService getService(  )
     {
-        return (RemovalListenerService) SpringContextService.getPluginBean( SPRING_CONTEXT_NAME,
-            BEAN_SPACE_REMOVAL_SERVICE );
+        return SpringContextService.getBean( BEAN_SPACE_REMOVAL_SERVICE );
     }
 }

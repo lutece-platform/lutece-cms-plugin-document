@@ -46,8 +46,7 @@ import java.util.Locale;
 public final class SpaceActionHome
 {
     // Static variable pointed at the DAO instance
-    private static ISpaceActionDAO _dao = (ISpaceActionDAO) SpringContextService.getPluginBean( "document",
-            "document.spaceActionDAO" );
+    private static ISpaceActionDAO _dao = SpringContextService.getBean( "document.spaceActionDAO" );
 
     /**
      * Private constructor - this class need not be instantiated

@@ -45,9 +45,7 @@ import java.util.Locale;
 public class DocumentStateHome
 {
     // Static variable pointed at the DAO instance
-    // Static variable pointed at the DAO instance
-    private static IDocumentStateDAO _dao = (IDocumentStateDAO) SpringContextService.getPluginBean( "document",
-            "document.documentStateDAO" );
+    private static IDocumentStateDAO _dao = SpringContextService.getBean( "document.documentStateDAO" );
 
     /**
      * Returns a ReferenceList of Document States

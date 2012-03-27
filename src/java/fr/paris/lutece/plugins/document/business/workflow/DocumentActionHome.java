@@ -47,8 +47,7 @@ import java.util.Locale;
 public final class DocumentActionHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentActionDAO _dao = (IDocumentActionDAO) SpringContextService.getPluginBean( "document",
-            "document.documentActionDAO" );
+    private static IDocumentActionDAO _dao = SpringContextService.getBean( "document.documentActionDAO" );
 
     /**
      * Private constructor - this class need not be instantiated

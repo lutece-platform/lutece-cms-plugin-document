@@ -33,13 +33,14 @@
  */
 package fr.paris.lutece.plugins.document.modules.rulemovespace.business;
 
-import fr.paris.lutece.plugins.document.business.rules.Rule;
-import fr.paris.lutece.plugins.document.business.rules.RuleHome;
-import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.util.RemovalListener;
-
 import java.util.Collection;
 import java.util.Locale;
+
+import fr.paris.lutece.plugins.document.business.rules.Rule;
+import fr.paris.lutece.plugins.document.business.rules.RuleHome;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
+import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.util.RemovalListener;
 
 
 /**
@@ -51,15 +52,17 @@ public class MoveSpaceSpaceRemovalListener implements RemovalListener
 
     /**
     * Check if the object can be safely removed
-    * @param id The object id
+    * @param strId The object id
     * @return true if the pbject can be removed otherwise false
     */
-    public boolean canBeRemoved( String id )
+    public boolean canBeRemoved( String strId )
     {
-        if ( id == null )
+        if ( IntegerUtils.isNotNumeric( strId ) )
         {
             return true;
         }
+        
+        int nId = IntegerUtils.convert( strId );
 
         // Get the rule type key of the given rule type class
         Rule moveSpaceRule = new MoveSpaceRule(  );
@@ -72,10 +75,10 @@ public class MoveSpaceSpaceRemovalListener implements RemovalListener
         {
             String strSourceSpaceId = rule.getAttribute( MoveSpaceRule.getParameterKeySourceSpaceId(  ) );
             String strDestinationSpaceId = rule.getAttribute( MoveSpaceRule.getParameterKeyDestinationSpaceId(  ) );
+            int nSourceSpaceId = IntegerUtils.convert( strSourceSpaceId );
+            int nDestinationId = IntegerUtils.convert( strDestinationSpaceId );
 
-            if ( ( ( strSourceSpaceId != null ) && ( Integer.parseInt( strSourceSpaceId ) == Integer.parseInt( id ) ) ) ||
-                    ( ( strDestinationSpaceId != null ) &&
-                    ( Integer.parseInt( strDestinationSpaceId ) == Integer.parseInt( id ) ) ) )
+            if ( ( nSourceSpaceId == nId ) || ( nDestinationId == nId ) )
             {
                 return false;
             }

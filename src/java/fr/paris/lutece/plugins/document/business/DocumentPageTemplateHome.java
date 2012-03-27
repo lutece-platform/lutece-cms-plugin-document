@@ -44,8 +44,7 @@ import java.util.List;
 public final class DocumentPageTemplateHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentPageTemplateDAO _dao = (IDocumentPageTemplateDAO) SpringContextService.getPluginBean( "document",
-            "document.documentPageTemplateDAO" );
+    private static IDocumentPageTemplateDAO _dao = SpringContextService.getBean( "document.documentPageTemplateDAO" );
 
     /** Creates a new instance of DocumentPageTemplateHome */
     private DocumentPageTemplateHome(  )
