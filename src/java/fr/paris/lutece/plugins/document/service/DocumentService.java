@@ -430,12 +430,13 @@ public class DocumentService
     {
         int nDocumentId = Integer.parseInt( strDocumentId );
         Document document = DocumentHome.findByPrimaryKey( nDocumentId );
+
         return getModifyForm( document, locale, strBaseUrl );
     }
-    
+
     /**
      * Build an HTML form for the document modification for a given document
-     * 
+     *
      * @param document The document
      * @param locale The Locale
      * @param strBaseUrl The base url
@@ -443,7 +444,7 @@ public class DocumentService
      */
     public String getModifyForm( Document document, Locale locale, String strBaseUrl )
     {
-    	StringBuffer sbForm = new StringBuffer(  );
+        StringBuffer sbForm = new StringBuffer(  );
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
 
         for ( DocumentAttribute attribute : documentType.getAttributes(  ) )
@@ -709,7 +710,7 @@ public class DocumentService
             }
 
             // Check for mandatory value
-            if ( attribute.isRequired(  ) && ( bytes.length == 0 ) )
+            if ( attribute.isRequired(  ) && ( ( bytes == null ) || ( bytes.length == 0 ) ) )
             {
                 return AdminMessageService.getMessageUrl( mRequest, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
             }
