@@ -122,11 +122,24 @@ public final class DocumentSpaceHome
      *
      * @return A collection of documentSpaces
      * @param nParentSpaceId
-     * @param strCodeType the documen type
+     * @param strCodeType the document type
      */
     public static List<DocumentSpace> findChildsByTypeOfDocument( int nParentSpaceId, String strCodeType )
     {
         return _dao.selectChilds( nParentSpaceId, strCodeType );
+    }
+
+    /**
+     * Returns a collection of documentSpaces objects by type of document
+     *
+     * @param strCodeType the document type filter
+     * @param createDocumentIsAllowed code to define if document creation is allowed or not
+     * @return The Collection of the DocumentSpaces
+     */
+    public static List<DocumentSpace> findSpacesAllowingDocumentCreationByDocumentType( String strCodeType,
+        int createDocumentIsAllowed )
+    {
+        return _dao.selectSpacesAllowingDocumentCreationByDocumentType( strCodeType, createDocumentIsAllowed );
     }
 
     /**

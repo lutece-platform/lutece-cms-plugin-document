@@ -109,6 +109,16 @@ public interface IDocumentSpaceDAO
     List<DocumentSpace> selectChilds( int nSpaceId, String strCodeType );
 
     /**
+     * Load the list of documentSpaces authorizing the selected document type
+     *
+     * @param strCodeType the document type filter
+     * @param createDocumentIsAllowed code to define if document creation is allowed or not
+     * @return The Collection of the DocumentSpaces
+     */
+    List<DocumentSpace> selectSpacesAllowingDocumentCreationByDocumentType( String strCodeType,
+        int createDocumentIsAllowed );
+
+    /**
      * Update the record in the table
      *
      * @param space The reference of space

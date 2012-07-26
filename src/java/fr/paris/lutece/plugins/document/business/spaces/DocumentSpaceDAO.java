@@ -62,6 +62,10 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
         " FROM document_space a, document_space_icon b, document_space_document_type c " +
         " WHERE a.id_space_icon = b.id_space_icon AND id_parent = ? AND a.id_space = c.id_space AND c.code_document_type = ?" +
         " ORDER BY space_order";
+    private static final String SQL_QUERY_SELECT_SPACES_WITH_DOCUMENT_CREATION_IS_ALLOWED_BY_CODE_TYPE = "SELECT a.id_space, a.id_parent, a.document_space_name, a.description, a.document_space_view, a.id_space_icon, b.icon_url, a.document_creation_allowed ,a.workgroup_key" +
+        " FROM document_space a, document_space_icon b, document_space_document_type c " +
+        " WHERE a.id_space_icon = b.id_space_icon AND a.id_space = c.id_space AND c.code_document_type = ? AND a.document_creation_allowed = ?" +
+        " ORDER BY space_order";
     private static final String SQL_QUERY_SELECTALL = " SELECT a.id_space, a.id_parent, a.document_space_name, a.description, a.document_space_view, a.id_space_icon, b.icon_url, a.document_creation_allowed, a.workgroup_key " +
         " FROM document_space a, document_space_icon b " + " WHERE a.id_space_icon = b.id_space_icon";
     private static final String SQL_QUERY_SELECTALL_VIEWTYPE = " SELECT code_view , name_key FROM document_view";
@@ -271,6 +275,44 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
             daoUtil = new DAOUtil( SQL_QUERY_SELECT_CHILDS );
             daoUtil.setInt( 1, nSpaceId );
         }
+
+        daoUtil.executeQuery(  );
+
+        while ( daoUtil.next(  ) )
+        {
+            DocumentSpace space = new DocumentSpace(  );
+            space.setId( daoUtil.getInt( 1 ) );
+            space.setIdParent( daoUtil.getInt( 2 ) );
+            space.setName( daoUtil.getString( 3 ) );
+            space.setDescription( daoUtil.getString( 4 ) );
+            space.setViewType( daoUtil.getString( 5 ) );
+            space.setIdIcon( daoUtil.getInt( 6 ) );
+            space.setIconUrl( daoUtil.getString( 7 ) );
+            space.setDocumentCreationAllowed( daoUtil.getInt( 8 ) != 0 );
+            space.setWorkgroup( daoUtil.getString( 9 ) );
+            listDocumentSpaces.add( space );
+        }
+
+        daoUtil.free(  );
+
+        return listDocumentSpaces;
+    }
+
+    /**
+     * Load the list of documentSpaces authorizing the selected document type
+     *
+     * @param strCodeType the document type filter
+     * @return The Collection of the DocumentSpaces
+     */
+    public List<DocumentSpace> selectSpacesAllowingDocumentCreationByDocumentType( String strCodeType,
+        int createDocumentIsAllowed )
+    {
+        List<DocumentSpace> listDocumentSpaces = new ArrayList<DocumentSpace>(  );
+        DAOUtil daoUtil = null;
+
+        daoUtil = new DAOUtil( SQL_QUERY_SELECT_SPACES_WITH_DOCUMENT_CREATION_IS_ALLOWED_BY_CODE_TYPE );
+        daoUtil.setString( 1, strCodeType );
+        daoUtil.setInt( 2, createDocumentIsAllowed );
 
         daoUtil.executeQuery(  );
 
