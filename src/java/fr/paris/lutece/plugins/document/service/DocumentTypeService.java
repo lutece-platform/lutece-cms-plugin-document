@@ -35,7 +35,10 @@ package fr.paris.lutece.plugins.document.service;
 
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.util.xml.XmlUtil;
+import java.util.Collection;
 
 
 /**
@@ -74,12 +77,12 @@ public class DocumentTypeService
      * Gets document types list as an XML document
      * @return An XML document containing document types
      */
-    public String getXmlDocumentTypesList(  )
+    public String getXmlDocumentTypesList( AdminUser user  )
     {
         StringBuffer sbXML = new StringBuffer(  );
         XmlUtil.beginElement( sbXML, TAG_DOCUMENT_TYPES );
 
-        for ( DocumentType type : DocumentTypeHome.findAll(  ) )
+        for ( DocumentType type : getUserDocTypes( user ) )
         {
             findDocumentTypes( sbXML, type.getCode(  ) );
         }
@@ -87,6 +90,14 @@ public class DocumentTypeService
         XmlUtil.endElement( sbXML, TAG_DOCUMENT_TYPES );
 
         return sbXML.toString(  );
+    }
+
+    private Collection<DocumentType> getUserDocTypes( AdminUser user )
+    {
+        Collection<DocumentType> listTypes = DocumentTypeHome.findAll(  );
+        listTypes = RBACService.getAuthorizedCollection( listTypes, DocumentTypeResourceIdService.PERMISSION_VIEW, user );
+
+        return listTypes;
     }
 
     /**
