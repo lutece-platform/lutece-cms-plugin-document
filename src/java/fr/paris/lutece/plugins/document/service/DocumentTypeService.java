@@ -77,12 +77,12 @@ public class DocumentTypeService
      * Gets document types list as an XML document
      * @return An XML document containing document types
      */
-    public String getXmlDocumentTypesList( AdminUser user  )
+    public String getXmlDocumentTypesList(  )
     {
         StringBuffer sbXML = new StringBuffer(  );
         XmlUtil.beginElement( sbXML, TAG_DOCUMENT_TYPES );
 
-        for ( DocumentType type : getUserDocTypes( user ) )
+        for ( DocumentType type : DocumentTypeHome.findAll(  ) )
         {
             findDocumentTypes( sbXML, type.getCode(  ) );
         }
@@ -90,14 +90,6 @@ public class DocumentTypeService
         XmlUtil.endElement( sbXML, TAG_DOCUMENT_TYPES );
 
         return sbXML.toString(  );
-    }
-
-    private Collection<DocumentType> getUserDocTypes( AdminUser user )
-    {
-        Collection<DocumentType> listTypes = DocumentTypeHome.findAll(  );
-        listTypes = RBACService.getAuthorizedCollection( listTypes, DocumentTypeResourceIdService.PERMISSION_VIEW, user );
-
-        return listTypes;
     }
 
     /**
