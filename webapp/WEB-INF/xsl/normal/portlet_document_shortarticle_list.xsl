@@ -7,7 +7,15 @@
 	<xsl:variable name="portlet-id" select="portlet/portlet-id" />
 
 	<xsl:template match="portlet">
-		<div class="portlet -lutece-border-radius append-bottom">
+	
+	<xsl:variable name="device_class">
+	<xsl:choose>
+		<xsl:when test="string(display-on-small-device)='0'">hide-for-small</xsl:when>
+		<xsl:otherwise></xsl:otherwise>
+	</xsl:choose>
+	</xsl:variable>
+	
+		<div class="portlet  {$device_class} -lutece-border-radius append-bottom">
 			<xsl:if test="not(string(display-portlet-title)='1')">
 				<h3 id="article_{$portlet-id}">
 					<xsl:value-of disable-output-escaping="yes" select="portlet-name" />
