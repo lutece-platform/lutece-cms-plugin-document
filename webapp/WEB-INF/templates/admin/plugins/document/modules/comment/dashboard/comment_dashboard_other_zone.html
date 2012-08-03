@@ -1,15 +1,20 @@
 <#if permission_comment>
 <div class="content-box">
-	<h2>
-	    <img src="${icon}" width="24" height="24" align="middle"/>
+	<h2 class="clearfix">
+	    <img src="${icon}" />
 	    <a href="${url}" >
 	        #i18n{module.document.comment.dashboard.labelComment}
 	    </a>
-	    <a class="top" href="jsp/admin/AdminMenu.jsp#top">
-            <img alt="#i18n{module.document.comment.dashboard.top}" title="#i18n{module.document.comment.dashboard.top}" src="images/admin/skin/sign-up.png">
-        </a>
+	    <div class="btn-toolbar pull-right">
+		<div class="btn-group">
+			<div class="btn btn-info">
+				<a href="jsp/admin/AdminMenu.jsp#top" title="#i18n{module.document.comment.dashboard.top}">
+				<i class="icon-circle-arrow-up icon-white"></i>
+				</a>
+			</div>
+		</div>
+</div>
     </h2>
-    <br />
     <#include "comment_dashboard.html" />
 </div>
 </#if>
