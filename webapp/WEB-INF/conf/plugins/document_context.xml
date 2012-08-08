@@ -90,4 +90,5 @@
     <bean id="document.ruleMoveSpace" class="fr.paris.lutece.plugins.document.modules.rulemovespace.business.MoveSpaceRule" />
     <bean id="document.ruleNotifyUsers" class="fr.paris.lutece.plugins.document.modules.rulenotifyusers.business.NotifyUsersRule" />
     
+    <bean id="document.documentExtendableResourceService" class="fr.paris.lutece.plugins.document.service.resource.DocumentExtendableResourceService" />
 </beans>

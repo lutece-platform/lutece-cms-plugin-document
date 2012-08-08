@@ -1,7 +1,9 @@
 <#include "/admin/util/editor/editor.html" />
 
-<#escape x as x?html>
+${extendableResourceActionsHtml!}
 
+<#escape x as x?html>
+	
 <form method="post" action="jsp/admin/plugins/document/DoModifyDocument.jsp" enctype="multipart/form-data" >
     
     <input type="hidden" name="id_document" value="${document.id}" />

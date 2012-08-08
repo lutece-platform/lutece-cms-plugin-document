@@ -42,6 +42,7 @@ import fr.paris.lutece.plugins.document.modules.comment.service.DocumentCommentP
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.i18n.Localizable;
+import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.xml.XmlUtil;
@@ -57,12 +58,12 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * A document of the CMS.
  */
-public class Document implements Localizable
+public class Document implements Localizable, IExtendableResource
 {
+	public static final String CODE_DOCUMENT_TYPE_DOWNLOAD = "download";
+	public static final String PROPERTY_RESOURCE_TYPE = "document";
     private static final String PROPERTY_DEFAULT_THUMBNAIL = "document.thumbnail.default";
     private static final String PROPERTY_RESOURCE_PROVIDER_URL = "document.resource.provider.url";
-    public static final String CODE_DOCUMENT_TYPE_DOWNLOAD = "download";
-    private static final String PROPERTY_RESOURCE_TYPE = "document";
 
     /////////////////////////////////////////////////////////////////////////////////
     // Xml Tags
@@ -110,7 +111,7 @@ public class Document implements Localizable
      *
      * @return The IdDocument
      */
-    public int getId(  )
+	public int getId(  )
     {
         return _nIdDocument;
     }
@@ -140,7 +141,8 @@ public class Document implements Localizable
      *
      * @param locale The Locale
      */
-    public void setLocale( Locale locale )
+    @Override
+	public void setLocale( Locale locale )
     {
         _locale = locale;
     }
@@ -822,4 +824,31 @@ public class Document implements Localizable
     {
         return DocumentCommentHome.checkCommentNb( strDocumentId );
     }
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getIdExtendableResource( )
+	{
+		return Integer.toString( _nIdDocument );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getExtendableResourceType( )
+	{
+		return PROPERTY_RESOURCE_TYPE;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getExtendableResourceName( )
+	{
+		return _strTitle;
+	}
 }

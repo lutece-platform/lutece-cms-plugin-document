@@ -78,6 +78,7 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.constants.Parameters;
+import fr.paris.lutece.portal.web.resource.ExtendableResourcePluginActionManager;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.ReferenceList;
@@ -99,7 +100,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.xml.transform.Source;
 
 
@@ -162,7 +162,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MARK_SPACES_BROWSER = "spaces_browser";
     private static final String MARK_DOCUMENT_IS_COMMENTABLE = "is_commentable";
 
-    // Parameters    
+    // Parameters
     private static final String PARAMETER_DOCUMENT_TYPE_CODE = "document_type_code";
     private static final String PARAMETER_DOCUMENT_ID = "id_document";
     private static final String PARAMETER_STATE_ID = "id_state";
@@ -196,7 +196,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MESSAGE_MOVING_NOT_AUTHORIZED = "document.message.movingNotAuthorized";
     private static final String MESSAGE_DOCUMENT_IS_PUBLISHED = "document.message.documentIsPublished";
     private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "document.message.errorDocumentIsPublished";
-    private static final String MESSAGE_DOCUMENT_ERROR = "document.message.documentError"; //TODO message erreur	
+    private static final String MESSAGE_DOCUMENT_ERROR = "document.message.documentError"; //TODO message erreur
     private static final String MESSAGE_CONFIRM_DELETE_SELECTION = "document.message.confirmDeleteSelection";
     private static final String MESSAGE_CONFIRM_ARCHIVE_SELECTION = "document.message.selectionPublished";
     private static final String MESSAGE_ERROR_DOCUMENT_SELECTED_IS_PUBLISHED = "document.message.errorDocumentSelectedIsPublished";
@@ -281,7 +281,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         // Build filter combos
         // Document Types
-        ReferenceList listDocumentTypes = DocumentSpaceHome.getAllowedDocumentTypes( IntegerUtils.convert( 
+        ReferenceList listDocumentTypes = DocumentSpaceHome.getAllowedDocumentTypes( IntegerUtils.convert(
                     _strCurrentSpaceId ) );
         listDocumentTypes = RBACService.getAuthorizedReferenceList( listDocumentTypes, DocumentType.RESOURCE_TYPE,
                 DocumentTypeResourceIdService.PERMISSION_VIEW, user );
@@ -296,7 +296,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         listChildSpaces = AdminWorkgroupService.getAuthorizedCollection( listChildSpaces, user );
 
         // Creation document types list for the current space
-        ReferenceList listCreateDocumentTypes = DocumentSpaceHome.getAllowedDocumentTypes( IntegerUtils.convert( 
+        ReferenceList listCreateDocumentTypes = DocumentSpaceHome.getAllowedDocumentTypes( IntegerUtils.convert(
                     _strCurrentSpaceId ) );
         listCreateDocumentTypes = RBACService.getAuthorizedReferenceList( listCreateDocumentTypes,
                 DocumentType.RESOURCE_TYPE, DocumentTypeResourceIdService.PERMISSION_CREATE, user );
@@ -307,7 +307,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         List<Document> listDocuments = new ArrayList<Document>(  );
 
-        for ( Integer documentId : (Collection<Integer>) paginator.getPageItems(  ) )
+        for ( Integer documentId : paginator.getPageItems(  ) )
         {
             Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( documentId );
 
@@ -569,11 +569,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         // Date Management
         model.put( MARK_DATE_VALIDITY_BEGIN,
             ( document.getDateValidityBegin(  ) == null ) ? StringUtils.EMPTY
-                                                          : DateUtil.getDateString( 
+                                                          : DateUtil.getDateString(
                 new Date( document.getDateValidityBegin(  ).getTime(  ) ), getLocale(  ) ) );
         model.put( MARK_DATE_VALIDITY_END,
             ( document.getDateValidityEnd(  ) == null ) ? StringUtils.EMPTY
-                                                        : DateUtil.getDateString( 
+                                                        : DateUtil.getDateString(
                 new Date( document.getDateValidityEnd(  ).getTime(  ) ), getLocale(  ) ) );
 
         // Site Comments management
@@ -615,6 +615,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         }
 
         model.put( MARK_DOCUMENT_IS_COMMENTABLE, Integer.toString( nIsCommentable ) );
+
+        ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, strDocumentId, Document.PROPERTY_RESOURCE_TYPE );
 
         ResourceEnhancer.getModifyResourceModelAddOn( model, PROPERTY_RESOURCE_TYPE, document.getId(  ) );
 
@@ -844,7 +846,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
                 {
                          IndexationService.getInstance().addIndexerAction(portlet.getPageId(), PageIndexer.INDEXER_NAME, IndexerAction.TASK_MODIFY);
                 }
-        
+
         }*/
         return getHomeUrl( request );
     }
