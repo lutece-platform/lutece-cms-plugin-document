@@ -73,11 +73,11 @@
             <tr>
                 <td>
                     <#list document.actions as action >
-	                    <#if action.url?exists>
-		                    <a href="${action.url}id_document=${document.id}&id_action=${action.idAction}">
-		                        <img src="${action.iconUrl}" alt="${action.description}" title="${action.description}" />
-		                    </a>
-		                </#if>
+	                    <#if action.url?has_content>
+						<a href="${action.url}id_document=${document.id}&id_action=${action.idAction}">
+						<img src="${action.iconUrl}" alt="${action.description}" title="${action.description}" />
+						</a>
+						</#if>
                     </#list>
 					<a href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" >
 						<img src="images/admin/skin/plugins/document/actions/folder_go.png" style="width:24px;" alt="Accéder à l'espace" title="Accéder à l'espace" />

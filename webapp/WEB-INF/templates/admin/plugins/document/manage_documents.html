@@ -1,5 +1,5 @@
-<script src="../../../../js/jquery/plugins/ui/jstree/jquery.jstree.js"></script>
-<script src="../../../../js/jquery/plugins/ui/jstree/jquery.cookie.js"></script>
+<script src="js/jquery/plugins/ui/jstree/jquery.jstree.js"></script>
+<script src="js/jquery/plugins/ui/jstree/jquery.cookie.js"></script>
 <script type="text/javascript"> 
 jQuery(function($) {
 // Set space_id
@@ -76,22 +76,24 @@ ${spaces_tree}
 <div class="span7">
 <form class="form-search" method="post" name="SearchDocumentById" action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
 #i18n{document.manage_documents.labelSearchById} :
-<input type="text" name="id_document" size="5" maxlength="10" />
-<button class="btn btn-primary" type="submit" >#i18n{document.manage_documents.buttonSearch}</button>
+<input type="text" name="id_document" class="input-mini" maxlength="10" />
+<button class="btn btn-primary" type="submit" ><i class="icon-search icon-white"></i>&nbsp;#i18n{document.manage_documents.buttonSearch}</button>
 </form>
 <form class="form-search" method="post" name="FullTextSearchDocument" action="jsp/admin/plugins/document/DocumentSearch.jsp">
 #i18n{document.manage_documents.labelFullTextSearch} :
-<input type="text" name="query" size="10" maxlength="50" />
-<button class="btn btn-primary" type="submit" >#i18n{document.manage_documents.buttonSearch}</button>
+<input type="text" name="query" class="input-small" maxlength="50" />
+<button class="btn btn-primary" type="submit" ><i class="icon-search icon-white"></i>&nbsp;#i18n{document.manage_documents.buttonSearch}</button>
 </form>
 <#if space?has_content >
 <#if space.documentCreationAllowed >
 <#if document_types_list?has_content >
 <form class="form-search" method="post" name="CreateDocument" action="jsp/admin/plugins/document/CreateDocument.jsp" >
+<div class="well">
 #i18n{document.manage_documents.labelCreate} :
 <@combo name="document_type_code" default_value="" items=document_types_list />
-<button class="btn btn-primary" type="submit" >#i18n{document.manage_documents.buttonCreate}</button>
+<button class="btn btn-primary" type="submit" ><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.manage_documents.buttonCreate}</button>
 </form>
+</div>
 </#if>
 </#if>
 <fieldset>
@@ -102,100 +104,174 @@ ${spaces_tree}
 <@combo name="document_type_code_filter" default_value="${default_document_type}" items=document_types_filter_list />
 <label>#i18n{document.manage_documents.labelState} :</label>
 	<@combo name="id_state_filter" default_value="${default_state}" items=states_filter_list />
-<button class="btn btn-primary" type="submit" >#i18n{document.manage_documents.buttonFilter}</button>
+<button class="btn btn-primary" type="submit" ><i class="icon-filter icon-white"></i>&nbsp;#i18n{document.manage_documents.buttonFilter}</button>
 </form>
 </fieldset>
 <#if documents_list?size = 0 >
 <fieldset>
 <legend>#i18n{document.manage_documents.noDocument}</legend>
 <#else>
-<form class="form-horizontal"  method="post" action="jsp/admin/plugins/document/ManageDocuments.jsp">
-<#if (paginator.pagesCount > 1) ><@paginationPageLinks paginator=paginator /></#if>
+<form class="form-inline"  method="post" action="jsp/admin/plugins/document/ManageDocuments.jsp">
 <label>#i18n{document.manage_documents.labelViewType} :</label>
-<div class="controls">
 <@combo name="view_type" default_value="${view_type}" items=view_types_list />
-</div>
-<@paginationItemCount paginator=paginator combo=1 />
 </form>
 </fieldset>
+
+<div class="container">
+<#if (paginator.pagesCount > 1) ><@paginationPageLinks paginator=paginator /></#if>
+<@paginationItemCount paginator=paginator combo=1 />
+</div>
 <#if view_type = "detail" >
 <form class="form-horizontal" id="documents_form" name="documents_form" method="post" action="jsp/admin/plugins/document/DoActionSelectionDocument.jsp">
 <table class="table table-striped table-condensed">
 <tr>
-<th></th>
-<div class="controls">
-<input id="select_all" name="select_all" type="checkbox" onclick="toggle_checkboxes();" />
-</div>
-</th>
-<th width="65%">#i18n{document.manage_documents.labelDocument}</th>
-<th width="10%">#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url="jsp/admin/plugins/document/ManageDocuments.jsp" attribute="publishedStatus" /></th>
-<th width="25%">#i18n{document.manage_documents.labelActions}</th>
+<th><input id="select_all" name="select_all" type="checkbox" onclick="toggle_checkboxes();" /></th>
+<th>#i18n{document.manage_documents.labelDocument}</th>
+<th>#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url="jsp/admin/plugins/document/ManageDocuments.jsp" attribute="publishedStatus" /></th>
+<th>#i18n{document.manage_documents.labelActions}</th>
 </tr>
 <#list documents_list as document >
 <tr>
 	<td>
-		<div class="controls"><input id="document_selection" name="document_selection" type="checkbox" value="${document.id}" /></div>
+		<input id="document_selection" name="document_selection" type="checkbox" value="${document.id}" />
 	</td>
-	<td width="65%">
-		<img src="${document.thumbnail}" alt="${document.title}" width="40" height="40" align="left" hspace="15" />
-	    ${document.id} - ${document.title}<br />
-	    ${document.type} - <strong>#i18n{document.manage_documents.labelState} : </strong>${document.state}                                              
-        <br />                                                
-	    <strong>#i18n{document.manage_documents.labelDateModification} : </strong>${document.dateModification}
+	<td>
+	<img src="${document.thumbnail}" alt="${document.title}" width="40" height="40" align="left" hspace="15" />
+    ${document.id} - ${document.title}<br />
+    ${document.type} - <strong>#i18n{document.manage_documents.labelState} : </strong>${document.state}                                              
+    <br />                                                
+    <strong>#i18n{document.manage_documents.labelDateModification} : ${document.dateModification}</strong>
 	</td>
-	<td width="10%">
+	<td>
 	<#if document.publishedStatus = 0> 
-		<span class="label label-success"><i class="icon-ok-sign icon-white"></i> #i18n{portal.util.labelEnabled}</span>
-		<#else>
-		<span class="label label-important"><i class="icon-remove-sign icon-white"></i> #i18n{portal.util.labelDisabled}</span>
-		</#if>
-		</td>
-		<td width="25%">
-			<#list document.actions as action >
-				<#if action.url?exists>
-				<a class="btn btn-primary btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}"  title="${action.description}" >
-					<i class="icon-question-sign icon-white"></i></a>
-				</#if>
-	        </#list>
-	    </td>
-	    </tr>
+		<span class="label label-success"><i class="icon-ok-sign icon-white"></i> #i18n{document.manage_documents.PublishedStatus}</span>
+	<#else>
+		<span class="label label-important"><i class="icon-remove-sign icon-white"></i> #i18n{document.manage_documents.UnPublishedStatus}</span>
+	</#if>
+	</td>
+	<td>
+	<#list document.actions  as action >
+	<#if action.url?has_content>
+	<#if action.idAction == 1>
+	<a class="btn btn-danger btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-trash icon-white"></i>
+	<#elseif action.idAction == 2>
+	<a class="btn btn-primary btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-edit icon-white"></i>
+	<#elseif action.idAction == 3>
+	<a class="btn btn-mini btn-primary" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-validate icon-white"></i>
+	<#elseif action.idAction == 4>
+	<a class="btn btn-danger btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-trash icon-white"></i>
+	<#elseif action.idAction == 5>
+	<a class="btn btn-primary btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-edit icon-white"></i>
+	<#elseif action.idAction == 6>
+	<a class="btn btn-mini btn-primary" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-validate icon-white"></i>
+	<#elseif action.idAction == 7>
+	<a class="btn btn-primary btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-edit icon-white"></i>
+	<#elseif action.idAction == 8>
+	<a class="btn btn-mini btn-primary" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-validate icon-white"></i>
+	<#elseif action.idAction == 9>
+	<a class="btn btn-danger btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-trash icon-white"></i>
+	<#elseif action.idAction == 10>
+	<a class="btn btn-primary btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-edit icon-white"></i>
+	<#elseif action.idAction == 11>
+	<a class="btn btn-mini btn-primary" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-validate icon-white"></i>
+	<#elseif action.idAction == 12>
+	<a class="btn btn-primary btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-edit icon-white"></i>
+	<#elseif action.idAction == 13>
+	<a class="btn btn-mini btn-primary" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-validate icon-white"></i>
+	<#elseif action.idAction == 14>
+	<a class="btn btn-info btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-list icon-white"></i>
+	<#elseif action.idAction == 15>
+	<a class="btn btn-info btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-eye-open icon-white"></i>
+	<#elseif action.idAction == 16>
+	<a class="btn btn-info btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-share-alt icon-white"></i>
+	<#elseif action.idAction == 17>
+	<a class="btn btn-info btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-eye-open icon-white"></i>
+	<#elseif action.idAction == 18>
+	<a class="btn btn-info btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="icon-share-alt icon-white"></i>
+	</#if>  
+	</a>
+	</#if>
+	</#list>
+    </td>
+</tr>
 </#list>
 </table>
-<fieldset>
-#i18n{document.manage_documents.applyToSelection} :
+
+<div class="controls-group">
+<div class="controls">
+<label>#i18n{document.manage_documents.applyToSelection}</label>
 <select id="selection" name="selection">
-<option value="validate">#i18n{document.manage_document.validate}</option>
-<option value="submit">#i18n{document.manage_document.submit}</option>
-<option value="refuse">#i18n{document.manage_document.refuse}</option>
-<option value="remove">#i18n{document.manage_document.remove}</option>
-<option value="archive">#i18n{document.manage_document.archive}</option>
-<option value="unarchive">#i18n{document.manage_document.unarchive}</option>
+	<option value="validate">#i18n{document.manage_document.validate}</option>
+	<option value="submit">#i18n{document.manage_document.submit}</option>
+	<option value="refuse">#i18n{document.manage_document.refuse}</option>
+	<option value="remove">#i18n{document.manage_document.remove}</option>
+	<option value="archive">#i18n{document.manage_document.archive}</option>
+	<option value="unarchive">#i18n{document.manage_document.unarchive}</option>
 </select>					
-<button class="btn btn-primary" type="submit" >null</button>
+</div>
+<button class="btn btn-primary" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{document.manage_documents.applyToSelection}</button>
+</div>
 </form>
 </fieldset> 
+
 </#if>
 <#if view_type = "thumbnail">
-<div class="thumbnail">
+<div class="span7">
 <#list documents_list as document >
-<div class="thumbnail-element">
-<img src="${document.thumbnail}" alt="${document.title}" width="150" height="150" align="middle" />
-<br />
-${document.id} - ${document.title}
-<br />
-${document.type}
-<#list document.actions as action >
-<#if action.url?has_content>
-<a href="${action.url}id_document=${document.id}&id_action=${action.idAction}">
-<img src="${action.iconUrl}" alt="${action.description}" title="${action.description}" />
-</a>
-</#if>
+	<img src="${document.thumbnail}" alt="${document.title}" width="150" height="150" align="middle" />
+	${document.id} - ${document.title}
+	${document.type}
+	<#list document.actions?sort_by("idAction") as action >
+	<#if action.url?has_content>
+	<span class="span2">
+	<a href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<#if action.idAction == "3">
+	<a class="btn btn-primary btn-mini" href="${space_action.url}?id_space=${space.id}"  title="${space_action.description}" >
+	<i class="icon-validate icon-white"></i>
+	<#elseif action.idAction == "1">
+	<a class="btn btn-danger btn-mini" href="${space_action.url}?id_space=${space.id}"  title="${space_action.description}" >
+	<i class="icon-trash icon-white"></i>
+	<#elseif action.idAction == "2">
+	<a class="btn btn-primary btn-mini" href="${space_action.url}?id_space=${space.id}"  title="${space_action.description}" >
+	<i class="icon-edit icon-white"></i>
+	<#elseif action.idAction == "14">
+	<a class="btn btn-info btn-mini" href="${space_action.url}?id_space=${space.id}"  title="${space_action.description}" >
+	<i class="icon-list icon-white"></i>
+	<#elseif action.idAction == "15">
+	<a class="btn btn-info btn-mini" href="${space_action.url}?id_space=${space.id}"  title="${space_action.description}" >
+	<i class="icon-eye-open icon-white"></i>
+	<#elseif action.idAction == "16">
+	<a class="btn btn-info btn-mini" href="${space_action.url}?id_space=${space.id}"  title="${space_action.description}" >
+	<i class="icon-share-alt icon-white"></i>
+	</#if>  
+	</a>
+	</span>	
+	</#if>
+	</#list>
 </#list>
 </div>
-</#list>
-</div>
 </#if>
+<div class="container">
 <@paginationAdmin paginator=paginator combo=1 />
+</div>
 </#if>
 <#else>
 <#if child_spaces_list?size != 0 >
