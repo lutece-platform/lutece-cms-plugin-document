@@ -1,42 +1,33 @@
 <#if status == status_unpublished>
-<p>
-<table>
-	<tr>
-            <td width="80%">
-                ${document_published.title}
-            </td>
-            <#if permission_publish?exists>
-	            <form method="post" name="publishDocument" action="jsp/admin/plugins/document/DoPublishingDocument.jsp">
-	                <input type="hidden" name="id_document" value="${document_published.id}" />
-	                <input type="hidden" name="id_portlet" value="${portlet_id}" />
-	                    <td width="10%" align="right">
-	                        <input type="submit" value="Publier" class="button" />
-	                    </td>
-	            </form>
-	         </#if>
-            <#if permission_assign?exists>
-	            <form method="post" name="unassignDocument" action="jsp/admin/plugins/document/DoUnAssignedDocument.jsp">
-	                <td width="2%" >
-	                    <input type="hidden" name="id_document" value="${document_published.id}" />
-	                    <input type="hidden" name="id_portlet" value="${portlet_id}" />
-	                    <input type="hidden" name="status" value="${status_unpublished}" />	                                            
-	                    <input type="image" src="images/admin/skin/actions/delete.png" style="border:0;vertical-align:bottom;" alt="#i18n{document.manage_document_publishing.labelUnAssigned}" title="#i18n{document.manage_document_publishing.labelUnAssigned}"/>
-	                </td>
-	            </form>
-	        </#if>        
-            <form method="post" name="previewDocument" action="jsp/admin/plugins/document/PreviewDocument.jsp">
-                <td width="5%" align="right">
-                <input type="hidden" name="id_document" value="${document_published.id}" />
-                <input type="image" src="images/admin/skin/plugins/document/actions/view.png" style="border:0;vertical-align:bottom;" alt="#i18n{document.published_document_list.labelPreview}" title="#i18n{document.published_document_list.labelPreview}"/>
-                </td>
-            </form>
-            <form method="post" name="manageDocument" action="jsp/admin/plugins/document/ManageDocuments.jsp">
-                <td width="5%">
-                <input type="hidden" name="id_space_filter" value="${document_published.spaceId}" />
-                <input type="image" src="images/admin/skin/plugins/document/spaces/space.png" style="border:0;vertical-align:bottom;" alt="#i18n{document.published_document_list.labelManageDocument}" title="#i18n{document.published_document_list.labelManageDocument}"/>
-                </td>
-            </form>
-        </tr>
-    </table>
-</p>
+<table class="table table-striped table-condensed">
+<tr>
+	<td>${document_published.title}</td>
+	<#if permission_publish?exists>
+	<td>
+		<form class="form-inline pull-right" method="post" name="publishDocument" action="jsp/admin/plugins/document/DoPublishingDocument.jsp">
+		<input type="hidden" name="id_document" value="${document_published.id}" />
+		<input type="hidden" name="id_portlet" value="${portlet_id}" />
+		<button class="btn btn-mini" type="submit" ><i class="fam-accept"></i>#i18n{document.manage_document_publishing.buttonPublish}</button>
+		</form>
+	
+	</#if>
+    <#if permission_assign?exists>
+		<form class="form-inline pull-right" method="post" name="unassignDocument" action="jsp/admin/plugins/document/DoUnAssignedDocument.jsp">
+	    <input type="hidden" name="id_document" value="${document_published.id}" />
+	    <input type="hidden" name="id_portlet" value="${portlet_id}" />
+	    <input type="hidden" name="status" value="${status_unpublished}" />	                                            
+	    <button type="submit" class="btn btn-mini" alt="#i18n{document.manage_document_publishing.labelUnAssigned}" title="#i18n{document.manage_document_publishing.labelUnAssigned}"><i class="fam-link-delete"></i></button>
+		</form>
+	</#if>        
+		<form class="form-inline pull-right" method="post" name="previewDocument" action="jsp/admin/plugins/document/PreviewDocument.jsp">
+		<input type="hidden" name="id_document" value="${document_published.id}" />
+        <button type="submit" class="btn btn-mini" alt="#i18n{document.published_document_list.labelPreview}" title="#i18n{document.published_document_list.labelPreview}"><i class="fam-eye"></i></button>
+		</form>
+	    <form class="form-inline pull-right" method="post" name="manageDocument" action="jsp/admin/plugins/document/ManageDocuments.jsp">
+		<input type="hidden" name="id_space_filter" value="${document_published.spaceId}" />
+        <button type="submit" class="btn btn-mini"  alt="#i18n{document.published_document_list.labelManageDocument}" title="#i18n{document.published_document_list.labelManageDocument}"><i class="fam-folder-add"></i></button>
+		</form>
+	</td>
+</tr>
+</table>
 </#if>    

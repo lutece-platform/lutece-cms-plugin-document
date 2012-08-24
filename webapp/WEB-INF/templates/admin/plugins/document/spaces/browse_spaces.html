@@ -1,37 +1,34 @@
+<div class="row">
+<div class="controls-group well offset1 span8">
+<div class="controls">
 <#if selected_space?has_content>
-	<p>
-     	<p>
-     		<a href="javascript:modifyChoice();"><img src="images/admin/skin/actions/up.png" alt="#i18n{document.browse_spaces.go_up_link}" hspace="5" /> #i18n{document.browse_spaces.go_up_link}</a>
-     	</p>
-     	<p>
-		    <input type="hidden" name="browser_selected_space_id" value="${selected_space.id}" />
-			<img src="${selected_space.iconUrl}" alt="${selected_space.name}" hspace="5" />${selected_space.name}
-		</p>
-	</p>
+<input type="hidden" name="browser_selected_space_id" value="${selected_space.id}" />
+	<p><a href="javascript:modifyChoice();" class="btn"><i class="icon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}</a></p>
+	<img src="${selected_space.iconUrl}" alt="${selected_space.name}" />${selected_space.name}
 <#else>
-	     <input type="hidden" name="browser_id_space" value="${space.id}" />
-	     <#if space.id != -1 && go_up >
-	     	<p>
-	     		<a href="javascript:goUp();"><img src="images/admin/skin/actions/up.png" alt="#i18n{document.browse_spaces.go_up_link}" hspace="5" /> #i18n{document.browse_spaces.go_up_link}</a>
-	     	</p>
-	     </#if>
-	     <p>
-	     <#list spaces_list as item_space >
-				<input type="radio" class="radio" name="browser_selected_space_id" value="${item_space.id}"/>
-	            <img src="${item_space.iconUrl}" alt="${item_space.name}" hspace="5" />
-				<#if has_childs?seq_contains(item_space.id)>
-					<a href="javascript:openSpace(${item_space.id});">${item_space.name}</a>
-				<#else>
-					${item_space.name}
-	          	</#if>
-	          	<br />
-	     </#list>
-         </p>
-	     <p>
-		     <input type="submit" value="#i18n{document.browse_spaces.validate}" class="button" onclick="this.form.action='${action}';" />
-	     </p>
+	<input type="hidden" name="browser_id_space" value="${space.id}" />
+<#if space.id != -1 && go_up >
+	<p><a href="javascript:goUp();"class="btn"><i class="icon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}</a></p>
 </#if>
-
+</div>
+<#list spaces_list as item_space >
+	<div class="controls">
+	<input type="radio" class="radio" name="browser_selected_space_id" value="${item_space.id}"/>
+<img src="${item_space.iconUrl}" alt="${item_space.name}" />
+<#if has_childs?seq_contains(item_space.id)>
+	<a href="javascript:openSpace(${item_space.id});">${item_space.name}</a>
+<#else>
+	${item_space.name}
+</#if>
+</div>
+</#list>
+<br />
+<div class="controls">
+<button class="btn btn-primary" type="submit"><i class="icon-ok icon-white"></i>&nbsp;#i18n{document.browse_spaces.validate}</button>
+</div>
+</div>
+</div>
+</#if>
 <script language="javascript">
 formId = 0;
 function goUp()

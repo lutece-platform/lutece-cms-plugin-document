@@ -1,32 +1,41 @@
-<div class="content-box" >
-   
-   <h2>#i18n{document.create_document_type.titleProperties}</h2>
-   
-   <form method="post" action="jsp/admin/plugins/document/DoCreateDocumentType.jsp">
-
-        <p>
-            <label for="code" >#i18n{document.create_document_type.labelCode}* :</label>
-            <input type="text" name="code" id="code" tabindex="1" maxlength="30"/>
-            #i18n{document.create_document_type.helpCode}
-        </p>
-        <p>
-            <label for="name" >#i18n{document.create_document_type.labelName}* :</label>
-            <input type="text" name="name" id="name" tabindex="2" maxlength="100"/>
-            #i18n{document.create_document_type.helpName}
-        </p>
-        <p>
-            <label for="name" >#i18n{document.create_document_type.labelDescription}* :</label>
-            <input type="text" name="description" id="description" tabindex="3" />
-            #i18n{document.create_document_type.helpDescription}
-        </p>
-        <p>
-            <label for="name" >#i18n{document.create_document_type.labelMetadata}* :</label>
-            <@combo name="metadata" items=metadata_handlers_list default_value="" />
-            #i18n{document.create_document_type.helpMetadata}
-        </p>
-
-        <input type="submit" value="#i18n{document.create_document_type.buttonSaveAndAddAttributes}" class="button" />
-        <input class="button" type="button" onclick="javascript:history.go(-1)" value="#i18n{portal.admin.message.buttonCancel}" />
-    </form>
-
+<div class="row" >
+<div class="container">
+<fieldset>
+<legend>#i18n{document.create_document_type.titleProperties}</legend>
+<form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoCreateDocumentType.jsp">
+	<div class="control-group">
+	<label class="control-label" for="code" >#i18n{document.create_document_type.labelCode}* :</label>
+		<div class="controls">
+			<input type="text" name="code" id="code" tabindex="1" maxlength="30"/>
+			<span class="help-text">#i18n{document.create_document_type.helpCode}</span>
+		</div>
+	</div>
+    <div class="control-group">
+		<label class="control-label" for="name" >#i18n{document.create_document_type.labelName}* :</label>
+			<div class="controls">
+				<input type="text" name="name" id="name" tabindex="2" maxlength="100"/>
+				<span class="help-text">#i18n{document.create_document_type.helpName}</span>
+			</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="name" >#i18n{document.create_document_type.labelDescription}* :</label>
+            <div class="controls">
+				<input type="text" name="description" id="description" tabindex="3" />
+				<span class="help-text">#i18n{document.create_document_type.helpDescription}</span>
+			</div>
+	</div>
+    <div class="control-group">
+		<label class="control-label" for="name" >#i18n{document.create_document_type.labelMetadata}* :</label>
+            <div class="controls">
+				<@combo name="metadata" items=metadata_handlers_list default_value="" />
+				<span class="help-text">#i18n{document.create_document_type.helpMetadata}</span>
+			</div>
+	</div>
+    <div class="form-actions">
+		<button class="btn btn-primary" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{document.create_document_type.buttonSaveAndAddAttributes}</button>
+		<button class="btn" onclick="javascript:history.go(-1)" ><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+	</div>
+    </fieldset>
+</form>
+</div>
 </div>

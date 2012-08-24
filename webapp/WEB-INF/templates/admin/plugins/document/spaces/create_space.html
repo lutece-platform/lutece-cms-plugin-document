@@ -1,44 +1,56 @@
 <#if parent_space?exists>
-	<div class="content-box" >
-	   <form method="post" action="jsp/admin/plugins/document/DoCreateSpace.jsp">
-	
-	        <h2>#i18n{document.create_space.title}</h2>
-	        <p>
-	            <label for="name" >#i18n{document.create_space.labelName}* :</label>
-	            <input type="text" name="name" id="name" tabindex="1" />
-	            
-	        </p>
-	        <p>
-	            <label for="description" >#i18n{document.create_space.labelDescription}* :</label>
-	            <input type="text" name="description" id="description" tabindex="2" />
-	           
-	        </p>
-	        <p>
-	            <label for="view_type" >#i18n{document.create_space.labelView} :</label>
-	            <@combo name="view_type" default_value="${view_type}" items=view_types_list />
-	           
-	        </p>
-	        <p>
-	            <label for="icon" >#i18n{document.create_space.labelIcon} :</label>
-	            <@radioImageList name="icon" default_value="1" items=icons_list />
-	        </p>
-	        <p>
-	            <label for="document_type">#i18n{document.create_space.labelDocumentTypes} :</label>
-	        <br />
-	            <@checkboxList name="document_type" default_values="" items=document_types_list />
-	        </p>
-	        <p>
-			    <label for="workgroup_key">#i18n{document.create_space.labelWorkgroup} : </label>
-			     <@combo name="workgroup_key" items=user_workgroup_list default_value="${selected_workgroup}" />
-			</p>
-	        <p>
-	            <label for="allow_creation" >#i18n{document.create_space.labelAllowCreation} :</label>
-	            <input class="checkbox" type="checkbox" name="allow_creation" id="allow_creation" tabindex="5" />
-	            #i18n{document.create_space.helpAllowCreation}
-	        </p>
-	        <input type="hidden" name="id_parent_space" value="${parent_space.id}" />
-	        <input type="submit" value="#i18n{document.create_space.buttonCreate}" class="button" />
-	        <input class="button" type="button" onclick="javascript:history.go(-1)" value="#i18n{portal.admin.message.buttonCancel}" />
-	    </form>
+<div class="row">
+<div class="container" >
+<form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoCreateSpace.jsp">
+<fieldset>
+<legend>#i18n{document.create_space.title}</legend>
+<div class="control-group">
+	<label class="control-label" for="name" >#i18n{document.create_space.labelName}* :</label>
+	<div class="controls">
+	<input type="text" name="name" id="name" tabindex="1" />
 	</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="description" >#i18n{document.create_space.labelDescription}* :</label>
+<div class="controls">
+<input type="text" name="description" id="description" tabindex="2" />
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="view_type" >#i18n{document.create_space.labelView} :</label>
+<div class="controls">
+<@combo name="view_type" default_value="${view_type}" items=view_types_list />
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="icon" >#i18n{document.create_space.labelIcon} :</label>
+<@radioImageList name="icon" default_value="1" items=icons_list />
+</div>
+<div class="control-group">
+<label class="control-label" for="document_type">#i18n{document.create_space.labelDocumentTypes} :</label>
+<div class="controls">
+<@checkboxList name="document_type" default_values="" items=document_types_list />
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="workgroup_key">#i18n{document.create_space.labelWorkgroup} : </label>
+<div class="controls">
+<@combo name="workgroup_key" items=user_workgroup_list default_value="${selected_workgroup}" />
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="allow_creation" >#i18n{document.create_space.labelAllowCreation} :</label>
+<div class="controls">
+<label class="checkbox" for="allow_creation" >
+<input class="checkbox" type="checkbox" name="allow_creation" id="allow_creation" tabindex="5" />#i18n{document.create_space.labelAllowCreation}</label>
+</div>
+</div>
+#i18n{document.create_space.helpAllowCreation}
+<input type="hidden" name="id_parent_space" value="${parent_space.id}" />
+<button class="btn btn-primary" type="submit" >#i18n{document.create_space.buttonCreate}</button>
+<button class="btn btn-primary" onclick="javascript:history.go(-1)" >#i18n{portal.admin.message.buttonCancel}</button>
+</fieldset>
+</form>
+</div>
+</div>
 </#if>	

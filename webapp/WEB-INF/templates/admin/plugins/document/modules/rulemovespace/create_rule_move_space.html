@@ -1,51 +1,41 @@
-
 <input type="hidden" name="rule_attribute_selected" value="">
-<p>
-    #i18n{module.document.rulemovespace.create_rule_move_space.ruleText1} 
-   <em>
-    <#if id_space_source?exists> 
-    	${path_space_source}  
-   		<input type="hidden" name="id_space_source" value="${id_space_source}">
-    <#else>
-    	 #i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}
-  	</#if>
-  	</em> 
-		<input class="button" type="button" name="select" onclick="selectSpace('id_space_source')" value=" #i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}" />
+<div class="controls">
+<p class="help-block">#i18n{module.document.rulemovespace.create_rule_move_space.ruleText1} 
+<#if id_space_source?exists> 
+	<span class="label label-info">${path_space_source}</span>
+	<input type="hidden" name="id_space_source" value="${id_space_source}">
+<#else>
+ 	<span class="label label-inverse">#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</span>
+</#if>
+<button class="btn" onclick="selectSpace('id_space_source')" > #i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}</button>
 </p>
-<p>
-    #i18n{module.document.rulemovespace.create_rule_move_space.ruleText2} 
-    <#if id_state?exists >
-    	<@combo name="id_state" default_value="${id_state}" items=states_list />
-    <#else>
-    	<@combo name="id_state" default_value="" items=states_list />
-    </#if>	
-</p>
-<p>
-    #i18n{module.document.rulemovespace.create_rule_move_space.ruleText3}
-    <em>
-     <#if id_space_destination?exists> 
-    	${path_space_destination}  
+</div>
+<div class="controls">
+<p class="help-block">#i18n{module.document.rulemovespace.create_rule_move_space.ruleText2}
+<#if id_state?exists >
+	<@combo name="id_state" default_value="${id_state}" items=states_list />
+	
+<#else>
+	<@combo name="id_state" default_value="" items=states_list />
+    </#if>
+</p> 
+</div>
+<div class="controls">
+<p class="help-block">#i18n{module.document.rulemovespace.create_rule_move_space.ruleText3}
+    <#if id_space_destination?exists> 
+    	<span class="label label-success">${path_space_destination}</span>  
     	<input type="hidden" name="id_space_destination" value="${id_space_destination}">
    	<#else>
-    	 #i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}
+    	 <span class="label label-inverse">#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</span>
   	</#if>
-  	</em>
-   	<input class="button" type="button" name="select" onclick="selectSpace('id_space_destination')" value=" #i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}" />
-	
+<button class="btn " onclick="selectSpace('id_space_destination')" > #i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}</button>
+<p class="help-block">#i18n{module.document.rulemovespace.create_rule_move_space.ruleText4}</p>
 </p>
-<p>
-    #i18n{module.document.rulemovespace.create_rule_move_space.ruleText4}
-</p>
-
+</div>
 <script language="javascript">
-
- function selectSpace(select)
- {
- 	
- 	document.forms['createRule'].action='jsp/admin/plugins/document/SelectSpaceRule.jsp';
+function selectSpace(select){
+	document.forms['createRule'].action='jsp/admin/plugins/document/SelectSpaceRule.jsp';
  	document.forms['createRule'].rule_attribute_selected.value=select;
  	document.forms['createRule'].submit();
- 	
- }
-
+}
 </script>

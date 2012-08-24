@@ -1,13 +1,18 @@
  <#if document?exists>
-   	<div class="content-box" >
-    	<h2>#i18n{document.document_history.title} ${document.id} - ${document.title}</h2>
-    	<#list events_list as event >
-	   		 <p>
-	    	    <em>${event.date}</em> - ${event.description}
-	    	</p>
-	    </#list>
-    <form method="post" action="">
-        <input type="button" onclick="javascript:history.go(-1)" class="button" value="#i18n{portal.util.labelBack}" />
-    </form>
-	</div>
+<div class="row">
+<div class="span10 offset1">
+<legend>#i18n{document.document_history.title} ${document.id} - ${document.title}</legend>
+<ul>
+<#list events_list as event >
+<li>
+	<em>${event.date}</em> - ${event.description}
+</li>
+</#list>
+<form method="post" action="" class="form-horizontal">
+<div class="form-actions">
+<button type="button" onclick="javascript:window.history.back()" class="btn"><i class="icon-remove-sign"></i>#i18n{portal.util.labelBack}</button>
+</div>
+</form>
+</div>
+</div>
 </#if>

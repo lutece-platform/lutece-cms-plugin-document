@@ -1,8 +1,9 @@
 <#list parameters as parameter>
-<p>
-    <label for="${parameter.name}" >${parameter.label} :</label>
-    <input type="text" name="${parameter.name}" tabindex="${parameter_index + 5}"
-    	value="<#list parameter.defaultValue as values ><#if values?has_content >${values}</#if></#list>"  />
-    ${parameter.description}
-</p>
+<div class="control-group">
+	<label class="control-label" for="${parameter.name}" >${parameter.label} :</label>
+		<div class="controls">
+		<input type="text" name="${parameter.name}" tabindex="${parameter_index + 5}" value="<#list parameter.defaultValue as values ><#if values?has_content >${values}</#if></#list>"  />
+		<span class="help-text">${parameter.description}</span>
+	</div>
+</div>
 </#list>

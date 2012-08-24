@@ -1,5 +1,7 @@
-<p>
-    <label for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
-    <input type="text" name="${attribute.code}" id="${attribute.code}" size="<#list parameters.size as size>${size}</#list>" maxlength="<#list parameters.maxlength as maxlength>${maxlength}</#list>" value="${attribute.textValue}" /> 
-    ${attribute.description}
-</p>
+<div class="control-group">
+<label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
+   <div class="controls">
+	<input type="text" name="${attribute.code}" id="${attribute.code}" size="<#list parameters.size as size>${size}</#list>" maxlength="<#list parameters.maxlength as maxlength>${maxlength}</#list>" value="${attribute.textValue}" /> 
+    <span class="help-text">${attribute.description}</span>
+</div>
+</div>

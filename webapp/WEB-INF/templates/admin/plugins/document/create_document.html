@@ -66,13 +66,8 @@
 <#include "/admin/plugins/rating/create_resource_add_on.html" />
 </div>
 </#if>
-
-<div class="well"> 
 <#noescape>${category}</#noescape>
-</div>
-<div class="well"> 
 <#noescape>${metadata}</#noescape>
-</div>
 </div>
 <div class="span7">
 <fieldset>
@@ -89,22 +84,22 @@
 <textarea type="text" name="document_summary" id="document_summary" cols="60" rows="2" ></textarea> 
 <p class="help-block">#i18n{document.create_document.helpDocumentSummary}</p>
 </div>
- 
+</fieldset> 
 <fieldset>
 <legend>#i18n{document.create_document.attributTitle}</legend>    
  <#noescape>${fields}</#noescape>
- <div classs="form-actions">
+ <div class="form-actions">
 <button class="btn btn-primary" type="submit" >#i18n{document.create_document.buttonCreate}</button>
 <button class="btn btn-primary" onclick="javascript:history.go(-1)" >#i18n{portal.admin.message.buttonCancel}</button>
 </div>
 </fieldset>
-</fieldset>
+
 </form>
 </div>
 </div>
 </div>
 </#escape>
-<@initEditor />
+
 <script src="js/jquery/plugins/ui/datepicker/ui.datepicker.js"></script>
 <script src="js/jquery/plugins/ui/datepicker/ui.datepicker-fr.js"></script>
 <@getDatePickerRange idFieldFrom="document_validity_begin" idFieldTo="document_validity_end" language=locale />

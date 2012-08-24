@@ -1,32 +1,37 @@
-<div class="content-box" >
-    <h2>#i18n{document.manage_rules.listTitle}</h2>
-    <table>
-        <tr>
-            <th width="80%">#i18n{document.manage_rules.columnRule}</th>
-            <th width="20%">#i18n{document.manage_rules.columnActions}</th>
-        </tr>
-                
-        <#list rules_list as rule >
-        <tr>
-            <td width="80%">${rule.rule}</td>
-            <td width="20%">
-                <a href="jsp/admin/plugins/document/DeleteRule.jsp?id_rule=${rule.id}">
-                    <img src="images/admin/skin/plugins/document/actions/delete.png" alt="#i18n{document.manage_rules.tooltipDelete}" title="#i18n{document.manage_rules.tooltipDelete}" />
-                </a>
-            </td>
-        </tr>
-        </#list>
-                
-    </table>
-
-    <div class="highlight-box">
-        <form method="post" name="AddRule" action="jsp/admin/plugins/document/CreateRule.jsp">
-            <p>
-                <label for="attribute_type_code" >#i18n{document.manage_rules.labelCreate} </label> 
-                <@combo name="id_rule_type" default_value="" items=rule_types_list />
-                <input type="submit" class="button" value="#i18n{document.manage_rules.buttonCreate}" />
-            </p>
-        </form>
-    </div>
+<div class="row" >
+<div class="container" >
+<form class="form-search pull-right" method="post" name="AddRule" action="jsp/admin/plugins/document/CreateRule.jsp">
+<label >#i18n{document.manage_rules.labelCreate} </label> 
+<@combo name="id_rule_type" default_value="" items=rule_types_list />
+<button class="btn btn-primary" type="submit" ><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.manage_rules.buttonCreate}</button>
+</form>
+</div>
+</div>
+<div class="row" >
+<div class="container" >
+<fieldset>
+<legend>#i18n{document.manage_rules.listTitle}</legend>
+<table class="table table-striped table-condensed">
+<thead>
+	<tr>
+		<th width="80%">#i18n{document.manage_rules.columnRule}</th>
+        <th width="20%">#i18n{document.manage_rules.columnActions}</th>
+    </tr>
+</thead>
+<tbody>
+<#list rules_list as rule >
+	<tr>
+		<td width="80%">${rule.rule}</td>
+        <td width="20%">
+            <a class="btn btn-danger btn-mini" href="jsp/admin/plugins/document/DeleteRule.jsp?id_rule=${rule.id}"  title="#i18n{document.manage_rules.tooltipDelete}" >
+			<i class="icon-trash icon-white"></i>
+			</a>
+		</td>
+    </tr>
+</#list>
+</tbody>
+</table>
+</fieldset>
+</div>
 </div>
 

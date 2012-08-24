@@ -1,54 +1,62 @@
 <#if space?exists>
-	<div class="content-box" >
-	   <form method="post" action="jsp/admin/plugins/document/DoModifySpace.jsp">
-	
-	        <h2>#i18n{document.modify_space.title}</h2>
-	        <p>
-	            <label for="name" >#i18n{document.modify_space.labelName}* :</label>
-	            <input type="text" name="name" id="name" tabindex="1" value="${space.name}" />
-	           
-	        </p>
-	        <p>
-	            <label for="description" >#i18n{document.modify_space.labelDescription}* :</label>
-	            <input type="text" name="description" id="description" tabindex="2"  value="${space.description}"/>
-	           
-	        </p>
-	        <p>
-	            <label for="view_type" >#i18n{document.modify_space.labelView} :</label>
-	            <@combo name="view_type" default_value="${view_type}" items=view_types_list />
-	           
-	        </p>
-	        <p>
-	            <label for="icon" >#i18n{document.modify_space.labelIcon} :</label>
-	            <@radioImageList name="icon" default_value="${space.idIcon}" items=icons_list />
-	        </p>
-	        <p>
-	        <label for="document_type">#i18n{document.modify_space.labelDocumentTypes} :</label>
-	        <br />
-	            <@checkboxList name="document_type" default_values="" items=document_types_list />
-	        </p>
-	        <p>
-			    <label for="workgroup">#i18n{document.modify_space.labelWorkgroup} : </label>
-			     <#if space.workgroup?exists>
-			     	<@combo name="workgroup_key"  items=user_workgroup_list default_value=space.workgroup />
-				<#else>
-					<@combo name="workgroup_key"  items=user_workgroup_list default_value="all" />
-				</#if>
-			</p>
-	      
-	        <p>
-	            <label for="allow_creation" >#i18n{document.modify_space.labelAllowCreation} :</label>
-	            <#if space.documentCreationAllowed >
-	                <input class="checkbox" type="checkbox" name="allow_creation" id="allow_creation" tabindex="5" checked />
-	            <#else>
-	                <input class="checkbox" type="checkbox" name="allow_creation" id="allow_creation" tabindex="5" />
-	            </#if>
-	            #i18n{document.modify_space.helpAllowCreation}
-	        </p>
-	        <input type="hidden" name="id_space" value="${space.id}" />
-	        <input type="hidden" name="id_parent_space" value="${space.idParent}" />
-	        <input type="submit" value="#i18n{document.modify_space.buttonModify}" class="button" />
-	        <input class="button" type="button" onclick="javascript:history.go(-1)" value="#i18n{portal.admin.message.buttonCancel}" />
-	    </form>
+<div class="row">
+<div class="container" >
+<form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoModifySpace.jsp">
+<fieldset>
+<legend>#i18n{document.modify_space.title}</legend>
+<div class="control-group">
+	<label class="control-label" for="name" >#i18n{document.modify_space.labelName}* :</label>
+	<div class="controls">
+	<input type="text" name="name" id="name" tabindex="1" value="${space.name}" />
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="description" >#i18n{document.modify_space.labelDescription}* :</label>
+<div class="controls">
+<input type="text" name="description" id="description" value="${space.description}" tabindex="2" />
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="view_type" >#i18n{document.modify_space.labelView} :</label>
+<div class="controls">
+<@combo name="view_type" default_value="${view_type}" items=view_types_list />
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="icon" >#i18n{document.modify_space.labelIcon} :</label>
+<@radioImageList name="icon" default_value="${space.idIcon}" items=icons_list />
+</div>
+<div class="control-group">
+<label class="control-label" for="document_type">#i18n{document.modify_space.labelDocumentTypes} :</label>
+<div class="controls">
+<@checkboxList name="document_type" default_values="" items=document_types_list />
+</div>
+</div>
+<div class="control-group">
+<div class="controls">
+	<#if space.workgroup?exists>
+		<@combo name="workgroup_key"  items=user_workgroup_list default_value=space.workgroup />
+	<#else>
+		<@combo name="workgroup_key"  items=user_workgroup_list default_value="all" />
+	</#if>
 	</div>
-</#if>	
+</div>
+<div class="control-group">
+<label class="control-label" for="allow_creation" >#i18n{document.modify_space.labelAllowCreation} :</label>
+<div class="controls">
+<label class="checkbox" for="allow_creation" >
+<input class="checkbox" type="checkbox" name="allow_creation" id="allow_creation" tabindex="5" <#if space.documentCreationAllowed>checked="checked"</#if> />#i18n{document.modify_space.labelAllowCreation}</label>
+<span class="help-text">#i18n{document.modify_space.helpAllowCreation}</span>
+</div>
+</div>
+<input type="hidden" name="id_space" value="${space.id}" />
+<input type="hidden" name="id_parent_space" value="${space.id}" />
+<div class="form-actions">
+<button class="btn btn-primary" type="submit" ><i class="icon-edit icon-white"></i>&nbsp;#i18n{document.modify_space.buttonModify}</button>
+<button class="btn" onclick="javascript:history.go(-1)" ><i class="icon-remove-sign"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+</div>
+</fieldset>
+</form>
+</div>
+</div>
+</#if>

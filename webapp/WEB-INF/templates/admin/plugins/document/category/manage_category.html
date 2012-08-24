@@ -1,35 +1,41 @@
-<div class="content-box">
-    <h2>#i18n{document.manage_category.boxTitle}</h2>
-	<table>
-        <tr>
+<form class="form-inline" method="post"  action="jsp/admin/plugins/document/CreateCategory.jsp">
+    <button class="btn btn-primary pull-right" type="submit" ><i class="icon-plus icon-white"></i><span class="hidden-phone">&nbsp;#i18n{document.manage_category.buttonLabelCreate}</span></button>
+</form>
+<div class="row">
+<div class="span12">
+<fieldset>
+<legend>#i18n{document.manage_category.boxTitle}</legend>
+<table class="table table-striped table-condensed">
+  <thead>
+            <tr>
             <th>#i18n{document.manage_category.columnTitleName}</th>
             <th>#i18n{document.manage_category.columnTitleDescription}</th>
             <th>#i18n{document.manage_category.columnTitleCountLinkedDocuments}</th>
 			<th>#i18n{document.manage_category.columnTitleActions}</th>
-        </tr>
+</tr>
+</thead>
+<tbody>
         <#if category_list?has_content >
 	        <#list category_list as categoryDisplay >
 	        <tr>
-	            <td><img src=${categoryDisplay.iconUrl!} width="24" height="24" alt="${(categoryDisplay.category).name}" />
-	            <a href="jsp/admin/plugins/document/ModifyCategory.jsp?category_id=${(categoryDisplay.category).id}">${(categoryDisplay.category).name}</a></td>
+	            <td><img class="img-polaroid thumblist" src=${categoryDisplay.iconUrl} alt="" /> ${(categoryDisplay.category).name}</td>
 	            <td>${(categoryDisplay.category).description!}</td>
 	            <td>${categoryDisplay.countLinkedDocuments!}
 	            </td>
 	            <td>
-	                <form method="post"  action="jsp/admin/plugins/document/RemoveCategory.jsp">
-	                    <input type="hidden" name="category_id"  value="${(categoryDisplay.category).id}" />
-	                    <input type="image" src="images/admin/skin/actions/delete.png"  
-	                    	style="border:0;vertical-align:bottom;" alt="#i18n{document.manage_category.linkLabelRemove}" 
-                    		title="#i18n{workgroup.manage_workgroups.linkLabelRemove}" />
-	                </form>
+				 <a href="jsp/admin/plugins/document/ModifyCategory.jsp?category_id=${(categoryDisplay.category).id}"class="btn btn-primary btn-mini pull-left" title="#i18n{document.manage_category.linkLabelEdit" >
+					<i class="icon-edit icon-white" ></i>
+				 </a>
+				<form method="post" class="form-inline pull-left" action="jsp/admin/plugins/document/RemoveCategory.jsp">
+	            <input type="hidden" name="category_id"  value="${(categoryDisplay.category).id}" />
+				<button type="submit" class="btn btn-danger btn-mini" title="#i18n{document.manage_category.linkLabelRemove}"><i class="icon-trash icon-white"></i></button>
+	            </form>
 	            </td>
 	        </tr>
 	        </#list>
         </#if>
+    </tbody>    
     </table>    
-   	<form method="post" action="jsp/admin/plugins/document/CreateCategory.jsp">
-        <p>
-        	<input type="submit" value="#i18n{document.manage_category.buttonLabelCreate}" class="button" />
-        </p>
-    </form>
+</fieldset>
+</div>
 </div>

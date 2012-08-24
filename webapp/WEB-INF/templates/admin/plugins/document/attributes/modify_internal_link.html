@@ -12,8 +12,9 @@ function linkservice_clear${attribute.code}() {
 	jQuery("#show_preview_${attribute.code}").html("&nbsp;");
 }
 </script>
-<p>
-<label for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
+
+<div class="control-group">
+		<label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
 <textarea id="${attribute.code}" name="${attribute.code}"
 	rows="5" cols="60" readonly="readonly" >${attribute.textValue}</textarea> <img
 	src="images/admin/skin/plugins/document/actions/linkservice.png"
@@ -27,14 +28,13 @@ function linkservice_clear${attribute.code}() {
 		style="border: none; display: none; width:16px"
 		alt="#i18n{document.attributeType.internallink.labelLinkServiceClear}"
 		title="#i18n{document.attributeType.internallink.labelLinkServiceClear}" />
-</p>
+
 <p id="show_preview_section_${attribute.code}" style="display: none;">
 <label	for="show_preview_${attribute.code}">&nbsp;</label>
-	<input type="button" class="button"
-	value="#i18n{document.attributeType.internallink.buttonShowPreview}"
-	onclick="javascript:document.getElementById('show_preview_${attribute.code}').innerHTML = document.getElementById('${attribute.code}').value + '&nbsp;'" /></label>
+	<button class="btn btn-primary" onclick="null" >null</button>
+	</label>
 <div id="show_preview_${attribute.code}">&nbsp;</div>
-</p>
+
 
 <script language="javascript" type="text/javascript">
 	document.getElementById('img_linkservice_${attribute.code}').style.display = "inline";

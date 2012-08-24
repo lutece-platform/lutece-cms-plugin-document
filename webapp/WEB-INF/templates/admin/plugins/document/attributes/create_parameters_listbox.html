@@ -26,15 +26,20 @@
 	</#list>
 </#if>
 
-<p>
-<label for="${items.name}_value" >${items.label} :</label>
-<input type="text" id="${items.name}_value" name="${items.name}_value" tabindex="6" />
-<input class="button" type="submit" name="add" value="#i18n{document.attributeType.listbox.btnAddItem}"
-	onclick="manageItems(1);return false;" tabindex="7" />
+
+<div class="control-group">
+		<label class="control-label" for="${items.name}_value" >${items.label} :</label>
+<div class="controls">
+	<input type="text" id="${items.name}_value" name="${items.name}_value" tabindex="6" />
+		</div>
+	</div>
+<button class="btn btn-primary" type="submit" >#i18n{document.attributeType.listbox.btnAddItem}</button>
+	
     ${items.description}
-</p>
-<p>
-    <label for="${items.name}_select" >&nbsp;</label>
+
+
+    <div class="control-group">
+		<label class="control-label" for="${items.name}_select" >&nbsp;</label>
 	<select id="${items.name}_select" name="${items.name}_select" size="4" style='width:200px;' tabindex="8">
 		<#list listValues as values >
 			<option value="${values}" >${values}</option>
@@ -46,18 +51,22 @@
    				<option value="${values}" selected="selected">${values}</option>
     		</#list>
 		</select>
-	</p>
-</p>
-<p>
-    <label for="items" >&nbsp;</label>
-    <input class="button" type="submit" name="delete" value="#i18n{document.attributeType.listbox.btnDelItem}" 
-    	onclick="manageItems(-1);return false;" tabindex="9" />
-	<input class="button" type="submit" name="bydefault" value="#i18n{document.attributeType.listbox.btnDefItem}" 
-		onclick="setByDefault('${items.name}_select');return false;" tabindex="10" />
+	
 
-<input type="text" id="${defaultValue.name}" name="${defaultValue.name}" 
+
+    <div class="control-group">
+		<label class="control-label" for="items" >&nbsp;</label>
+    <button class="btn btn-primary" type="submit" >#i18n{document.attributeType.listbox.btnDelItem}</button>
+	
+	<button class="btn btn-primary" type="submit" >#i18n{document.attributeType.listbox.btnDefItem}</button>
+	
+
+<div class="controls">
+	<input type="text" id="${defaultValue.name}" name="${defaultValue.name}" 
 	value="${valueDefaultValue!}" readonly="readonly" tabindex="11" />
-</p>
+		</div>
+	</div>
+
 
 <script type="text/javascript" src="js/selectbox.js"></script>
 <script type="text/javascript">

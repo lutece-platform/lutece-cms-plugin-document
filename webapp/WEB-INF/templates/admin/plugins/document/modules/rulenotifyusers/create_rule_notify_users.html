@@ -1,50 +1,50 @@
 <input type="hidden" name="rule_attribute_selected" value="">
-<p>
-    #i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText1} 
-    <em>
-    <#if id_space_source?exists> 
-    	${path_space_source}  
+<div class="controls">
+<p class="help-block">
+#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText1} 
+<#if id_space_source?exists> 
+    	<span class="label label-info">${path_space_source}</span> 
    		<input type="hidden" name="id_space_source" value="${id_space_source}">
     <#else>
-    	 #i18n{module.document.rulenotifyusers.create_rule_notify_users.noSpaceSelected}
+    	 <span class="label label-inverse">#i18n{module.document.rulenotifyusers.create_rule_notify_users.noSpaceSelected}</span> 
   	</#if>
-  	</em> 
-		<input class="button" type="button" name="select" onclick="selectSpace('id_space_source')" value=" #i18n{module.document.rulenotifyusers.create_rule_notify_users.buttonChoose}" />
-</p>
-<p>
-    #i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText2} 
+<button class="btn btn-primary" onclick="selectSpace('id_space_source')" > #i18n{module.document.rulenotifyusers.create_rule_notify_users.buttonChoose}</button>
+</p> 
+</div>
+<div class="controls">
+<p class="help-block">
+#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText2} 
     <#if id_state?exists>
-    	<@combo name="id_state" default_value="${id_state}" items=states_list />
+	<@combo name="id_state" default_value="${id_state}" items=states_list />
     <#else>	
-    	<@combo name="id_state" default_value="" items=states_list />
+	<@combo name="id_state" default_value="" items=states_list />
     </#if>
-</p>
-<p>
+</p> 
+</div>
+<div class="controls">
+<p class="help-block">
     #i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText3} 
     <#if id_mailinglist?exists>
-    	<@combo name="id_mailinglist" default_value="${id_mailinglist}" items=mailinglists_list />
+	<@combo name="id_mailinglist" default_value="${id_mailinglist}" items=mailinglists_list />
     <#else>
-    	<@combo name="id_mailinglist" default_value="" items=mailinglists_list />
+	<@combo name="id_mailinglist" default_value="" items=mailinglists_list />
     </#if>	
 </p>
-<p>
-    #i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText4} 
-    <#if message_template_key?exists >
-    	<@combo name="message_template_key" default_value="${message_template_key}" items=message_templates_list />
+</div>
+<div class="controls">
+<p class="help-block">
+#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText4} 
+ <#if message_template_key?exists >
+	<@combo name="message_template_key" default_value="${message_template_key}" items=message_templates_list />
     <#else>
-    	<@combo name="message_template_key" default_value="" items=message_templates_list />
-    </#if>	
+	<@combo name="message_template_key" default_value="" items=message_templates_list />
+</#if>
 </p>
-
+</div>	
 <script language="javascript">
-
- function selectSpace(select)
- {
- 	
+function selectSpace(select){
  	document.forms['createRule'].action='jsp/admin/plugins/document/SelectSpaceRule.jsp';
  	document.forms['createRule'].rule_attribute_selected.value=select;
  	document.forms['createRule'].submit();
- 	
- }
-
+}
 </script>

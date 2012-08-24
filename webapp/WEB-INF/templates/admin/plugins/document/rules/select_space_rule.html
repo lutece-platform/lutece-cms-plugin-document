@@ -1,20 +1,21 @@
-<div class="content-box" >
-    <h2>#i18n{document.select_space_rule.title}</h2>
-    <form name="formSelect" method="get" action="jsp/admin/plugins/document/DoSelectSpace.jsp" >
-   <div class="highlight-box" >
-			<p>
-				<#if submit_button_disabled >
-					#i18n{document.move_space.labelMove} :
-				</#if>
-				${spaces_browser}
-			</p>
-		</div>
-		<input type="submit" value="#i18n{document.select_space_rule.buttonSelect}" class="button" 
-			<#if submit_button_disabled >
-				disabled
-			</#if>
-		/>
-        <input class="button" type="button" onclick="this.form.action='jsp/admin/plugins/document/CreateRuleSession.jsp';this.form.submit();" value="#i18n{portal.admin.message.buttonCancel}" />
-    </form>
-    
+<div class="row" >
+<div class="container" >
+<fieldset>
+<legend>#i18n{document.select_space_rule.title}</legend>
+<form class="form-horizontal" name="formSelect" method="get" action="jsp/admin/plugins/document/DoSelectSpace.jsp" >
+	<div class="well" >
+	<div class="controls-group" >
+	<label class="control-label" for="">#i18n{document.move_space.labelMove}</label>
+	<div class="controls" >
+		${spaces_browser}
+	</div>
+	</div>
+	<div class="form-actions" >
+	<button class="btn btn-primary" <#if submit_button_disabled >disabled</#if> type="submit" >#i18n{document.select_space_rule.buttonSelect}</button>
+	<button class="btn btn-primary" onclick="javascript:history.back();" >#i18n{portal.admin.message.buttonCancel}</button>
+	</div>
+	</div>
+</form>
+</fieldset>
+</div>
 </div>

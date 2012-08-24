@@ -1,6 +1,7 @@
 <#if permission_comment>
-<div class="content-box">
-	<h2 class="clearfix">
+<div class="well">
+<fieldset>
+	<legend>
 	    <img src="${icon}" />
 	    <a href="${url}" >
 	        #i18n{module.document.comment.dashboard.labelComment}
@@ -13,8 +14,9 @@
 				</a>
 			</div>
 		</div>
-</div>
-    </h2>
+	</div>
+    </legend>
     <#include "comment_dashboard.html" />
+</fieldset>
 </div>
 </#if>

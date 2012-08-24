@@ -1,96 +1,55 @@
-<div id="left">
-    <div class="content-box" >
-        <table>
-            <tr>
-                <th>#i18n{document.preview_document.columnTitleId} -
-                    #i18n{document.preview_document.columnTitleTitle}
-                </th>
-            </tr>
-            <tr>
-                <td>
-                    ${document.id} - ${document.title} 
-                </td>
-            </tr>
-            <tr>
-                <th>#i18n{document.preview_document.columnTitleType}</th>
-            </tr>
-            <tr>
-                <td>${document.type}</td>
-            </tr>
-            <tr>
-                <th>#i18n{document.preview_document.columnTitleState}</th>
-            </tr>
-            <tr>
-                <td>${document.state}</td>
-            </tr>
-            <tr>
-                <th>#i18n{document.preview_document.columnTitleDateValidity}</th>
-            </tr>
-            <tr>
-                <td>
-                    <#assign dateBegin="">
-                    <#if document.dateValidityBegin?has_content>
-                        <#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
-                    </#if>    
-                    <#assign dateEnd="">
-                    <#if document.dateValidityEnd?has_content>
-                        <#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
-                    </#if>                        
-                    <#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
-                    <#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
-                    <#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
-                    <#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
-                
-                    <#if dateBegin?has_content && dateEnd?has_content>
-                        ${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}
-                    <#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
-                        #i18n{document.preview_document.labelDateValidityNotDefined}
-                    <#elseif dateBegin?has_content && !( dateEnd?has_content )>
-                        ${labelBeginSince} ${dateBegin} 
-                    <#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
-                        ${labelEndUntil} ${dateEnd} 
-                     </#if> 
-                    
-   
-                         
-                </td>
-            </tr>            
-            <tr>
-                <th>#i18n{document.preview_document.columnTitleDateCreation}</th>
-            </tr>
-            <tr>
-                <td>${document.dateCreation}</td>
-            </tr>
-            <tr>
-                <th>#i18n{document.preview_document.columnTitleDateModification}</th>
-            </tr>
-            <tr>
-                <td>${document.dateModification}</td>
-            </tr>
-            <tr>
-                <th>#i18n{document.preview_document.columnTitleActions}</th>
-            </tr>
-            <tr>
-                <td>
-                    <#list document.actions as action >
-	                    <#if action.url?has_content>
-						<a href="${action.url}id_document=${document.id}&id_action=${action.idAction}">
-						<img src="${action.iconUrl}" alt="${action.description}" title="${action.description}" />
-						</a>
-						</#if>
-                    </#list>
-					<a href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" >
-						<img src="images/admin/skin/plugins/document/actions/folder_go.png" style="width:24px;" alt="Accéder à l'espace" title="Accéder à l'espace" />
-					</a>
-                </td>
-            </tr>
-        </table>
-    </div>
+<div class="row">
+<div class="span4">
+<div class="well">            
+<fieldset>
+<legend><span class="badge badge-info">${document.id}</span>&nbsp;${document.title}</legend>
+<p class="label label-inverse"><i class="fam-page-white-coldfusion"></i> #i18n{document.preview_document.columnTitleType}: ${document.type}</p>
+<p class="label label-inverse"><i class="fam-help"></i> #i18n{document.preview_document.columnTitleState}:&nbsp;${document.state}</p>
+<p class="label label-inverse"><i class="fam-date-add"></i> #i18n{document.preview_document.columnTitleDateCreation} : <small>${document.dateCreation}</small></p> 
+<p class="label label-inverse"><i class="fam-date-add"></i> #i18n{document.preview_document.columnTitleDateModification} : <small>${document.dateModification}</small></p>
+</fieldset>
+<fieldset>
+<legend>#i18n{document.preview_document.columnTitleDateValidity}</legend>
+<#assign dateBegin="">
+<#if document.dateValidityBegin?has_content>
+    <#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
+</#if>    
+<#assign dateEnd="">
+<#if document.dateValidityEnd?has_content>
+	<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
+</#if>                        
+<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
+<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
+<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
+<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
+<#if dateBegin?has_content && dateEnd?has_content>
+	<p><i class="fam-calendar-add"></i>${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
+<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
+	<p class="label label-warning">#i18n{document.preview_document.labelDateValidityNotDefined}</p>
+<#elseif dateBegin?has_content && !( dateEnd?has_content )>
+	<p><i class="fam-date-previous"></i>${labelBeginSince} ${dateBegin}</p>
+<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
+	<p><i class="fam-date"></i>${labelEndUntil} ${dateEnd}</p> 
+</#if> 
+</p>                    
+
+</fieldset>
+<fieldset>
+<legend>#i18n{document.preview_document.columnTitleActions}</legend>
+<#list document.actions  as action >
+	<#if action.url?has_content>
+	<a class="btn btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+	<i class="${action.iconUrl}"></i>
+	</a>
+	</#if>  
+</#list>
+	<a class="btn btn-mini" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="Acc�der � l'espace" >
+		<i class="fam-folder-page-white"></i> 
+	</a>
+</fieldset>
 </div>
-
-<div id="right">
-
-    <div class="content-box" >
-        ${preview}
-    </div>    
+</div>
+<div class="span8">
+${preview}
+</div>
 </div>

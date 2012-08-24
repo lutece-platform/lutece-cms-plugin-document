@@ -1,10 +1,15 @@
-<div class="content-box" >
-    <h2>#i18n{document.create_rule.title}</h2>
-  <form method="post" name="createRule" action="jsp/admin/plugins/document/DoCreateRule.jsp">
-        <input type="hidden" name="id_rule_type" value="${rule_type_id}">
-        ${create_form}
-    
-        <input type="submit" value="#i18n{document.create_rule.buttonCreate}" class="button" />
-        <input type="submit" class="button" name="cancel"   value="#i18n{portal.admin.message.buttonCancel}" />
-    </form>
+<div class="row" >
+<div class="container" >
+<fieldset>
+<legend>#i18n{document.create_rule.title}</legend>
+<form class="form-horizontal" method="post" name="createRule" action="jsp/admin/plugins/document/DoCreateRule.jsp">
+<input type="hidden" name="id_rule_type" value="${rule_type_id}">
+${create_form}
+<div class="form-actions">
+<button class="btn btn-primary" type="submit" ><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.create_rule.buttonCreate}</button>
+<button class="btn " type="submit" ><i class="icon-repeat"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+</div>
+</form>
+</fieldset>
+</div>    
 </div>    

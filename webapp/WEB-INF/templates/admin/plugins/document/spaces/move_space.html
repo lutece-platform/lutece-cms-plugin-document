@@ -1,22 +1,25 @@
-<div class="content-box" >
+<div class="row" >
     
-    <h2>#i18n{document.move_space.title} ${space.name}</h2>
-    <form name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveSpace.jsp" enctype="multipart/form-data" >
+    <legend>#i18n{document.move_space.title} ${space.name}</legend>
+    <form class="form-horizontal" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveSpace.jsp" enctype="multipart/form-data" >
+	<fieldset>
     	<input type="hidden" name="id_space" value="${space.id}" />
-		<div class="highlight-box" >
-			<p>
+		<div class="well" >
+			
 				<#if submit_button_disabled >
 					#i18n{document.move_space.labelMove} :
 				</#if>
 				${spaces_browser}
-			</p>
+			
 		</div>
-		<input type="submit" value="#i18n{document.move_space.buttonMove}" class="button" 
-			<#if submit_button_disabled >
+		<button class="btn btn-primary" type="submit" >#i18n{document.move_space.buttonMove}</button>
+	
 				disabled
 			</#if>
 		/>
-        <input class="button" type="button" onclick="this.form.action='jsp/admin/plugins/document/ManageDocuments.jsp';this.form.submit();" value="#i18n{portal.admin.message.buttonCancel}" />
-    </form>
+        <button class="btn btn-primary" onclick="this.form.action='jsp/admin/plugins/document/ManageDocuments.jsp';this.form.submit();" >#i18n{portal.admin.message.buttonCancel}</button>
+	
+    </fieldset>
+</form>
     
 </div>
