@@ -92,6 +92,14 @@ public interface IDocumentAttributeDAO
     void selectAttributesByDocumentType( DocumentType documentType );
 
     /**
+     * Get all attributes of document type
+         *
+     * @param codeDocumentType The code document Type
+     * @return listDocumentAttributes The list of all attributes of selected code document type
+     */
+    List<DocumentAttribute> selectAllAttributesOfDocumentType( String codeDocumentType );
+
+    /**
      * Update the record in the table
      *
      * @param documentAttribute The document attribute

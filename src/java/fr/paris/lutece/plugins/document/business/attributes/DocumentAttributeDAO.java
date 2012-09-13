@@ -61,6 +61,10 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
         " a.document_type_attr_name, a.description, a.attr_order, a.required, a.searchable " +
         " FROM document_type_attr a, document_attr_type b" + " WHERE a.code_attr_type =  b.code_attr_type" +
         " AND a.id_document_attr = ? ";
+    private static final String SQL_QUERY_SELECTALL_ATTRIBUTES_OF_DOCUMENT_TYPE = " SELECT DISTINCT a.id_document_attr, " +
+        " a.code_document_type, a.code_attr_type, a.code, " +
+        " a.document_type_attr_name, a.description, a.attr_order, a.required, a.searchable " +
+        " FROM document_type_attr a" + " WHERE a.code_document_type = ?" + " ORDER BY  a.attr_order";
     private static final String SQL_QUERY_INSERT_PARAMETER_VALUES = "INSERT INTO document_type_attr_parameters ( id_document_attr, parameter_name, id_list_parameter, parameter_value )" +
         "VALUES ( ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_SELECT_PARAMETERS = "SELECT DISTINCT parameter_name FROM document_type_attr_parameters WHERE id_document_attr = ? ";
@@ -251,6 +255,38 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
         }
 
         daoUtil.free(  );
+    }
+
+    /**
+     * Get all attributes of document type
+     * @param codeDocumentType The code document Type
+     * @return listDocumentAttributes The list of all attributes of selected code document type
+     */
+    public List<DocumentAttribute> selectAllAttributesOfDocumentType( String codeDocumentType )
+    {
+        List<DocumentAttribute> listDocumentAttributes = new ArrayList<DocumentAttribute>(  );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ATTRIBUTES_OF_DOCUMENT_TYPE );
+        daoUtil.setString( 1, codeDocumentType );
+        daoUtil.executeQuery(  );
+
+        while ( daoUtil.next(  ) )
+        {
+            DocumentAttribute documentAttribute = new DocumentAttribute(  );
+            documentAttribute.setId( daoUtil.getInt( 1 ) );
+            documentAttribute.setCodeDocumentType( daoUtil.getString( 2 ) );
+            documentAttribute.setCodeAttributeType( daoUtil.getString( 3 ) );
+            documentAttribute.setCode( daoUtil.getString( 4 ) );
+            documentAttribute.setName( daoUtil.getString( 5 ) );
+            documentAttribute.setDescription( daoUtil.getString( 6 ) );
+            documentAttribute.setAttributeOrder( daoUtil.getInt( 7 ) );
+            documentAttribute.setRequired( daoUtil.getInt( 8 ) != 0 );
+            documentAttribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
+            listDocumentAttributes.add( documentAttribute );
+        }
+
+        daoUtil.free(  );
+
+        return listDocumentAttributes;
     }
 
     // Parameters

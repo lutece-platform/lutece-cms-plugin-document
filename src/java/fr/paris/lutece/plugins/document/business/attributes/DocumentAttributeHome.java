@@ -117,6 +117,16 @@ public final class DocumentAttributeHome
     }
 
     /**
+     * Get all attributes of document type
+     * @param codeDocumentType The code document Type
+     * @return listDocumentAttributes The list of all attributes of selected code document type
+     */
+    public static List<DocumentAttribute> selectAllAttributesOfDocumentType( String codeDocumentType )
+    {
+        return _dao.selectAllAttributesOfDocumentType( codeDocumentType );
+    }
+
+    /**
      *
      * @param nAttributeId
      * @param locale
