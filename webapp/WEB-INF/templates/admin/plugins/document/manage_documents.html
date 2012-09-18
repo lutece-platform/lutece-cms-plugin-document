@@ -105,7 +105,7 @@
                         <td>
                             <#list document.actions?reverse  as action >
                             <#if action.url?has_content>
-                            <a class="btn btn-mini <#if action.idAction!=1>btn-primary<#else>btn-danger</#if>" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+                            <a class="btn btn-mini <#if action.idAction==1 || action.idAction==6>btn-danger<#elseif action.idAction==4 || action.idAction==12>btn-success<#else>btn-primary</#if>" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
                                 <i class="${action.iconUrl} icon-white"></i>
                             </a>
                             </#if>  

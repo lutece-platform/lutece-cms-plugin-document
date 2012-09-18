@@ -38,13 +38,13 @@
 <legend>#i18n{document.preview_document.columnTitleActions}</legend>
 <#list document.actions  as action >
 	<#if action.url?has_content>
-	<a class="btn btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
-	<i class="${action.iconUrl}"></i>
+	<a class="btn btn-mini <#if action.idAction==1 || action.idAction==6>btn-danger<#elseif action.idAction==4 || action.idAction==12>btn-success<#else>btn-primary</#if>" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+		<i class="${action.iconUrl} icon-white"></i>
 	</a>
 	</#if>  
 </#list>
-	<a class="btn btn-mini" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="Accéder à l'espace" >
-		<i class="fam-folder-page-white"></i> 
+	<a class="btn btn-mini btn-primary" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="Accéder à l'espace" >
+		<i class="icon-folder-open icon-white"></i> 
 	</a>
 </fieldset>
 </div>
