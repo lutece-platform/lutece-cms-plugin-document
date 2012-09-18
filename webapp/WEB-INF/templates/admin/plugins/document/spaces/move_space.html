@@ -1,25 +1,16 @@
 <div class="row" >
-    
-    <legend>#i18n{document.move_space.title} ${space.name}</legend>
-    <form class="form-horizontal" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveSpace.jsp" enctype="multipart/form-data" >
+	<div class="span12">
 	<fieldset>
-    	<input type="hidden" name="id_space" value="${space.id}" />
-		<div class="well" >
-			
-				<#if submit_button_disabled >
-					#i18n{document.move_space.labelMove} :
-				</#if>
-				${spaces_browser}
-			
+	<legend>#i18n{document.move_space.title} ${space.name}</legend>
+		<form class="form-horizontal" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveSpace.jsp" enctype="multipart/form-data" >
+		<input type="hidden" name="id_space" value="${space.id}" />
+		<div class="well">
+			<#if submit_button_disabled >#i18n{document.move_space.labelMove} :	</#if>
+			${spaces_browser}
 		</div>
-		<button class="btn btn-primary" type="submit" >#i18n{document.move_space.buttonMove}</button>
-	
-				disabled
-			</#if>
-		/>
-        <button class="btn btn-primary" onclick="this.form.action='jsp/admin/plugins/document/ManageDocuments.jsp';this.form.submit();" >#i18n{portal.admin.message.buttonCancel}</button>
-	
-    </fieldset>
-</form>
-    
+		<button class="btn btn-primary" type="submit" <#if submit_button_disabled > disabled</#if> >#i18n{document.move_space.buttonMove}</button>
+		<button class="btn btn-primary" type="button" onclick="this.form.action='jsp/admin/plugins/document/ManageDocuments.jsp';this.form.submit();" >#i18n{portal.admin.message.buttonCancel}</button>
+		</form>
+	</fieldset>
+	</div>
 </div>
