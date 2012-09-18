@@ -1,6 +1,5 @@
-<div class="container-fluid">
-    <div class="row-fluid">
-        <div class="span3 well">
+<div class="row">
+	<div class="span3 well">
             <fieldset>
                 <legend>#i18n{document.manage_documents.labelSpaces}</legend>
                 ${spaces_tree}
@@ -10,7 +9,8 @@
                 <legend>#i18n{document.manage_documents.labelActions}</legend>
 
                 <#list space_actions_list as space_action>
-                <a href="${space_action.url}?id_space=${space.id}" alt="${space_action.description}" title="${space_action.description}" class="btn btn-mini"><i class="${space_action.iconUrl}"></i></a>
+                <a href="${space_action.url}?id_space=${space.id}" alt="${space_action.description}" title="${space_action.description}" class="btn btn-mini btn-primary">
+					<i class="${space_action.iconUrl} icon-white"></i></a>
                 </#list>
                 </#if>
             </fieldset>
@@ -19,15 +19,16 @@
             <#if space?has_content >
             <#if space.documentCreationAllowed >
             <#if document_types_list?has_content >
-            <div class="well">
-                <form class="form-inline" method="post" name="SearchDocumentById" action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
-                    #i18n{document.manage_documents.labelSearchById}<input type="text" name="id_document" class="input-mini" maxlength="10" />
-                    <button class="btn btn-info" type="submit" ><i class="icon-search icon-white"></i><!--&nbsp;#i18n{document.manage_documents.buttonSearch}--></button>
+            <div class="well well-small">
+                <form class="form-inline pull-right" method="post" name="SearchDocumentById" action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
+                    <input type="text" name="id_document" class="input-xlarge"  maxlength="10" />
+                    <button class="btn btn-primary" type="submit" ><i class="icon-search icon-white"></i><!--&nbsp;#i18n{document.manage_documents.buttonSearch}--></button>
+					<p class="help-block">#i18n{document.manage_documents.labelSearchById}</p>
                 </form>
-
                 <form class="form-inline" method="post" name="FullTextSearchDocument" action="jsp/admin/plugins/document/DocumentSearch.jsp">
-                    #i18n{document.manage_documents.labelFullTextSearch}<input type="text" name="query" class="input-normal" maxlength="50" />
-                    <button class="btn btn-info" type="submit" ><i class="icon-search icon-white"></i><!--&nbsp;#i18n{document.manage_documents.buttonSearch}--></button>
+                    <input type="text" name="query" class="input-xlarge" maxlength="50" />
+                    <button class="btn btn-primary" type="submit" ><i class="icon-search icon-white"></i><!--&nbsp;#i18n{document.manage_documents.buttonSearch}--></button>
+					<p class="help-block">#i18n{document.manage_documents.labelFullTextSearch}</p>
                 </form>
             </div>
             </#if>
@@ -39,7 +40,7 @@
                     <form class="form-inline pull-right" method="post" name="CreateDocument" action="jsp/admin/plugins/document/CreateDocument.jsp" >
                         <!--#i18n{document.manage_documents.labelCreate} :-->
                         <@combo name="document_type_code" default_value="" items=document_types_list />
-                        <button class="btn btn-info" type="submit" ><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.manage_documents.buttonCreate}</button>
+                        <button class="btn btn-primary" type="submit" ><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.manage_documents.buttonCreate}</button>
                     </form>
                     </#if>
                     </#if>
@@ -50,7 +51,7 @@
                     <@combo name="document_type_code_filter" default_value="${default_document_type}" items=document_types_filter_list />
                     <label>#i18n{document.manage_documents.labelState} :</label>
                     <@combo name="id_state_filter" default_value="${default_state}" items=states_filter_list />
-                    <button class="btn btn-info" type="submit" ><i class="icon-filter icon-white"></i>&nbsp;#i18n{document.manage_documents.buttonFilter}</button>
+                    <button class="btn btn-primary" type="submit" ><i class="icon-filter icon-white"></i>&nbsp;#i18n{document.manage_documents.buttonFilter}</button>
                 </form>
             </fieldset>
             <#if documents_list?size = 0 >
@@ -60,9 +61,20 @@
                 <form class="form-inline"  method="post" action="jsp/admin/plugins/document/ManageDocuments.jsp">
                     <label>#i18n{document.manage_documents.labelViewType} :</label>
                     <@combo name="view_type" default_value="${view_type}" items=view_types_list />
-                    <button class="btn btn-info" type="submit" ><i class="icon-ok icon-white"></i></button>
+                    <button class="btn btn-primary" type="submit" ><i class="icon-ok icon-white"></i></button>
                 </form>
             </fieldset>
+			 <p>
+                <select id="selection" name="selection">
+                            <option value="validate">#i18n{document.manage_document.validate}</option>
+                            <option value="submit">#i18n{document.manage_document.submit}</option>
+                            <option value="refuse">#i18n{document.manage_document.refuse}</option>
+                            <option value="remove">#i18n{document.manage_document.remove}</option>
+                            <option value="archive">#i18n{document.manage_document.archive}</option>
+                            <option value="unarchive">#i18n{document.manage_document.unarchive}</option>
+                        </select>
+                        <button class="btn btn-primary" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{document.manage_documents.applyToSelection}</button>					
+                </p>
             <#if view_type = "detail" >
             <form class="form-horizontal" id="documents_form" name="documents_form" method="post" action="jsp/admin/plugins/document/DoActionSelectionDocument.jsp">
                 <table class="table table-striped table-condensed">
@@ -91,10 +103,10 @@
                             </#if>
                         </td>
                         <td>
-                            <#list document.actions  as action >
+                            <#list document.actions?reverse  as action >
                             <#if action.url?has_content>
-                            <a class="btn btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
-                                <i class="${action.iconUrl}"></i>
+                            <a class="btn btn-mini <#if action.idAction!=1>btn-primary<#else>btn-danger</#if>" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+                                <i class="${action.iconUrl} icon-white"></i>
                             </a>
                             </#if>  
                             </#list>
@@ -102,11 +114,8 @@
                     </tr>
                     </#list>
                 </table>
-
-                <div class="controls-group">
-                    <div class="controls">
-                        <label>#i18n{document.manage_documents.applyToSelection}</label>
-                        <select id="selection" name="selection">
+                <p>
+                <select id="selection" name="selection">
                             <option value="validate">#i18n{document.manage_document.validate}</option>
                             <option value="submit">#i18n{document.manage_document.submit}</option>
                             <option value="refuse">#i18n{document.manage_document.refuse}</option>
@@ -115,8 +124,7 @@
                             <option value="unarchive">#i18n{document.manage_document.unarchive}</option>
                         </select>
                         <button class="btn btn-primary" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{document.manage_documents.applyToSelection}</button>					
-                    </div>
-                </div>
+                </p>
             </form>
             </fieldset> 
             </#if>
@@ -168,7 +176,6 @@
                 </#if>
                 </#if>
             </fieldset>
-        </div>
     </div>
 </div>
 <script src="js/jquery/plugins/ui/jstree/jquery.jstree.js"></script>
@@ -193,7 +200,7 @@
                 "select_limit" : 1,
             },
             "themes" : {
-                "theme" : "classic",
+                "theme" : "default",
                 "icons" : false
             },
             "cookies" : {
