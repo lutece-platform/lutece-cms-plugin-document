@@ -2,21 +2,13 @@
 <div class="well">
 <fieldset>
 	<legend>
-	    <img src="${icon}" />
-	    <a href="${url}" >
-	        #i18n{module.document.comment.dashboard.labelComment}
-	    </a>
-	    <div class="btn-toolbar pull-right">
-		<div class="btn-group">
-			<div class="btn btn-info">
-				<a href="jsp/admin/AdminMenu.jsp#top" title="#i18n{module.document.comment.dashboard.top}">
-				<i class="icon-circle-arrow-up icon-white"></i>
-				</a>
-			</div>
+	    <img src="${icon}" title="logo #i18n{module.document.comment.dashboard.labelComment}" alt="logo #i18n{module.document.comment.dashboard.labelComment}"/>
+	    <a href="${url}" title="#i18n{module.document.comment.dashboard.labelComment}"> #i18n{module.document.comment.dashboard.labelComment} </a>
+		<div class="pull-right">
+			<a href="jsp/admin/AdminMenu.jsp#top" title="#i18n{document.dashboard.top}"><i class="icon-arrow-up"></i></a>
 		</div>
-	</div>
     </legend>
-    <#include "comment_dashboard.html" />
+     <#include "comment_dashboard.html" />
 </fieldset>
 </div>
 </#if>

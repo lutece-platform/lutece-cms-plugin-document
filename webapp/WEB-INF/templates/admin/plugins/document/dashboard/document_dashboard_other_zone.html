@@ -1,19 +1,11 @@
 <div class="well">
 <fieldset>
 	<legend>
-	    <img src="${icon}" />
-	    <a href="${url}" >
-	        #i18n{document.dashboard.labelDocument}
-	    </a>
-		<div class="btn-toolbar pull-right">
-		<div class="btn-group">
-			<div class="btn btn-info">
-				<a href="jsp/admin/AdminMenu.jsp#top" title="#i18n{document.dashboard.top}">
-				<i class="icon-circle-arrow-up icon-white"></i>
-				</a>
-			</div>
+	    <img src="${icon}" title="logo #i18n{document.dashboard.labelDocument}" alt="logo #i18n{document.dashboard.labelDocument}"/>
+	    <a href="${url}" title="#i18n{document.dashboard.labelDocument}"> #i18n{document.dashboard.labelDocument} </a>
+		<div class="pull-right">
+			<a href="jsp/admin/AdminMenu.jsp#top" title="#i18n{document.dashboard.top}"><i class="icon-arrow-up"></i></a>
 		</div>
-	</div>
     </legend>
     <#include "document_dashboard.html" />
 </fieldset>
