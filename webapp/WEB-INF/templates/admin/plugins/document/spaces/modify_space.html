@@ -50,10 +50,10 @@
 </div>
 </div>
 <input type="hidden" name="id_space" value="${space.id}" />
-<input type="hidden" name="id_parent_space" value="${parent_space.id}" />
+<input type="hidden" name="id_parent_space" value="${space.idParent}" />
 <div class="form-actions">
 <button class="btn btn-primary" type="submit" ><i class="icon-edit icon-white"></i>&nbsp;#i18n{document.modify_space.buttonModify}</button>
-<button class="btn" onclick="javascript:window.history.go(-1)" ><i class="icon-remove-sign"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+<button class="btn" onclick="javascript:window.history.go(-1)" type="button" ><i class="icon-remove-sign"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
 </div>
 </fieldset>
 </form>
