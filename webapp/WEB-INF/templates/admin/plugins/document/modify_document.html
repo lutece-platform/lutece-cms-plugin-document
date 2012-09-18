@@ -56,7 +56,7 @@ ${extendableResourceActionsHtml!}
 </label>
 </div>
 <div class="controls">
-<@combo name="mailinglists" default_value="" items=mailinglists_list />
+<@comboWithParams name="mailinglists" default_value="" items=mailinglists_list additionnalParameters=class=\"span2\" />
 </div>
 <#else>
 <em>#i18n{document.modify_document.messageNotificationListNotExist}</em>
