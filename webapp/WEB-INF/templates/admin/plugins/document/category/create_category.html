@@ -1,36 +1,38 @@
-<div class="container">
-<div class="row">
-<fieldset>
-<legend>#i18n{document.create_category.boxTitle}</legend>
-<form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoCreateCategory.jsp" enctype="multipart/form-data" >
-<div class="control-group">
-<div class="controls">
-	<label for="category_name">#i18n{document.create_category.labelName} * :</label>
-	<input type="text" id="category_name" name="category_name" maxlength="100" />
-</div>
-</div>
-<div class="control-group">
-<div class="controls">
-	<label for="category_description">#i18n{document.create_category.labelDescription} * :</label>
-	<input type="text" id="category_description" name="category_description" value="" size="50" maxlength="255" />
-</div>
-</div>
-<div class="control-group">
-<div class="controls">
-	<label for="workgroup_key">#i18n{document.create_category.labelWorkgroup} : </label>		     
-	<@combo name="workgroup_key" items=user_workgroup_list default_value="${selected_workgroup}" />
-</div>
-</div>
-<div class="control-group">
-	<div class="controls">
-        <label for="category_icon">#i18n{document.create_category.labelIcon} :</label>
-        <input type="file" id="category_icon" name="category_icon" size="32" value="" />
+<div class="row-fluid">
+	<div class="span12">
+	<fieldset>
+	<legend>#i18n{document.create_category.boxTitle}</legend>
+		<form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoCreateCategory.jsp" enctype="multipart/form-data" >
+		<div class="control-group">
+		<label class="label-group" for="category_name">#i18n{document.create_category.labelName} * :</label>
+			<div class="controls">
+				<input type="text" id="category_name" name="category_name" maxlength="100" />
+			</div>
+		</div>
+		<div class="control-group">
+		<label class="label-group" for="category_description">#i18n{document.create_category.labelDescription} * :</label>
+			<div class="controls">
+				<input type="text" id="category_description" name="category_description" value="" class="input-xlarge" maxlength="255" />
+			</div>
+		</div>
+		<div class="control-group">
+		<label class="label-group" for="workgroup_key">#i18n{document.create_category.labelWorkgroup} : </label>		     
+			<div class="controls">
+				<@combo name="workgroup_key" items=user_workgroup_list default_value="${selected_workgroup}" />
+			</div>
+		</div>
+		<div class="control-group">
+		<label class="label-group" for="category_icon">#i18n{document.create_category.labelIcon} :</label>
+			<div class="controls">
+				<input type="file" id="category_icon" name="category_icon" class="input-large" value="" />
+			</div>
+		</div>
+		<div class="form-actions">
+			<button class="btn btn-primary" type="submit"><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.create_category.buttonLabelCreate}</button>
+			<button class="btn btn-primary" type="button" onclick="javascript:history.go(-1);"><i class="icon-remove-circle icon-white"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+		</div>
+		</form>
+	</fieldset>
 	</div>
-</div>
-<div class="form-actions">
-	<button class="btn btn-primary" type="submit"><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.create_category.buttonLabelCreate}</button>
-	<button class="btn" type="button" onclick="javascript:history.go(-1)"><i class="icon-repeat"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
-</div>
-</form>
 </div>
 

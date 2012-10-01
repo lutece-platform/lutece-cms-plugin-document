@@ -1,8 +1,7 @@
 <#include "/admin/util/editor/editor.html" />
 ${extendableResourceActionsHtml!}
 <#escape x as x?html>
-<div class="row">
-<div class="container">
+<div class="row-fluid">
 <div class="span3">
 <form method="post" action="jsp/admin/plugins/document/DoModifyDocument.jsp" enctype="multipart/form-data" >
 <input type="hidden" name="id_document" value="${document.id}" />
@@ -99,7 +98,6 @@ ${extendableResourceActionsHtml!}
 </fieldset>
 
 </form>
-</div>
 </div>
 </div>
 
