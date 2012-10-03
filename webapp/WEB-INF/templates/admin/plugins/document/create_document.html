@@ -9,12 +9,18 @@
 <legend>#i18n{document.create_document.advancedPropertiesTitle}</legend>
 <div class="control-group">  
 <label class="control-group" >#i18n{document.create_document.labelDocumentValidity}</label>
-<div class="controls">
-<label for="document_validity_begin">#i18n{document.create_document.labelDocumentValidityBegin}</label>
-<input type="text" class="input-small" name="document_validity_begin" id="document_validity_begin" />
-<label for="document_validity_begin">#i18n{document.create_document.labelDocumentValidityEnd}</label> 
-<input type="text" class="input-small"  name="document_validity_end" id="document_validity_end" />
-</div>
+	<div class="controls">
+		<label for="document_validity_begin">#i18n{document.create_document.labelDocumentValidityBegin}</label>
+		<div class="input-append">
+			<input type="text" class="input-small" name="document_validity_begin" id="document_validity_begin" />
+			<span class="add-on"><i class="icon-calendar"></i></span>
+		</div>
+		<label for="document_validity_begin">#i18n{document.create_document.labelDocumentValidityEnd}</label> 
+		<div class="input-append">
+			<input type="text" class="input-small"  name="document_validity_end" id="document_validity_end" />
+			<span class="add-on"><i class="icon-calendar"></i></span>
+		</div>
+	</div>
 </div>
 <div class="control-group">
 <label class="control-label" for="document_page_template">#i18n{document.create_document.labelDocumentPageTemplate} : </label>
@@ -97,7 +103,6 @@
 </div>
 </div>
 </#escape>
-
-<script src="js/jquery/plugins/ui/datepicker/ui.datepicker.js"></script>
-<script src="js/jquery/plugins/ui/datepicker/ui.datepicker-fr.js"></script>
+<script src="js/jquery/plugins/ui/jquery-ui-1.8.16.custom.min.js"></script>
+<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <@getDatePickerRange idFieldFrom="document_validity_begin" idFieldTo="document_validity_end" language=locale />
