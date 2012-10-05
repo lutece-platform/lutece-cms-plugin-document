@@ -37,9 +37,8 @@
     </div>
     <div class="span8">
 		<#if space?has_content >
-            <fieldset>
-                <legend>
-					#i18n{document.manage_documents.listTitle}
+		<p class="lead">
+         	#i18n{document.manage_documents.listTitle}
                     <#if space.documentCreationAllowed >
 						<#if document_types_list?has_content >
 							<form class="form-inline pull-right" method="post" name="CreateDocument" action="jsp/admin/plugins/document/CreateDocument.jsp" >
@@ -67,7 +66,7 @@
 								</button>
 							</form>
 					</#if>
-                </legend>
+                </p>
             <#if documents_list?size = 0 >
                 <p class="label label-warning">#i18n{document.manage_documents.noDocument}</p>
             <#else>
@@ -136,11 +135,11 @@
 						<button class="btn btn-primary" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{document.manage_documents.applyToSelection}</button>					
 					</p>
 				</form>
-				</fieldset> 
-				</#if>
-				<#if view_type = "thumbnail">
-				<ul class="thumbnails">
-					<#list documents_list as document >
+		
+			</#if>
+			<#if view_type = "thumbnail">
+			<ul class="thumbnails">
+				<#list documents_list as document >
 					<li class="span4">
 						<div class="thumbnail">
 							<img src="${document.thumbnail}" alt="${document.title}" title="${document.title}" />

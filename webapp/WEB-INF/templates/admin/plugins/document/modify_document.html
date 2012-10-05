@@ -2,37 +2,38 @@
 ${extendableResourceActionsHtml!}
 <#escape x as x?html>
 <div class="row-fluid">
-<div class="span3">
-<form method="post" action="jsp/admin/plugins/document/DoModifyDocument.jsp" enctype="multipart/form-data" >
-<input type="hidden" name="id_document" value="${document.id}" />
-<input type="hidden" name="id_state" value="${id_state}" />  
-<div class="well">            
-<fieldset>
-<legend>#i18n{document.modify_document.advancedPropertiesTitle}</legend>
-<div class="control-group">  
-<label class="control-group" >#i18n{document.modify_document.labelDocumentValidity}</label>
-<div class="controls">
-<label for="document_validity_begin">#i18n{document.modify_document.labelDocumentValidityBegin}</label>
-<input type="text" class="input-small" name="document_validity_begin" id="document_validity_begin" value="${date_validity_begin}" />
-<label for="document_validity_begin">#i18n{document.modify_document.labelDocumentValidityEnd}</label> 
-<input type="text" class="input-small"  name="document_validity_end" id="document_validity_end" value="${date_validity_end}"  />
-</div>
-</div>
-<div class="control-group">
-<label class="control-label" for="document_page_template">#i18n{document.modify_document.labelDocumentPageTemplate} : </label>
-<div class="controls">
-<ul><#noescape>${page_template_list}</#noescape> </ul>
-<p class="help-block">#i18n{document.modify_document.helpDocumentPageTemplate}</p>
-</div>
-</div>
-<div class="control-group">
-<label class="control-label" for="document_comment">#i18n{document.modify_document.labelDocumentComment} : </label>
-<div class="controls">
-<textarea type="text" name="document_comment" id="document_comment" cols="60" rows="2" >${document.comment}</textarea> 
-<p class="help-block">#i18n{document.modify_document.helpDocumentComment}</p>
-</div>
-</div>
-</div>
+	<div class="span3">
+	<form method="post" action="jsp/admin/plugins/document/DoModifyDocument.jsp" enctype="multipart/form-data" >
+	<input type="hidden" name="id_document" value="${document.id}" />
+	<input type="hidden" name="id_state" value="${id_state}" />  
+	<div class="well">            
+		<fieldset>
+		<legend>#i18n{document.modify_document.advancedPropertiesTitle}</legend>
+		<div class="control-group">  
+		<label class="control-group" >#i18n{document.modify_document.labelDocumentValidity}</label>
+			<div class="controls">
+				<label for="document_validity_begin">#i18n{document.modify_document.labelDocumentValidityBegin}</label>
+					<input type="text" class="input-small" name="document_validity_begin" id="document_validity_begin" value="${date_validity_begin}" />
+				<label for="document_validity_begin">#i18n{document.modify_document.labelDocumentValidityEnd}</label> 
+					<input type="text" class="input-small"  name="document_validity_end" id="document_validity_end" value="${date_validity_end}"  />
+			</div>
+		</div>
+		<div class="control-group">
+		<label class="control-label" for="document_page_template">#i18n{document.modify_document.labelDocumentPageTemplate} : </label>
+		<div class="controls">
+		<ul><#noescape>${page_template_list}</#noescape> </ul>
+		<p class="help-block">#i18n{document.modify_document.helpDocumentPageTemplate}</p>
+		</div>
+		</div>
+		<div class="control-group">
+		<label class="control-label" for="document_comment">#i18n{document.modify_document.labelDocumentComment} : </label>
+		<div class="controls">
+		<textarea type="text" name="document_comment" id="document_comment" cols="60" rows="2" >${document.comment}</textarea> 
+		<p class="help-block">#i18n{document.modify_document.helpDocumentComment}</p>
+		</div>
+		</div>
+		</fieldset>
+	</div>
 <#if is_commentable == "0">
 <div class="well"> 
 <fieldset>
@@ -55,7 +56,7 @@ ${extendableResourceActionsHtml!}
 </label>
 </div>
 <div class="controls">
-<@comboWithParams name="mailinglists" default_value="" items=mailinglists_list additionnalParameters=class=\"span2\" />
+<@comboWithParams name="mailinglists" default_value="" items=mailinglists_list additionnalParameters=class="\"span2\"" />
 </div>
 <#else>
 <em>#i18n{document.modify_document.messageNotificationListNotExist}</em>
@@ -93,15 +94,14 @@ ${extendableResourceActionsHtml!}
  <#noescape>${fields}</#noescape>
  <div class="form-actions">
 <button class="btn btn-primary" type="submit" ><i class="icon-edit icon-white"></i>#i18n{document.modify_document.buttonModify}</button>
-<button class="btn" onclick="javascript:window.history.back()" ><i class=" icon-remove-circle"></i>#i18n{portal.admin.message.buttonCancel}</button>
+<button class="btn" type="button" onclick="javascript:window.history.back()" ><i class=" icon-remove-circle"></i>#i18n{portal.admin.message.buttonCancel}</button>
 </div>
 </fieldset>
 
 </form>
 </div>
 </div>
-
 </#escape>
-<script src="js/jquery/plugins/ui/datepicker/ui.datepicker.js"></script>
-<script src="js/jquery/plugins/ui/datepicker/ui.datepicker-fr.js"></script>
+<script src="js/jquery/plugins/ui/jquery-ui-1.8.16.custom.min.js"></script>
+<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <@getDatePickerRange idFieldFrom="document_validity_begin" idFieldTo="document_validity_end" language=locale />

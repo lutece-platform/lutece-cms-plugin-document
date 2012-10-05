@@ -1,44 +1,31 @@
-<div class="insert-service">
+<div class="row-fluid">
+	<div class="span12">
 	<h2>#i18n{document.insertService.name}</h2>
-
 	<#if portlets_list?size = 0>
-		<p>
-			#i18n{document.selector.portlet.noPortlet}
-		</p>
-		<p>
-			<input type="button" class="button" onclick="javascript:history.go(-1);"
-				value="#i18n{portal.util.labelBack}" />
-		</p>
-	<#else>
-		<form method="post" name="fsubmit"
-			action="jsp/admin/plugins/document/DoSelectPortlet.jsp">
-			<h3>#i18n{document.selector.portlet.portletChoice}</h3>
-			
-			<p>
-			<table>
-				<tr>
-					<th></th>
-					<th>#i18n{document.selector.portlet.colTitle}</th>
-				</tr>
-				<#list portlets_list as portlet>
-				<tr>
-					<td>
-						<input class="radio" type="radio" id="portlet_id_${portlet.id}"
-							name="portlet_id" value="${portlet.id}" />
-					</td>
-					<td>${portlet.name}</td>
-				</tr>
-				</#list>
-			</table>
-			</p>
-			<p>
-			<input type="submit" class="button" value="#i18n{portal.util.labelValidate}" /> 
-			<input type="button"
-				class="button" onclick="javascript:history.go(-1);"
-				value="#i18n{portal.util.labelBack}" />
-			</p>
-			<input type="hidden" name="input" value="${input}" />
-			<input type="hidden" name="subcategory" value="${type_filter}" />
-		</form>
+	<p>#i18n{document.selector.portlet.noPortlet}</p>
+	<p><input type="button" class="button" onclick="javascript:history.go(-1);"	value="#i18n{portal.util.labelBack}" /></p>
+<#else>
+	<form method="post" name="fsubmit" action="jsp/admin/plugins/document/DoSelectPortlet.jsp">
+	<input type="hidden" name="subcategory" value="${type_filter}" />
+	<input type="hidden" name="input" value="${input}" />
+	<h3>#i18n{document.selector.portlet.portletChoice}</h3>
+	<table class="table table-striped table-condensed">
+		<tr>
+			<th></th>
+			<th>#i18n{document.selector.portlet.colTitle}</th>
+		</tr>
+		<#list portlets_list as portlet>
+		<tr>
+			<td>
+				<input class="radio" type="radio" id="portlet_id_${portlet.id}" name="portlet_id" value="${portlet.id}" />
+			</td>
+			<td>${portlet.name}</td>
+		</tr>
+		</#list>
+	</table>
+	<button type="submit" class="btn btn-primary" >#i18n{portal.util.labelValidate}</button>
+	<button type="button"class="button" onclick="javascript:history.go(-1);" >#i18n{portal.util.labelBack}</button>
+	</form>
 	</#if>
+	</div>
 </div>
