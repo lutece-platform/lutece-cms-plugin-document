@@ -57,13 +57,11 @@
 	<div class="well">
 		<form class="form-search" method="post" action="jsp/admin/plugins/document/ManageDocumentPublishing.jsp">
 		<input type="hidden" name="id_document" value="${document.id}" />
-		<div class="controls">
 		<label class="radio">${label_display_latest_portlets}
 		<input type="radio" id="is_display_latest_portlets_true" name="is_display_latest_portlets" value="true" <#if !portlet_filter?? ||portlet_filter.displayLatestPortlets>checked="checked"</#if>/>
 		</label>
 		<label class="radio"> #i18n{document.manage_document_publishing.labelAdvancedSearch}
 		<input type="radio" id="is_display_latest_portlets_false" name="is_display_latest_portlets" value="false" <#if portlet_filter?? && !portlet_filter.displayLatestPortlets>checked="checked"</#if>/></label>
-		</div>
 		<div id="advanced-search">
 			<div class="controls">
 				<label for="portlet_filter_type">#i18n{document.manage_document_publishing.labelSearchBy} :</label>
@@ -186,15 +184,13 @@ $(document).ready(function (){
 	$('#is_display_latest_portlets_true').click(function() {
 		$('#advanced-search').hide();	
 	});
-	
 	$('#is_display_latest_portlets_false').click(function() {
 		$('#advanced-search').show();	
 	});
 	<#if portlet_filter?? && !portlet_filter.displayLatestPortlets>
-	$('#advanced-search').hide();
+		$('#advanced-search').show();
 	<#else>
-	$('#advanced-search').show();
+		$('#advanced-search').hide();
 	</#if>
-	}
-);
+});
 </script>
