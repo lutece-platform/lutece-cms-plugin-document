@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row-fluid">
 	<div class="span12">
 	<fieldset>
 	<legend>#i18n{document.create_auto_publication.boxTitle}</legend>
@@ -8,8 +8,12 @@
 	<h4>#i18n{document.create_auto_publication.spaceChoice} :</h4>
 	${spaces_browser}
 	<div class="form-actions">
-		<button class="btn btn-primary" type="submit" <#if submit_button_disabled >	disabled="disabled"	</#if>><i class="icon-ok"></i> #i18n{document.create_auto_publication.submitButton} </button>
-		<a class="btn" href="jsp/admin/plugins/document/ManagePublishing.jsp" ><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</a>
+		<button class="btn btn-primary" type="submit" <#if submit_button_disabled >	disabled="disabled"	</#if>>
+			<i class="icon-ok"></i> #i18n{document.create_auto_publication.submitButton}
+		</button>
+		<a class="btn" href="jsp/admin/plugins/document/ManagePublishing.jsp" >
+			<i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
+		</a>
 		
 	</div>
 	</form>

@@ -1,10 +1,10 @@
-<#assign x = index_row>
-<#if x = "4" || x = "7" || x = "10" || x = "13"></tr><tr></#if>
-<th valign="top" align="center" style="border:0;">
-    <input class="radio" type="radio" name="page_template_id" value="${document_page_template.id}" ${checked} style="border:0;float:left;"/>
-           <img src="${document_page_template.picture}" style="border:0;" align="left" alt="${document_page_template.description}"/>
-    <br /><br />${document_page_template.description}
-</th>
+<li>
+   <label class="radio">
+		<img src="${document_page_template.picture}" class="thumblist" alt="${document_page_template.description}"/>
+		<input class="radio" type="radio" name="page_template_id" value="${document_page_template.id}" ${checked}/>
+		${document_page_template.description}
+   </label>
+</li>
 
 
  
