@@ -45,7 +45,7 @@ ${extendableResourceActionsHtml!}
 			<label class="checkbox">#i18n{document.modify_document.labelCommentIsEmailNotified}
 				<input class="checkbox" type="checkbox" name="is_email_notified_comment" id="is_email_notified_comment" <#if is_email_notified_comment = 1 >checked="checked"</#if> value="1" title="#i18n{document.modify_document.helpCommentIsEmailNotified}"/>
 			</label>
-			<@comboWithParams name="mailinglists" default_value="" items=mailinglists_list additionnalParameters=class="\"span2\"" />
+			<@comboWithParams name="mailinglists" default_value="" items=mailinglists_list additionalParameters="class=\"span2\"" />
 		<#else>
 			<em>#i18n{document.modify_document.messageNotificationListNotExist}</em>
 		</#if>
