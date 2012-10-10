@@ -55,11 +55,11 @@
 	</div>
 	${attribute_parameters}
 	<div class="form-actions">
-		<!--button class="btn btn-primary" name="save" type="submit"><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.add_document_type_attribute.buttonAddAttribute}</button>
-		<button class="btn btn-primary" name="apply" type="submit"><i class="icon-ok-sign icon-white"></i>&nbsp;#i18n{document.add_document_type_attribute.buttonApply}</button -->
-		<input type="submit" name="save" value="#i18n{document.add_document_type_attribute.buttonAddAttribute}" class="btn btn-primary" />
-        <!-- input type="submit" name="apply" value="#i18n{document.add_document_type_attribute.buttonApply}" class="btn btn-primary" / -->
-    	<button class="btn" onclick="javascript:window.history.back();" ><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+		<!--button class="btn btn-primary btn-small" name="save" type="submit"><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.add_document_type_attribute.buttonAddAttribute}</button>
+		<button class="btn btn-primary btn-small" name="apply" type="submit"><i class="icon-ok-sign icon-white"></i>&nbsp;#i18n{document.add_document_type_attribute.buttonApply}</button -->
+		<input type="submit" name="save" value="#i18n{document.add_document_type_attribute.buttonAddAttribute}" class="btn btn-primary btn-small" />
+        <!-- input type="submit" name="apply" value="#i18n{document.add_document_type_attribute.buttonApply}" class="btn btn-primary btn-small" / -->
+    	<button class="btn btn-small" onclick="javascript:window.history.back();" ><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
 	</div>
 	<input type="hidden" name="attribute_type_code" value="${attribute_type_code}" />
 </form>

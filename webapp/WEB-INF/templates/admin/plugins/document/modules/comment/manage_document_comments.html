@@ -37,12 +37,12 @@
 	<input type="hidden" name="id_document" value="${document.id}" />
 	<#if comments.status = 0>
 		<input type="hidden" name="status" value="1" />	
-		<button type="submit" class="btn btn-primary"><i class="fam-comment-delete"></i>&nbsp;#i18n{module.document.comment.manage_document_comments.buttonPublish}</button>
+		<button type="submit" class="btn btn-primary btn-small"><i class="fam-comment-delete"></i>&nbsp;#i18n{module.document.comment.manage_document_comments.buttonPublish}</button>
 	<#else>
 		<input type="hidden" name="status" value="0" />	
-		<button type="submit" class="btn btn-primary"><i class="fam-comment-edit"></i>&nbsp;#i18n{module.document.comment.manage_document_comments.buttonUnPublish}</button>
+		<button type="submit" class="btn btn-primary btn-small"><i class="fam-comment-edit"></i>&nbsp;#i18n{module.document.comment.manage_document_comments.buttonUnPublish}</button>
 	</#if>
-	<a href="jsp/admin/plugins/document/modules/comment/DoRemoveComment.jsp?id_document=${document.id}&amp;id_comment=${comments.commentId}" alt="#i18n{module.document.comment.manage_document_comments.buttonDelete}" title="#i18n{module.document.comment.manage_document_comments.buttonDelete}" class="btn btn-danger">#i18n{module.document.comment.manage_document_comments.buttonDelete}
+	<a href="jsp/admin/plugins/document/modules/comment/DoRemoveComment.jsp?id_document=${document.id}&amp;id_comment=${comments.commentId}" alt="#i18n{module.document.comment.manage_document_comments.buttonDelete}" title="#i18n{module.document.comment.manage_document_comments.buttonDelete}" class="btn btn-danger btn-small">#i18n{module.document.comment.manage_document_comments.buttonDelete}
 	<i class="icon-trash icon-white"></i>
 	</a> 
 	</form>

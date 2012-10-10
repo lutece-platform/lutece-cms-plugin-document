@@ -42,8 +42,8 @@
         </div>
     </div>
 	<div class="form-actions">
-		<button class="btn btn-primary" type="submit"><i class="icon-ok icon-white"></i>&nbsp;#i18n{document.modify_document_type_attribute.buttonAddAttribute}</button>
-		<button class="btn" onclick="javascript:history.go(-1);"><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+		<button class="btn btn-primary btn-small" type="submit"><i class="icon-ok icon-white"></i>&nbsp;#i18n{document.modify_document_type_attribute.buttonAddAttribute}</button>
+		<button class="btn btn-small" onclick="javascript:history.go(-1);"><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
 	</div>
 	<input type="hidden" name="attribute_id" value="${attribute.id}" />
     <input type="hidden" name="attribute_type_code" value="${attribute_type_code}" />
@@ -62,7 +62,7 @@
 		</div>
 	</div>
 	<div class="controls">
-		<button class="btn btn-primary" type="submit" >#i18n{document.modify_document_type_attribute.manageRegularExpression.buttonInsert}</button>
+		<button class="btn btn-primary btn-small" type="submit" >#i18n{document.modify_document_type_attribute.manageRegularExpression.buttonInsert}</button>
 	</div>
 	<div class="control-group">
 		<label class="control-label" > &nbsp;</label>
@@ -95,7 +95,7 @@
 	        	<form class="form-inline" method="post" action="jsp/admin/plugins/document/DoDeleteRegularExpression.jsp">
 	           	<input type="hidden" name="attribute_id" value="${attribute.id}" />
 			    <input type="hidden" name="expression_id" value="${regular_expression.idExpression}" />
-	        	<button type="submit" class="btn btn-danger"  />
+	        	<button type="submit" class="btn btn-danger btn-small"  />
 				<i class="icon-trash icon-white"></i>&nbsp;
 					#i18n{document.modify_document_type_attribute.manageRegularExpression.titleDelete}
 				</button>

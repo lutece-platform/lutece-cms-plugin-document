@@ -91,7 +91,7 @@
 				</select>
 			</div>
 			<div class="controls">
-				<button class="btn btn-primary" type="submit" >
+				<button class="btn btn-primary btn-small" type="submit" >
 					<i class="icon-search icon-white"></i> #i18n{document.manage_document_publishing.buttonValidate}
 				</button>
 			</div>
@@ -112,12 +112,12 @@
 			<@comboWithParamsAndLength name="document_portlet_ids" default_value="" additionalParameters="multiple='multiple' class='input-small'" items=document_portlet_list max_length=175 />
 		</#if>
 		<#if permission_assign?exists>
-			<button class="btn btn-primary" type="submit" >
+			<button class="btn btn-primary btn-small" type="submit" >
 				<i class="icon-move icon-white"></i>&nbsp;#i18n{document.manage_document_publishing.buttonAssignedOnPortlet}
 			</button>
 		</#if>	                                   		
 		<#if permission_publish?exists>
-			<button class="btn btn-primary" type="submit" >
+			<button class="btn btn-primary btn-small" type="submit" >
 				<i class="icon-globe icon-white"></i>&nbsp;#i18n{document.manage_document_publishing.buttonAssignedAndPublisheOnPortlet}
 			</button>
 		</#if>
