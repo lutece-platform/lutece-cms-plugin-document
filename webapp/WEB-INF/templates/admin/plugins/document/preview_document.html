@@ -3,10 +3,10 @@
 		<div class="well">            
 		<fieldset>
 		<legend><span class="badge badge-info">${document.id}</span>&nbsp;${document.title}</legend>
-			<p class="label label-inverse"><i class="fam-page-white-coldfusion"></i> #i18n{document.preview_document.columnTitleType}: ${document.type}</p>
-			<p class="label label-inverse"><i class="fam-help"></i> #i18n{document.preview_document.columnTitleState}:&nbsp;${document.state}</p>
-			<p class="label label-inverse"><i class="fam-date-add"></i> #i18n{document.preview_document.columnTitleDateCreation} : <small>${document.dateCreation}</small></p> 
-			<p class="label label-inverse"><i class="fam-date-add"></i> #i18n{document.preview_document.columnTitleDateModification} : <small>${document.dateModification}</small></p>
+			<i class="fam-page-white-coldfusion"></i> #i18n{document.preview_document.columnTitleType}: ${document.type}</p>
+			<i class="fam-help"></i> #i18n{document.preview_document.columnTitleState}:&nbsp;${document.state}</p>
+			<i class="fam-date-add"></i> #i18n{document.preview_document.columnTitleDateCreation} : <small>${document.dateCreation}</small></p> 
+			<i class="fam-date-add"></i> #i18n{document.preview_document.columnTitleDateModification} : <small>${document.dateModification}</small></p>
 		</fieldset>
 		<fieldset>
 		<legend>#i18n{document.preview_document.columnTitleDateValidity}</legend>
@@ -37,12 +37,12 @@
 		<legend>#i18n{document.preview_document.columnTitleActions}</legend>
 		<#list document.actions  as action >
 			<#if action.url?has_content>
-			<a class="btn btn-small <#if action.idAction==1 || action.idAction==6>btn-danger<#elseif action.idAction==4 || action.idAction==12>btn-success<#else>btn-primary</#if>" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+			<a class="btn btn-mini <#if action.idAction==1 || action.idAction==6>btn-danger<#elseif action.idAction==4 || action.idAction==12>btn-success<#else>btn-primary</#if>" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
 				<i class="${action.iconUrl} icon-white"></i>
 			</a>
 			</#if>  
 		</#list>
-			<a class="btn btn-small btn-primary" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="Accéder à l'espace" >
+			<a class="btn btn-mini btn-primary" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="Accéder à l'espace" >
 				<i class="icon-folder-open icon-white"></i> 
 			</a>
 		</fieldset>
