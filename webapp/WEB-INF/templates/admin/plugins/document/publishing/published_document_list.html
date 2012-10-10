@@ -10,7 +10,7 @@
 					<input type="hidden" name="id_portlet" value="${portlet_id}" />
 					<div class="controls">
 						<@comboWithParams name="document_order" default_value="${document_order}" additionalParameters="class=\"input-mini\"" items=document_order_list />
-						<button type="submit" class="btn btn-primary btn-mini"  alt="#i18n{document.published_document_list.labelChangeOrder}" title="#i18n{document.published_document_list.labelChangeOrder}">
+						<button type="submit" class="btn btn-primary btn-small"  alt="#i18n{document.published_document_list.labelChangeOrder}" title="#i18n{document.published_document_list.labelChangeOrder}">
 							<i class="icon-move icon-white"></i>
 						</button>
 					</div>
@@ -21,19 +21,19 @@
 				<form class="form-inline pull-right" method="post" name="unpublishDocument" action="jsp/admin/plugins/document/DoUnPublishingDocument.jsp">
 					<input type="hidden" name="id_document" value="${document_published.id}" />
 					<input type="hidden" name="id_portlet" value="${portlet_id}" />
-					<button class="btn btn-danger btn-mini" type="submit" title="#i18n{document.published_document_list.buttonUnPublish}">
+					<button class="btn btn-danger btn-small" type="submit" title="#i18n{document.published_document_list.buttonUnPublish}">
 						<i class="icon-remove icon-white"></i>
 					</button>
 				</form>
 				<form class="form-inline pull-right" method="post" name="previewDocument" action="jsp/admin/plugins/document/PreviewDocument.jsp">
 					<input type="hidden" name="id_document" value="${document_published.id}" />
-					<button type="submit" class="btn btn-primary btn-mini" alt="#i18n{document.published_document_list.labelPreview}" title="#i18n{document.published_document_list.labelPreview}">
+					<button type="submit" class="btn btn-primary btn-small" alt="#i18n{document.published_document_list.labelPreview}" title="#i18n{document.published_document_list.labelPreview}">
 						<i class="icon-eye-open icon-white"></i>
 					</button>
 				</form>
 				<form class="form-inline pull-right" method="post" name="manageDocument" action="jsp/admin/plugins/document/ManageDocuments.jsp">
 					<input type="hidden" name="id_space_filter" value="${document_published.spaceId}" />
-					<button type="submit" class="btn btn-primary btn-mini" alt="#i18n{document.published_document_list.labelManageDocument}" title="#i18n{document.published_document_list.labelManageDocument}">
+					<button type="submit" class="btn btn-primary btn-small" alt="#i18n{document.published_document_list.labelManageDocument}" title="#i18n{document.published_document_list.labelManageDocument}">
 						<i class="icon-folder-open icon-white"></i>
 					</button>
 				</form>

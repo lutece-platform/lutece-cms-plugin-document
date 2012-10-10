@@ -1,11 +1,11 @@
-<div class="row">
+<div class="row-fluid">
 	<div class="span12">
  	<fieldset>   
     <legend>#i18n{document.move_document.title} ${document.title}</legend>
     <form class="form-horizontal" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveDocument.jsp" enctype="multipart/form-data" >
 	<input type="hidden" name="id_document" value="${document.id}" />
 	${spaces_browser}
-	<div class="row">
+	<div class="row-fluid">
 	<div class="offset3 span8">
 	<button class="btn btn-primary" type="submit" <#if submit_button_disabled >disabled="disabled"</#if>><i class="icon-arrow-right icon-white"></i>&nbsp;#i18n{document.move_document.buttonMove}
 	</button>

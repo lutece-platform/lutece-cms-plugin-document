@@ -7,7 +7,7 @@
 				<#if space_actions_list?size != 0 >
 					<div class="btn-group pull-right">
 						<#list space_actions_list as space_action>
-							<a href="${space_action.url}?id_space=${space.id}" alt="${space_action.description}" title="${space_action.description}" class="btn btn-mini <#if space_action.permission="DELETE">btn-danger<#else>btn-primary</#if>">
+							<a href="${space_action.url}?id_space=${space.id}" alt="${space_action.description}" title="${space_action.description}" class="btn btn-small <#if space_action.permission="DELETE">btn-danger<#else>btn-primary</#if>">
 								<i class="${space_action.iconUrl} icon-white"></i>
 							</a>
 						</#list>
@@ -57,7 +57,7 @@
 					<@comboWithParams name="document_type_code_filter" default_value="${default_document_type}" additionalParameters="class=\"input-small\"" items=document_types_filter_list />
 					<label>#i18n{document.manage_documents.labelState} :</label>
 					<@comboWithParams name="id_state_filter" default_value="${default_state}" additionalParameters="class=\"input-small\"" items=states_filter_list />
-					<button class="btn btn-primary btn-mini" type="submit" title="#i18n{document.manage_documents.buttonFilter}">
+					<button class="btn btn-primary btn-small" type="submit" title="#i18n{document.manage_documents.buttonFilter}">
 						<i class="icon-filter icon-white"></i>
 					</button>
 				</form>
@@ -114,7 +114,7 @@
 						<td>
 						<#list document.actions?reverse  as action >
 							<#if action.url?has_content>
-								<a class="btn btn-mini <#if action.idAction==1 || action.idAction==6>btn-danger<#elseif action.idAction==4 || action.idAction==12>btn-success<#else>btn-primary</#if>" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+								<a class="btn btn-small <#if action.idAction==1 || action.idAction==6>btn-danger<#elseif action.idAction==4 || action.idAction==12>btn-success<#else>btn-primary</#if>" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
 									<i class="${action.iconUrl} icon-white"></i>
 								</a>
 								</#if>  

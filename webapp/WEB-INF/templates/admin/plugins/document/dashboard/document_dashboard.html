@@ -26,7 +26,7 @@
 			<p>
 			<#list last_modified_document.actions as action>
 			<#if action.url?exists>
-				<a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-mini btn-primary">
+				<a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-small btn-primary">
 					<i class="${action.iconUrl} icon-white"></i>
 				</a>
 			</#if>
@@ -63,7 +63,7 @@
             <td>
 				<#list last_published_document.actions as action>
 					<#if action.url?exists>
-					<a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-mini btn-primary">
+					<a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-small btn-primary">
 						<i class="${action.iconUrl} icon-white"></i>
 				</a>
 					</#if>

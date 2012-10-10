@@ -38,12 +38,12 @@
 	<legend>#i18n{document.preview_document.columnTitleActions}</legend>
 	<#list document.actions  as action >
 		<#if action.url?has_content>
-		<a class="btn btn-primary btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+		<a class="btn btn-primary btn-small" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
 			<i class="${action.iconUrl} icon-white"></i>
 		</a>
 		</#if>  
 	</#list>
-		<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="Accéder à l'espace" >
+		<a class="btn btn-primary btn-small" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="Accéder à l'espace" >
 			<i class="icon-folder-open icon-white"></i> 
 		</a>
 	</fieldset>
@@ -140,7 +140,7 @@
 							<span class="label label-important">
 								<i class="icon-remove-sign icon-white"></i>&nbsp;#i18n{portal.util.labelDisabled}&nbsp;
 							</span>
-							<button class="btn btn-primary btn-mini spaced" type="submit" title="#i18n{document.manage_document_publishing.buttonPublish}">
+							<button class="btn btn-primary btn-small spaced" type="submit" title="#i18n{document.manage_document_publishing.buttonPublish}">
 								<i class="icon-eye-open icon-white"></i>
 							</button>
 						</form>
@@ -152,7 +152,7 @@
 						<span class="label label-success">
 							<i class="icon-ok-sign icon-white"></i>&nbsp;#i18n{portal.util.labelEnabled}&nbsp;
 						</span>
-						<button class="btn btn-primary btn-mini spaced" type="submit" title="#i18n{document.manage_document_publishing.buttonUnPublish}">
+						<button class="btn btn-primary btn-small spaced" type="submit" title="#i18n{document.manage_document_publishing.buttonUnPublish}">
 							<i class="icon-eye-close icon-white"></i>&nbsp;
 						</button>
 						</form>
@@ -161,7 +161,7 @@
 				<#if permission_assign?exists>
 					<form class="form-inline pull-right" method="post" name="managePublishing" action="jsp/admin/plugins/document/ManagePublishing.jsp">
 					<input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
-						<button class="btn btn-primary btn-mini spaced" type="submit" alt="#i18n{document.manage_document_publishing.labelManagePortlet}" title="#i18n{document.manage_document_publishing.labelManagePortlet}" >
+						<button class="btn btn-primary btn-small spaced" type="submit" alt="#i18n{document.manage_document_publishing.labelManagePortlet}" title="#i18n{document.manage_document_publishing.labelManagePortlet}" >
 							<i class="icon-globe icon-white"></i>
 						</button>
 					</form>		                                                                    
@@ -169,7 +169,7 @@
 					<input type="hidden" name="id_document" value="${document.id}" />
 					<input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
 					<input type="hidden" name="status" value="${status_unpublished}" />	                                            
-					<button type="submit" class="btn btn-danger btn-mini" alt="#i18n{document.manage_document_publishing.labelUnAssigned}" title="#i18n{document.manage_document_publishing.labelUnAssigned}">
+					<button type="submit" class="btn btn-danger btn-small" alt="#i18n{document.manage_document_publishing.labelUnAssigned}" title="#i18n{document.manage_document_publishing.labelUnAssigned}">
 						<i class="icon-remove icon-white"></i>
 					</button>
 					</form>

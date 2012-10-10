@@ -1,4 +1,4 @@
-<div class="row" >
+<div class="row-fluid" >
 <div class="span4">
 <fieldset>
 <legend>#i18n{document.modify_document_type.titleProperties}</legend>
@@ -129,14 +129,14 @@
                 <#if attribute.searchable = true >#i18n{portal.util.labelYes}<#else>#i18n{portal.util.labelNo}</#if>
 			</td>
 			<td>
-			<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/document/ModifyDocumentTypeAttribute.jsp?attribute_id=${attribute.id}"  title="${attribute.name}" ><i class="icon-edit icon-white"></i></a>
-			<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/document/DoAttributeMoveUp.jsp?index=${attribute.attributeOrder}"  title="#i18n{document.modify_document_type.buttonMoveUp}" >
+			<a class="btn btn-primary btn-small" href="jsp/admin/plugins/document/ModifyDocumentTypeAttribute.jsp?attribute_id=${attribute.id}"  title="${attribute.name}" ><i class="icon-edit icon-white"></i></a>
+			<a class="btn btn-primary btn-small" href="jsp/admin/plugins/document/DoAttributeMoveUp.jsp?index=${attribute.attributeOrder}"  title="#i18n{document.modify_document_type.buttonMoveUp}" >
 			<i class="icon-arrow-up icon-white"></i>
 			</a>
-			<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/document/DoAttributeMoveDown.jsp?index=${attribute.attributeOrder}"  title="#i18n{document.modify_document_type.buttonMoveDown}" >
+			<a class="btn btn-primary btn-small" href="jsp/admin/plugins/document/DoAttributeMoveDown.jsp?index=${attribute.attributeOrder}"  title="#i18n{document.modify_document_type.buttonMoveDown}" >
 			<i class="icon-arrow-down icon-white"></i>
 			</a>
-			<a class="btn btn-danger btn-mini" href="jsp/admin/plugins/document/DoConfirmDeleteAttribute.jsp?attribute_id=${attribute.id}"  title="#i18n{document.modify_document_type.buttonDelete}" >
+			<a class="btn btn-danger btn-small" href="jsp/admin/plugins/document/DoConfirmDeleteAttribute.jsp?attribute_id=${attribute.id}"  title="#i18n{document.modify_document_type.buttonDelete}" >
 			<i class="icon-trash icon-white"></i></a>
 			</td>
 		</tr>
