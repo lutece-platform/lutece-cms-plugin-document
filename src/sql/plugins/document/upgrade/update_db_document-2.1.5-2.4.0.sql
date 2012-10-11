@@ -1,14 +1,6 @@
---
--- Table document_space_action
---
-REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (1,'document.spaces.action.createSpace.name','document.spaces.action.createSpace.description','jsp/admin/plugins/document/CreateSpace.jsp','icon-plus-sign','CREATE');
-REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (2,'document.spaces.action.deleteSpace.name','document.spaces.action.deleteSpace.description','jsp/admin/plugins/document/DeleteSpace.jsp','icon-minus-sign','DELETE');
-REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (3,'document.spaces.action.modifySpace.name','document.spaces.action.modifySpace.description','jsp/admin/plugins/document/ModifySpace.jsp','icon-pencil','MODIFY');
-REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (4,'document.spaces.action.manageUsers.name','document.spaces.action.manageUsers.description','jsp/admin/plugins/document/ManageSpaceUsers.jsp','icon-user','USERS');
-REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (5,'document.spaces.action.moveSpace.name','document.spaces.action.moveSpace.description','jsp/admin/plugins/document/MoveSpace.jsp','icon-move','MOVE');
 
 --
--- Table document_workflow_action
+-- Dumping data for table `document_workflow_action`
 --
 REPLACE INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (1,'document.workflow.action.deleteDocument.name','document.workflow.action.deleteDocument.description','jsp/admin/plugins/document/DeleteDocument.jsp?','icon-trash','DELETE',NULL);
 REPLACE INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (2,'document.workflow.action.modifyDocument.name','document.workflow.action.modifyDocument.description','jsp/admin/plugins/document/ModifyDocument.jsp?','icon-edit','MODIFY',NULL);
@@ -23,8 +15,17 @@ REPLACE INTO document_workflow_action (id_action, name_key, description_key, act
 REPLACE INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (11,'document.workflow.action.rejectChanges.name','document.workflow.action.rejectChanges.description','jsp/admin/plugins/document/DoChangeState.jsp?id_state=6&amp;','icon-ok-sign','VALIDATE',6);
 REPLACE INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (12,'document.workflow.action.approveChanges.name','document.workflow.action.approveChanges.description','jsp/admin/plugins/document/DoValidateDocument.jsp?id_state=3&amp;','icon-ok-sign','VALIDATE',3);
 REPLACE INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (13,'document.workflow.action.unarchiveDocument.name','document.workflow.action.unarchiveDocument.description','jsp/admin/plugins/document/DoChangeState.jsp?id_state=3&amp;','icon-upload','ARCHIVE',3);
-REPLACE INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (14,'document.workflow.action.history.name','document.workflow.action.history.description','jsp/admin/plugins/document/DocumentHistory.jsp?','icon-info-sign','VIEW_HISTORY',NULL);
+REPLACE INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (14,'document.workflow.action.history.name','document.workflow.action.history.description','jsp/admin/plugins/document/DocumentHistory.jsp?','icon-list','VIEW_HISTORY',NULL);
 REPLACE INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (15,'document.workflow.action.previewDocument.name','document.workflow.action.previewDocument.description','jsp/admin/plugins/document/PreviewDocument.jsp?','icon-eye-open','VIEW',NULL);
 REPLACE INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (16,'document.workflow.action.moveDocument.name','document.workflow.action.moveDocument.description','jsp/admin/plugins/document/MoveDocument.jsp?','icon-move','MOVE',NULL);
 REPLACE INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (17,'document.workflow.action.commentDocument.name','document.workflow.action.commentDocument.description','jsp/admin/plugins/document/modules/comment/ManageDocumentComments.jsp?','icon-comment','COMMENT',NULL);
 REPLACE INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (18,'document.workflow.action.publishDocument.name','document.workflow.action.publishDocument.description',NULL,'icon-globe','PUBLISH',NULL);
+
+--
+-- Dumping data for table `document_space_action`
+--
+REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (1,'document.spaces.action.createSpace.name','document.spaces.action.createSpace.description','jsp/admin/plugins/document/CreateSpace.jsp','icon-plus-sign','CREATE');
+REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (2,'document.spaces.action.deleteSpace.name','document.spaces.action.deleteSpace.description','jsp/admin/plugins/document/DeleteSpace.jsp','icon-trash','DELETE');
+REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (3,'document.spaces.action.modifySpace.name','document.spaces.action.modifySpace.description','jsp/admin/plugins/document/ModifySpace.jsp','icon-pencil','MODIFY');
+REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (4,'document.spaces.action.manageUsers.name','document.spaces.action.manageUsers.description','jsp/admin/plugins/document/ManageSpaceUsers.jsp','icon-user','USERS');
+REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (5,'document.spaces.action.moveSpace.name','document.spaces.action.moveSpace.description','jsp/admin/plugins/document/MoveSpace.jsp','icon-move','MOVE');
