@@ -1,4 +1,4 @@
---
+﻿--
 -- Dumping data for table document_attr_type
 --
 INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES 
@@ -302,7 +302,7 @@ INSERT INTO document_view (code_view,name_key) VALUES ('thumbnail','document.vie
 --
 INSERT INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (1,'document.workflow.action.deleteDocument.name','document.workflow.action.deleteDocument.description','jsp/admin/plugins/document/DeleteDocument.jsp?','icon-trash','DELETE',NULL);
 INSERT INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (2,'document.workflow.action.modifyDocument.name','document.workflow.action.modifyDocument.description','jsp/admin/plugins/document/ModifyDocument.jsp?','icon-edit','MODIFY',NULL);
-INSERT INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (3,'document.workflow.action.submitForApproval.name','document.workflow.action.submitForApproval.description','jsp/admin/plugins/document/DoChangeState.jsp?id_state=2&amp;','icon-cog','SUBMIT',2);
+INSERT INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (3,'document.workflow.action.submitForApproval.name','document.workflow.action.submitForApproval.description','jsp/admin/plugins/document/DoChangeState.jsp?id_state=2&amp;','icon-x-thin-right-arrow icon-x-white','SUBMIT',2);
 INSERT INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (4,'document.workflow.action.approveDocument.name','document.workflow.action.approveDocument.description','jsp/admin/plugins/document/DoValidateDocument.jsp?id_state=3&amp;','icon-ok-sign','VALIDATE',3);
 INSERT INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (5,'document.workflow.action.assignDocument.name','document.workflow.action.assignDocument.description','jsp/admin/plugins/document/ManageDocumentPublishing.jsp?','icon-globe','ASSIGN',NULL);
 INSERT INTO document_workflow_action (id_action, name_key, description_key, action_url, icon_url, action_permission, id_finish_state) VALUES (6,'document.workflow.action.rejectDocument.name','document.workflow.action.rejectDocument.description','jsp/admin/plugins/document/DoChangeState.jsp?id_state=4&amp;','icon-minus-sign','VALIDATE',4);
