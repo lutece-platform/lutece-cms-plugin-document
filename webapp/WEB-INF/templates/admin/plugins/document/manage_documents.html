@@ -203,20 +203,21 @@
 
         // Set the cookie of jstree
         $.cookie("jstree_select", "#node-" + spaceid );
-        $("#tree").jstree({
+        $("#tree").jstree(
+			{
             "ui" : {
                 "select_limit" : 1,
             },
             "themes" : {
-                "theme" : "default",
-                "icons" : false
+                "theme" : "apple",
+                "icons" : true
             },
             "cookies" : {
                 "save_opened" : false,
             },
             "core" : { "initially_open" : [ "node-0" ] },
             "plugins" : [ "themes", "html_data", "cookies", "ui" ]
-        });
+			});
     });
 
     $("#select_all").click( function(){                    
