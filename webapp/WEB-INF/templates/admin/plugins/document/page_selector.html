@@ -1,14 +1,14 @@
 <div class="insert-service">
-	<h2>#i18n{document.insertService.name}</h2>
+	<h4>#i18n{document.insertService.name}</h4>
 	<#if pages_list?size = 0>
-		#i18n{document.selector.page.noPage}
-		<input type="button" class="button" onclick="javascript:history.go(-1);" value="#i18n{portal.util.labelBack}" />
+		<p class="alert alert-error">#i18n{document.selector.page.noPage}</p>
+		<button type="button" class="btn btn-small" onclick="javascript:history.go(-1);"><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}</button>
 	<#else>
 		<form method="post" name="fsubmit"	action="jsp/admin/plugins/document/DoSelectPage.jsp">
 		<input type="hidden" name="input" value="${input}" />
 		<input type="hidden" name="subcategory" value="${type_filter}" />
-		<h3>#i18n{document.selector.page.pageChoice}</h3>
-		<table>
+		<h4>#i18n{document.selector.page.pageChoice}</h4>
+		<table class="table table-striped table-condensed">
 			<tr>
 				<th></th>
 				<th>#i18n{document.selector.page.colTitle}</th>
@@ -24,8 +24,12 @@
 			</tr>
 			</#list>
 		</table>
-		<button type="submit" class="btn btn-primary btn-small"><i class="icon-ok icon-white"></i>&nbsp;#i18n{portal.util.labelValidate}</button>
-		<button type="button" class="btn btn-small" onclick="javascript:history.go(-1);"><i class="icon-remove-circle icon-white"></i>&nbsp;#i18n{portal.util.labelBack}</button>
+		<button type="submit" class="btn btn-primary btn-small">
+			<i class="icon-ok icon-white"></i>&nbsp;#i18n{portal.util.labelValidate}
+		</button>
+		<button type="button" class="btn btn-small" onclick="javascript:history.go(-1);">
+			<i class="icon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
+		</button>
 		</form>
 	</#if>
 </div>

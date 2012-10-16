@@ -26,13 +26,13 @@
 			<p>
 			<#list last_modified_document.actions as action>
 			<#if action.url?exists>
-				<a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-small btn-primary">
+				<a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-mini <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
 					<i class="${action.iconUrl} icon-white"></i>
 				</a>
 			</#if>
 			</#list>
 			</p>
-			<#if last_modified_document.comment!= ""> <p class="label label-warning">${last_modified_document.comment}</p></#if>
+			<#if last_modified_document.comment!= ""> <div class="alert alert-error span8">${last_modified_document.comment}</div></#if>
         </td>
     	</tr>
     </#if>
@@ -63,7 +63,7 @@
             <td>
 				<#list last_published_document.actions as action>
 					<#if action.url?exists>
-					<a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-small btn-primary">
+					<a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-mini <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
 						<i class="${action.iconUrl} icon-white"></i>
 				</a>
 					</#if>
