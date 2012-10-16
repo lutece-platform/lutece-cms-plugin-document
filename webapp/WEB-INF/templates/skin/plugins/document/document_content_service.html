@@ -10,13 +10,17 @@ Available objects :
  - DocumentPublication 	publication 		The publication object. 
  											How to display the date publication : ${publication.datePublishing?date} or ${publication.datePublishing?datetime}
 -->
-
-<div id="sidebar" class="span-6 prepend-1 append-1 append-bottom">
+<div class="pull-right">
+	@Extender[${document_id},document,hit,{show:true}]@
+	@Extender[${document_id},document,rating,{show:"all"}]@
+</div>
+<br />
+<div id="sidebar" class="span2 prepend-1 append-1 append-bottom">
 	<#if portlet?has_content >
        	${portlet}
 	</#if>
 </div>
-<div id="content" class="span-15 append-1 append-bottom last">
+<div id="content" class="span8 append-1 append-bottom last">
 	<div class="portlet -lutece-border-radius">
 		<div class="document-content">${document}</div>
 		<#if is_download_stat?has_content>
@@ -41,4 +45,9 @@ Available objects :
 			<a href="javascript:history.back();">#i18n{document.document_content_service.buttonBack}</a>
 		</div>
 	</div>
+</div>
+<br />
+<div class="span12">
+	@Extender[${document_id},document,comment]@
+	@Extender[${document_id},document,feedback]@
 </div>

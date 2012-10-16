@@ -89,8 +89,6 @@ import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -101,6 +99,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.Source;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -1303,6 +1303,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_DOCUMENT, document );
         model.put( MARK_PREVIEW, strPreview );
+
+		ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, strDocumentId, Document.PROPERTY_RESOURCE_TYPE );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PREVIEW_DOCUMENT, getLocale(  ), model );
 
