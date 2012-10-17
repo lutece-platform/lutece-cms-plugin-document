@@ -42,7 +42,7 @@
 				<#if document_types_list?has_content >
 				<form class="form-inline pull-right" method="post" name="CreateDocument" action="jsp/admin/plugins/document/CreateDocument.jsp" >
 				<!--#i18n{document.manage_documents.labelCreate} :-->
-				<@comboWithParams name="document_type_code" default_value="" additionalParameters="class=\"input-small\"" items=document_types_list />
+				<@comboWithParams name="document_type_code" default_value="" additionalParameters="class=\"input-normal\"" items=document_types_list />
 				<button class="btn btn-primary btn-small" type="submit" >
 					<i class="icon-plus icon-white"></i>&nbsp;#i18n{document.manage_documents.buttonCreate}
 				</button>
@@ -52,11 +52,11 @@
 		</div>
 		<div class="well well-small">
 			<#if document_types_filter_list?size &gt; 1 >
-				<form class="form-inline span6" method="post" name="FilterDocumentsForm" action="jsp/admin/plugins/document/ManageDocuments.jsp">
+				<form class="form-inline span8" method="post" name="FilterDocumentsForm" action="jsp/admin/plugins/document/ManageDocuments.jsp">
 					<label>#i18n{document.manage_documents.labelType} :</label>
 					<@comboWithParams name="document_type_code_filter" default_value="${default_document_type}" additionalParameters="class=\"input-small\"" items=document_types_filter_list />
 					<label>#i18n{document.manage_documents.labelState} :</label>
-					<@comboWithParams name="id_state_filter" default_value="${default_state}" additionalParameters="class=\"input-small\"" items=states_filter_list />
+					<@comboWithParams name="id_state_filter" default_value="${default_state}" additionalParameters="class=\"input-normal\"" items=states_filter_list />
 					<button class="btn btn-primary btn-small" type="submit" title="#i18n{document.manage_documents.buttonFilter}">
 						<i class="icon-filter icon-white"></i>
 					</button>
@@ -73,12 +73,12 @@
 			</#if>
 		</div>		
         <#if documents_list?size = 0 >
-            <p class="label label-warning">#i18n{document.manage_documents.noDocument}</p>
+            <p class="alert alert-error">#i18n{document.manage_documents.noDocument}</p>
         <#else>
             <#if view_type = "detail" >
 				<div class="pull-right"><@paginationAdmin paginator=paginator combo=1 /></div>
 				<form class="form-inline" id="documents_form" name="documents_form" method="post" action="jsp/admin/plugins/document/DoActionSelectionDocument.jsp">
-				<select id="selection" name="selection" class="input-small">
+				<select id="selection" name="selection" class="input-normal">
 					<option value="validate">#i18n{document.manage_document.validate}</option>
 					<option value="submit">#i18n{document.manage_document.submit}</option>
 					<option value="refuse">#i18n{document.manage_document.refuse}</option>
@@ -101,7 +101,7 @@
 						<td><input id="document_selection" name="document_selection" type="checkbox" value="${document.id}" /></td>
 						<td>
 							<p><img src="${document.thumbnail}" alt="${document.title}" title="${document.title} - ${document.type}" class="thumblist" />${document.id} - ${document.title}</p>
-							<#if document.comment != ""> <p class="label label-warning">${document.comment}</p></#if>
+							<#if document.comment != ""> <p class="alert alert-error">${document.comment}</p></#if>
 							<p>#i18n{document.manage_documents.labelState} : <strong>${document.state}</strong> | ${document.dateModification}</p>
 						</td>
 						<td>
@@ -123,7 +123,7 @@
 					</tr>
 				</#list>
 				</table>
-				<select id="selection" name="selection" class="input-small">
+				<select id="selection" name="selection" class="input-normal">
 					<option value="validate">#i18n{document.manage_document.validate}</option>
 					<option value="submit">#i18n{document.manage_document.submit}</option>
 					<option value="refuse">#i18n{document.manage_document.refuse}</option>
@@ -145,14 +145,16 @@
 				<#list documents_list as document >
 					<li class="span4">
 						<div class="thumbnail">
-							<img src="${document.thumbnail}" alt="${document.title}" title="${document.title}" />
+							<img src="${document.thumbnail}" alt="${document.title}" title="${document.title} - ${document.type}" />
 							<div class="caption">
-								<p class="lead"><span class="badge">${document.id}</span> <#if document.title?length &gt; 16>${document.title?substring(0,16)}...<#else>${document.title}</#if> </h4>
-								<p>${document.type}</p>
+								<p class="lead">
+									<span class="badge">${document.id}</span>
+									<small><#if document.title?length &gt; 20>${document.title?substring(0,20)}...<#else>${document.title}</#if></small>
+								</p>
 								<p>
-									<#list document.actions?sort_by("idAction") as action >
+								<#list document.actions?sort_by("idAction") as action >
 									<#if action.url?has_content>
-									<a href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+									<a class="btn btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
 										<i class="${action.iconUrl}"></i>
 									</a>
 									</#if>
