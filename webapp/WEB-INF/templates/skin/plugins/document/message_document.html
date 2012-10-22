@@ -1,28 +1,46 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<!DOCTYPE html>
+<html>
 <head>
 <base href="${portal_url}/" />
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<!-- Set the viewport width to device width for mobile -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Le styles -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="css/admin/print_admin.css" media="print" />
+<link rel="stylesheet" href="css/print_template_styles.css" type="text/css" />
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+<link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery.ui.1.8.16.ie.css" />
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<!-- Le fav and touch icons -->
+<link rel="shortcut icon" href="favicon.ico">
+<script src="js/jquery/jquery.min.js"></script>
 </head>
 <body>
-<b>#i18n{document.message_document.label} <a href="${portal_url}"> ${portal_name} </a>#i18n{document.message_document.label2} : </b><br/>
-
-&nbsp;&nbsp;${visitor_first_name} &nbsp;&nbsp;${visitor_last_name}
-&nbsp;&nbsp;( ${visitor_email} ) <br/><br/>
-
-<b>Date :</b>&nbsp;${current_date}<br/>
-<br/><br/>
-<hr/>
-<b>Document : </b><br/><br/>
-${preview}
-<hr/>
-<center>
-	<font size="1">#i18n{document.message_document.label3} <strong> <a href="${portal_url}"> ${portal_name} </a> </strong>
-	<br/>
-	<strong>#i18n{document.message_document.label4}</strong> #i18n{document.message_document.label5}<br/>
-	#i18n{document.message_document.label6}</font>
-</center>
+	<div class="row">
+		<div class="offset1 span11">
+		<b>#i18n{document.message_document.label} <a href="${portal_url}"> ${portal_name} </a>
+		#i18n{document.message_document.label2} : </b>
+		<br/>
+		&nbsp;&nbsp;${visitor_first_name} &nbsp;&nbsp;${visitor_last_name}
+		&nbsp;&nbsp;( ${visitor_email} ) <br/><br/>
+		<b>Date :</b>&nbsp;${current_date}<br/>
+		<br/><br/>
+		<hr/>
+		<b>Document : </b><br/><br/>
+		${preview}
+		<hr/>
+		<font size="1">#i18n{document.message_document.label3} <strong> <a href="${portal_url}"> ${portal_name} </a> </strong>
+		<br/>
+		<strong>#i18n{document.message_document.label4}</strong> #i18n{document.message_document.label5}<br/>
+		#i18n{document.message_document.label6}</font>
+	</div>
+</div>
 </body>
 </html>

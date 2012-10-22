@@ -4,22 +4,23 @@
 		<fieldset>
 			<legend><span class="badge badge-info"> ${portlet.id}</span>&nbsp;${portlet.name}</legend>
 			<p>
-				<span class="label">
-					<i class="icon-file icon-white"></i>&nbsp;#i18n{document.manage_portlet_publishing.columnTitlePage}
-				</span>
+				<i class="icon-file"></i>&nbsp;#i18n{document.manage_portlet_publishing.columnTitlePage}
 				<span class="badge">${portlet.pageId}</span>
 			</p>
 			<p>
 			<#if portlet.status = 0>
+				<i class="icon-globe"></i> #i18n{document.manage_portlet_publishing.columnTitleState}&nbsp;
 				<span class="label label-success">
-					#i18n{document.manage_portlet_publishing.columnTitleState}&nbsp;
-					<i class="icon-ok-sign icon-white"></i> #i18n{portal.util.labelEnabled} - #i18n{document.manage_portlet_publishing.labelStatusPublished}
+					<i class="icon-ok-sign icon-white"></i> #i18n{portal.util.labelEnabled} 
+					/ 
+					#i18n{document.manage_portlet_publishing.labelStatusPublished}
 				</span>
 			<#else>
-				<span class="label label-important">
-					#i18n{document.manage_portlet_publishing.columnTitleState}&nbsp;
-					<i class="icon-remove-sign icon-white"></i> #i18n{portal.util.labelDisabled} - #i18n{document.manage_portlet_publishing.labelStatusUnPublished}
-				</span>
+				<i class="icon-globe"></i> #i18n{document.manage_portlet_publishing.columnTitleState}&nbsp;
+					<span class="label label-important">
+						<i class="icon-remove-sign icon-white"></i> #i18n{portal.util.labelDisabled} 
+						#i18n{document.manage_portlet_publishing.labelStatusUnPublished}
+					</span>
 			</#if>
 			</p>
 		</fieldset>
@@ -28,17 +29,16 @@
 		<form name="formModifyModePublication" method="post" action="jsp/admin/plugins/document/DoConfirmChangeModePublication.jsp" enctype="multipart/form-data" >
 			<input type="hidden" name="id_portlet" value="${portlet.id}" />
 			<input type="hidden" name="old_mode_publication" value="${mode_publication}" />
-			<label class="radio">#i18n{document.manage_portlet_publishing.radioStandardPublication}
+			<label class="radio inline">#i18n{document.manage_portlet_publishing.radioStandardPublication}
 				<input type="radio" name="mode_publication" id="standard_publication" value="0" <#if mode_publication = 0>checked="checked"</#if> />
 			</label>
-			<label class="radio">
+			<label class="radio inline">
 				#i18n{document.manage_portlet_publishing.radioAutoPublication}
 				<input type="radio" name="mode_publication" id="auto_publication" value="1" <#if mode_publication = 1>checked="checked"</#if> />
 			</label>
-			<button class="btn btn-primary btn-small" type="submit" ><i class="icon-ok icon-white"></i> #i18n{document.manage_portlet_publishing.buttonValidateModePublication}</button>
+			<button class="btn btn-primary btn-small" type="submit" ><i class="icon-ok icon-white"></i> <span class="hidden-phone">#i18n{document.manage_portlet_publishing.buttonValidateModePublication}</span></button>
 		</form>                  
 		</fieldset>
-		
 		<a class="btn btn-primary btn-small" href="jsp/admin/site/AdminSite.jsp?page_id=${portlet.pageId}"  title="#i18n{document.manage_portlet_publishing.labelAdminSiteAccess}" >
 			<i class="icon-globe icon-white"></i>&nbsp;#i18n{document.manage_portlet_publishing.columnAdminSiteAccess}
 		</a>
@@ -70,7 +70,7 @@
 				<td>${auto_publication.number_auto_published_documents}</td>
 				<td>
 					<a class="btn btn-danger btn-small" href="jsp/admin/plugins/document/DeleteAutoPublication.jsp?id_portlet=${auto_publication.document_auto_publication.idPortlet}&id_space=${auto_publication.document_auto_publication.idSpace}&mode_publication=1"  title="null" >
-					<i class="icon-trash icon-white"></i>
+						<i class="icon-trash icon-white"></i>
 					</a>
 				</td>
 			</tr>

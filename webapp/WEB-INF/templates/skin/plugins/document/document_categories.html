@@ -1,29 +1,20 @@
 <#if document_categories_list?has_content>
-	<div class="portlet-background-colored append-bottom">
-		<h3 class="portlet-background-colored-header -lutece-border-radius-top">
-			#i18n{document.document_categories.portletTitle}    	
-		</h3>
-    <div class="portlet-background-content -lutece-border-radius-bottom">
+	<div class="row">
+		<div class="span12">
+		<h3>#i18n{document.document_categories.portletTitle}</h3>
 			<ul>
-				<#list document_categories_list as document >
-					<#if document?has_content >
-						<li>
-							<a href="jsp/site/Portal.jsp?document_id=${document.id}&#38;portlet_id=
-								<#if portlet_id_list?has_content >
-									<#list portlet_id_list as item >
-										<#if item.code = '${document.id}' >
-											${item.name}
-										</#if>
-									</#list>
-								</#if>
-							" target="_top">
-								${document.title}
-							</a>
-							<br />
-							${document.summary}
-						</li>
-					</#if>
-				</#list>
+			<#list document_categories_list as document >
+				<#if document?has_content >
+				<li>
+					<p>
+						<a href="jsp/site/Portal.jsp?document_id=${document.id}&#38;portlet_id=<#if portlet_id_list?has_content ><#list portlet_id_list as item ><#if item.code = '${document.id}' >${item.name}</#if></#list></#if>" target="_top">
+						${document.title}
+						</a>
+					</p>
+					<p>${document.summary}</p>
+				</#if>
+			</#list>
 			</ul>
+		</div>
 	</div>
 </#if>

@@ -1,46 +1,30 @@
-<div id="content" >
-    <div id="one-zone-first">
-        <div id="one-zone-first-content">
-           <div class="document">
-				    <div class="document-content">
-                    ${document}
-				    </div>
-			   </div>
-				
-				
-			<div class="document-comments">
-				<a name="comments"></a>
-				${document_comments}
-			</div>            
-		
-		<div>
-				<#if portlet?has_content >
-					${portlet}
-				</#if>
-			</div>		
-		
-		</div>
+<#--
+Available objects :
+ - String 				document 			The HTML code for the document (Xsl transformation result)
+ - String 				portlet				The HTML code for documents list portlet containing the document
+ - String 				categories			The HTML code for category list portlet linked with the document
+ - String 				document_comments	The HTML code for the comments area
+ - String 				document_id			The document id
+ - String 				portlet_id			The portlet id
+ - int					accept_comment		Specify if document accept comment
+ - DocumentPublication 	publication 		The publication object. 
+ 											How to display the date publication : ${publication.datePublishing?date} or ${publication.datePublishing?datetime}
+-->
+<div class="row-fluid">
+	<div id="content" class="span8">
+		${document}
+	</div>
+	<div id="sidebar" class="span3">
+		<a href="jsp/site/plugins/document/SendDocument.jsp?document_id=${document_id}" target="_send">#i18n{document.document_content_service.buttonSend}</a> | 
+		<a href="jsp/site/plugins/document/PrintDocument.jsp?document_id=${document_id}" target="_print">#i18n{document.document_content_service.buttonPrint}</a> | 
+		<a href="javascript:window.history.back();">#i18n{document.document_content_service.buttonBack}</a>
+		@Extender[${document_id},document,hit,{show:true}]@
+		@Extender[${document_id},document,rating,{show:"all"}]@
+		<#if portlet?has_content >
+			${portlet}
+		</#if>
 	</div>
 </div>
-<div id="sidebar"> 
-  <div class="site-buttons" id="button-send">
-          <a class="tt" href="jsp/site/plugins/document/SendDocument.jsp?document_id=${document_id}">&nbsp;<span class="tooltip"><span class="top"></span><span class="middle">#i18n{document.document_content_service.buttonSend}</span><span class="bottom"></span></span></a>
-      </div>
-      
-      <div class="site-buttons" id="button-print">
-        <a class="tt" href="jsp/site/plugins/document/PrintDocument.jsp?document_id=${document_id}" target="_print">&nbsp;<span class="tooltip"><span class="top"></span><span class="middle">#i18n{document.document_content_service.buttonPrint}</span><span class="bottom"></span></span></a>
-    </div>
-    
-    <#if accept_comment = 1>
-    <div class="site-buttons" id="button-comment">
-      <a class="tt" href="jsp/site/Portal.jsp?document_id=${document_id}&amp;portlet_id=${portlet_id}&amp;comment=1#comments">&nbsp;<span class="tooltip"><span class="top"></span><span class="middle">#i18n{document.document_content_service.buttonComment}</span><span class="bottom"></span></span></a>
-    </div>
-    
-</#if>
-  <div class="site-buttons" id="button-return">
-    <a class="tt" href="javascript:history.back();">&nbsp;<span class="tooltip"><span class="top"></span><span class="middle">#i18n{document.document_content_service.buttonBack}</span><span class="bottom"></span></span></a>
-  </div>
-  
-</div>
-
-
+<div class="clearfix">&nbsp;</div>
+@Extender[${document_id},document,comment]@
+@Extender[${document_id},document,feedback]@

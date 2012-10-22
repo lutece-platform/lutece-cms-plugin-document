@@ -1,28 +1,34 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
- 
-
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<!DOCTYPE html>
+<html>
 <head>
-<base href="${base_url}" />
-
-<link rel="stylesheet"  href="css/print_template_styles.css" type="text/css"  media="print" />
-<link rel="stylesheet"  href="css/print_template_structure.css" type="text/css"  media="print" />
-
 <title>#i18n{document.page_print_document.labelPrintPreview}</title>
+<base href="${base_url}" />
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<!-- Set the viewport width to device width for mobile -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Le styles -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="css/admin/print_admin.css" media="print" />
 <link rel="stylesheet" href="css/print_template_styles.css" type="text/css" />
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+<link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery.ui.1.8.16.ie.css" />
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<!-- Le fav and touch icons -->
+<link rel="shortcut icon" href="favicon.ico">
+<script src="js/jquery/jquery.min.js"></script>
 </head>
 <body>
-
-<div class="window-header">
-	${portal_domain}
-</div>
-
-<div class="window-content">
-	${preview}
-</div>
-<div class="site-buttons" id="button-print">
-    <a href="javascript:window.print();">#i18n{document.document_content_service.buttonPrint}</a>
-</div>
+<div class="row">
+	<div class="offset1 span11">
+		<h3>${portal_domain} <a class="btn pull-right"href="javascript:window.print();"><i class="icon-print"></i>&nbsp;#i18n{document.document_content_service.buttonPrint}</a></h3>
+		${preview}
+		</div>
+	</div>
 </body>
 </html>

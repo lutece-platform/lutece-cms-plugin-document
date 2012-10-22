@@ -10,44 +10,25 @@ Available objects :
  - DocumentPublication 	publication 		The publication object. 
  											How to display the date publication : ${publication.datePublishing?date} or ${publication.datePublishing?datetime}
 -->
-<div class="pull-right">
+<div class="row-fluid">
+	<div id="sidebar" class="span3">
 	@Extender[${document_id},document,hit,{show:true}]@
 	@Extender[${document_id},document,rating,{show:"all"}]@
-</div>
-<br />
-<div id="sidebar" class="span2 prepend-1 append-1 append-bottom">
 	<#if portlet?has_content >
        	${portlet}
 	</#if>
-</div>
-<div id="content" class="span8 append-1 append-bottom last">
-	<div class="portlet -lutece-border-radius">
-		<div class="document-content">${document}</div>
-		<#if is_download_stat?has_content>
-			<br />
-			#i18n{rating.resource_vote.labelDownloadCount} : ${resource_download_stat}
-		</#if>
-		<#if is_view_count?has_content>
-			<img src="jsp/site/plugins/rating/CountView.jsp?type_resource=document&id_resource=${document_id}"/>
-		</#if>
-		<#if is_votable?has_content>
-			${template_vote_content}
-			<br />
-			<hr width="100%">
-		</#if>
-		<div class="document-comments">${document_comments}</div>
-		<div>
-			<a href="jsp/site/plugins/document/SendDocument.jsp?document_id=${document_id}">#i18n{document.document_content_service.buttonSend}</a> | 
-			<a href="jsp/site/plugins/document/PrintDocument.jsp?document_id=${document_id}" target="_print">#i18n{document.document_content_service.buttonPrint}</a> | 
-			<#if accept_comment = 1>
-				<a href="jsp/site/Portal.jsp?document_id=${document_id}&amp;portlet_id=${portlet_id}&amp;comment=1#comments">#i18n{document.document_content_service.buttonComment}</a> | 
-			</#if>
-			<a href="javascript:history.back();">#i18n{document.document_content_service.buttonBack}</a>
+	</div>
+	<div id="content" class="span8">
+		<div class="pull-right">
+			<div class="btn-group">
+				<a class="btn btn-small" href="jsp/site/plugins/document/SendDocument.jsp?document_id=${document_id}" target="_send"><i class="icon-envelope"></i>&nbsp;#i18n{document.document_content_service.buttonSend}</a> | 
+				<a class="btn btn-small" href="jsp/site/plugins/document/PrintDocument.jsp?document_id=${document_id}" target="_print"><i class="icon-print"></i>&nbsp;#i18n{document.document_content_service.buttonPrint}</a> | 
+				<a class="btn btn-small" href="javascript:window.history.back();"><i class="icon-remove-circle"></i>&nbsp;#i18n{document.document_content_service.buttonBack}</a>
+			</div>
 		</div>
+		${document}
 	</div>
 </div>
-<br />
-<div class="span12">
-	@Extender[${document_id},document,comment]@
-	@Extender[${document_id},document,feedback]@
-</div>
+<div class="clearfix">&nbsp;</div>
+@Extender[${document_id},document,comment]@
+@Extender[${document_id},document,feedback]@
