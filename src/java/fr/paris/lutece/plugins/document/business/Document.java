@@ -37,8 +37,6 @@ import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.category.Category;
 import fr.paris.lutece.plugins.document.business.publication.DocumentPublication;
 import fr.paris.lutece.plugins.document.business.publication.DocumentPublicationHome;
-import fr.paris.lutece.plugins.document.modules.comment.business.DocumentCommentHome;
-import fr.paris.lutece.plugins.document.modules.comment.service.DocumentCommentPlugin;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.i18n.Localizable;
@@ -72,8 +70,6 @@ public class Document implements Localizable, IExtendableResource
     private static final String TAG_DATE_PUBLICATION = "document-date-publication";
     private static final String TAG_DOCUMENT_XML_CONTENT = "document-xml-content";
 
-    // private static final String TAG_DOCUMENT_IS_COMMENTABLE = "document-is-commentable";
-    private static final String TAG_DOCUMENT_COMMENT_NB = "document-comment-nb";
     private static final String EMPTY_STRING = "";
 
     // Variables declarations
@@ -93,9 +89,6 @@ public class Document implements Localizable, IExtendableResource
     private String _strXmlValidatedContent;
     private String _strXmlMetadata;
     private int _nIdSpace;
-    private int _nAcceptSiteComments;
-    private int _nIsModeratedComment;
-    private int _nIsEmailNotifiedComment;
     private int _nIdPageTemplateDocument;
     private int _nPublishedStatus;
     private String _strSpace;
@@ -478,60 +471,6 @@ public class Document implements Localizable, IExtendableResource
     }
 
     /**
-     * Sets the nAcceptComment
-     * @param nAcceptSiteComments The nAcceptComment
-     */
-    public void setAcceptSiteComments( int nAcceptSiteComments )
-    {
-        _nAcceptSiteComments = nAcceptSiteComments;
-    }
-
-    /**
-     * Returns the nAcceptComment
-     * @return The nAcceptComment
-     */
-    public int getAcceptSiteComments(  )
-    {
-        return _nAcceptSiteComments;
-    }
-
-    /**
-     * Sets the nIsModeratedComment
-     * @param nIsModeratedComment The nIsModeratedComment
-     */
-    public void setIsModeratedComment( int nIsModeratedComment )
-    {
-        _nIsModeratedComment = nIsModeratedComment;
-    }
-
-    /**
-     * Returns the nIsModeratedComment
-     * @return The nIsModeratedComment
-     */
-    public int getIsModeratedComment(  )
-    {
-        return _nIsModeratedComment;
-    }
-
-    /**
-     * Sets the nIsEmailNotifiedComment
-     * @param nIsEmailNotifiedComment The nIsEmailNotifiedComment
-     */
-    public void setIsEmailNotifiedComment( int nIsEmailNotifiedComment )
-    {
-        _nIsEmailNotifiedComment = nIsEmailNotifiedComment;
-    }
-
-    /**
-     * Returns the nIsEmailNotifiedComment
-     * @return The nIsEmailNotifiedComment
-     */
-    public int getIsEmailNotifiedComment(  )
-    {
-        return _nIsEmailNotifiedComment;
-    }
-
-    /**
      * Returns the IdMailingList
      *
      * @return The IdMailingList
@@ -711,16 +650,9 @@ public class Document implements Localizable, IExtendableResource
 
         XmlUtil.addElement( strXml, TAG_DOCUMENT_XML_CONTENT, getXmlValidatedContent(  ) );
 
-        // TODO : delete dependency from document-comment module
-        if ( DocumentCommentPlugin.getPluginStatus(  ) )
-        {
-            XmlUtil.addElement( strXml, TAG_DOCUMENT_COMMENT_NB, getNbComment( getId(  ) ) );
-        }
-
         // additionnal info
         ResourceEnhancer.getXmlAddOn( strXml, PROPERTY_RESOURCE_TYPE, getId(  ) );
 
-        //  XmlUtil.addElement( strXml, TAG_DOCUMENT_IS_COMMENTABLE, getAcceptSiteComments(  ) );
         XmlUtil.endElement( strXml, TAG_DOCUMENT );
 
         return strXml.toString(  );
@@ -813,16 +745,6 @@ public class Document implements Localizable, IExtendableResource
 
         // Return false if dateValidityEnd >= DateToday, true otherwise :
         return !( getDateValidityEnd(  ).compareTo( new Date(  ) ) >= 0 );
-    }
-
-    /**
-     * Return the nb of comment for a document
-     * @param strDocumentId the document identifier
-     * @return the nb of document
-     **/
-    private int getNbComment( int strDocumentId )
-    {
-        return DocumentCommentHome.checkCommentNb( strDocumentId );
     }
 
 	/**

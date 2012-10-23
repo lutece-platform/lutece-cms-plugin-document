@@ -21,7 +21,6 @@
     <bean id="document.documentAutoPublicationDAO" class="fr.paris.lutece.plugins.document.business.autopublication.DocumentAutoPublicationDAO" />
     <bean id="document.documentPublicationDAO" class="fr.paris.lutece.plugins.document.business.publication.DocumentPublicationDAO" />
     <bean id="document.documentIndexerActionDAO" class="fr.paris.lutece.plugins.document.business.IndexerActionDAO" />
-    <bean id="document.documentCommentDAO" class="fr.paris.lutece.plugins.document.modules.comment.business.DocumentCommentDAO" />
     <!--                      Removal Services                            -->  
     <bean id="document.spaceRemovalService" class="fr.paris.lutece.portal.service.util.RemovalListenerService" />
     

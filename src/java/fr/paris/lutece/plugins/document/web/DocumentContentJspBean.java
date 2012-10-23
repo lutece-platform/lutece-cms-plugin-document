@@ -37,33 +37,25 @@ import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
-import fr.paris.lutece.plugins.document.modules.comment.business.DocumentComment;
-import fr.paris.lutece.plugins.document.modules.comment.business.DocumentCommentHome;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
-import fr.paris.lutece.portal.business.mailinglist.Recipient;
-import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mail.MailService;
-import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
-import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
-import fr.paris.lutece.util.string.StringUtil;
 
-import org.apache.commons.lang.StringUtils;
-
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -83,14 +75,6 @@ public class DocumentContentJspBean
     private static final String PARAMETER_VISITOR_EMAIL = "visitor_email";
     private static final String PARAMETER_RECIPIENT_EMAIL = "recipient_email";
     private static final String PARAMETER_COMMENT_DOCUMENT = "comment";
-    private static final String PARAMETER_PORTLET_ID = "portlet_id";
-    private static final String PARAMETER_EMAIL = "email";
-    private static final String PARAMETER_NAME = "name";
-    private static final String PARAMETER_CONTENT = "content";
-    private static final String PARAMETER_MANDATORY_FIELD = "mandatory";
-    private static final String PARAMETER_XSS_ERROR = "xsserror";
-    private static final String PARAMETER_CAPTCHA_ERROR = "captcha_error";
-    private static final String PARAMETER_CHECK_EMAIL = "checkemail";
 
     // Markers
     private static final String MARK_DOCUMENT = "document";
@@ -106,13 +90,11 @@ public class DocumentContentJspBean
     private static final String MARK_RECIPIENT_EMAIL = "recipient_email";
     private static final String MARK_COMMENT_DOCUMENT = "comment";
     private static final String MARK_CURRENT_DATE = "current_date";
-    private static final String MARK_DOCUMENT_COMMENT = "document_comment";
 
     // Properties
     private static final String PROPERTY_SENDING_OK = "document.message.sending.ok";
     private static final String PROPERTY_SENDING_NOK = "document.message.sending.nok";
     private static final String PROPERTY_MANDATORY_FIELD = "document.message.mandatory.field";
-    private static final String PROPERTY_COMMENT_NOTIFY_SUBJECT = "module.document.comment.message.notify.subject";
     private static final String PROPERTY_PORTAL_NAME = "lutece.name";
     private static final String PROPERTY_PORTAL_URL = "lutece.prod.url";
 
@@ -120,16 +102,9 @@ public class DocumentContentJspBean
     private static final String TEMPLATE_PAGE_PRINT_DOCUMENT = "skin/plugins/document/page_print_document.html";
     private static final String TEMPLATE_PAGE_SEND_DOCUMENT = "skin/plugins/document/page_send_document.html";
     private static final String TEMPLATE_MESSAGE_DOCUMENT = "skin/plugins/document/message_document.html";
-    private static final String TEMPLATE_COMMENT_NOTIFY_MESSAGE = "skin/plugins/document/modules/comment/comment_notify_message.html";
 
     // Jsp
-    private static final String PAGE_PORTAL = "jsp/site/Portal.jsp";
     private static final String PAGE_SEND_DOCUMENT = "SendDocument.jsp";
-    private static final String JCAPTCHA_PLUGIN = "jcaptcha";
-    private static final String EMPTY_STRING = "";
-
-    //Captcha
-    private CaptchaSecurityService _captchaService;
 
     /////////////////////////////////////////////////////////////////////////////
     // page management of printing document
@@ -313,131 +288,5 @@ public class DocumentContentJspBean
             strMessageText );
 
         return PAGE_SEND_DOCUMENT + "?send=done&" + PARAMETER_DOCUMENT_ID + "=" + nDocumentId;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Creation of comments on the site
-
-    /**
-     * Processes the creation of an document comment
-     *
-     * @param request the Http request
-     * @return The jsp URL to which the user is redirected
-     */
-    public String doAddComment( HttpServletRequest request )
-    {
-        String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-        String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
-        String strEmail = request.getParameter( PARAMETER_EMAIL );
-        String strName = request.getParameter( PARAMETER_NAME );
-        String strContent = request.getParameter( PARAMETER_CONTENT );
-
-        String strPagePortal = AppPathService.getBaseUrl( request ) + PAGE_PORTAL;
-
-        //test the captcha
-        if ( PluginService.isPluginEnable( JCAPTCHA_PLUGIN ) )
-        {
-            _captchaService = new CaptchaSecurityService(  );
-
-            if ( !_captchaService.validate( request ) )
-            {
-                return strPagePortal + "?" + PARAMETER_DOCUMENT_ID + "=" + strDocumentId + "&" + PARAMETER_PORTLET_ID +
-                "=" + strPortletId + "&" + PARAMETER_COMMENT_DOCUMENT + "=1&" + PARAMETER_CAPTCHA_ERROR + "=1";
-            }
-        }
-
-        // Check XSS characters
-        if ( ( strContent != null ) && ( StringUtil.containsXssCharacters( strContent ) ) )
-        {
-            return strPagePortal + "?" + PARAMETER_DOCUMENT_ID + "=" + strDocumentId + "&" + PARAMETER_PORTLET_ID +
-            "=" + strPortletId + "&" + PARAMETER_COMMENT_DOCUMENT + "=1&" + PARAMETER_XSS_ERROR + "=1";
-        }
-
-        if ( EMPTY_STRING.equals( strEmail.trim(  ) ) || EMPTY_STRING.equals( strName.trim(  ) ) ||
-                EMPTY_STRING.equals( strEmail.trim(  ) ) || EMPTY_STRING.equals( strContent.trim(  ) ) )
-        {
-            return strPagePortal + "?" + PARAMETER_DOCUMENT_ID + "=" + strDocumentId + "&" + PARAMETER_PORTLET_ID +
-            "=" + strPortletId + "&" + PARAMETER_COMMENT_DOCUMENT + "=1&" + PARAMETER_MANDATORY_FIELD + "=1";
-        }
-
-        if ( !StringUtil.checkEmail( strEmail.trim(  ) ) )
-        {
-            return strPagePortal + "?" + PARAMETER_DOCUMENT_ID + "=" + strDocumentId + "&" + PARAMETER_PORTLET_ID +
-            "=" + strPortletId + "&" + PARAMETER_COMMENT_DOCUMENT + "=1&" + PARAMETER_CHECK_EMAIL + "=1";
-        }
-
-        // Retrieve the document from the database :
-        int nDocumentId = IntegerUtils.convert( strDocumentId );
-        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
-
-        // Only add the comment if the document accepts comments
-        if ( ( document != null ) && ( document.getAcceptSiteComments(  ) == 1 ) )
-        {
-            DocumentComment documentComment = new DocumentComment(  );
-
-            // Properties submitted with the form :
-            documentComment.setDocumentId( nDocumentId );
-            documentComment.setEmail( strEmail );
-            documentComment.setName( strName );
-            documentComment.setComment( strContent );
-
-            // Computed properties :
-            documentComment.setIpAddress( request.getRemoteAddr(  ) );
-
-            // The date is set automatically in the DAO
-            // If the document is not moderated, the comment is published
-            // immediately
-            if ( document.getIsModeratedComment(  ) == 0 )
-            {
-                documentComment.setStatus( 1 );
-
-                // Delete the document from the page cache since new
-                // comments have been published.                            
-            }
-            else
-            {
-                documentComment.setStatus( 0 );
-            }
-
-            // Create the comment in the database
-            DocumentCommentHome.create( documentComment );
-
-            if ( document.getIsEmailNotifiedComment(  ) == 1 )
-            {
-                // Send notification
-                sendCommentNotification( request, document, documentComment );
-            }
-        }
-
-        return strPagePortal + "?" + PARAMETER_DOCUMENT_ID + "=" + strDocumentId + "&" + PARAMETER_PORTLET_ID + "=" +
-        strPortletId;
-    }
-
-    private void sendCommentNotification( HttpServletRequest request, Document document, DocumentComment documentComment )
-    {
-        int nMailingListId = document.getMailingListId(  );
-        Collection<Recipient> listRecipients = AdminMailingListService.getRecipients( nMailingListId );
-
-        for ( Recipient recipient : listRecipients )
-        {
-            Map<String, Object> model = new HashMap<String, Object>(  );
-
-            String strSenderEmail = request.getParameter( PARAMETER_EMAIL );
-            String strSenderName = request.getParameter( PARAMETER_NAME );
-            String strSubject = I18nService.getLocalizedString( PROPERTY_COMMENT_NOTIFY_SUBJECT, request.getLocale(  ) );
-
-            // Generate the subject of the message
-            strSubject += ( " " + document.getTitle(  ) );
-
-            // Generate the body of the message
-            model.put( MARK_DOCUMENT, document );
-            model.put( MARK_DOCUMENT_COMMENT, documentComment );
-
-            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_COMMENT_NOTIFY_MESSAGE,
-                    request.getLocale(  ), model );
-            String strBody = template.getHtml(  );
-
-            MailService.sendMailHtml( recipient.getEmail(  ), strSenderName, strSenderEmail, strSubject, strBody );
-        }
     }
 }

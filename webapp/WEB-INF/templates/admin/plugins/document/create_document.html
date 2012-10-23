@@ -26,27 +26,6 @@
 				<p class="help-block">#i18n{document.create_document.helpDocumentComment}</p>
 		</div>
 		<#noescape>${category}</#noescape>
-		<#if is_commentable == "0">
-		<div class="well"> 
-			<span id="comments"><i class="icon-chevron-down"></i>&nbsp;#i18n{document.create_document.labelDocumentCommentable}</span>
-			<div class="comments-content">
-					<label class="checkbox">#i18n{document.create_document.labelDocumentCommentable}
-						<input class="checkbox" type="checkbox" name="accept_site_comments" id="accept_site_comments" value="1" title="#i18n{document.create_document.helpDocumentCommentable}"/>
-					</label>
-					<label class="checkbox">#i18n{document.create_document.labelCommentIsModerated}
-						<input class="checkbox" type="checkbox" name="is_moderated_comment" id="is_moderated_comment" value="1" title="#i18n{document.create_document.helpCommentIsModerated}"/>
-					</label>
-				<#if mailinglists_list?has_content>
-					<label class="checkbox">#i18n{document.create_document.labelCommentIsEmailNotified}
-						<input class="checkbox" type="checkbox" name="is_email_notified_comment" id="is_email_notified_comment" value="1" title="#i18n{document.create_document.helpCommentIsEmailNotified}"/>
-					</label>
-					<@combo name="mailinglists" default_value="" items=mailinglists_list />
-				<#else>
-					<em>#i18n{document.create_document.messageNotificationListNotExist}</em>
-				</#if>
-			</div>
-		</div>
-		</#if>
 		<#if is_votable?has_content>
 			<#include "/admin/plugins/rating/create_resource_add_on.html" />
 		</#if>

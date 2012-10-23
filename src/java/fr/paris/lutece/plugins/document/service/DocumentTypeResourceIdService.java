@@ -82,9 +82,6 @@ public class DocumentTypeResourceIdService extends ResourceIdService
     /** Permission for assigning a document */
     public static final String PERMISSION_ASSIGN = "ASSIGN";
 
-    /** Permission for approve comment a document */
-    // public static final String PERMISSION_COMMENT = "COMMENT";
-
     /** Permission for viewing a space history */
     public static final String PERMISSION_VIEW_HISTORY = "VIEW_HISTORY";
     private static final String PROPERTY_LABEL_RESOURCE_TYPE = "document.workflow.resourceType";
@@ -100,7 +97,6 @@ public class DocumentTypeResourceIdService extends ResourceIdService
     private static final String PROPERTY_LABEL_PUBLISH = "document.workflow.permission.label.publish";
     private static final String PROPERTY_LABEL_ASSIGN = "document.workflow.permission.label.assign";
 
-    //private static final String PROPERTY_LABEL_COMMENT = "document.workflow.permission.label.comment";
     private static final String PROPERTY_LABEL_VIEW_HISTORY = "document.workflow.permission.label.viewHistory";
     private static final String PLUGIN_NAME = "document";
 
@@ -176,10 +172,6 @@ public class DocumentTypeResourceIdService extends ResourceIdService
         p.setPermissionTitleKey( PROPERTY_LABEL_ASSIGN );
         rt.registerPermission( p );
 
-        /*    p = new Permission(  );
-            p.setPermissionKey( PERMISSION_COMMENT );
-            p.setPermissionTitleKey( PROPERTY_LABEL_COMMENT );
-            rt.registerPermission( p );*/
         p = new Permission(  );
         p.setPermissionKey( PERMISSION_VIEW_HISTORY );
         p.setPermissionTitleKey( PROPERTY_LABEL_VIEW_HISTORY );

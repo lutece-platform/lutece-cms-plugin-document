@@ -49,10 +49,7 @@
             <xsl:for-each select="descendant::*">
                 <xsl:value-of select="document-summary" />
             </xsl:for-each>
-            <br />
-            <xsl:if test="(string(document-is-commentable)='1')">
-                <img src="images/local/skin/plugins/document/nb_comments.png" alt="Nombre de commentaires" title="Nombre de commentaires" align="middle"/>&#160;<xsl:value-of select="document-comment-nb" />      
-            </xsl:if>   
+            <br /> 
     </li>
 </xsl:template>
 

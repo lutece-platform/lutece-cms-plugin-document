@@ -36,15 +36,14 @@ package fr.paris.lutece.plugins.document.business;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.category.Category;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
-import fr.paris.lutece.plugins.document.modules.comment.business.DocumentCommentHome;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.sql.DAOUtil;
-
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -56,25 +55,22 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_NEW_PK = " SELECT max( id_document ) FROM document ";
     private static final String SQL_QUERY_SELECT = " SELECT a.id_document, a.code_document_type, a.title, a.date_creation, " +
         " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
-        " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
-        " a.xml_metadata , a.id_creator, a.accept_site_comments, a.is_moderated_comment, a.is_email_notified_comment, a.id_mailinglist, " +
-        " a.id_page_template_document " +
-        " FROM document a, document_space b, document_workflow_state c, document_type d" +
-        " WHERE a.id_space = b.id_space AND a.id_state = c.id_state AND " +
-        " a.code_document_type = d.code_document_type AND a.id_document = ?  ";
+        " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin," +
+        " a.date_validity_end , a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document FROM document a," +
+        " document_space b, document_workflow_state c, document_type d WHERE a.id_space = b.id_space AND a.id_state = c.id_state" +
+        " AND a.code_document_type = d.code_document_type AND a.id_document = ?  ";
     private static final String SQL_QUERY_SELECT_FROM_SPACE_ID = " SELECT a.id_document, a.document_summary" +
         " FROM document a WHERE a.id_space = ?  ";
     private static final String SQL_QUERY_INSERT = " INSERT INTO document ( id_document, code_document_type, title, date_creation, " +
         " date_modification, xml_working_content, xml_validated_content, id_space, id_state	, document_summary, document_comment , " +
-        " date_validity_begin , date_validity_end , xml_metadata , id_creator, accept_site_comments, is_moderated_comment , " +
-        " is_email_notified_comment, id_mailinglist, id_page_template_document ) " +
-        " VALUES ( ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ? ) ";
+        " date_validity_begin , date_validity_end , xml_metadata , id_creator, " +
+        " id_mailinglist, id_page_template_document ) " +
+        " VALUES ( ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ? ,?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = " DELETE FROM document WHERE id_document = ?  ";
     private static final String SQL_QUERY_UPDATE = " UPDATE document SET id_document = ?, " +
         " code_document_type = ?, title = ?, date_creation = ?, date_modification = ?, xml_working_content = ?, " +
         " xml_validated_content = ?, id_space = ?, id_state = ? , document_summary = ?, document_comment = ? , date_validity_begin = ? , date_validity_end = ? , " +
-        " xml_metadata = ? , id_creator = ?, accept_site_comments = ?, is_moderated_comment = ? , is_email_notified_comment = ?, " +
-        " id_mailinglist = ?, id_page_template_document = ? " + " WHERE id_document = ?  ";
+        " xml_metadata = ? , id_creator = ?, id_mailinglist = ?, id_page_template_document = ? " + " WHERE id_document = ?  ";
     private static final String SQL_QUERY_SELECT_PRIMARY_KEY_BY_FILTER = " SELECT DISTINCT a.id_document, a.date_modification FROM document a " +
         " INNER JOIN document_space b ON a.id_space = b.id_space " +
         " INNER JOIN document_workflow_state c ON a.id_state = c.id_state " +
@@ -83,8 +79,7 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_SELECT_BY_FILTER = " SELECT DISTINCT a.id_document, a.code_document_type, a.title, " +
         " a.date_creation, a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
         " a.id_state , c.name_key , d.document_type_name ,  a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
-        " a.xml_metadata , a.id_creator, a.accept_site_comments, a.is_moderated_comment, a.is_email_notified_comment, " +
-        " a.id_mailinglist , a.id_page_template_document " + " FROM document a " +
+        " a.xml_metadata , a.id_creator, a.id_mailinglist , a.id_page_template_document FROM document a " +
         " INNER JOIN document_space b ON a.id_space = b.id_space " +
         " INNER JOIN document_workflow_state c ON a.id_state = c.id_state " +
         " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
@@ -92,8 +87,7 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_SELECT_LAST_MODIFIED_DOCUMENT_FROM_USER = " SELECT a.id_document, a.code_document_type, a.title, a.date_creation, " +
         " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
         " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
-        " a.xml_metadata , a.id_creator, a.accept_site_comments, a.is_moderated_comment, a.is_email_notified_comment, a.id_mailinglist, " +
-        " a.id_page_template_document " + " FROM document a" +
+        " a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document FROM document a" +
         " INNER JOIN document_space b ON a.id_space = b.id_space" +
         " INNER JOIN document_workflow_state c ON a.id_state = c.id_state" +
         " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
@@ -102,8 +96,7 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_SELECT_LAST_PUBLISHED_DOCUMENT = " SELECT a.id_document, a.code_document_type, a.title, a.date_creation, " +
         " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
         " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
-        " a.xml_metadata , a.id_creator, a.accept_site_comments, a.is_moderated_comment, a.is_email_notified_comment, a.id_mailinglist, " +
-        " a.id_page_template_document " + " FROM document a" +
+        " a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document FROM document a" +
         " INNER JOIN document_space b ON a.id_space = b.id_space" +
         " INNER JOIN document_workflow_state c ON a.id_state = c.id_state" +
         " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
@@ -157,8 +150,7 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_SELECT_RELATED_CATEGORY = "SELECT DISTINCT a.id_document, a.code_document_type, a.title, a.date_creation, " +
         " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
         " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
-        " a.xml_metadata , a.id_creator, a.accept_site_comments, a.is_moderated_comment, a.is_email_notified_comment, a.id_mailinglist, " +
-        " a.id_page_template_document " + " FROM document a " +
+        " a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document FROM document a " +
         " INNER JOIN document_space b ON a.id_space = b.id_space " +
         " INNER JOIN document_workflow_state c ON a.id_state = c.id_state " +
         " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
@@ -211,11 +203,8 @@ public final class DocumentDAO implements IDocumentDAO
         daoUtil.setTimestamp( 13, document.getDateValidityEnd(  ) );
         daoUtil.setString( 14, document.getXmlMetadata(  ) );
         daoUtil.setInt( 15, document.getCreatorId(  ) );
-        daoUtil.setInt( 16, document.getAcceptSiteComments(  ) );
-        daoUtil.setInt( 17, document.getIsModeratedComment(  ) );
-        daoUtil.setInt( 18, document.getIsEmailNotifiedComment(  ) );
-        daoUtil.setInt( 19, document.getMailingListId(  ) );
-        daoUtil.setInt( 20, document.getPageTemplateDocumentId(  ) );
+        daoUtil.setInt( 16, document.getMailingListId( ) );
+        daoUtil.setInt( 17, document.getPageTemplateDocumentId( ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -329,11 +318,8 @@ public final class DocumentDAO implements IDocumentDAO
             document.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
             document.setXmlMetadata( daoUtil.getString( 17 ) );
             document.setCreatorId( daoUtil.getInt( 18 ) );
-            document.setAcceptSiteComments( daoUtil.getInt( 19 ) );
-            document.setIsModeratedComment( daoUtil.getInt( 20 ) );
-            document.setIsEmailNotifiedComment( daoUtil.getInt( 21 ) );
-            document.setMailingListId( daoUtil.getInt( 22 ) );
-            document.setPageTemplateDocumentId( daoUtil.getInt( 23 ) );
+            document.setMailingListId( daoUtil.getInt( 19 ) );
+            document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
         }
 
         daoUtil.free(  );
@@ -516,8 +502,6 @@ public final class DocumentDAO implements IDocumentDAO
         deleteCategories( nDocumentId );
         // Delete history
         deleteHistory( nDocumentId );
-        //Delete Comments
-        DocumentCommentHome.remove( nDocumentId );
     }
 
     /**
@@ -601,12 +585,9 @@ public final class DocumentDAO implements IDocumentDAO
         daoUtil.setTimestamp( 13, document.getDateValidityEnd(  ) );
         daoUtil.setString( 14, document.getXmlMetadata(  ) );
         daoUtil.setInt( 15, document.getCreatorId(  ) );
-        daoUtil.setInt( 16, document.getAcceptSiteComments(  ) );
-        daoUtil.setInt( 17, document.getIsModeratedComment(  ) );
-        daoUtil.setInt( 18, document.getIsEmailNotifiedComment(  ) );
-        daoUtil.setInt( 19, document.getMailingListId(  ) );
-        daoUtil.setInt( 20, document.getPageTemplateDocumentId(  ) );
-        daoUtil.setInt( 21, document.getId(  ) );
+        daoUtil.setInt( 16, document.getMailingListId(  ) );
+        daoUtil.setInt( 17, document.getPageTemplateDocumentId(  ) );
+        daoUtil.setInt( 18, document.getId(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -675,11 +656,8 @@ public final class DocumentDAO implements IDocumentDAO
             document.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
             document.setXmlMetadata( daoUtil.getString( 17 ) );
             document.setCreatorId( daoUtil.getInt( 18 ) );
-            document.setAcceptSiteComments( daoUtil.getInt( 19 ) );
-            document.setIsModeratedComment( daoUtil.getInt( 20 ) );
-            document.setIsEmailNotifiedComment( daoUtil.getInt( 21 ) );
-            document.setMailingListId( daoUtil.getInt( 22 ) );
-            document.setPageTemplateDocumentId( daoUtil.getInt( 23 ) );
+            document.setMailingListId( daoUtil.getInt( 19 ) );
+            document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
 
             if ( document != null )
             {
@@ -849,11 +827,8 @@ public final class DocumentDAO implements IDocumentDAO
             returnDocument.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
             returnDocument.setXmlMetadata( daoUtil.getString( 17 ) );
             returnDocument.setCreatorId( daoUtil.getInt( 18 ) );
-            returnDocument.setAcceptSiteComments( daoUtil.getInt( 19 ) );
-            returnDocument.setIsModeratedComment( daoUtil.getInt( 20 ) );
-            returnDocument.setIsEmailNotifiedComment( daoUtil.getInt( 21 ) );
-            returnDocument.setMailingListId( daoUtil.getInt( 22 ) );
-            returnDocument.setPageTemplateDocumentId( daoUtil.getInt( 23 ) );
+            returnDocument.setMailingListId( daoUtil.getInt( 19 ) );
+            returnDocument.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
 
             listDocument.add( returnDocument );
 
@@ -983,11 +958,8 @@ public final class DocumentDAO implements IDocumentDAO
             document.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
             document.setXmlMetadata( daoUtil.getString( 17 ) );
             document.setCreatorId( daoUtil.getInt( 18 ) );
-            document.setAcceptSiteComments( daoUtil.getInt( 19 ) );
-            document.setIsModeratedComment( daoUtil.getInt( 20 ) );
-            document.setIsEmailNotifiedComment( daoUtil.getInt( 21 ) );
-            document.setMailingListId( daoUtil.getInt( 22 ) );
-            document.setPageTemplateDocumentId( daoUtil.getInt( 23 ) );
+            document.setMailingListId( daoUtil.getInt( 19 ) );
+            document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
 
             loadAttributes( document );
             document.setCategories( selectCategories( document.getId(  ) ) );
@@ -1152,9 +1124,6 @@ public final class DocumentDAO implements IDocumentDAO
             document.setDateValidityEnd( daoUtil.getTimestamp( nIndex++ ) );
             document.setXmlMetadata( daoUtil.getString( nIndex++ ) );
             document.setCreatorId( daoUtil.getInt( nIndex++ ) );
-            document.setAcceptSiteComments( daoUtil.getInt( nIndex++ ) );
-            document.setIsModeratedComment( daoUtil.getInt( nIndex++ ) );
-            document.setIsEmailNotifiedComment( daoUtil.getInt( nIndex++ ) );
             document.setMailingListId( daoUtil.getInt( nIndex++ ) );
             document.setPageTemplateDocumentId( daoUtil.getInt( nIndex++ ) );
         }
@@ -1198,9 +1167,6 @@ public final class DocumentDAO implements IDocumentDAO
             document.setDateValidityEnd( daoUtil.getTimestamp( nIndex++ ) );
             document.setXmlMetadata( daoUtil.getString( nIndex++ ) );
             document.setCreatorId( daoUtil.getInt( nIndex++ ) );
-            document.setAcceptSiteComments( daoUtil.getInt( nIndex++ ) );
-            document.setIsModeratedComment( daoUtil.getInt( nIndex++ ) );
-            document.setIsEmailNotifiedComment( daoUtil.getInt( nIndex++ ) );
             document.setMailingListId( daoUtil.getInt( nIndex++ ) );
             document.setPageTemplateDocumentId( daoUtil.getInt( nIndex++ ) );
         }

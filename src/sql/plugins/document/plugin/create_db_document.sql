@@ -18,9 +18,6 @@ CREATE TABLE document (
 	date_validity_end timestamp NULL,
 	xml_metadata long varchar,
 	id_creator int default NULL,
-	accept_site_comments int default 0 NOT NULL,
-	is_moderated_comment int default 0 NOT NULL,
-	is_email_notified_comment int default 0 NOT NULL,
 	id_mailinglist int default 0 NOT NULL,
 	id_page_template_document int default 0 NOT NULL,
 	PRIMARY KEY (id_document)

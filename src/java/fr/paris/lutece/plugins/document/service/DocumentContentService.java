@@ -39,8 +39,6 @@ import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
 import fr.paris.lutece.plugins.document.business.publication.DocumentPublication;
-import fr.paris.lutece.plugins.document.modules.comment.business.DocumentComment;
-import fr.paris.lutece.plugins.document.modules.comment.business.DocumentCommentHome;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.page.Page;
@@ -51,12 +49,10 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.business.style.ModeHome;
-import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.content.ContentService;
 import fr.paris.lutece.portal.service.content.PageData;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
-import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
@@ -72,15 +68,7 @@ import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.xml.XmlUtil;
 
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.event.CacheEventListener;
-
-import org.apache.commons.lang.StringUtils;
-
 import java.io.FileInputStream;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -92,9 +80,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+
+import net.sf.ehcache.CacheException;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+import net.sf.ehcache.event.CacheEventListener;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -106,7 +100,6 @@ public final class DocumentContentService extends ContentService implements Cach
     // Constants
     private static final String CONTENT_SERVICE_NAME = "Document Content Service";
     private static final String SLASH = "/";
-    private static final String ACCEPT_SITE_COMMENTS = "1";
     private static final int MODE_ADMIN = 1;
     private static final String CONSTANT_DEFAULT_PORTLET_DOCUMENT_LIST_XSL = "WEB-INF/xsl/normal/portlet_document_list.xsl";
     private static final String DOCUMENT_STYLE_PREFIX_ID = "document-";
@@ -119,11 +112,6 @@ public final class DocumentContentService extends ContentService implements Cach
 
     // Parameters
     private static final String PARAMETER_DOCUMENT_ID = "document_id";
-    private static final String PARAMETER_COMMENT_DOCUMENT = "comment";
-    private static final String PARAMETER_MANDATORY_FIELD = "mandatory";
-    private static final String PARAMETER_XSS_ERROR = "xsserror";
-    private static final String PARAMETER_CAPTCHA_ERROR = "captcha_error";
-    private static final String PARAMETER_CHECK_EMAIL = "checkemail";
     private static final String PARAMETER_SITE_PATH = "site-path";
     private static final String PARAMETER_PUBLICATION_DATE = "publication-date";
     private static final String PARAMETER_SITE_LOCALE = "site_locale";
@@ -131,46 +119,28 @@ public final class DocumentContentService extends ContentService implements Cach
     // Markers
     private static final String MARK_PUBLICATION = "publication";
     private static final String MARK_DOCUMENT = "document";
-    private static final String MARK_ACCEPT_COMMENT = "accept_comment";
     private static final String MARK_PORTLET = "portlet";
     private static final String MARK_CATEGORY = "categories";
     private static final String MARK_DOCUMENT_ID = "document_id";
     private static final String MARK_PORTLET_ID = "portlet_id";
     private static final String MARK_PORTLET_ID_LIST = "portlet_id_list";
-    private static final String MARK_DOCUMENT_COMMENTS = "document_comments";
-    private static final String MARK_DOCUMENT_COMMENT_FORM = "document_comment_form";
-    private static final String MARK_DOCUMENT_COMMENTS_LIST = "document_comments_list";
     private static final String MARK_DOCUMENT_CATEGORIES_LIST = "document_categories_list";
-    private static final String MARK_XSS_ERROR_MESSAGE = "xss_error_message";
-    private static final String MARK_CAPTCHA_ERROR_MESSAGE = "captcha_error_message";
-    private static final String MARK_CHECK_EMAIL_MESSAGE = "check_email_message";
-    private static final String MARK_MANDATORY_FIELD_MESSAGE = "mandatory_field_message";
-    private static final String MARK_MAILINGLIST = "mailinglist";
     private static final String MARK_URL_LOGIN = "url_login";
-    private static final String MARK_LUTECE_USER_NAME = "lutece_user_name";
-    private static final String MARK_LUTECE_USER_MAIL = "lutece_user_email";
     private static final String MARKER_TARGET = "target";
-    private static final String MARK_CAPTCHA = "captcha";
-    private static final String MARK_IS_ACTIVE_CAPTCHA = "is_active_captcha";
 
     // Templates
     private static final String TEMPLATE_DOCUMENT_PAGE_DEFAULT = "/skin/plugins/document/document_content_service.html";
-    private static final String TEMPLATE_DOCUMENT_COMMENTS = "/skin/plugins/document/modules/comment/document_comments.html";
     private static final String TEMPLATE_DOCUMENT_CATEGORIES = "/skin/plugins/document/document_categories.html";
-    private static final String TEMPLATE_ADD_DOCUMENT_COMMENT = "/skin/plugins/document/modules/comment/add_document_comment.html";
 
     //Properties
     private static final String PROPERTY_DEFAULT_PORTLET_DOCUMENT_LIST_XSL = "document.contentService.defaultPortletDocumentListXSL";
     private static final String PROPERTY_CACHE_ENABLED = "document.cache.enabled";
     private static final String TARGET_TOP = "target=_top";
     private static final String PROPERTY_RESOURCE_TYPE = "document";
-    private static final String JCAPTCHA_PLUGIN = "jcaptcha";
 
     // Performance patch
     private static ConcurrentMap<String, String> keyMemory = new ConcurrentHashMap<String, String>(  );
 
-    //Captcha
-    private static CaptchaSecurityService _captchaService;
     private boolean _bInit;
 
     /**
@@ -224,9 +194,8 @@ public final class DocumentContentService extends ContentService implements Cach
                         int nDocumentId = IntegerUtils.convert( strDocumentId );
                         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-                        if ( ( document != null ) && ( document.getAcceptSiteComments(  ) == 0 ) )
+                        if ( ( document != null ) )
                         {
-                            //If document does not accept comments, we put the document in cache
                             putInCache( strKey, strPage );
                         }
                     }
@@ -393,12 +362,10 @@ public final class DocumentContentService extends ContentService implements Cach
                     htParamRequest, null );
 
             model.put( MARK_DOCUMENT, strDocument );
-            model.put( MARK_ACCEPT_COMMENT, document.getAcceptSiteComments(  ) );
             model.put( MARK_PORTLET, getPortlet( request, strPortletId, nMode ) );
             model.put( MARK_CATEGORY, getRelatedDocumentsPortlet( request, document, nPortletId, nMode ) );
             model.put( MARK_DOCUMENT_ID, strDocumentId );
             model.put( MARK_PORTLET_ID, strPortletId );
-            model.put( MARK_DOCUMENT_COMMENTS, getComments( strDocumentId, strPortletId, nMode, request ) );
 
             // additionnal page info
             ResourceEnhancer.buildPageAddOn( model, PROPERTY_RESOURCE_TYPE, nDocumentId, strPortletId, request );
@@ -590,149 +557,15 @@ public final class DocumentContentService extends ContentService implements Cach
             model.put( MARK_DOCUMENT_CATEGORIES_LIST, listDocument );
             model.put( MARK_PORTLET_ID_LIST, listDocumentPortlet );
 
-            HtmlTemplate templateComments = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_CATEGORIES,
+            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_CATEGORIES,
                     request.getLocale(  ), model );
 
-            return templateComments.getHtml(  );
+            return template.getHtml( );
         }
         else
         {
             return StringUtils.EMPTY;
         }
-    }
-
-    /**
-     * Returns the HTML code for the comments area
-     * @param strDocumentId the identifier of the document
-     * @param strPortletId The identifier of the documents list portlet where the documznt has been published.
-     * @param nMode The current mode.
-     * @param request The HTTP servlet request
-     * @return the HTML code corresponding to the comment area (empty string if the document cannot be commented)
-     */
-    private static String getComments( String strDocumentId, String strPortletId, int nMode, HttpServletRequest request )
-    {
-        if ( IntegerUtils.isNotNumeric( strDocumentId ) )
-        {
-            return StringUtils.EMPTY;
-        }
-
-        int nDocumentId = IntegerUtils.convert( strDocumentId );
-        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
-
-        if ( document == null )
-        {
-            return StringUtils.EMPTY;
-        }
-
-        int nMailingListId = document.getMailingListId(  );
-        String strMailingListId = Integer.toString( nMailingListId );
-
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put( MARK_DOCUMENT, document );
-
-        if ( ( nMode != MODE_ADMIN ) && ( document.getAcceptSiteComments(  ) == 1 ) )
-        {
-            // if the addition of a comment has been requested, display the form
-            String strComment = request.getParameter( PARAMETER_COMMENT_DOCUMENT );
-
-            // check mandatory fields
-            String strMandatoryField = request.getParameter( PARAMETER_MANDATORY_FIELD );
-            strMandatoryField = ( strMandatoryField != null ) ? strMandatoryField : StringUtils.EMPTY;
-
-            // check xss errors
-            String strXssError = request.getParameter( PARAMETER_XSS_ERROR );
-            strXssError = ( strXssError != null ) ? strXssError : StringUtils.EMPTY;
-
-            // check xss errors
-            String strCaptchaError = request.getParameter( PARAMETER_CAPTCHA_ERROR );
-            strCaptchaError = ( strCaptchaError != null ) ? strCaptchaError : StringUtils.EMPTY;
-
-            // check emails errors
-            String strCheckEmail = request.getParameter( PARAMETER_CHECK_EMAIL );
-            strCheckEmail = ( strCheckEmail != null ) ? strCheckEmail : StringUtils.EMPTY;
-
-            if ( ACCEPT_SITE_COMMENTS.equals( strComment ) )
-            {
-                // Generate the add document form
-                model.put( MARK_DOCUMENT_COMMENT_FORM,
-                    getAddCommentForm( request, strDocumentId, strPortletId, strMailingListId, strXssError,
-                        strCaptchaError, strCheckEmail, strMandatoryField ) );
-            }
-            else
-            {
-                model.put( MARK_DOCUMENT_COMMENT_FORM, StringUtils.EMPTY );
-            }
-
-            // Generate the list of comments            
-            List<DocumentComment> documentComments = DocumentCommentHome.findPublishedByDocument( nDocumentId );
-            model.put( MARK_DOCUMENT_COMMENTS_LIST, documentComments );
-
-            HtmlTemplate templateComments = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_COMMENTS,
-                    request.getLocale(  ), model );
-
-            return templateComments.getHtml(  );
-        }
-        else
-        {
-            return StringUtils.EMPTY;
-        }
-    }
-
-    /**
-     * Return the comment creation form
-     * @param strDocumentId the identifier of the document
-     * @param strPortletId the identifier of the portlet
-     * @return the HTML code of the form
-     */
-    private static String getAddCommentForm( HttpServletRequest request, String strDocumentId, String strPortletId,
-        String strMailingListId, String strXssError, String strCaptchaError, String strCheckEmail,
-        String strMandatoryField )
-    {
-        HashMap<String, Object> model = new HashMap<String, Object>(  );
-
-        try
-        {
-            if ( SecurityService.isAuthenticationEnable(  ) )
-            {
-                //Authentication is enabled
-                LuteceUser luteceUser = SecurityService.getInstance(  ).getRemoteUser( request );
-
-                if ( luteceUser != null )
-                {
-                    //User is authenticated => we display its id and its email
-                    model.put( MARK_LUTECE_USER_NAME, luteceUser.getName(  ) );
-                    model.put( MARK_LUTECE_USER_MAIL, luteceUser.getUserInfo( LuteceUser.BUSINESS_INFO_ONLINE_EMAIL ) );
-                }
-            }
-        }
-        catch ( UserNotSignedException e )
-        {
-            /* Authentication is not enabled or User is not authenticated
-             * => we do not display id and email
-             */
-        }
-
-        boolean bIsCaptchaEnabled = PluginService.isPluginEnable( JCAPTCHA_PLUGIN );
-        model.put( MARK_IS_ACTIVE_CAPTCHA, bIsCaptchaEnabled );
-
-        if ( bIsCaptchaEnabled )
-        {
-            _captchaService = new CaptchaSecurityService(  );
-            model.put( MARK_CAPTCHA, _captchaService.getHtmlCode(  ) );
-        }
-
-        model.put( MARK_DOCUMENT_ID, strDocumentId );
-        model.put( MARK_PORTLET_ID, strPortletId );
-        model.put( MARK_MAILINGLIST, strMailingListId );
-        model.put( MARK_XSS_ERROR_MESSAGE, strXssError );
-        model.put( MARK_CAPTCHA_ERROR_MESSAGE, strCaptchaError );
-        model.put( MARK_CHECK_EMAIL_MESSAGE, strCheckEmail );
-        model.put( MARK_MANDATORY_FIELD_MESSAGE, strMandatoryField );
-
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADD_DOCUMENT_COMMENT, request.getLocale(  ),
-                model );
-
-        return template.getHtml(  );
     }
 
     /**

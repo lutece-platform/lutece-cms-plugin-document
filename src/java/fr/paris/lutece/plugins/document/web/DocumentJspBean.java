@@ -49,7 +49,6 @@ import fr.paris.lutece.plugins.document.business.workflow.DocumentAction;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentActionHome;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentStateHome;
-import fr.paris.lutece.plugins.document.modules.comment.service.DocumentCommentPlugin;
 import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.plugins.document.service.DocumentService;
 import fr.paris.lutece.plugins.document.service.DocumentTypeResourceIdService;
@@ -151,16 +150,12 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MARK_SUBMIT_BUTTON_DISABLED = "submit_button_disabled";
     private static final String MARK_DATE_VALIDITY_BEGIN = "date_validity_begin";
     private static final String MARK_DATE_VALIDITY_END = "date_validity_end";
-    private static final String MARK_ACCEPT_SITE_COMMENTS = "accept_site_comments";
-    private static final String MARK_IS_MODERATED_COMMENT = "is_moderated_comment";
-    private static final String MARK_IS_EMAIL_NOTIFIED_COMMENT = "is_email_notified_comment";
     private static final String MARK_MAILINGLISTS_LIST = "mailinglists_list";
     private static final String MARK_DOCUMENT_PAGE_TEMPLATES_LIST = "page_template_list";
     private static final String MARK_DOCUMENT_PAGE_TEMPLATE = "document_page_template";
     private static final String MARK_INDEX_ROW = "index_row";
     private static final String MARK_DOCUMENT_PAGE_TEMPLATE_CHECKED = "checked";
     private static final String MARK_SPACES_BROWSER = "spaces_browser";
-    private static final String MARK_DOCUMENT_IS_COMMENTABLE = "is_commentable";
 
     // Parameters
     private static final String PARAMETER_DOCUMENT_TYPE_CODE = "document_type_code";
@@ -396,16 +391,6 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             nIndexRow++;
         }
 
-        int nIsCommentable = 1;
-
-        // TODO : delete dependency from document-comment module
-        if ( DocumentCommentPlugin.getPluginStatus(  ) )
-        {
-            nIsCommentable = 0;
-        }
-
-        model.put( MARK_DOCUMENT_IS_COMMENTABLE, Integer.toString( nIsCommentable ) );
-
         // additionnal create info
         ResourceEnhancer.getCreateResourceModelAddOn( model );
 
@@ -576,13 +561,6 @@ public class DocumentJspBean extends PluginAdminPageJspBean
                                                         : DateUtil.getDateString(
                 new Date( document.getDateValidityEnd(  ).getTime(  ) ), getLocale(  ) ) );
 
-        // Site Comments management
-        model.put( MARK_ACCEPT_SITE_COMMENTS, document.getAcceptSiteComments(  ) );
-        model.put( MARK_IS_MODERATED_COMMENT, document.getIsModeratedComment(  ) );
-
-        // Notification
-        model.put( MARK_IS_EMAIL_NOTIFIED_COMMENT, document.getIsEmailNotifiedComment(  ) );
-
         // PageTemplate
         int nIndexRow = 1;
         StringBuffer strPageTemplatesRow = new StringBuffer(  );
@@ -605,16 +583,6 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         model.put( MARK_FIELDS,
             DocumentService.getInstance(  ).getModifyForm( document, getLocale(  ), AppPathService.getBaseUrl( request ) ) );
         model.put( MARK_STATE_ID, strStateId );
-
-        int nIsCommentable = 1;
-
-        // TODO : delete dependency from document-comment module
-        if ( DocumentCommentPlugin.getPluginStatus(  ) )
-        {
-            nIsCommentable = 0;
-        }
-
-        model.put( MARK_DOCUMENT_IS_COMMENTABLE, Integer.toString( nIsCommentable ) );
 
         ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, strDocumentId, Document.PROPERTY_RESOURCE_TYPE );
 

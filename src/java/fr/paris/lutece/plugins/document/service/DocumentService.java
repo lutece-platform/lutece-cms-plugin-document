@@ -66,16 +66,15 @@ import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.xml.XmlUtil;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
-
 import java.sql.Timestamp;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -90,9 +89,6 @@ public class DocumentService
     private static final String PARAMETER_DOCUMENT_COMMENT = "document_comment";
     private static final String PARAMETER_VALIDITY_BEGIN = "document_validity_begin";
     private static final String PARAMETER_VALIDITY_END = "document_validity_end";
-    private static final String PARAMETER_ACCEPT_SITE_COMMENTS = "accept_site_comments";
-    private static final String PARAMETER_IS_MODERATED_COMMENT = "is_moderated_comment";
-    private static final String PARAMETER_IS_EMAIL_NOTIFIED_COMMENT = "is_email_notified_comment";
     private static final String PARAMETER_MAILING_LIST = "mailinglists";
     private static final String PARAMETER_PAGE_TEMPLATE_DOCUMENT_ID = "page_template_id";
     private static final String PARAMETER_CATEGORY = "category_id";
@@ -108,7 +104,6 @@ public class DocumentService
     private static final String TAG_DOCUMENT_ID = "document-id";
     private static final String TAG_DOCUMENT_TITLE = "document-title";
     private static final String TAG_DOCUMENT_SUMMARY = "document-summary";
-    private static final String TAG_DOCUMENT_ACCEPT_SITE_COMMENTS = "document-is-commentable";
     private static final String TAG_DOCUMENT_DATE_BEGIN = "document-date-begin";
     private static final String TAG_DOCUMENT_DATE_END = "document-date-end";
     private static final String TAG_DOCUMENT_CATEGORIES = "document-categories";
@@ -147,7 +142,6 @@ public class DocumentService
         XmlUtil.addElement( sbXml, TAG_DOCUMENT_ID, document.getId(  ) );
         XmlUtil.addElement( sbXml, TAG_DOCUMENT_TITLE, TAG_CDATA_BEGIN + document.getTitle(  ) + TAG_CDATA_END );
         XmlUtil.addElement( sbXml, TAG_DOCUMENT_SUMMARY, TAG_CDATA_BEGIN + document.getSummary(  ) + TAG_CDATA_END );
-        XmlUtil.addElement( sbXml, TAG_DOCUMENT_ACCEPT_SITE_COMMENTS, document.getAcceptSiteComments(  ) );
         XmlUtil.addElement( sbXml, TAG_DOCUMENT_DATE_BEGIN,
             DateUtil.getDateString( document.getDateValidityBegin(  ), I18nService.getDefaultLocale(  ) ) );
         XmlUtil.addElement( sbXml, TAG_DOCUMENT_DATE_END,
@@ -527,12 +521,6 @@ public class DocumentService
         String strDocumentComment = mRequest.getParameter( PARAMETER_DOCUMENT_COMMENT );
         String strDateValidityBegin = mRequest.getParameter( PARAMETER_VALIDITY_BEGIN );
         String strDateValidityEnd = mRequest.getParameter( PARAMETER_VALIDITY_END );
-        String strAcceptSiteComments = mRequest.getParameter( PARAMETER_ACCEPT_SITE_COMMENTS );
-        int nAcceptSiteComments = IntegerUtils.convert( strAcceptSiteComments, 0 );
-        String strIsModeratedComment = mRequest.getParameter( PARAMETER_IS_MODERATED_COMMENT );
-        int nIsModeratedComment = IntegerUtils.convert( strIsModeratedComment, 0 );
-        String strIsEmailNotifiedComment = mRequest.getParameter( PARAMETER_IS_EMAIL_NOTIFIED_COMMENT );
-        int nIsEmailNotifiedComment = IntegerUtils.convert( strIsEmailNotifiedComment, 0 );
         String strMailingListId = mRequest.getParameter( PARAMETER_MAILING_LIST );
         int nMailingListId = IntegerUtils.convert( strMailingListId, 0 );
         String strPageTemplateDocumentId = mRequest.getParameter( PARAMETER_PAGE_TEMPLATE_DOCUMENT_ID );
@@ -620,9 +608,6 @@ public class DocumentService
         document.setComment( strDocumentComment );
         document.setDateValidityBegin( dateValidityBegin );
         document.setDateValidityEnd( dateValidityEnd );
-        document.setAcceptSiteComments( nAcceptSiteComments );
-        document.setIsModeratedComment( nIsModeratedComment );
-        document.setIsEmailNotifiedComment( nIsEmailNotifiedComment );
         document.setMailingListId( nMailingListId );
         document.setPageTemplateDocumentId( nPageTemplateDocumentId );
 

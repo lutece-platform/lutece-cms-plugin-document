@@ -47,11 +47,7 @@
         <br />
         <xsl:for-each select="descendant::*">           
             <xsl:value-of select="document-summary" />                 
-        </xsl:for-each>  
-        <br />            
-        <xsl:if test="(string(document-is-commentable)='1')">
-            Nombre de commentaires : <xsl:value-of select="document-comment-nb" />      
-        </xsl:if>   
+        </xsl:for-each>
     </li>
 </xsl:if>
 </xsl:template>
