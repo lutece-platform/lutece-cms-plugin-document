@@ -90,4 +90,7 @@
     <bean id="document.ruleNotifyUsers" class="fr.paris.lutece.plugins.document.modules.rulenotifyusers.business.NotifyUsersRule" />
     
     <bean id="document.documentExtendableResourceService" class="fr.paris.lutece.plugins.document.service.resource.DocumentExtendableResourceService" />
+    
+    <!-- extendable resources -->
+	<bean id="extend.document" class="fr.paris.lutece.plugins.document.business.Document" />
 </beans>

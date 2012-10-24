@@ -63,6 +63,8 @@ public class Document implements Localizable, IExtendableResource
     private static final String PROPERTY_DEFAULT_THUMBNAIL = "document.thumbnail.default";
     private static final String PROPERTY_RESOURCE_PROVIDER_URL = "document.resource.provider.url";
 
+    private static final String MESSAGE_DOCUMENT_RESOURCE_TYPE_DESCRIPTION = "document.resource.resourceTypeDescription";
+    
     /////////////////////////////////////////////////////////////////////////////////
     // Xml Tags
     private static final String TAG_DOCUMENT = "document";
@@ -773,4 +775,13 @@ public class Document implements Localizable, IExtendableResource
 	{
 		return _strTitle;
 	}
+
+	/**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getExtendableResourceTypeDescription( Locale locale )
+    {
+        return I18nService.getLocalizedString( MESSAGE_DOCUMENT_RESOURCE_TYPE_DESCRIPTION, locale );
+    }
 }
