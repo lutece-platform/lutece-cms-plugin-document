@@ -773,4 +773,10 @@ public class Document implements Localizable, IExtendableResource
 	{
 		return _strTitle;
 	}
+
+    @Override
+    public String getExtendableResourceDescription( )
+    {
+        return _strSummary;
+    }
 }
