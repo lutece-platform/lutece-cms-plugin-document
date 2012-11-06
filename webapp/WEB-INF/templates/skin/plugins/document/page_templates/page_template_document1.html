@@ -9,6 +9,7 @@ Available objects :
  - DocumentPublication 	publication 		The publication object. 
  											How to display the date publication : ${publication.datePublishing?date} or ${publication.datePublishing?datetime}
 -->
+@ExtenderParameter[${document_id},document,opengraph]@
 <div class="row-fluid">
 	<div id="content" class="span12">
 		${document}
@@ -21,6 +22,7 @@ Available objects :
 		<a href="javascript:window.history.back();">#i18n{document.document_content_service.buttonBack}</a>
 		@Extender[${document_id},document,hit,{show:true}]@
 		@Extender[${document_id},document,rating,{show:"all"}]@
+		@Extender[${document_id},document,opengraph,{footer:false, header:false}]@
 		<#if portlet?has_content >
 			${portlet}
 		</#if>
@@ -29,3 +31,4 @@ Available objects :
 <div class="clearfix">&nbsp;</div>
 @Extender[${document_id},document,comment]@
 @Extender[${document_id},document,feedback]@
+@Extender[${document_id},document,opengraph,{footer:true}]@

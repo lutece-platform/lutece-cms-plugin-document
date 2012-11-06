@@ -52,6 +52,8 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * A document of the CMS.
@@ -59,7 +61,9 @@ import javax.servlet.http.HttpServletRequest;
 public class Document implements Localizable, IExtendableResource
 {
 	public static final String CODE_DOCUMENT_TYPE_DOWNLOAD = "download";
+    public static final String CODE_DOCUMENT_TYPE_IMAGE = "image";
 	public static final String PROPERTY_RESOURCE_TYPE = "document";
+    private static final String SERVLET_DOCUMENT_PATH = "document";
     private static final String PROPERTY_DEFAULT_THUMBNAIL = "document.thumbnail.default";
     private static final String PROPERTY_RESOURCE_PROVIDER_URL = "document.resource.provider.url";
 
@@ -70,7 +74,11 @@ public class Document implements Localizable, IExtendableResource
     private static final String TAG_DATE_PUBLICATION = "document-date-publication";
     private static final String TAG_DOCUMENT_XML_CONTENT = "document-xml-content";
 
+    private static final String MARK_ID = "id";
+
     private static final String EMPTY_STRING = "";
+    private static final String CONSTANT_QUESTION_MARK = "?";
+    private static final String CONSTANT_EQUALS = "=";
 
     // Variables declarations
     private int _nIdDocument;
@@ -774,9 +782,30 @@ public class Document implements Localizable, IExtendableResource
 		return _strTitle;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getExtendableResourceDescription( )
     {
         return _strSummary;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getExtendableResourceImageUrl( )
+    {
+        if ( StringUtils.equalsIgnoreCase( _strCodeDocumentType, CODE_DOCUMENT_TYPE_IMAGE ) )
+        {
+            StringBuilder sbUrl = new StringBuilder( SERVLET_DOCUMENT_PATH );
+            sbUrl.append( CONSTANT_QUESTION_MARK );
+            sbUrl.append( MARK_ID );
+            sbUrl.append( CONSTANT_EQUALS );
+            sbUrl.append( _nIdDocument );
+            return sbUrl.toString( );
+        }
+        return null;
     }
 }
