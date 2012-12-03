@@ -134,6 +134,7 @@ INSERT INTO core_stylesheet (id_stylesheet, description, file_name, source) VALU
 --
 -- Dumping data for table core_user_right
 --
+INSERT INTO core_user_right (id_right,id_user) VALUES ('DOCUMENT_MANAGEMENT',1);
 INSERT INTO core_user_right (id_right,id_user) VALUES ('DOCUMENT_MANAGEMENT',2);
 INSERT INTO core_user_right (id_right,id_user) VALUES ('DOCUMENT_MANAGEMENT',3);
 INSERT INTO core_user_right (id_right,id_user) VALUES ('DOCUMENT_MANAGEMENT',4);
