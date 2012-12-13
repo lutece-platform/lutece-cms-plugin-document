@@ -1,6 +1,3 @@
---
--- Dumping data for table document_attr_type
---
 INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES 
 ('file','document.attributeType.file.name','document.attributeType.file.description','fr.paris.lutece.plugins.document.service.attributes.FileManager');
 INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES 
