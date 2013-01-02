@@ -2,22 +2,17 @@
 <div class="control-group">
 		<label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
 <textarea id="${attribute.code}" name="${attribute.code}"
-	rows="5" cols="60" readonly="readonly" ></textarea> <img
-	src="images/admin/skin/plugins/document/actions/linkservice.png"
-	id="img_linkservice_${attribute.code}" onclick="javascript:linkservice${attribute.code}();"
-	style="border: none; display: none;"
-	title="#i18n{document.attributeType.internallink.labelLinkService}" />
+	rows="5" cols="60" readonly="readonly" ></textarea> 
+	
+<button class="btn btn-primary btn-small" onclick="javascript:linkservice${attribute.code}();return false;" ><img alt="Ajouter des contenus de Lutece" src="images/admin/skin/plugins/document/lutece.png"></button>
 <!-- DOCUMENT-97: enable clearing internal link field. -->
-<img src="images/admin/skin/plugins/document/actions/delete.png"
-		id="img_linkservice_clear_${attribute.code}" onclick="javascript:linkservice_clear${attribute.code}();"
-		style="border: none; display: none; width:16px"
-		alt="#i18n{document.attributeType.internallink.labelLinkServiceClear}"
-		title="#i18n{document.attributeType.internallink.labelLinkServiceClear}" />
+<button class="btn btn-primary btn-small" onclick="javascript:$('#show_preview_${attribute.code}').html($('#${attribute.code}').val() + '&nbsp;'); return false;" ><i class="icon-eye-open"></i></button>
+<button class="btn btn-primary btn-small" onclick="javascript:linkservice_clear${attribute.code}();return false;" title="#i18n{document.attributeType.internallink.labelLinkServiceClear}" ><i class="icon-trash"></i></button>
+
 
 <p id="show_preview_section_${attribute.code}" style="display: none;">
 <div class="control-group">
 		<label class="control-label" for="show_preview_${attribute.code}">&nbsp;</label>
-<button class="btn btn-primary btn-small" onclick="javascript:document.getElementById('show_preview_${attribute.code}').innerHTML = document.getElementById('${attribute.code}').value + '&nbsp;'" >null</button>
 	
 <div id="show_preview_${attribute.code}">&nbsp;</div>
 
