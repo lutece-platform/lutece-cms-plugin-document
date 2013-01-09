@@ -11,8 +11,10 @@ Available objects :
 -->
 <div class="row-fluid">
 	<div id="sidebar" class="span3">
-	@Extender[${document_id},document,hit,{show:true}]@
-	@Extender[${document_id},document,rating,{show:"all"}]@
+	<#if isExtendInstalled?? && isExtendInstalled >
+		@Extender[${document_id},document,hit,{show:true}]@!
+		@Extender[${document_id},document,rating,{show:"all"}]@
+	</#if>
 	<#if portlet?has_content >
        	${portlet}
 	</#if>
@@ -29,5 +31,7 @@ Available objects :
 	</div>
 </div>
 <div class="clearfix">&nbsp;</div>
-@Extender[${document_id},document,comment]@
-@Extender[${document_id},document,feedback]@
+<#if isExtendInstalled?? && isExtendInstalled >
+	@Extender[${document_id},document,comment]@
+	@Extender[${document_id},document,feedback]@
+</#if>
