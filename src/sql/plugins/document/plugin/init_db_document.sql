@@ -1,4 +1,5 @@
 ﻿INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES ('file','document.attributeType.file.name','document.attributeType.file.description','fr.paris.lutece.plugins.document.service.attributes.FileManager');
+INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES ('file','document.attributeType.file.name','document.attributeType.file.description','fr.paris.lutece.plugins.document.service.attributes.FileManager');
 INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES ('image','document.attributeType.image.name','document.attributeType.image.description','fr.paris.lutece.plugins.document.service.attributes.ImageFileManager');
 INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES ('listbox','document.attributeType.listbox.name','document.attributeType.listbox.description','fr.paris.lutece.plugins.document.service.attributes.ListBoxManager');
 INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES ('multiline','document.attributeType.multiline.name','document.attributeType.multiline.description','fr.paris.lutece.plugins.document.service.attributes.MultilineManager');
@@ -91,19 +92,15 @@ INSERT INTO document_space_action (id_action, name_key, description_key, action_
 -- Dumping data for table document_space_document_type
 --
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (2,'article');
-INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (2,'dvd');
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (2,'shortarticle');
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (3,'article');
-INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (3,'dvd');
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (3,'shortarticle');
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (4,'article');
-INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (4,'dvd');
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (4,'shortarticle');
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (6,'image');
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (8,'pdf');
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (14,'actor');
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (15,'article');
-INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (15,'dvd');
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (15,'shortarticle');
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (16,'sound');
 INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (17,'video');
@@ -147,8 +144,6 @@ INSERT INTO document_type_attr (id_document_attr,code_document_type,code_attr_ty
 INSERT INTO document_type_attr (id_document_attr,code_document_type,code_attr_type,code,document_type_attr_name,description,attr_order,required,searchable) VALUES (8,'dossier','multiline','body','corps','Corps du dossier',0,1,1);
 INSERT INTO document_type_attr (id_document_attr,code_document_type,code_attr_type,code,document_type_attr_name,description,attr_order,required,searchable) VALUES (11,'article','file','attachment','Piece jointe','Piece jointe',4,0,0);
 INSERT INTO document_type_attr (id_document_attr,code_document_type,code_attr_type,code,document_type_attr_name,description,attr_order,required,searchable) VALUES (10,'article','url','url','Url','Url liée à l''article',2,0,0);
-INSERT INTO document_type_attr (id_document_attr,code_document_type,code_attr_type,code,document_type_attr_name,description,attr_order,required,searchable) VALUES (18,'dvd','url','url','URL','URL du site du Film',3,0,0);
-INSERT INTO document_type_attr (id_document_attr,code_document_type,code_attr_type,code,document_type_attr_name,description,attr_order,required,searchable) VALUES (20,'dvd','image','cover','Pochette','Image de la jaquette',4,0,0);
 INSERT INTO document_type_attr (id_document_attr,code_document_type,code_attr_type,code,document_type_attr_name,description,attr_order,required,searchable) VALUES (30,'actor','text','firstname','Prenom','Prenom',1,1,1);
 INSERT INTO document_type_attr (id_document_attr,code_document_type,code_attr_type,code,document_type_attr_name,description,attr_order,required,searchable) VALUES (31,'actor','text','lastname','Nom','Nom',2,1,1);
 INSERT INTO document_type_attr (id_document_attr,code_document_type,code_attr_type,code,document_type_attr_name,description,attr_order,required,searchable) VALUES (32,'actor','multiline','function','Fontion','Fonction',3,0,0);
