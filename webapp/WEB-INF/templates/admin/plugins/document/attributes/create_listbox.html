@@ -1,22 +1,24 @@
-
-    <div class="control-group">
-		<label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
+<div class="control-group">
+    <label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
+    <div class="controls">
     <#list parameters.value as value>
-    	<#if value?has_content >
-	    	<#assign defaultValue = "${value}">
-	    <#else>
-	    	<#assign defaultValue = "">
-	    </#if>
+        <#if value?has_content >
+            <#assign defaultValue = "${value}">
+        <#else>
+            <#assign defaultValue = "">
+        </#if>
     </#list>
-   	<select id="${attribute.code}" name="${attribute.code}" >
-		<#if parameters.items?size != 0>
-			<#list parameters.items as item>
-				<#if defaultValue="${item}">
-      				<option selected="selected" value="${item}" >${item}</option>    			    			
-      			<#else>
-      				<option value="${item}" >${item}</option>
-      			</#if>
-    		</#list>
-    	</#if>
-	</select>
-    ${attribute.description}
+    <select id="${attribute.code}" name="${attribute.code}" class="input-normal">
+        <#if parameters.items?size != 0>
+            <#list parameters.items as item>
+                <#if defaultValue="${item}">
+                    <option selected="selected" value="${item}" >${item}</option>    			    			
+                <#else>
+                    <option value="${item}" >${item}</option>
+                </#if>
+            </#list>
+        </#if>
+    </select>
+    <p class="help-block">${attribute.description}</p>
+    </div>
+</div>

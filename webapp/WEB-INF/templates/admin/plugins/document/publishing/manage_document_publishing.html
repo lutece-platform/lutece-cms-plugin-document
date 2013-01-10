@@ -77,7 +77,8 @@
                             <#else>
                                 <input type="text"  name="portlet_filter_value" class="input-xlarge" value=""/>
                             </#if>		
-                        <#if portlet_filter_error??><p class="label label-important">${portlet_filter_error}</p></#if>	
+                        <#if portlet_filter_error??><p class="label label-important">${portlet_filter_error}</p></#if>
+                        <br />
                             <label for="order_portlet">#i18n{document.manage_document_publishing.labelOrder}</label>
                             <select name="order_portlet" class="input-xlarge">
                                 <option value="0" <#if !order_portlet?? || order_portlet?? && order_portlet = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelDateUpdatePortlet}</option>

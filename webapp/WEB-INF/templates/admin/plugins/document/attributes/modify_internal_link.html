@@ -1,42 +1,50 @@
-<script language="javascript" type="text/javascript">
-function linkservice${attribute.code}() 
-{
-	document.getElementById('show_preview_${attribute.code}').innerHTML = "&nbsp;";
-	var fen=window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=","#i18n{document.attributeType.internallink.labelLinkService}","toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
-	fen.focus();
-}
-
-// DOCUMENT-97: enable clearing internal link field.
-function linkservice_clear${attribute.code}() {
-	jQuery("#${attribute.code}").val("");
-	jQuery("#show_preview_${attribute.code}").html("&nbsp;");
-}
-</script>
-
 <div class="control-group">
-		<label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
-<textarea id="${attribute.code}" name="${attribute.code}"
-	rows="5" cols="60" readonly="readonly" >${attribute.textValue}</textarea> 
-	
-<button class="btn btn-primary btn-small" onclick="javascript:linkservice${attribute.code}();return false;" ><img alt="Ajouter des contenus de Lutece" src="images/admin/skin/plugins/document/lutece.png"></button>
-<!-- DOCUMENT-97: enable clearing internal link field. -->
-<button class="btn btn-primary btn-small" onclick="javascript:$('#show_preview_${attribute.code}').html($('#${attribute.code}').val() + '&nbsp;'); return false;" ><i class="icon-eye-open"></i></button>
-<button class="btn btn-primary btn-small" onclick="javascript:linkservice_clear${attribute.code}();return false;" title="#i18n{document.attributeType.internallink.labelLinkServiceClear}" ><i class="icon-trash"></i></button>
+    <label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
+    <div class="controls">
+        <textarea id="${attribute.code}" name="${attribute.code}"  rows="5" cols="60" readonly="readonly" >${attribute.textValue}</textarea> 
+        <button type="button" class="btn btn-mini" onclick="javascript:linkservice${attribute.code}();return false;" >
+            <img alt="Ajouter des contenus de Lutece" src="images/admin/skin/plugins/document/lutece.png">
+        </button>
+        <!-- DOCUMENT-97: enable clearing internal link field. -->
+        <button type="button" class="btn btn-mini" id="btnShowPreview_${attribute.code}" >
+            <i class="icon-eye-open"></i></button>
+        <button type="button" class="btn btn-mini btn-danger" onclick="javascript:linkservice_clear${attribute.code}();return false;" title="#i18n{document.attributeType.internallink.labelLinkServiceClear}" >
+            <i class="icon-trash icon-white"></i>
+        </button>
+        <p id="show_preview_section_${attribute.code}"></p>
+        <div id="show_preview_${attribute.code}" class="alert alert-info">&nbsp;</div>
+    </div>
+</div>
 
+<script>
+   // jQuery("img_linkservice_${attribute.code}").style.display = "inline";
+    // DOCUMENT-97: enable clearing internal link field.
+    //document.getElementById('img_linkservice_clear_${attribute.code}').style.display = "inline";
+    $("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}").hover(function() {
+        $(this).css("cursor", "pointer");
+    }, function() {
+        $(this).css("cursor", "auto");
+    });
+  
+    function linkservice${attribute.code}(){
+        $("#show_preview_${attribute.code}").html("&nbsp;");
+        var fen=window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=","#i18n{document.attributeType.internallink.labelLinkService}","toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
+        fen.focus();
+    }
 
-<p id="show_preview_section_${attribute.code}" style="display: none;">
-<label	for="show_preview_${attribute.code}">&nbsp;</label>
-<div id="show_preview_${attribute.code}">&nbsp;</div>
-
-
-<script language="javascript" type="text/javascript">
-	document.getElementById('img_linkservice_${attribute.code}').style.display = "inline";
-	// DOCUMENT-97: enable clearing internal link field.
-	document.getElementById('img_linkservice_clear_${attribute.code}').style.display = "inline";
-	jQuery("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}").hover(function() {
-		$(this).css("cursor", "pointer");
-	}, function() {
-		$(this).css("cursor", "auto");
-	});
-	document.getElementById('show_preview_section_${attribute.code}').style.display = "block";
+    // DOCUMENT-97: enable clearing internal link field.
+    function linkservice_clear${attribute.code}() {
+        $("#${attribute.code}").val("");
+        $("#show_preview_${attribute.code}").html("&nbsp;");
+    }
+    
+    $(document).ready( function () {
+        $('#show_preview_${attribute.code}').toggle();
+        $('#btnShowPreview_${attribute.code}').click( function(){
+            $('#show_preview_${attribute.code}').html( $('#${attribute.code}').val() + '&nbsp;');
+            $('#show_preview_${attribute.code}').toggle();
+        });
+    });
+    
+    
 </script>

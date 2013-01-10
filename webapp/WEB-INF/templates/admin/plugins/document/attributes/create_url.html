@@ -1,8 +1,8 @@
-
-    <div class="control-group">
-		<label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
+<div class="control-group">
+    <label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
     <div class="controls">
-	<input type="text" name="${attribute.code}" id="${attribute.code}"  value="http://"/>
-		</div>
-	</div>
-    ${attribute.description}
+        <input type="text" name="${attribute.code}" id="${attribute.code}"  value="http://"/>
+        <span class="help-text">${attribute.description}</span>
+    </div>
+</div>
+

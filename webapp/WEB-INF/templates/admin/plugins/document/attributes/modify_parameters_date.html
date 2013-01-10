@@ -23,14 +23,29 @@
 		</script>
 	</#if>
 	<#if parameter_index = 1>
-		<label class="checkbox">
-		<input type="checkbox" class="checkbox" name="${parameter.name}" id="${parameter.name}"<#if parameter.valueList?has_content>checked="checked" </#if> onclick="changeState('${parameter.name}', '${parameter.description}');">${parameter.name}
-		<span class="help-text">${parameter.description}</span>
-		</label>
+	<label class="checkbox">
+            <input type="checkbox" class="checkbox" name="${parameter.name}" id="${parameter.name}"<#if parameter.valueList?has_content>checked="checked" </#if> onclick="changeState('${parameter.name}', '${parameter.description}');">${parameter.name}
+            <span class="help-text">${parameter.description}</span>
+	</label>
 	</#if>
 	 </div>
 </div>
-<script type="text/javascript">
-  	changeState('${parameter.name}', '${parameter.description}');
+#if parameter_index = 0>
+<script src="js/jquery/plugins/ui/datepicker/ui.datepicker.js"></script>
+<script src="js/jquery/plugins/ui/datepicker/ui.datepicker-fr.js"></script>
+<@getDatePicker idField=parameter.name language=locale.language />
+<script>
+function changeState(paramName, paramDescription){
+    state=true;
+    dateValue='('+paramDescription+')';
+    if(document.getElementById(paramName).checked == false){
+	state=false;
+	dateValue='';
+    }
+    document.getElementById('${parameter.name}').value=dateValue;
+    document.getElementById('${parameter.name}').readOnly=state;
+}
 </script>
+</#if>
+<script>changeState('${parameter.name}', '${parameter.description}');</script>
 </#list>

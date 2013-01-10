@@ -1,38 +1,40 @@
 <div class="row-fluid">
-	<div class="span12">
-	<fieldset>
-	<legend>#i18n{document.create_category.boxTitle}</legend>
-		<form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoCreateCategory.jsp" enctype="multipart/form-data" >
-		<div class="control-group">
-		<label class="label-group" for="category_name">#i18n{document.create_category.labelName} * :</label>
-			<div class="controls">
-				<input type="text" id="category_name" name="category_name" maxlength="100" />
-			</div>
-		</div>
-		<div class="control-group">
-		<label class="label-group" for="category_description">#i18n{document.create_category.labelDescription} * :</label>
-			<div class="controls">
-				<input type="text" id="category_description" name="category_description" value="" class="input-xlarge" maxlength="255" />
-			</div>
-		</div>
-		<div class="control-group">
-		<label class="label-group" for="workgroup_key">#i18n{document.create_category.labelWorkgroup} : </label>		     
-			<div class="controls">
-				<@combo name="workgroup_key" items=user_workgroup_list default_value="${selected_workgroup}" />
-			</div>
-		</div>
-		<div class="control-group">
-		<label class="label-group" for="category_icon">#i18n{document.create_category.labelIcon} :</label>
-			<div class="controls">
-				<input type="file" id="category_icon" name="category_icon" class="input-large" value="" />
-			</div>
-		</div>
-		<div class="form-actions">
-			<button class="btn btn-primary btn-small" type="submit"><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.create_category.buttonLabelCreate}</button>
-			<button class="btn btn-small" type="button" onclick="javascript:history.go(-1);"><i class="icon-remove-circle icon-white"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
-		</div>
-		</form>
-	</fieldset>
-	</div>
+    <div class="span12">
+        <fieldset>
+            <legend>#i18n{document.create_category.boxTitle}</legend>
+            <form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoCreateCategory.jsp" enctype="multipart/form-data" >
+                <div class="control-group">
+                    <label class="control-label" for="category_name">#i18n{document.create_category.labelName} * :</label>
+                    <div class="controls">
+                        <input type="text" id="category_name" name="category_name" maxlength="100" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="category_description">#i18n{document.create_category.labelDescription} * </label>
+                    <div class="controls">
+                        <input type="text" id="category_description" name="category_description" value="" class="input-xlarge" maxlength="255" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="workgroup_key">#i18n{document.create_category.labelWorkgroup} </label>		     
+                    <div class="controls">
+                        <@combo name="workgroup_key" items=user_workgroup_list default_value="${selected_workgroup}" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="category_icon">#i18n{document.create_category.labelIcon} </label>
+                    <div class="controls">
+                        <input type="file" id="category_icon" name="category_icon" class="input-large" value="" />
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary btn-small" type="submit"><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.create_category.buttonLabelCreate}</button>
+                    <a class="btn btn-small" href="jsp/admin/plugins/document/ManageCategory.jsp?plugin_name=document">
+                       <i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
+                    </a>
+                </div>
+            </form>
+        </fieldset>
+    </div>
 </div>
 

@@ -1,26 +1,20 @@
-
 <div class="control-group">
-		<label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
-<#if attribute.textValue?has_content>
-	<a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true"><img src='<@getThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" width="40" height="40" /></a>&nbsp;${attribute.description}
-	<br />	
-    <div class="control-group">
-		<label class="control-label" > &nbsp;</label>
+    <label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
     <div class="controls">
-	<input type="file" name="${attribute.code}" id="${attribute.code}" />
-		</div>
-	</div><div class="controls">
-	<input type="checkbox" name="update_${attribute.code}" id="update_${attribute.code}" value="1" />
-		</div>
-	</div>#i18n{document.attributeType.image.updateField}
-    <br />
-    <div class="control-group">
-		<label class="control-label" > &nbsp;</label>
-    <em>#i18n{document.attributeType.image.deleteField}</em>
-<#else>
-    <div class="controls">
-	<input type="file" name="${attribute.code}" id="${attribute.code}" />
-		</div>
-	</div>
-    ${attribute.description}
-</#if>
+    <#if attribute.textValue?has_content>
+        <a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true">
+            <img src='<@getThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" width="40" height="40" />
+            &nbsp;${attribute.description}
+        </a>
+        <input type="file" name="${attribute.code}" id="${attribute.code}" >
+        <label class="checkbox" for="update_${attribute.code}">
+           <input type="checkbox" name="update_${attribute.code}" id="update_${attribute.code}" value="1" />
+           #i18n{document.attributeType.image.updateField}
+        </label>
+        <p class="help-block">#i18n{document.attributeType.image.deleteField}</p>
+    <#else>
+        <input type="file" name="${attribute.code}" id="${attribute.code}" />
+        <p class="help-block">${attribute.description}</p>
+    </#if>
+    </div>
+</div>

@@ -1,26 +1,23 @@
-
 <div class="control-group">
-		<label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
+<label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
 <#if attribute.textValue?has_content>
-	<a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true"><img src='<@getThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" width="40" height="40" /></a>&nbsp;${attribute.description}
-	<br />	
-    <div class="control-group">
-		<label class="control-label" > &nbsp;</label>
+    <a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true"><img src='<@getThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" width="40" height="40" />&nbsp;${attribute.description}</a>
     <div class="controls">
 	<input type="file" name="${attribute.code}" id="${attribute.code}" />
-		</div>
-	</div><div class="controls">
-	<input type="checkbox" name="update_${attribute.code}" id="update_${attribute.code}" value="1" />
-		</div>
-	</div>#i18n{document.attributeType.file.updateField}
-    <br />
-    <div class="control-group">
-		<label class="control-label" > &nbsp;</label>
-    <em>#i18n{document.attributeType.file.deleteField}</em>
+    </div>
+    <div class="controls">
+        <label class="checkbox" for="update_${attribute.code}">
+            <input type="checkbox" name="update_${attribute.code}" id="update_${attribute.code}" value="1" />
+            #i18n{document.attributeType.file.updateField}
+        </label>
+        <em>#i18n{document.attributeType.file.deleteField}</em>
+    </div>
 <#else>
     <div class="controls">
 	<input type="file" name="${attribute.code}" id="${attribute.code}" />
-		</div>
-	</div>
-    ${attribute.description}
+        <p class="help-block">${attribute.description}</p>
+    </div>
+    
 </#if>
+</div>
+    
