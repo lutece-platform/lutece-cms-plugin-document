@@ -68,8 +68,10 @@
         doToggleId( "#dublin_core_meta" );
         $("#comments").next().toggle();
         doToggleId( "#comments" );
-        $("#category").next().toggle();
-        doToggleId( "#category" );
+      if( $("div#category-content ul li input:checked").length == 0 ){
+			$("#category").next().toggle();
+		}
+		doToggleId( "#category" );
     });
 
     function doToggleId( idParent ){
