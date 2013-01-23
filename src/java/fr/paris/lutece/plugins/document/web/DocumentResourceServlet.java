@@ -36,6 +36,9 @@ package fr.paris.lutece.plugins.document.web;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentResource;
+import fr.paris.lutece.plugins.document.service.DocumentEvent;
+import fr.paris.lutece.plugins.document.service.DocumentEventListener;
+import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -52,15 +55,20 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet serving document file resources
  */
-public class DocumentResourceServlet extends HttpServlet
+public class DocumentResourceServlet extends HttpServlet implements DocumentEventListener
 {
     private static final long serialVersionUID = -7512201287826936428L;
     private static final String PARAMETER_DOCUMENT_ID = "id";
     private static final String PARAMETER_ATTRIBUTE_ID = "id_attribute";
     private static final String PARAMETER_WORKING_CONTENT = "working_content";
+    private static final String PARAMETER_NOCACHE = "nocache";
     private static final String DEFAULT_EXPIRES_DELAY = "180000";
     private static final String PROPERTY_RESOURCE_TYPE = "document";
     private static final String PROPERTY_EXPIRES_DELAY = "document.resourceServlet.cacheControl.expires";
+    private static final String KEY_DOC_BEGIN = "[doc:";
+    private static final String KEY_ATTR_BEGIN = "[attr:";
+    private static final String KEY_ITEM_CLOSE = "]";
+    
     private static final String STRING_DELAY_IN_SECOND = AppPropertiesService.getProperty( PROPERTY_EXPIRES_DELAY,
             DEFAULT_EXPIRES_DELAY );
     private static final Long LONG_DELAY_IN_MILLISECOND = Long.parseLong( STRING_DELAY_IN_SECOND ) * 1000;
@@ -143,6 +151,7 @@ public class DocumentResourceServlet extends HttpServlet
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         int nDocumentId = IntegerUtils.convert( strDocumentId );
         String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
+        String strNoCache = request.getParameter( PARAMETER_NOCACHE );
 
         int nAttributeId = IntegerUtils.convert( strAttributeId );
         Boolean bWorkingContent = ( request.getParameter( PARAMETER_WORKING_CONTENT ) != null );
@@ -186,8 +195,16 @@ public class DocumentResourceServlet extends HttpServlet
         }
 
         // Add Cache Control HTTP header
-        response.setHeader( "Cache-Control", "max-age=" + STRING_DELAY_IN_SECOND ); // HTTP 1.1
-        response.setDateHeader( "Expires", System.currentTimeMillis(  ) + LONG_DELAY_IN_MILLISECOND ); // HTTP 1.0
+        if( strNoCache != null )
+        {
+            response.setHeader( "Cache-Control", "no-cache" ); // HTTP 1.1
+            response.setDateHeader( "Expires", 0 ); // HTTP 1.0
+        }
+        else
+        {
+            response.setHeader( "Cache-Control", "max-age=" + STRING_DELAY_IN_SECOND ); // HTTP 1.1
+            response.setDateHeader( "Expires", System.currentTimeMillis(  ) + LONG_DELAY_IN_MILLISECOND ); // HTTP 1.0           
+        }
         response.setContentLength( res.getContent(  ).length ); // Keep Alive connexion
 
         // Write the resource content
@@ -242,7 +259,7 @@ public class DocumentResourceServlet extends HttpServlet
     private static String getCacheKey( int nDocumentId, int nAttributeId )
     {
         StringBuilder sbKey = new StringBuilder(  );
-        sbKey.append( "[doc:" ).append( nDocumentId ).append( "][attr:" ).append( nAttributeId ).append( "]" );
+        sbKey.append( KEY_DOC_BEGIN ).append( nDocumentId ).append( KEY_ITEM_CLOSE ).append( KEY_ATTR_BEGIN ).append( nAttributeId ).append( KEY_ITEM_CLOSE );
 
         return sbKey.toString(  );
     }
@@ -291,5 +308,15 @@ public class DocumentResourceServlet extends HttpServlet
     {
         return ( strContentType.equals( "image/jpeg" ) || strContentType.equals( "image/gif" ) ||
         strContentType.equals( "image/png" ) || strContentType.equals( "application/x-shockwave-flash" ) );
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void processDocumentEvent(DocumentEvent event) throws DocumentException
+    {
+        String strKeyPattern = KEY_DOC_BEGIN + event.getDocument().getId() + KEY_ITEM_CLOSE;
+        _cache.removeFromKeyPattern( strKeyPattern );
     }
 }

@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.web;
 
 import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
+import net.sf.ehcache.Cache;
 
 
 /**
@@ -75,5 +76,21 @@ public class ResourceServletCache extends AbstractCacheableService
     public void put( String strKey, ResourceValueObject resource )
     {
         putInCache( strKey, resource );
+    }
+
+    /**
+     * Remove keys from a key pattern
+     * @param strKeyPattern The key pattern
+     */
+    void removeFromKeyPattern(String strKeyPattern)
+    {
+        Cache cache = getCache();
+        for( String strKey : getKeys() )
+        {
+            if( strKey.contains(strKeyPattern ))
+            {
+                cache.remove(strKey);
+            }
+        }
     }
 }

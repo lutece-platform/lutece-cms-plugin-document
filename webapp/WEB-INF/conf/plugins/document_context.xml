@@ -39,6 +39,7 @@
     <bean id="document.ruleEngine" class="fr.paris.lutece.plugins.document.service.rules.RuleEngine" factory-method="getInstance" />
     <bean id="document.documentHistoryService" class="fr.paris.lutece.plugins.document.service.history.DocumentHistoryService" factory-method="getInstance" />
     <bean id="document.portletInvalider" class="fr.paris.lutece.plugins.document.service.publishing.PortletInvalider" />
+    <bean id="document.documentResourceServlet" class="fr.paris.lutece.plugins.document.web.DocumentResourceServlet" />
 
     <!-- Manager -->
     <bean id="document.documentEventListernersManager" class="fr.paris.lutece.plugins.document.service.DocumentEventListernersManager" >
@@ -47,6 +48,7 @@
                 <ref bean="document.ruleEngine" />
                 <ref bean="document.documentHistoryService" />
                 <ref bean="document.portletInvalider" />
+                <ref bean="document.documentResourceServlet" />
             </list>
         </property>
     </bean>

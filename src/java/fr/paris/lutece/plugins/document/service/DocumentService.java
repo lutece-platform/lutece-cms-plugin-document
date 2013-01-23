@@ -398,7 +398,7 @@ public class DocumentService
      */
     public String getCreateForm( String strDocumentTypeCode, Locale locale, String strBaseUrl )
     {
-        StringBuffer sbForm = new StringBuffer(  );
+        StringBuilder sbForm = new StringBuilder(  );
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strDocumentTypeCode );
 
         for ( DocumentAttribute attribute : documentType.getAttributes(  ) )
@@ -443,7 +443,7 @@ public class DocumentService
      */
     public String getModifyForm( Document document, Locale locale, String strBaseUrl )
     {
-        StringBuffer sbForm = new StringBuffer(  );
+        StringBuilder sbForm = new StringBuilder(  );
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
 
         for ( DocumentAttribute attribute : documentType.getAttributes(  ) )

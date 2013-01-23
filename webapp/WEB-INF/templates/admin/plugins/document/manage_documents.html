@@ -109,7 +109,7 @@
                 <tr>
                     <td><input id="document_selection" name="document_selection" type="checkbox" value="${document.id}" /></td>
                     <td>
-                        <p><img src="${document.thumbnail}" alt="${document.title}" title="${document.title} - ${document.type}" class="thumblist" />${document.id} - ${document.title}</p>
+                        <p><img src="${document.thumbnail}&nocache" alt="${document.title}" title="${document.title} - ${document.type}" class="thumblist" />${document.id} - ${document.title}</p>
                         <#if document.comment != ""> <p class="alert alert-error">${document.comment}</p></#if>
                         <p>#i18n{document.manage_documents.labelState} : <strong>${document.state}</strong> | ${document.dateModification}</p>
                     </td>
@@ -154,7 +154,7 @@
             <#list documents_list as document >
             <li class="span4">
                 <div class="thumbnail">
-                    <img src="${document.thumbnail}" alt="${document.title}" title="${document.title} - ${document.type}" />
+                    <img src="${document.thumbnail}&nocache" alt="${document.title}" title="${document.title} - ${document.type}" />
                     <div class="caption">
                         <p class="lead">
                             <span class="badge">${document.id}</span>
