@@ -1,5 +1,7 @@
+<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
+${extendableResourceActionsHtml!}
+</#if>
 <#escape x as x?html>
-<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>${extendableResourceActionsHtml!}</#if>
 <div class="row-fluid">
     <form method="post" action="jsp/admin/plugins/document/DoModifyDocument.jsp" enctype="multipart/form-data" >
         <div class="span3">
@@ -30,11 +32,13 @@
                 </fieldset>
             </div>
             <#noescape>${category}</#noescape>
+			<!-- DEPRECATED 
             <#if is_votable?has_content>
             <div class="well"> 
                 <#include "/admin/plugins/rating/modify_resource_add_on.html" />
             </div>
             </#if>
+			-->
             <#noescape>${metadata}</#noescape>
         </div>
         <div class="span9">

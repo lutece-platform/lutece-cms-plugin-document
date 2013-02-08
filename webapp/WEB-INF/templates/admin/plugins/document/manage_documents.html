@@ -30,11 +30,11 @@
                     </div>
                     <p class="help-block">#i18n{document.manage_documents.labelSearchById}</p>
                 </form>
-                <form class="form" method="post" id="FullTextSearchDocument" name="FullTextSearchDocument" action="jsp/admin/plugins/document/DocumentSearch.jsp">
+                <form class="form-inline" method="post" id="FullTextSearchDocument" name="FullTextSearchDocument" action="jsp/admin/plugins/document/DocumentSearch.jsp">
+                    <input type="hidden" id="id_document" name="id_document">
                     <div class="input-append">
                         <input type="text" id="query" name="query" class="input-large" maxlength="50" >
-                        <input type="hidden" id="id_document" name="id_document">
-                        <button class="btn btn-primary btn-small" type="submit" title="#i18n{document.manage_documents.buttonSearch}" >
+						<button class="btn btn-primary" type="submit" title="#i18n{document.manage_documents.buttonSearch}" >
                             <i class="icon-search icon-white"></i>
                         </button>
                     </div>
@@ -87,7 +87,7 @@
         <#if view_type = "detail" >
         <div class="pull-right"><@paginationAdmin paginator=paginator combo=1 /></div>
         <form class="form-inline" id="documents_form" name="documents_form" method="post" action="jsp/admin/plugins/document/DoActionSelectionDocument.jsp">
-            <select id="selection" name="selection" class="input-normal">
+            <select id="selection" name="selection" class="input-medium">
                 <option value="validate">#i18n{document.manage_document.validate}</option>
                 <option value="submit">#i18n{document.manage_document.submit}</option>
                 <option value="refuse">#i18n{document.manage_document.refuse}</option>
@@ -132,7 +132,7 @@
                 </tr>
                 </#list>
             </table>
-            <select id="selection" name="selection" class="input-normal">
+            <select id="selection" name="selection" class="input-medium">
                 <option value="validate">#i18n{document.manage_document.validate}</option>
                 <option value="submit">#i18n{document.manage_document.submit}</option>
                 <option value="refuse">#i18n{document.manage_document.refuse}</option>
@@ -240,8 +240,7 @@
         if( $.isNumeric($("#FullTextSearchDocument input#query").val()) ){
             $("#FullTextSearchDocument input#id_document").val($("#FullTextSearchDocument input#query").val());
             $(this).attr("action", "jsp/admin/plugins/document/DoSearchDocumentById.jsp");
-        }
-    }
-    );
+		}
+	});
     $("#SearchDocumentById").hide();
 </script> 

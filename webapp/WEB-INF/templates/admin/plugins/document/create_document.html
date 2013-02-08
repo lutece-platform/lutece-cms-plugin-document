@@ -25,9 +25,11 @@
                     <p class="help-block">#i18n{document.create_document.helpDocumentComment}</p>
             </div>
             <#noescape>${category}</#noescape>
-            <#if is_votable?has_content>
-            <#include "/admin/plugins/rating/create_resource_add_on.html" />
-            </#if>
+			<!-- DEPRECATED TO REMOVE
+				<#if is_votable?has_content>
+					<#include "/admin/plugins/rating/create_resource_add_on.html" />
+				</#if>
+			-->
             <#noescape>${metadata}</#noescape>
     </div>
     <div class="span8">
