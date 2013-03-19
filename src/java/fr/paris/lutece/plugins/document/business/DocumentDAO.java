@@ -109,6 +109,7 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_FILTER_STATE = " a.id_state = ? ";
     private static final String SQL_FILTER_CATEGORIES_BEGIN = " (";
     private static final String SQL_FILTER_CATEGORIES = " f.id_category = ? ";
+    private static final String SQL_FILTER_CATEGORIES_NULL = " f.id_category IS NULL ";
     private static final String SQL_FILTER_CATEGORIES_OR = " OR ";
     private static final String SQL_FILTER_CATEGORIES_END = ") ";
     private static final String SQL_FILTER_ID_BEGIN = " (";
@@ -699,14 +700,22 @@ public final class DocumentDAO implements IDocumentDAO
         {
             String strCategories = SQL_FILTER_CATEGORIES_BEGIN;
 
-            for ( int i = 0; i < filter.getCategoriesId(  ).length; i++ )
+            int i = 0;
+            for ( int nCategoryId : filter.getCategoriesId( ) )
             {
-                strCategories += SQL_FILTER_CATEGORIES;
-
-                if ( ( i + 1 ) < filter.getCategoriesId(  ).length )
+                if ( nCategoryId > 0 )
+                {
+                    strCategories += SQL_FILTER_CATEGORIES;
+                }
+                else
+                {
+                    strCategories += SQL_FILTER_CATEGORIES_NULL;
+                }
+                if ( ( i + 1 ) < filter.getCategoriesId( ).length )
                 {
                     strCategories += SQL_FILTER_CATEGORIES_OR;
                 }
+                i++;
             }
 
             strCategories += SQL_FILTER_CATEGORIES_END;
@@ -767,9 +776,12 @@ public final class DocumentDAO implements IDocumentDAO
         {
             for ( int nCategoryId : filter.getCategoriesId(  ) )
             {
-                daoUtil.setInt( nIndex, nCategoryId );
-                AppLogService.debug( "Param" + nIndex + " (getCategoriesId) = " + nCategoryId );
-                nIndex++;
+                if ( nCategoryId > 0 )
+                {
+                    daoUtil.setInt( nIndex, nCategoryId );
+                    AppLogService.debug( "Param" + nIndex + " (getCategoriesId) = " + nCategoryId );
+                    nIndex++;
+                }
             }
         }
 
