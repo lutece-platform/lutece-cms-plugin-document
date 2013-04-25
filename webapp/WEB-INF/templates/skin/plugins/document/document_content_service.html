@@ -10,28 +10,28 @@ Available objects :
 How to display the date publication : ${publication.datePublishing?date} or ${publication.datePublishing?datetime}
 -->
 <div class="row">
-    <div id="sidebar" class="span3">
-        <#if isExtendInstalled?? && isExtendInstalled >
-        @Extender[${document_id},document,hit,{show:true}]@!
-        @Extender[${document_id},document,rating,{show:"all"}]@
-        </#if>
-        <#if portlet?has_content >
-       	${portlet}
-        </#if>
-    </div>
     <div id="content" class="span8">
+    	<#if portlet?has_content >
+       		${portlet}
+        </#if>
         <div class="pull-right">
             <div class="btn-group">
-                <a class="btn btn-small" href="jsp/site/plugins/document/SendDocument.jsp?document_id=${document_id}" target="_send"><i class="icon-envelope"></i>&nbsp;#i18n{document.document_content_service.buttonSend}</a> | 
-                <a class="btn btn-small" href="jsp/site/plugins/document/PrintDocument.jsp?document_id=${document_id}" target="_print"><i class="icon-print"></i>&nbsp;#i18n{document.document_content_service.buttonPrint}</a> | 
-                <a class="btn btn-small" href="javascript:window.history.back();"><i class="icon-remove-circle"></i>&nbsp;#i18n{document.document_content_service.buttonBack}</a>
-            </div>
+<!--                 <a class="btn btn-small" href="jsp/site/plugins/document/SendDocument.jsp?document_id=${document_id}" target="_send"><i class="icon-envelope"></i>&nbsp;#i18n{document.document_content_service.buttonSend}</a> |  -->
+<!--                 <a class="btn btn-small" href="jsp/site/plugins/document/PrintDocument.jsp?document_id=${document_id}" target="_print"><i class="icon-print"></i>&nbsp;#i18n{document.document_content_service.buttonPrint}</a> |  -->
+<!--                 <a class="btn btn-small" href="javascript:window.history.back();"><i class="icon-remove-circle"></i>&nbsp;#i18n{document.document_content_service.buttonBack}</a> -->
+            	@Extender[${document_id},document,actionbar]@
+			</div>
         </div>
         ${document}
     </div>
 </div>
-<div class="clearfix">&nbsp;</div>
-<#if isExtendInstalled?? && isExtendInstalled >
+<div class="clearfix">
+	<div class="span3 pull-right">
+		@Extender[${document_id},document,opengraph,{footer:false, header:false}]@
+        @Extender[${document_id},document,hit,{show:true}]@
+        @Extender[${document_id},document,rating,{show:"all"}]@
+    </div>
+</div>
 @Extender[${document_id},document,comment]@
 @Extender[${document_id},document,feedback]@
-</#if>
+@Extender[${document_id},document,opengraph,{footer:true}]@
