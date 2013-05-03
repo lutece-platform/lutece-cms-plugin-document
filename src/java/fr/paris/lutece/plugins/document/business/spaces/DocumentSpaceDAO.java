@@ -51,23 +51,22 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
     private static final String SQL_QUERY_NEW_PK = " SELECT max( id_space ) FROM document_space ";
     private static final String SQL_QUERY_SELECT = " SELECT a.id_space, a.id_parent, a.document_space_name, a.description, a.document_space_view, a.id_space_icon, b.icon_url, a.document_creation_allowed, a.workgroup_key " +
         " FROM document_space a, document_space_icon b " +
-        " WHERE a.id_space_icon = b.id_space_icon AND id_space = ?  ";
+ " WHERE a.id_space_icon = b.id_space_icon AND id_space = ? ";
     private static final String SQL_QUERY_INSERT = " INSERT INTO document_space ( id_space, id_parent, document_space_name, description, document_space_view, id_space_icon, document_creation_allowed ,workgroup_key ) VALUES ( ?, ?, ?, ?, ?, ?, ? ,?) ";
     private static final String SQL_QUERY_DELETE = " DELETE FROM document_space WHERE id_space = ?  ";
     private static final String SQL_QUERY_UPDATE = " UPDATE document_space SET id_space = ?, id_parent = ?, document_space_name = ?, description = ?, document_space_view = ?, id_space_icon = ?, document_creation_allowed = ? ,workgroup_key= ? WHERE id_space = ?  ";
     private static final String SQL_QUERY_SELECT_CHILDS = " SELECT a.id_space, a.id_parent, a.document_space_name, a.description, a.document_space_view, a.id_space_icon, b.icon_url, a.document_creation_allowed ,a.workgroup_key" +
-        " FROM document_space a, document_space_icon b " +
-        " WHERE a.id_space_icon = b.id_space_icon AND id_parent = ? " + " ORDER BY space_order";
+        " FROM document_space a, document_space_icon b WHERE a.id_space_icon = b.id_space_icon AND id_parent = ? ORDER BY a.document_space_name ";
     private static final String SQL_QUERY_SELECT_CHILDS_BY_CODE_TYPE = " SELECT a.id_space, a.id_parent, a.document_space_name, a.description, a.document_space_view, a.id_space_icon, b.icon_url, a.document_creation_allowed ,a.workgroup_key" +
         " FROM document_space a, document_space_icon b, document_space_document_type c " +
         " WHERE a.id_space_icon = b.id_space_icon AND id_parent = ? AND a.id_space = c.id_space AND c.code_document_type = ?" +
-        " ORDER BY space_order";
+        " ORDER BY a.document_space_name ";
     private static final String SQL_QUERY_SELECT_SPACES_WITH_DOCUMENT_CREATION_IS_ALLOWED_BY_CODE_TYPE = "SELECT a.id_space, a.id_parent, a.document_space_name, a.description, a.document_space_view, a.id_space_icon, b.icon_url, a.document_creation_allowed ,a.workgroup_key" +
         " FROM document_space a, document_space_icon b, document_space_document_type c " +
         " WHERE a.id_space_icon = b.id_space_icon AND a.id_space = c.id_space AND c.code_document_type = ? AND a.document_creation_allowed = ?" +
-        " ORDER BY space_order";
-    private static final String SQL_QUERY_SELECTALL = " SELECT a.id_space, a.id_parent, a.document_space_name, a.description, a.document_space_view, a.id_space_icon, b.icon_url, a.document_creation_allowed, a.workgroup_key " +
-        " FROM document_space a, document_space_icon b " + " WHERE a.id_space_icon = b.id_space_icon";
+        " ORDER BY a.document_space_name ";
+    private static final String SQL_QUERY_SELECTALL = " SELECT a.id_space, a.id_parent, a.document_space_name, a.description, a.document_space_view, a.id_space_icon, b.icon_url, a.document_creation_allowed, a.workgroup_key "
+            + " FROM document_space a, document_space_icon b WHERE a.id_space_icon = b.id_space_icon ORDER BY a.document_space_name ";
     private static final String SQL_QUERY_SELECTALL_VIEWTYPE = " SELECT code_view , name_key FROM document_view";
     private static final String SQL_QUERY_SELECTALL_ICONS = " SELECT id_space_icon , icon_url FROM document_space_icon";
     private static final String SQL_QUERY_INSERT_DOCUMENT_TYPE = "INSERT INTO document_space_document_type ( id_space , code_document_type ) VALUES ( ? , ? )";

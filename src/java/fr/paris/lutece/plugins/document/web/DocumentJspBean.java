@@ -61,7 +61,11 @@ import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
 import fr.paris.lutece.plugins.document.utils.DocumentIndexerUtils;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
+import fr.paris.lutece.portal.business.right.Right;
+import fr.paris.lutece.portal.business.right.RightHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.admin.PasswordResetException;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
@@ -88,6 +92,8 @@ import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -135,6 +141,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MARK_STATE_ID = "id_state";
     private static final String MARK_CHILD_SPACES_LIST = "child_spaces_list";
     private static final String MARK_FIELDS = "fields";
+    private static final String MARK_CURRENT_DATE = "current_date";
     private static final String MARK_DOCUMENT_TYPE = "document_type";
     private static final String MARK_DEFAULT_DOCUMENT_TYPE = "default_document_type";
     private static final String MARK_DEFAULT_STATE = "default_state";
@@ -167,6 +174,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_STATE_ID_FILTER = "id_state_filter";
     private static final String PARAMETER_SELECTION = "selection";
     private static final String PARAMETER_DOCUMENT_SELECTION = "document_selection";
+    private static final String PARAMETER_HEADER_REFERER = "referer";
 
     // Properties
     private static final String PROPERTY_FILTER_ALL = "document.manage_documents.filter.labelAll";
@@ -207,6 +215,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String XSL_PARAMETER_CURRENT_SPACE = "current-space-id";
     private static final String FILTER_ALL = "-1";
     private static final String PAGE_INDEX_FIRST = "1";
+    private static final String CONSTANT_DATE_FORMAT = "dd/MM/yyyy";
     private String _strCurrentDocumentTypeFilter;
     private String _strCurrentStateFilter;
     private String _strCurrentSpaceId;
@@ -215,6 +224,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private String _strViewType;
     private int _nDefaultItemsPerPage;
     private String[] _multiSelectionValues;
+    private String _strFeatureUrl;
+    private String _strSavedReferer;
 
     /**
      * Constructor
@@ -231,6 +242,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String getManageDocuments( HttpServletRequest request )
     {
+        this._strSavedReferer = null;
         setPageTitleProperty( null );
 
         AdminUser user = getUser(  );
@@ -333,7 +345,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         model.put( MARK_SPACE_ACTIONS_LIST, listSpaceActions );
         model.put( MARK_SPACE, currentSpace );
         model.put( MARK_PAGINATOR, paginator );
-        model.put( MARK_NB_ITEMS_PER_PAGE, "" + _nItemsPerPage );
+        model.put( MARK_NB_ITEMS_PER_PAGE, StringUtils.EMPTY + _nItemsPerPage );
         model.put( MARK_VIEW_TYPES_LIST, DocumentSpaceHome.getViewTypeList( getLocale(  ) ) );
         model.put( MARK_VIEW_TYPE, _strViewType );
         model.put( MARK_DOCUMENTS_LIST, listDocuments );
@@ -356,6 +368,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String getCreateDocument( HttpServletRequest request )
     {
+        saveReferer( request );
         String strDocumentTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
 
         if ( ( _strCurrentSpaceId == null ) ||
@@ -367,7 +380,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         }
 
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strDocumentTypeCode );
-
+        DateFormat dateFormat = new SimpleDateFormat( CONSTANT_DATE_FORMAT, getLocale( ) );
+        String strCurrentDate = dateFormat.format( new Date( ) );
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LOCALE, getLocale(  ).getLanguage(  ) );
@@ -375,9 +389,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         model.put( MARK_CATEGORY, getCategoryCreateForm( request ) );
         model.put( MARK_METADATA, getMetadataCreateForm( request, strDocumentTypeCode ) );
-        model.put( MARK_FIELDS,
-            DocumentService.getInstance(  )
-                           .getCreateForm( strDocumentTypeCode, getLocale(  ), AppPathService.getBaseUrl( request ) ) );
+        model.put(
+                MARK_FIELDS,
+                DocumentService.getInstance( ).getCreateForm( strDocumentTypeCode, getLocale( ),
+                        AppPathService.getBaseUrl( request ) ) );
+        model.put( MARK_CURRENT_DATE, strCurrentDate );
 
         // PageTemplate
         int nIndexRow = 1;
@@ -449,7 +465,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     {
         MetadataHandler hMetadata = getMetadataHandler( strDocumentTypeCode );
 
-        return ( hMetadata != null ) ? hMetadata.getCreateForm( request ) : "";
+        return ( hMetadata != null ) ? hMetadata.getCreateForm( request ) : StringUtils.EMPTY;
     }
 
     /**
@@ -462,7 +478,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     {
         MetadataHandler hMetadata = getMetadataHandler( document.getCodeDocumentType(  ) );
 
-        return ( hMetadata != null ) ? hMetadata.getModifyForm( request, document.getXmlMetadata(  ) ) : "";
+        return ( hMetadata != null ) ? hMetadata.getModifyForm( request, document.getXmlMetadata( ) )
+                : StringUtils.EMPTY;
     }
 
     /**
@@ -484,6 +501,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doCreateDocument( HttpServletRequest request )
     {
+        saveReferer( request );
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
         AdminUser user = getUser(  );
@@ -533,6 +551,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String getModifyDocument( HttpServletRequest request )
     {
+        saveReferer( request );
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
 
@@ -600,6 +619,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doModifyDocument( HttpServletRequest request )
     {
+        saveReferer( request );
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         String strDocumentId = multipartRequest.getParameter( PARAMETER_DOCUMENT_ID );
         Document document = DocumentHome.findByPrimaryKey( IntegerUtils.convert( strDocumentId ) );
@@ -657,6 +677,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String deleteDocument( HttpServletRequest request )
     {
+        saveReferer( request );
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
@@ -684,6 +705,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doDeleteDocument( HttpServletRequest request )
     {
+        saveReferer( request );
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
@@ -719,6 +741,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doChangeState( HttpServletRequest request )
     {
+        saveReferer( request );
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         String strActionId = request.getParameter( PARAMETER_ACTION_ID );
         int nDocumentId = -1;
@@ -765,6 +788,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doValidateDocument( HttpServletRequest request )
     {
+        saveReferer( request );
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         String strActionId = request.getParameter( PARAMETER_ACTION_ID );
         int nDocumentId = -1;
@@ -826,6 +850,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doConfirmArchiveDocument( HttpServletRequest request )
     {
+        saveReferer( request );
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         String strActionId = request.getParameter( PARAMETER_ACTION_ID );
         int nDocumentId = -1;
@@ -1158,6 +1183,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doArchiveDocument( HttpServletRequest request )
     {
+        saveReferer( request );
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         String strActionId = request.getParameter( PARAMETER_ACTION_ID );
 
@@ -1205,6 +1231,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doSearchDocumentById( HttpServletRequest request )
     {
+        saveReferer( request );
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         int nDocumentId;
 
@@ -1244,6 +1271,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String getPreviewDocument( HttpServletRequest request )
     {
+        saveReferer( request );
         setPageTitleProperty( PROPERTY_PREVIEW_DOCUMENT_PAGE_TITLE );
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
@@ -1286,6 +1314,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String getMoveDocument( HttpServletRequest request )
     {
+        saveReferer( request );
         setPageTitleProperty( PROPERTY_MOVE_DOCUMENT_PAGE_TITLE );
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
@@ -1303,7 +1332,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         String strSpaceId = request.getParameter( DocumentSpacesService.PARAMETER_BROWSER_SELECTED_SPACE_ID );
         boolean bSubmitButtonDisabled = Boolean.TRUE;
 
-        if ( ( strSpaceId != null ) && !strSpaceId.equals( "" ) )
+        if ( ( strSpaceId != null ) && !strSpaceId.equals( StringUtils.EMPTY ) )
         {
             bSubmitButtonDisabled = Boolean.FALSE;
         }
@@ -1326,6 +1355,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doMoveDocument( HttpServletRequest request )
     {
+        saveReferer( request );
         boolean bTypeAllowed = Boolean.FALSE;
         String strSpaceId = request.getParameter( DocumentSpacesService.PARAMETER_BROWSER_SELECTED_SPACE_ID );
 
@@ -1370,10 +1400,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
             return getHomeUrl( request );
         }
-        else
-        {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_MOVING_NOT_AUTHORIZED, AdminMessage.TYPE_STOP );
-        }
+        return AdminMessageService.getMessageUrl( request, MESSAGE_MOVING_NOT_AUTHORIZED, AdminMessage.TYPE_STOP );
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1599,5 +1626,51 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         }
 
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @return Return the URL of the menu if the user come from the menu, of the
+     *         URL of the main page of this feature if he comes from anywhere
+     *         else
+     */
+    @Override
+    public String getHomeUrl( HttpServletRequest request )
+    {
+        if ( StringUtils.isNotBlank( _strSavedReferer ) )
+        {
+            return AppPathService.getBaseUrl( ) + _strSavedReferer;
+        }
+        return super.getHomeUrl( request );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void init( HttpServletRequest request, String strRight ) throws AccessDeniedException,
+            PasswordResetException
+    {
+        Right right = RightHome.findByPrimaryKey( strRight );
+        _strFeatureUrl = right.getUrl( );
+        super.init( request, strRight );
+    }
+
+    /**
+     * Saves the referer to redirect after the action is performed
+     * @param request The request
+     */
+    private void saveReferer( HttpServletRequest request )
+    {
+        String strReferer = request.getHeader( PARAMETER_HEADER_REFERER );
+        String strAdminMenuUrl = AppPathService.getAdminMenuUrl( );
+        if ( StringUtils.contains( strReferer, strAdminMenuUrl ) )
+        {
+            _strSavedReferer = strAdminMenuUrl;
+        }
+        else if ( StringUtils.contains( strReferer, _strFeatureUrl ) )
+        {
+            _strSavedReferer = _strFeatureUrl;
+        }
     }
 }
