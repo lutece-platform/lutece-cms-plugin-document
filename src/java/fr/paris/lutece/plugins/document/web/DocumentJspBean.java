@@ -1639,7 +1639,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     {
         if ( StringUtils.isNotBlank( _strSavedReferer ) )
         {
-            return AppPathService.getBaseUrl( ) + _strSavedReferer;
+            return AppPathService.getBaseUrl( request ) + _strSavedReferer;
         }
         return super.getHomeUrl( request );
     }
