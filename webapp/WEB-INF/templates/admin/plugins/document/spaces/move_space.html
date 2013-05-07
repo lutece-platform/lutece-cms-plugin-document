@@ -5,7 +5,7 @@
             <form class="form" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveSpace.jsp" enctype="multipart/form-data" >
                 <input type="hidden" name="id_space" value="${space.id}" />
                 <#if submit_button_disabled >#i18n{document.move_space.labelMove}</#if>
-                {spaces_browser}
+                ${spaces_browser}
                 <!-- button class="btn btn-primary btn-small" type="submit" <#if submit_button_disabled > disabled</#if> >
                     <i class="icon-move icon-white"></i>&nbsp;#i18n{document.move_space.buttonMove}
                 </button -->
