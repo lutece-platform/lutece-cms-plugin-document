@@ -113,9 +113,10 @@ import org.apache.commons.lang.StringUtils;
  */
 public class DocumentJspBean extends PluginAdminPageJspBean
 {
-    private static final long serialVersionUID = 3884593136805763150L;
     public static final String RIGHT_DOCUMENT_MANAGEMENT = "DOCUMENT_MANAGEMENT";
     public static final String PARAMETER_SPACE_ID_FILTER = "id_space_filter";
+
+    private static final long serialVersionUID = 3884593136805763150L;
     private static final String SPACE_TREE_XSL_UNIQUE_PREFIX = UniqueIDGenerator.getNewId(  ) + "SpacesTree";
     private static final String DOCUMENT_STYLE_PREFIX_ID = UniqueIDGenerator.getNewId(  ) + "document-";
 
@@ -175,6 +176,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_SELECTION = "selection";
     private static final String PARAMETER_DOCUMENT_SELECTION = "document_selection";
     private static final String PARAMETER_HEADER_REFERER = "referer";
+    private static final String PARAMETER_FROM_URL = "fromUrl";
 
     // Properties
     private static final String PROPERTY_FILTER_ALL = "document.manage_documents.filter.labelAll";
@@ -211,6 +213,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String CONSTANT_REFUSE = "refuse";
     private static final String CONSTANT_UNARCHIVE = "unarchive";
     private static final String CONSTANT_SUBMIT = "submit";
+    private static final String CONSTANT_AND = "&";
+    private static final String CONSTANT_AND_HTML = "%26";
     private static final String PATH_JSP = "jsp/admin/plugins/document/";
     private static final String XSL_PARAMETER_CURRENT_SPACE = "current-space-id";
     private static final String FILTER_ALL = "-1";
@@ -555,8 +559,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
 
-        if ( ( document != null ) &&
-                !DocumentService.getInstance(  )
+        if ( !DocumentService.getInstance( )
                                     .isAuthorizedAdminDocument( document.getSpaceId(  ),
                     document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_MODIFY, getUser(  ) ) )
         {
@@ -682,9 +685,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-        if ( ( document != null ) &&
-                !DocumentService.getInstance(  )
-                                    .isAuthorizedAdminDocument( document.getSpaceId(  ),
+        if ( !DocumentService.getInstance(  ).isAuthorizedAdminDocument( document.getSpaceId(  ),
                     document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_DELETE, getUser(  ) ) )
         {
             return getHomeUrl( request );
@@ -1662,15 +1663,23 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     private void saveReferer( HttpServletRequest request )
     {
-        String strReferer = request.getHeader( PARAMETER_HEADER_REFERER );
-        String strAdminMenuUrl = AppPathService.getAdminMenuUrl( );
-        if ( StringUtils.contains( strReferer, strAdminMenuUrl ) )
+        String strFromUrl = request.getParameter( PARAMETER_FROM_URL );
+        if ( StringUtils.isNotBlank( strFromUrl ) )
         {
-            _strSavedReferer = strAdminMenuUrl;
+            _strSavedReferer = strFromUrl.replace( CONSTANT_AND_HTML, CONSTANT_AND );
         }
-        else if ( StringUtils.contains( strReferer, _strFeatureUrl ) )
+        else
         {
-            _strSavedReferer = _strFeatureUrl;
+            String strReferer = request.getHeader( PARAMETER_HEADER_REFERER );
+            String strAdminMenuUrl = AppPathService.getAdminMenuUrl( );
+            if ( StringUtils.contains( strReferer, strAdminMenuUrl ) )
+            {
+                _strSavedReferer = strAdminMenuUrl;
+            }
+            else if ( StringUtils.contains( strReferer, _strFeatureUrl ) )
+            {
+                _strSavedReferer = _strFeatureUrl;
+            }
         }
     }
 }
