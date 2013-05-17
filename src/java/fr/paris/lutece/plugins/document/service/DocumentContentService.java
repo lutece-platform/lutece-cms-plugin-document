@@ -127,6 +127,7 @@ public final class DocumentContentService extends ContentService implements Cach
     private static final String MARK_DOCUMENT_CATEGORIES_LIST = "document_categories_list";
     private static final String MARK_URL_LOGIN = "url_login";
     private static final String MARKER_TARGET = "target";
+    private static final String MARK_IS_EXTEND_INSTALLED = "isExtendInstalled";
 
     // Templates
     private static final String TEMPLATE_DOCUMENT_PAGE_DEFAULT = "/skin/plugins/document/document_content_service.html";
@@ -366,8 +367,10 @@ public final class DocumentContentService extends ContentService implements Cach
             model.put( MARK_CATEGORY, getRelatedDocumentsPortlet( request, document, nPortletId, nMode ) );
             model.put( MARK_DOCUMENT_ID, strDocumentId );
             model.put( MARK_PORTLET_ID, strPortletId );
+            model.put( MARK_IS_EXTEND_INSTALLED, PortalService.isExtendActivated( ) );
 
-            // additionnal page info
+            
+            // Additional page info
             ResourceEnhancer.buildPageAddOn( model, PROPERTY_RESOURCE_TYPE, nDocumentId, strPortletId, request );
 
             HtmlTemplate template = AppTemplateService.getTemplate( getTemplatePage( document ), request.getLocale(  ),
@@ -377,11 +380,8 @@ public final class DocumentContentService extends ContentService implements Cach
 
             return PortalService.buildPageContent( data, nMode, request );
         }
-        else //portlet does not exists
-        {
-            //TODO : view access denied page
-            return PortalService.getDefaultPage( request, nMode );
-        }
+        //portlet does not exists
+        return PortalService.getDefaultPage( request, nMode );
     }
 
     /**
