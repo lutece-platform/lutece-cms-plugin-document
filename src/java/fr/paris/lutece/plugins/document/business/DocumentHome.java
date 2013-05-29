@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.document.business;
 
 import fr.paris.lutece.plugins.document.service.docsearch.DocSearchService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.resource.ExtendableResourceRemovalListenerService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.util.Collection;
@@ -105,13 +106,16 @@ public final class DocumentHome
 
     /**
      * Remove the Document whose identifier is specified in parameter
-     *
-     * @param nDocumentId
+     * 
+     * @param nDocumentId The id of the document to remove
      */
     public static void remove( int nDocumentId )
     {
         _dao.delete( nDocumentId );
         DocSearchService.getInstance(  ).addIndexerAction( nDocumentId, IndexerAction.TASK_DELETE );
+        // We remove extensions of the removed document if any
+        ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Document.PROPERTY_RESOURCE_TYPE,
+                Integer.toString( nDocumentId ) );
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -153,7 +157,7 @@ public final class DocumentHome
      * Returns a collection of documents ids
      * @return A collection of documents ids
      * @param filter
-     * @param locale
+     * @param locale The locale
      */
     public static Collection<Integer> findPrimaryKeysByFilter( DocumentFilter filter, Locale locale )
     {
@@ -164,7 +168,7 @@ public final class DocumentHome
      * Returns a collection of documents objects
      * @return A collection of documents
      * @param filter
-     * @param locale
+     * @param locale The locale
      */
     public static List<Document> findByFilter( DocumentFilter filter, Locale locale )
     {
