@@ -310,7 +310,7 @@ public abstract class DefaultManager implements AttributeManager
      * @parma locale The current locale
      * return a map of parameters
      */
-    private Map<String, List<String>> getParameters( int nAttributeId, Locale locale )
+    protected Map<String, List<String>> getParameters( int nAttributeId, Locale locale )
     {
         HashMap<String, List<String>> mapParameters = new HashMap<String, List<String>>(  );
         Collection<AttributeTypeParameter> listParameters = getAttributeParametersValues( nAttributeId, locale );

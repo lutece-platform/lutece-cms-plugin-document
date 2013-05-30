@@ -34,16 +34,21 @@
 package fr.paris.lutece.plugins.document.service.attributes;
 
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
+import fr.paris.lutece.plugins.document.business.attributes.DocumentAttributeHome;
 import fr.paris.lutece.portal.web.constants.Messages;
-
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -127,6 +132,47 @@ public class ListBoxManager extends DefaultManager
      * {@inheritDoc}
      */
     @Override
+    public String getCreateParametersFormHtml( List<AttributeTypeParameter> listParameters, Locale locale )
+    {
+        // We sort parameters values alphabetically
+        if ( listParameters != null )
+        {
+            for ( AttributeTypeParameter attributeParameter : listParameters )
+            {
+                List<String> listValues = attributeParameter.getValueList( );
+                if ( listValues != null && listValues.size( ) > 0 )
+                {
+                    Collections.sort( listValues );
+                    attributeParameter.setValueList( listValues );
+                }
+            }
+        }
+        return super.getCreateParametersFormHtml( listParameters, locale );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<AttributeTypeParameter> getExtraParametersValues( Locale locale, int nAttributeId )
+    {
+        Collection<AttributeTypeParameter> listParameters = getExtraParameters( locale );
+
+        for ( AttributeTypeParameter parameter : listParameters )
+        {
+            List<String> listValues = DocumentAttributeHome.getAttributeParameterValues( nAttributeId,
+                    parameter.getName( ) );
+            Collections.sort( listValues );
+            parameter.setValueList( listValues );
+        }
+
+        return listParameters;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<AttributeTypeParameter> getValueParameters( HttpServletRequest request, Locale locale )
     {
         // Button "Add" new parameter
@@ -196,8 +242,36 @@ public class ListBoxManager extends DefaultManager
             parameter.setValueList( listValues );
             listValues.clear(  );
         }
-
         return listParameters;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Map<String, List<String>> getParameters( int nAttributeId, Locale locale )
+    {
+        HashMap<String, List<String>> mapParameters = new HashMap<String, List<String>>( );
+        Collection<AttributeTypeParameter> listParameters = getAttributeParametersValues( nAttributeId, locale );
+
+        for ( AttributeTypeParameter parameter : listParameters )
+        {
+            // We sort attributes alphabetically
+            List<String> listValues = parameter.getValueList( );
+            Collections.sort( listValues );
+            mapParameters.put( parameter.getName( ), listValues );
+        }
+
+        // Set all missing parameters with their default values
+        for ( AttributeTypeParameter parameter : getExtraParameters( locale ) )
+        {
+            if ( !mapParameters.containsKey( parameter.getName( ) ) )
+            {
+                mapParameters.put( parameter.getName( ), parameter.getDefaultValue( ) );
+            }
+        }
+
+        return mapParameters;
     }
 
     /**
