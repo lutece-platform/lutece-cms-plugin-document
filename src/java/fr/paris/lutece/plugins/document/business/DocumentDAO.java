@@ -660,11 +660,22 @@ public final class DocumentDAO implements IDocumentDAO
             document.setMailingListId( daoUtil.getInt( 19 ) );
             document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
 
-            if ( document != null )
+            if ( filter.getLoadBinaries( ) )
             {
                 loadAttributes( document );
-                document.setCategories( selectCategories( document.getId(  ) ) );
             }
+            else
+            {
+                if ( document.getStateId( ) == DocumentState.STATE_VALIDATE )
+                {
+                    loadAttributesWithoutBinaries( document, true );
+                }
+                else
+                {
+                    loadAttributesWithoutBinaries( document, false );
+                }
+            }
+            document.setCategories( selectCategories( document.getId( ) ) );
 
             listDocuments.add( document );
         }

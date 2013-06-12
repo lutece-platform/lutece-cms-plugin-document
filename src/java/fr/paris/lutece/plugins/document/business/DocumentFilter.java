@@ -48,6 +48,8 @@ public class DocumentFilter
     private String _strCodeDocumentType = ALL_STRING;
     private int[] _arrayCategoriesId;
     private int[] _arrayId;
+    // The default value is true to assure ascendant compatibility
+    private boolean _bLoadBinaries = true;
 
     /**
      * Returns the IdSpace
@@ -184,5 +186,25 @@ public class DocumentFilter
     public void setIds( int[] arrayId )
     {
         _arrayId = arrayId;
+    }
+
+    /**
+     * Get the boolean that indicates whether binaries of documents should be
+     * loaded
+     * @return True if binaries should be loaded, false otherwise
+     */
+    public boolean getLoadBinaries( )
+    {
+        return _bLoadBinaries;
+    }
+
+    /**
+     * Set the boolean that indicates whether binaries of documents should be
+     * loaded
+     * @param bLoadBinaries True if binaries should be loaded, false otherwise
+     */
+    public void setLoadBinaries( boolean bLoadBinaries )
+    {
+        this._bLoadBinaries = bLoadBinaries;
     }
 }
