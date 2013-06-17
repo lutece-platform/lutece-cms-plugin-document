@@ -1,59 +1,61 @@
 <#list parameters as parameter>
-    <#if parameter_index = 0>
-    	<#assign defaultValue = parameter>
-    </#if>
-    <#if parameter_index = 1>
-    	<#assign items = parameter>
-    </#if>
+	<#if parameter_index = 0>
+		<#assign defaultValue = parameter>
+	</#if>
+	<#if parameter_index = 1>
+		<#assign items = parameter>
+	</#if>
 </#list>
 
 <#if items?? && items.valueList?? && items.valueList?has_content>
-    <#assign listValues = items.valueList>
+	<#assign listValues = items.valueList>
 <#else>
-    <#assign listValues = items.defaultValue>
+	<#assign listValues = items.defaultValue>
 </#if>
 
 <#if defaultValue?? && defaultValue.valueList?? && defaultValue?has_content>
-    <#list defaultValue.valueList as value>
+	<#list defaultValue.valueList as value>
 	<#assign valueDefaultValue = value>
 	<#break>
-    </#list>
+	</#list>
 <#else>
-    <#list defaultValue.defaultValue as value>
+	<#list defaultValue.defaultValue as value>
 	<#assign valueDefaultValue = value>
 	<#break>
-    </#list>
+	</#list>
 </#if>
 <div class="control-group">
-    <label class="control-label" for="${items.name}_value" >${items.label} :</label>
-    <div class="controls">
-        <input type="text" id="${items.name}_value" name="${items.name}_value" tabindex="6" />
-    </div>
+	<label class="control-label" for="${items.name}_value" >${items.label} :</label>
+	<div class="controls">
+		<input type="text" id="${items.name}_value" name="${items.name}_value" tabindex="6" />
+		<button class="btn btn-primary btn-small" value="add" name="add" type="submit" >#i18n{document.attributeType.listbox.btnAddItem}</button>
+		<span class="help-block">${items.description}</span>	
+	</div>
 </div>
-<button class="btn btn-primary btn-small" type="submit" >#i18n{document.attributeType.listbox.btnAddItem}</button>
-<p>${items.description}</p>    
 <div class="control-group">
-    <label class="control-label" for="${items.name}_select" >&nbsp;</label>
-    <div class="controls">
-        <select id="${items.name}_select" name="${items.name}_select" size="4" class="input-large" tabindex="8">
-            <#list listValues as values >
-                <option value="${values}" >${values}</option>
-            </#list>
-        </select>
-        <select id="${items.name}" name="${items.name}" size="4" class="input-large" multiple="multiple" >
-           <#list listValues as values >
-                 <option value="${values}" selected="selected">${values}</option>
-              </#list>
-          </select>
-         <button class="btn btn-primary btn-small" type="submit" >
-            #i18n{document.attributeType.listbox.btnDelItem}
-         </button>
-          <button class="btn btn-primary btn-small" type="submit" >
-            #i18n{document.attributeType.listbox.btnDefItem}
-          </button>
-            <label for="${defaultValue.name}">&nbsp;</label>
-          <input type="text" id="${defaultValue.name}" name="${defaultValue.name}" value="${valueDefaultValue!}" readonly="readonly" tabindex="11" />
-     </div>
+	<label class="control-label" for="${items.name}_select" >&nbsp;</label>
+	<div class="controls">
+		<select id="${items.name}_select" name="${items.name}_select" size="4" class="input-large" tabindex="8">
+			<#list listValues as values >
+				<option value="${values}" >${values}</option>
+			</#list>
+		</select>
+		<div style="display:none;">
+			<select id="${items.name}" name="${items.name}" size="4" class="input-large" multiple="multiple" >
+				<#list listValues as values >
+					<option value="${values}" selected="selected">${values}</option>
+				</#list>
+			</select>
+		</div>
+		<button class="btn btn-primary btn-small" type="submit" name="delete" value="delete" >
+			#i18n{document.attributeType.listbox.btnDelItem}
+		</button>
+		<button  name="bydefault" value="bydefault" class="btn btn-primary btn-small" type="submit" >
+			#i18n{document.attributeType.listbox.btnDefItem}
+		</button>
+		<label for="${defaultValue.name}">&nbsp;</label>
+		<input type="text" id="${defaultValue.name}" name="${defaultValue.name}" value="${valueDefaultValue!}" readonly="readonly" tabindex="11" />
+	</div>
 </div>
 <script src="js/selectbox.js"></script>
 <script>
@@ -66,24 +68,24 @@ objHidden.selectedIndex = objVisible.selectedIndex;
 	
 // add an option into list
 if( actionItem == 1){
-    addOption(objVisible, objValue.value, objValue.value, false);
-    addOption(objHidden, objValue.value, objValue.value, false);
-    objValue.value='';
-    objValue.focus();
+	addOption(objVisible, objValue.value, objValue.value, false);
+	addOption(objHidden, objValue.value, objValue.value, false);
+	objValue.value='';
+	objValue.focus();
 } else {
-    // delete an option from list
-    if( objDefaultValue.value == objVisible.options[objVisible.selectedIndex].value ){objDefaultValue.value = '';}
-    removeSelectedOptions(objVisible);
-    removeSelectedOptions(objHidden);
-    }
+	// delete an option from list
+	if( objDefaultValue.value == objVisible.options[objVisible.selectedIndex].value ){objDefaultValue.value = '';}
+	removeSelectedOptions(objVisible);
+	removeSelectedOptions(objHidden);
+	}
 selectAllOptions(objHidden);
 }
 
 function setByDefault(objName){
-objSelect = document.getElementsByName(objName)[0];
-choice = objSelect.selectedIndex;
-if(choice > -1){
-    document.getElementsByName("${defaultValue.name}")[0].value = objSelect.options[choice].text;
-}		
+	objSelect = document.getElementsByName(objName)[0];
+	choice = objSelect.selectedIndex;
+	if(choice > -1){
+		document.getElementsByName("${defaultValue.name}")[0].value = objSelect.options[choice].text;
+	}		
 }
 </script>
