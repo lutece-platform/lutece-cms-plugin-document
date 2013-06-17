@@ -29,3 +29,7 @@ REPLACE INTO document_space_action (id_action, name_key, description_key, action
 REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (3,'document.spaces.action.modifySpace.name','document.spaces.action.modifySpace.description','jsp/admin/plugins/document/ModifySpace.jsp','icon-pencil','MODIFY');
 REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (4,'document.spaces.action.manageUsers.name','document.spaces.action.manageUsers.description','jsp/admin/plugins/document/ManageSpaceUsers.jsp','icon-user','USERS');
 REPLACE INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (5,'document.spaces.action.moveSpace.name','document.spaces.action.moveSpace.description','jsp/admin/plugins/document/MoveSpace.jsp','icon-move','MOVE');
+
+ALTER TABLE DROP COLUMN accept_site_comments;
+ALTER TABLE DROP COLUMN is_moderated_comment;
+ALTER TABLE DROP COLUMN is_email_notified_comment;
