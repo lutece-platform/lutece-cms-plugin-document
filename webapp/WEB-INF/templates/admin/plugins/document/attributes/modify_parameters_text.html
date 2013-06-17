@@ -2,8 +2,8 @@
 <div class="control-group">
     <label class="control-label" for="${parameter.name}" >${parameter.label} :</label>
     <div class="controls">
-        <input type="text" name="${parameter.name}" tabindex="${parameter_index + 5}" value="<#list parameter.valueList as values >	${values}</#list>" />
-        <span class="help-text">${parameter.description}</span>
+        <input type="text" name="${parameter.name}" tabindex="${parameter_index + 5}" value="<#list parameter.valueList as values >${values}</#list>" />
+        <span class="help-block">${parameter.description}</span>
     </div>
 </div>
 </#list>

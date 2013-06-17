@@ -312,7 +312,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 
         String strAttributeTypeCode = request.getParameter( PARAMETER_ATTRIBUTE_TYPE_CODE );
         AttributeManager manager = AttributeService.getInstance(  ).getManager( strAttributeTypeCode );
-
+        _strDocumentTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_ATTRIBUTE_TYPE_CODE, strAttributeTypeCode );
 

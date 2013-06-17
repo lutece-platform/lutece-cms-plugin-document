@@ -9,21 +9,21 @@
                     <label class="control-label" for="name" >#i18n{document.modify_document_type_attribute.labelName}*</label>
                     <div class="controls">
                         <input type="text" name="name" id="name" tabindex="1" value="${attribute.name}"/>
-                        <span class="help-test">#i18n{document.modify_document_type_attribute.helpName}</span>
+                        <span class="help-block">#i18n{document.modify_document_type_attribute.helpName}</span>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="code" >#i18n{document.modify_document_type_attribute.labelCode}*</label>
                     <div class="controls">
                         <input type="text" name="code" id="code" tabindex="2" value="${attribute.code}" readonly="readonly">
-                        <span class="help-test">#i18n{document.modify_document_type_attribute.helpCode}</span>
+                        <span class="help-block">#i18n{document.modify_document_type_attribute.helpCode}</span>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="description" >#i18n{document.modify_document_type_attribute.labelDescription}* :</label>
                     <div class="controls">
                         <input type="text" name="description" id="description" tabindex="3" value="${attribute.description}" >
-                        <span class="help-test">#i18n{document.modify_document_type_attribute.helpDescription}</span>
+                        <span class="help-block">#i18n{document.modify_document_type_attribute.helpDescription}</span>
                     </div>
                 </div>
                 <div class="control-group">
@@ -47,7 +47,7 @@
                 <!-- Specific attributes -->
                 ${attribute_parameters}
                 <div class="form-actions">
-                    <button class="btn btn-primary btn-small" type="submit" name="save">
+                    <button class="btn btn-primary btn-small" type="submit" name="save" value="save">
                         <i class="icon-ok icon-white"></i>&nbsp;#i18n{document.modify_document_type_attribute.buttonAddAttribute}
                     </button>
                     <a class="btn btn-small" href="jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${document_type_code}">
