@@ -87,8 +87,9 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
 
     /**
      * Insert a new record in the table document_auto_publication
-     *
-     * @param portlet the instance of the DocumentAutoPublication object to insert
+     * 
+     * @param documentAutoPublication the instance of the
+     *            DocumentAutoPublication object to insert
      */
     public void insert( DocumentAutoPublication documentAutoPublication )
     {
@@ -209,8 +210,8 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
 
     /**
      * Update the record in the table
-     *
-     * @param The DocumentAutoPublication to update
+     * 
+     * @param documentAutoPublication The DocumentAutoPublication to update
      */
     public void store( DocumentAutoPublication documentAutoPublication )
     {

@@ -75,10 +75,11 @@ public final class DocumentHome
 
     /**
      * Update of the document which is specified in parameter
-     *
-     * @return The instance of the  document which has been updated
-     * @param bUpdateContent
-     * @param document The instance of the document which contains the data to store
+     * 
+     * @return The instance of the document which has been updated
+     * @param bUpdateContent True to update content, false otherwise
+     * @param document The instance of the document which contains the data to
+     *            store
      */
     public static Document update( Document document, boolean bUpdateContent )
     {
@@ -215,9 +216,9 @@ public final class DocumentHome
     }
 
     /**
-     *
-     * @param nDocumentId
-     * @return
+     * Get a document resource
+     * @param nDocumentId The id of the document
+     * @return The document resource
      */
     public static DocumentResource getResource( int nDocumentId )
     {
@@ -225,8 +226,8 @@ public final class DocumentHome
     }
 
     /**
-     *
-     * @return
+     * Get a new primary key
+     * @return The new primary key
      */
     public static int newPrimaryKey(  )
     {
@@ -243,8 +244,8 @@ public final class DocumentHome
     }
 
     /**
-     *
-     * @return
+     * Get the list of every documents
+     * @return The list of every documents
      */
     public static List<Document> findAll(  )
     {
@@ -272,16 +273,18 @@ public final class DocumentHome
 
     /**
      * Load document pageTemplatePath
-     * @param IdPageTemplateDocument the Id page template identifier
+     * @param idPageTemplateDocument the Id page template identifier
+     * @return the page template document path
      */
-    public static String getPageTemplateDocumentPath( int IdPageTemplateDocument )
+    public static String getPageTemplateDocumentPath( int idPageTemplateDocument )
     {
-        return _dao.getPageTemplateDocumentPath( IdPageTemplateDocument );
+        return _dao.getPageTemplateDocumentPath( idPageTemplateDocument );
     }
 
     /**
-     * Load document type and date last modification for HTTP GET conditional request ("If-Modified-Since")
-     * @param nDocumentId
+     * Load document type and date last modification for HTTP GET conditional
+     * request ("If-Modified-Since")
+     * @param nDocumentId The document id
      * @return the document
      */
     public static Document loadLastModifiedAttributes( int nDocumentId )

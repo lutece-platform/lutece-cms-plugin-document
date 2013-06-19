@@ -35,10 +35,7 @@ package fr.paris.lutece.plugins.document.service;
 
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
-import fr.paris.lutece.portal.business.user.AdminUser;
-import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.util.xml.XmlUtil;
-import java.util.Collection;
 
 
 /**

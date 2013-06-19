@@ -58,15 +58,15 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -172,7 +172,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
         init( request );
 
         int nPageId = 0;
-        Collection<Page> listPages = new ArrayList<Page>(  );
+        Collection<Page> listPages;
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
 
         if ( ( strPageId != null ) && strPageId.matches( REGEX_ID ) )

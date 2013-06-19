@@ -250,9 +250,8 @@ public final class DocumentDAO implements IDocumentDAO
             // Text attribute, no content type and save data in the text column 
             daoUtil.setString( 3, attribute.getTextValue(  ) );
 
-            byte[] bytes = null;
-            daoUtil.setBytes( 4, bytes );
-            daoUtil.setString( 5, "" );
+            daoUtil.setBytes( 4, null );
+            daoUtil.setString( 5, StringUtils.EMPTY );
         }
 
         daoUtil.setBoolean( 6, false );
@@ -694,64 +693,67 @@ public final class DocumentDAO implements IDocumentDAO
     private DAOUtil getDaoFromFilter( String strQuerySelect, DocumentFilter filter )
     {
         String strSQL = strQuerySelect;
-        String strWhere = "";
-        strWhere += ( ( filter.containsDocumentTypeCriteria(  ) ) ? SQL_FILTER_DOCUMENT_TYPE : "" );
+        StringBuilder sbWhere = new StringBuilder( StringUtils.EMPTY );
+        sbWhere.append( ( ( filter.containsDocumentTypeCriteria( ) ) ? SQL_FILTER_DOCUMENT_TYPE : "" ) );
 
         if ( filter.containsSpaceCriteria(  ) )
         {
-            strWhere += ( ( ( !strWhere.equals( "" ) ) ? SQL_FILTER_AND : "" ) + SQL_FILTER_SPACE );
+            sbWhere.append( ( sbWhere.length( ) != 0 ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( SQL_FILTER_SPACE );
         }
 
         if ( filter.containsStateCriteria(  ) )
         {
-            strWhere += ( ( ( !strWhere.equals( "" ) ) ? SQL_FILTER_AND : "" ) + SQL_FILTER_STATE );
+            sbWhere.append( ( sbWhere.length( ) != 0 ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( SQL_FILTER_STATE );
         }
 
         if ( filter.containsCategoriesCriteria(  ) )
         {
-            String strCategories = SQL_FILTER_CATEGORIES_BEGIN;
+            StringBuilder sbCategories = new StringBuilder( SQL_FILTER_CATEGORIES_BEGIN );
 
             int i = 0;
             for ( int nCategoryId : filter.getCategoriesId( ) )
             {
                 if ( nCategoryId > 0 )
                 {
-                    strCategories += SQL_FILTER_CATEGORIES;
+                    sbCategories.append( SQL_FILTER_CATEGORIES );
                 }
                 else
                 {
-                    strCategories += SQL_FILTER_CATEGORIES_NULL;
+                    sbCategories.append( SQL_FILTER_CATEGORIES_NULL );
                 }
                 if ( ( i + 1 ) < filter.getCategoriesId( ).length )
                 {
-                    strCategories += SQL_FILTER_CATEGORIES_OR;
+                    sbCategories.append( SQL_FILTER_CATEGORIES_OR );
                 }
                 i++;
             }
 
-            strCategories += SQL_FILTER_CATEGORIES_END;
-            strWhere += ( ( ( !strWhere.equals( "" ) ) ? SQL_FILTER_AND : "" ) + strCategories );
+            sbCategories.append( SQL_FILTER_CATEGORIES_END );
+            sbWhere.append( sbWhere.length( ) != 0 ? SQL_FILTER_AND : StringUtils.EMPTY ).append(
+                    sbCategories.toString( ) );
         }
 
         if ( filter.containsIdsCriteria(  ) )
         {
-            String strIds = SQL_FILTER_ID_BEGIN;
+            StringBuilder sbIds = new StringBuilder( SQL_FILTER_ID_BEGIN );
 
             for ( int i = 0; i < filter.getIds(  ).length; i++ )
             {
-                strIds += SQL_FILTER_ID;
+                sbIds.append( SQL_FILTER_ID );
 
                 if ( ( i + 1 ) < filter.getIds(  ).length )
                 {
-                    strIds += SQL_FILTER_ID_OR;
+                    sbIds.append( SQL_FILTER_ID_OR );
                 }
             }
 
-            strIds += SQL_FILTER_ID_END;
-            strWhere += ( ( ( !strWhere.equals( "" ) ) ? SQL_FILTER_AND : "" ) + strIds );
+            sbIds.append( SQL_FILTER_ID_END );
+            sbWhere.append( sbWhere.length( ) != 0 ? SQL_FILTER_AND : StringUtils.EMPTY ).append( sbIds.toString( ) );
         }
 
-        if ( !strWhere.equals( "" ) )
+        String strWhere = sbWhere.toString( );
+
+        if ( sbWhere.length( ) != 0 )
         {
             strSQL += ( SQL_FILTER_WHERE_CLAUSE + strWhere );
         }

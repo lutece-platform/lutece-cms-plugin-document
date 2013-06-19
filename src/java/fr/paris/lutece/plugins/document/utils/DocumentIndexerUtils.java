@@ -43,17 +43,24 @@ import fr.paris.lutece.portal.service.event.ResourceEventManager;
  * DocumentIndexerUtils
  *
  */
-public class DocumentIndexerUtils
+public final class DocumentIndexerUtils
 {
     // Indexed resource type name
     public static final String CONSTANT_TYPE_RESOURCE = "DOCUMENT_DOCUMENT";
 
     /**
-    * Warn that a action has been done.
-    * @param strIdResource the document id
-    * @param nIdTask the key of the action to do
-    * @param nIdPortlet the portlet key of the document
-    */
+     * Private constructor
+     */
+    private DocumentIndexerUtils( )
+    {
+    }
+
+    /**
+     * Warn that a action has been done.
+     * @param strIdResource the document id
+     * @param nIdTask the key of the action to do
+     * @param nIdPortlet the portlet key of the document
+     */
     public static void addIndexerAction( String strIdResource, int nIdTask, int nIdPortlet )
     {
         ResourceEvent event = new ResourceEvent(  );

@@ -50,7 +50,7 @@ public class HistoryEvent implements Localizable
 
     // Variables declarations
     private int _nIdDocument;
-    private java.sql.Timestamp _EventDate;
+    private java.sql.Timestamp _eventDate;
     private String _strEventUser;
     private String _strEventMessageKey;
     private String _strDocumentStateKey;
@@ -104,17 +104,17 @@ public class HistoryEvent implements Localizable
      */
     public java.sql.Timestamp getDate(  )
     {
-        return _EventDate;
+        return _eventDate;
     }
 
     /**
      * Sets the EventDate
      *
-     * @param EventDate The EventDate
+     * @param eventDate The EventDate
      */
-    public void setDate( java.sql.Timestamp EventDate )
+    public void setDate( java.sql.Timestamp eventDate )
     {
-        _EventDate = EventDate;
+        _eventDate = eventDate;
     }
 
     /**

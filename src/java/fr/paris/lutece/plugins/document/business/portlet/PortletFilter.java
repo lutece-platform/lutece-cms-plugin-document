@@ -43,9 +43,6 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
  */
 public class PortletFilter
 {
-    private static final String SQL_FILTER_PAGE_NAME = "  f.name like ? ";
-    private static final String SQL_FILTER_BY_PAGE_ID = "  a.id_page=? ";
-    private static final String SQL_FILTER_BY_PORTLET_NAME = " a.name like ? ";
     public static final String CONSTANTE_SPACE_STRING = " ";
     public static final String PAGE_NAME = AppPropertiesService.getProperty( "document.filter.page_name", "page_name" );
     public static final String PORTLET_NAME = AppPropertiesService.getProperty( "document.filter.portlet_name",
@@ -53,6 +50,9 @@ public class PortletFilter
     public static final String PAGE_ID = AppPropertiesService.getProperty( "document.filter.page_id", "page_id" );
     public static final int PROPERTY_NUMBER_OF_MAX_LATEST_PORTLETS_DISPLAY = AppPropertiesService.getPropertyInt( "document.filter.number_of_max_latest_portlets_display",
             10 );
+    private static final String SQL_FILTER_PAGE_NAME = "  f.name like ? ";
+    private static final String SQL_FILTER_BY_PAGE_ID = "  a.id_page=? ";
+    private static final String SQL_FILTER_BY_PORTLET_NAME = " a.name like ? ";
     private boolean _bIsDisplayLatestPortlets;
     private String[] _tabPageName;
     private String[] _tabPortletName;
@@ -60,9 +60,9 @@ public class PortletFilter
     private String _portletFilterType;
     private String _strSearchValue;
 
-    public void setPageName( String[] _strPageTitle )
+    public void setPageName( String[] strPageTitle )
     {
-        this._tabPageName = _strPageTitle;
+        this._tabPageName = strPageTitle;
     }
 
     public String[] getPageName(  )
@@ -70,9 +70,9 @@ public class PortletFilter
         return _tabPageName;
     }
 
-    public void setPortletName( String[] _strPortletTitle )
+    public void setPortletName( String[] strPortletTitle )
     {
-        this._tabPortletName = _strPortletTitle;
+        this._tabPortletName = strPortletTitle;
     }
 
     public String[] getPortletName(  )
@@ -80,9 +80,9 @@ public class PortletFilter
         return _tabPortletName;
     }
 
-    public void setIdPage( Integer _nIdPage )
+    public void setIdPage( Integer nIdPage )
     {
-        this._nIdPage = _nIdPage;
+        this._nIdPage = nIdPage;
     }
 
     public Integer getIdPage(  )
@@ -90,9 +90,9 @@ public class PortletFilter
         return _nIdPage;
     }
 
-    public void setDisplayLatestPortlets( boolean _bIsDisplayLatestPortlets )
+    public void setDisplayLatestPortlets( boolean bIsDisplayLatestPortlets )
     {
-        this._bIsDisplayLatestPortlets = _bIsDisplayLatestPortlets;
+        this._bIsDisplayLatestPortlets = bIsDisplayLatestPortlets;
     }
 
     public boolean isDisplayLatestPortlets(  )
@@ -100,9 +100,9 @@ public class PortletFilter
         return _bIsDisplayLatestPortlets;
     }
 
-    public void setPortletFilterType( String _portletFilterType )
+    public void setPortletFilterType( String portletFilterType )
     {
-        this._portletFilterType = _portletFilterType;
+        this._portletFilterType = portletFilterType;
     }
 
     public String getPortletFilterType(  )
@@ -164,9 +164,9 @@ public class PortletFilter
         return null;
     }
 
-    public void setSearchValue( String _strSearchValue )
+    public void setSearchValue( String strSearchValue )
     {
-        this._strSearchValue = _strSearchValue;
+        this._strSearchValue = strSearchValue;
     }
 
     public String getSearchValue(  )

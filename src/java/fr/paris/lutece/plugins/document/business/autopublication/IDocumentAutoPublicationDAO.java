@@ -46,10 +46,11 @@ import java.util.Collection;
 public interface IDocumentAutoPublicationDAO
 {
     /**
-    * Insert a new record in the table document_auto_publication
-    *
-    * @param portlet the instance of the DocumentAutoPublication object to insert
-    */
+     * Insert a new record in the table document_auto_publication
+     * 
+     * @param documentAutoPublication the instance of the
+     *            DocumentAutoPublication object to insert
+     */
     void insert( DocumentAutoPublication documentAutoPublication );
 
     /**
@@ -86,8 +87,8 @@ public interface IDocumentAutoPublicationDAO
 
     /**
      * Update the record in the table
-     *
-     * @param The DocumentAutoPublication to update
+     * 
+     * @param documentAutoPublication The DocumentAutoPublication to update
      */
     void store( DocumentAutoPublication documentAutoPublication );
 

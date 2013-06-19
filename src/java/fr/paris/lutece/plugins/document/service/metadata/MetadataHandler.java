@@ -39,13 +39,27 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- *
+ * MetadataHandler
  */
 public interface MetadataHandler
 {
-    public String getCreateForm( HttpServletRequest request );
+    /**
+     * Get the create form
+     * @param request The request
+     * @return
+     */
+    String getCreateForm( HttpServletRequest request );
 
-    public String getModifyForm( HttpServletRequest request, String strXmlData );
+    /**
+     * @param request The request
+     * @param strXmlData
+     * @return
+     */
+    String getModifyForm( HttpServletRequest request, String strXmlData );
 
-    public String getXmlMetadata( Map<String, String[]> parameters );
+    /**
+     * @param parameters The parameters
+     * @return
+     */
+    String getXmlMetadata( Map<String, String[]> parameters );
 }

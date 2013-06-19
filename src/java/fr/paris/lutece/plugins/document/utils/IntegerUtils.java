@@ -60,7 +60,7 @@ public final class IntegerUtils
      * @param strToParse the String to convert
      * @return the numerical value of the String
      */
-    public static final int convert( String strToParse )
+    public static int convert( String strToParse )
     {
         return convert( strToParse, DEFAULT );
     }
@@ -73,7 +73,7 @@ public final class IntegerUtils
      * @param nDefault the default value in case the conversion fails
      * @return the numerical value of the String
      */
-    public static final int convert( String strToParse, int nDefault )
+    public static int convert( String strToParse, int nDefault )
     {
         if ( StringUtils.isNotBlank( strToParse ) && StringUtils.isNumeric( strToParse ) )
         {
@@ -88,7 +88,7 @@ public final class IntegerUtils
      * @param strToCheck the String to check
      * @return true if it is numeric, false otherwise
      */
-    public static final boolean isNumeric( String strToCheck )
+    public static boolean isNumeric( String strToCheck )
     {
         return StringUtils.isNotBlank( strToCheck ) && StringUtils.isNumeric( strToCheck );
     }
@@ -98,7 +98,7 @@ public final class IntegerUtils
      * @param strToCheck the String to check
      * @return true if it is not numeric, false otherwise
      */
-    public static final boolean isNotNumeric( String strToCheck )
+    public static boolean isNotNumeric( String strToCheck )
     {
         return !isNumeric( strToCheck );
     }
@@ -108,7 +108,7 @@ public final class IntegerUtils
      * @param nNumber the number to check
      * @return true if it is equal, false otherwise
      */
-    public static final boolean isDefault( int nNumber )
+    public static boolean isDefault( int nNumber )
     {
         return nNumber == DEFAULT;
     }

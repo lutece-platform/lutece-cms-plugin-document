@@ -46,6 +46,5 @@ public interface DocumentEventListener extends EventListener
      * @param event The event to process
      * @throws DocumentException raise when error occurs in event or rule
      */
-    public void processDocumentEvent( DocumentEvent event )
-        throws DocumentException;
+    void processDocumentEvent( DocumentEvent event ) throws DocumentException;
 }

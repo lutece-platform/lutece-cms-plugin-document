@@ -48,10 +48,7 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,16 +57,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * This class provides the user interface to manage DocumentList Portlet
  */
 public class DocumentListPortletJspBean extends PortletJspBean
 {
-    ////////////////////////////////////////////////////////////////////////////
-    // Constants
-    private static final long serialVersionUID = 1L;
-
     // Right
     public static final String RIGHT_MANAGE_ADMIN_SITE = "CORE_ADMIN_SITE";
     private static final String MARK_DOCUMENT_TYPE_LIST = "document_type_list";
@@ -82,6 +77,10 @@ public class DocumentListPortletJspBean extends PortletJspBean
     private static final String TEMPLATE_DOCUMENT_TYPE_LIST = "admin/plugins/document/portlet/document_type_list.html";
     private static final String TEMPLATE_CATEGORY_DOCUMENT_LIST = "admin/plugins/document/portlet/category_document_list.html";
     private static final String MESSAGE_ERROR_DOCUMENTS_MUST_BE_UNASSIGNED = "document.message.errorDocumentsMustBeUnassigned";
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Constants
+    private static final long serialVersionUID = 1L;
 
     ////////////////////////////////////////////////////////////////////////////
     // Class attributes

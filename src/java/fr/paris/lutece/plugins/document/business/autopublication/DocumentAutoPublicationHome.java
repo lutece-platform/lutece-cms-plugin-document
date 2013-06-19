@@ -51,39 +51,20 @@ public class DocumentAutoPublicationHome
             "document.documentAutoPublicationDAO" );
 
     /* This class implements the Singleton design pattern. */
-    private static DocumentAutoPublicationHome _singleton = null;
 
     /**
      * Constructor
      */
-    public DocumentAutoPublicationHome(  )
+    private DocumentAutoPublicationHome( )
     {
-        if ( _singleton == null )
-        {
-            _singleton = this;
-        }
     }
 
     /**
-     * Returns the instance of DocumentAutoPublicationHome
-     *
-     * @return the DocumentAutoPublicationHome instance
+     * Insert a new document auto publication
+     * 
+     * @param documentAutoPublication the instance of the
+     *            DocumentAutoPublication object to insert
      */
-    public static DocumentAutoPublicationHome getInstance(  )
-    {
-        if ( _singleton == null )
-        {
-            _singleton = new DocumentAutoPublicationHome(  );
-        }
-
-        return _singleton;
-    }
-
-    /**
-        * Insert a new document auto publication
-        *
-        * @param portlet the instance of the DocumentAutoPublication object to insert
-        */
     public static void add( DocumentAutoPublication documentAutoPublication )
     {
         _dao.insert( documentAutoPublication );
@@ -135,8 +116,8 @@ public class DocumentAutoPublicationHome
 
     /**
      * Update the document auto publication
-     *
-     * @param The DocumentAutoPublication to update
+     * 
+     * @param documentAutoPublication The DocumentAutoPublication to update
      */
     public static void update( DocumentAutoPublication documentAutoPublication )
     {
@@ -166,8 +147,8 @@ public class DocumentAutoPublicationHome
 
     /**
      * Check if the specified portlet is auto published
-     *
-     * @param nPortletId
+     * 
+     * @param nPortletId The portlet id
      * @return true if portlet is auto published, false else.
      */
     public static boolean isPortletAutoPublished( int nPortletId )
@@ -182,8 +163,8 @@ public class DocumentAutoPublicationHome
 
     /**
      * Check if the specified Space is auto published
-     *
-     * @param nSpaceId
+     * 
+     * @param nSpaceId The space id
      * @return true if Space is auto published, false else.
      */
     public static boolean isSpaceAutoPublished( int nSpaceId )

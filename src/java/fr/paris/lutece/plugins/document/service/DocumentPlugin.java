@@ -45,8 +45,8 @@ import java.io.Serializable;
  */
 public class DocumentPlugin extends PluginDefaultImplementation implements Serializable
 {
-    private static final long serialVersionUID = -3298585464051062753L;
     public static final String PLUGIN_NAME = "document";
+    private static final long serialVersionUID = -3298585464051062753L;
 
     public void init(  )
     {

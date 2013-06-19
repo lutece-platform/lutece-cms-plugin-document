@@ -47,10 +47,7 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.xml.XmlUtil;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.FileInputStream;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -59,9 +56,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -69,6 +67,8 @@ import javax.xml.transform.stream.StreamSource;
  */
 public class DocumentSpacesService
 {
+    public static final String PARAMETER_BROWSER_SELECTED_SPACE_ID = "browser_selected_space_id";
+
     private static final String REGEX_ID = "^[\\d]+$";
     private static final String TAG_SPACES = "spaces";
     private static final String TAG_SPACE = "space";
@@ -80,7 +80,6 @@ public class DocumentSpacesService
     private static final String TAG_SPACE_ICON_URL = "space-icon-url";
 
     //browser
-    public static final String PARAMETER_BROWSER_SELECTED_SPACE_ID = "browser_selected_space_id";
     private static final String TEMPLATE_BROWSE_SPACES = "/admin/plugins/document/spaces/browse_spaces.html";
     private static final String MARK_SPACE = "space";
     private static final String PARAMETER_BROWSER_SPACE_ID = "browser_id_space";
@@ -227,10 +226,13 @@ public class DocumentSpacesService
 
     /**
      * Build recursively the XML document containing the arborescence of spaces
-     *
-     * @param sbXML The buffer in which adding the current space of the arborescence
+     * 
+     * @param sbXML The buffer in which adding the current space of the
+     *            arborescence
      * @param nSpaceId The current space of the recursive course
      * @param user AdminUser
+     * @param strCodeType The code type
+     * @return True if the space is valid, false otherwise
      */
     private boolean findSpacesByCodeType( StringBuffer sbXML, int nSpaceId, AdminUser user, String strCodeType )
     {
@@ -347,7 +349,7 @@ public class DocumentSpacesService
 
     /**
      * Check if a space should be visible to the user according its workgroup
-     * @param nIdPage the id of the page to check
+     * @param nIdSpace the id of the space to check
      * @param user The current user
      * @return true if authorized, otherwise false
      */
@@ -368,6 +370,11 @@ public class DocumentSpacesService
         return true;
     }
 
+    /**
+     * Get the list of spaces allowed for a given user
+     * @param user The admin user
+     * @return The list of spaces allowed for the given user
+     */
     public List<DocumentSpace> getUserAllowedSpaces( AdminUser user )
     {
         List<DocumentSpace> listSpaces = new ArrayList<DocumentSpace>(  );
@@ -408,7 +415,7 @@ public class DocumentSpacesService
         Map<String, Object> model = new HashMap<String, Object>(  );
         DocumentSpace selectedSpace = null;
         DocumentSpace space;
-        Collection<DocumentSpace> spacesList = new ArrayList<DocumentSpace>(  );
+        Collection<DocumentSpace> spacesList;
         int nIdSpace = -1;
         int i = 0;
         boolean bIsAuthorized = true;

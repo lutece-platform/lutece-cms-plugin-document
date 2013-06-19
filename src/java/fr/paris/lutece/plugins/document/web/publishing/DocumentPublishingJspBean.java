@@ -204,7 +204,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             String strOrderPortlet = request.getParameter( PARAMETER_ORDER_PORTLET );
 
             boolean bIsDisplayPortlets = ( ( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) != null ) &&
-                !new Boolean( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) ) ) ? false : true;
+                !Boolean.valueOf( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) ) ) ? false : true;
 
             String strOrderPortletAsc = request.getParameter( PARAMETER_ORDER_PORTLET_ASC );
             int nOrderPortlet = -1;
@@ -300,7 +300,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
     /**
      * Get the list of authorized portlets.
-     *
+     * 
      * Check :
      * <ul>
      * <li>if user is authorized to manage DocumentListPortlet</li>
@@ -312,11 +312,13 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      * </ul>
      * </li>
      * </ul>
-     *
+     * 
      * @param nDocumentId
      *            The document id
      * @param strCodeDocumentType
      *            The code document type
+     * @param pOrder The portlet order
+     * @param pFilter The portlet filter
      * @return A collection of {@link ReferenceItem}
      */
     private Collection<ReferenceItem> getListAuthorizedDocumentListPortlets( int nDocumentId,
@@ -340,7 +342,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
     /**
      * Get the list of authorized portlets.
-     *
+     * 
      * Check :
      * <ul>
      * <li>if user is authorized to manage DocumentListPortlet</li>
@@ -352,11 +354,13 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      * </ul>
      * </li>
      * </ul>
-     *
+     * 
      * @param nDocumentId
      *            The document id
      * @param strCodeDocumentType
      *            The code document type
+     * @param pOrder The portlet order
+     * @param pFilter The portlet filter
      * @return A collection of {@link ReferenceItem}
      */
     private Collection<ReferenceItem> getListAuthorizedDocumentPortlets( int nDocumentId, String strCodeDocumentType,
@@ -379,9 +383,10 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
     /**
      * Filter the given portlets list by its workgroup
-     *
+     * 
      * @param listPortlets
      *            a collection of {@link ReferenceItem}
+     * @param pFilter The portlet filter
      * @return a collection of {@link ReferenceItem}
      */
     private Collection<ReferenceItem> filterByWorkgroup( Collection<ReferenceItem> listPortlets, PortletFilter pFilter )
@@ -987,9 +992,9 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
     /**
      * Return AdminSite Url
-     *
-     * @param nId
-     *            The PageId
+     * 
+     * @param nPortletId The portlet id
+     * @param nDocumentId The document id
      * @return url
      */
     private String getUrlPublishedPage( int nPortletId, int nDocumentId )

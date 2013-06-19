@@ -42,7 +42,7 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
  */
 public class DocSearchIndexerDaemon extends Daemon
 {
-    private static String PROPERTY_INDEXER_PARAM_TOTAL = "document.documentIndexer.total";
+    private static final String PROPERTY_INDEXER_PARAM_TOTAL = "document.documentIndexer.total";
 
     /**
      * Init indexing

@@ -19,12 +19,12 @@ public interface IDocumentStateDAO
      * @return the instance of the Rule
      * @param nDocumentStateId
      */
-    public abstract DocumentState load( int nDocumentStateId );
+    abstract DocumentState load( int nDocumentStateId );
 
     /**
      * Load the list of Document States
      * @return The Reference of the Document States
      * @param locale
      */
-    public abstract ReferenceList selectDocumentStatesList( Locale locale );
+    abstract ReferenceList selectDocumentStatesList( Locale locale );
 }

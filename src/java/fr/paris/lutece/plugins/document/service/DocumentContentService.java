@@ -140,7 +140,7 @@ public final class DocumentContentService extends ContentService implements Cach
     private static final String PROPERTY_RESOURCE_TYPE = "document";
 
     // Performance patch
-    private static ConcurrentMap<String, String> keyMemory = new ConcurrentHashMap<String, String>(  );
+    private static ConcurrentMap<String, String> _keyMemory = new ConcurrentHashMap<String, String>(  );
 
     private boolean _bInit;
 
@@ -580,7 +580,7 @@ public final class DocumentContentService extends ContentService implements Cach
      */
     public void notifyElementEvicted( Ehcache cache, Element element )
     {
-        keyMemory.remove( element.getKey(  ) );
+        _keyMemory.remove( element.getKey(  ) );
     }
 
     /**
@@ -588,7 +588,7 @@ public final class DocumentContentService extends ContentService implements Cach
      */
     public void notifyElementExpired( Ehcache cache, Element element )
     {
-        keyMemory.remove( element.getKey(  ) );
+        _keyMemory.remove( element.getKey(  ) );
     }
 
     /**
@@ -605,7 +605,7 @@ public final class DocumentContentService extends ContentService implements Cach
     public void notifyElementRemoved( Ehcache cache, Element element )
         throws CacheException
     {
-        keyMemory.remove( element.getKey(  ) );
+        _keyMemory.remove( element.getKey(  ) );
     }
 
     /**
@@ -621,7 +621,7 @@ public final class DocumentContentService extends ContentService implements Cach
      */
     public void notifyRemoveAll( Ehcache cache )
     {
-        keyMemory.clear(  );
+        _keyMemory.clear(  );
     }
 
     /**
@@ -638,7 +638,7 @@ public final class DocumentContentService extends ContentService implements Cach
     private String getKey( String strDocumentId, String strPortletId, String strSiteLocale, int nMode )
     {
         String key = "D" + strDocumentId + "P" + strPortletId + "L" + strSiteLocale + "M" + nMode;
-        String keyInMemory = keyMemory.putIfAbsent( key, key );
+        String keyInMemory = _keyMemory.putIfAbsent( key, key );
 
         if ( keyInMemory != null )
         {

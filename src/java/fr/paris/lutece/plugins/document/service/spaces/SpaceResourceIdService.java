@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.document.service.spaces;
 
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
+import fr.paris.lutece.plugins.document.service.DocumentPlugin;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.rbac.Permission;
 import fr.paris.lutece.portal.service.rbac.ResourceIdService;
@@ -43,9 +44,9 @@ import fr.paris.lutece.portal.service.rbac.ResourceTypeManager;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -53,8 +54,6 @@ import java.util.Locale;
  */
 public class SpaceResourceIdService extends ResourceIdService
 {
-    private static final String PLUGIN_NAME = "document";
-
     /** Permission for creating a space */
     public static final String PERMISSION_CREATE = "CREATE";
 
@@ -79,7 +78,7 @@ public class SpaceResourceIdService extends ResourceIdService
     /** Creates a new instance of SpaceResourceIdService */
     public SpaceResourceIdService(  )
     {
-        setPluginName( PLUGIN_NAME );
+        setPluginName( DocumentPlugin.PLUGIN_NAME );
     }
 
     /**
@@ -89,7 +88,7 @@ public class SpaceResourceIdService extends ResourceIdService
     {
         ResourceType rt = new ResourceType(  );
         rt.setResourceIdServiceClass( SpaceResourceIdService.class.getName(  ) );
-        rt.setPluginName( PLUGIN_NAME );
+        rt.setPluginName( DocumentPlugin.PLUGIN_NAME );
         rt.setResourceTypeKey( DocumentSpace.RESOURCE_TYPE );
         rt.setResourceTypeLabelKey( PROPERTY_LABEL_RESOURCE_TYPE );
 

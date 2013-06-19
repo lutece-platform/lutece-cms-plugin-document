@@ -50,9 +50,9 @@ public class DocumentStateDAO implements IDocumentStateDAO
 
     /**
      * Load the data of Rule from the table
-     *
+     * 
+     * @param nDocumentStateId The document state id
      * @return the instance of the Rule
-     * @param nDocumentStateId
      */
     public DocumentState load( int nDocumentStateId )
     {
@@ -60,25 +60,25 @@ public class DocumentStateDAO implements IDocumentStateDAO
         daoUtil.setInt( 1, nDocumentStateId );
         daoUtil.executeQuery(  );
 
-        DocumentState DocumentState = null;
+        DocumentState documentState = null;
 
         if ( daoUtil.next(  ) )
         {
-            DocumentState = new DocumentState(  );
-            DocumentState.setId( daoUtil.getInt( 1 ) );
-            DocumentState.setNameKey( daoUtil.getString( 2 ) );
-            DocumentState.setDescriptionKey( daoUtil.getString( 3 ) );
+            documentState = new DocumentState(  );
+            documentState.setId( daoUtil.getInt( 1 ) );
+            documentState.setNameKey( daoUtil.getString( 2 ) );
+            documentState.setDescriptionKey( daoUtil.getString( 3 ) );
         }
 
         daoUtil.free(  );
 
-        return DocumentState;
+        return documentState;
     }
 
     /**
      * Load the list of Document States
+     * @param locale The locale
      * @return The Reference of the Document States
-     * @param locale
      */
     public ReferenceList selectDocumentStatesList( Locale locale )
     {

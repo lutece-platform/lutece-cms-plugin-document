@@ -45,5 +45,5 @@ public interface PublishingEventListener extends EventListener
      * Process a publishing event
      * @param event The event to process
      */
-    public void processPublishingEvent( PublishingEvent event );
+    void processPublishingEvent( PublishingEvent event );
 }

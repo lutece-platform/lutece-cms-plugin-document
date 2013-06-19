@@ -46,7 +46,7 @@ public interface IDocumentDAO
      * Generates a new primary key
      * @return The new primary key
      */
-    public int newPrimaryKey(  );
+    int newPrimaryKey( );
 
     /**
      * Delete a record from the table
@@ -117,7 +117,7 @@ public interface IDocumentDAO
      * @return The Collection of the Document ids
      * @param filter The DocumentFilter Object
      */
-    public Collection<Integer> selectPrimaryKeysByFilter( DocumentFilter filter );
+    Collection<Integer> selectPrimaryKeysByFilter( DocumentFilter filter );
 
     /**
      * Load the list of documents
@@ -155,9 +155,10 @@ public interface IDocumentDAO
 
     /**
      * Load document pageTemplatePath
-     * @param IdPageTemplateDocument the Id page template identifier
+     * @param idPageTemplateDocument the Id page template identifier
+     * @return The page template document path
      */
-    String getPageTemplateDocumentPath( int IdPageTemplateDocument );
+    String getPageTemplateDocumentPath( int idPageTemplateDocument );
 
     /**
      * Load document type and date last modification for HTTP GET conditional request ("If-Modified-Since")

@@ -44,16 +44,23 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * This Class provides tools to fix document data
  */
-public class DocumentTools
+public final class DocumentTools
 {
     private static final String PARAMETER_TRACE = "trace";
     private static final String PARAMETER_REBUILD_VALIDATED_CONTENT = "rebuild_validated_content";
 
     /**
-     * Rebuild all XML content according data found in the document_content table
-     *
-     * @param bTrace Add all XML to the output
-     * @param bSetValidatedContent true = create the xml validated content
+     * Private constructor
+     */
+    private DocumentTools( )
+    {
+    }
+
+    /**
+     * Rebuild all XML content according data found in the document_content
+     * table
+     * 
+     * @param request The request
      * @return An output of the process
      */
     public static String rebuildXmlContent( HttpServletRequest request )
