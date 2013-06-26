@@ -627,10 +627,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         String strDocumentId = multipartRequest.getParameter( PARAMETER_DOCUMENT_ID );
         Document document = DocumentHome.findByPrimaryKey( IntegerUtils.convert( strDocumentId ) );
 
-        if ( ( document != null ) &&
-                !DocumentService.getInstance(  )
-                                    .isAuthorizedAdminDocument( document.getSpaceId(  ),
-                    document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_MODIFY, getUser(  ) ) )
+        if ( ( document == null )
+                || !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                        document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_MODIFY, getUser( ) ) )
         {
             return getHomeUrl( request );
         }

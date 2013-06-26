@@ -52,16 +52,26 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- *
+ * DocumentHistoryJspBean
  */
 public class DocumentHistoryJspBean extends PluginAdminPageJspBean
 {
+    /**
+     * Generated serial version UID
+     */
+    private static final long serialVersionUID = -3845929456241534490L;
+
     private static final String TEMPLATE_HISTORY = "admin/plugins/document/history/document_history.html";
     private static final String MARK_DOCUMENT = "document";
     private static final String MARK_EVENTS_LIST = "events_list";
     private static final String PROPERTY_PAGE_TITLE = "document.document_history.pageTitle";
     private static final String PARAMETER_DOCUMENT_ID = "id_document";
 
+    /**
+     * Get the history page
+     * @param request The request
+     * @return The HTML content to display
+     */
     public String getHistory( HttpServletRequest request )
     {
         setPageTitleProperty( PROPERTY_PAGE_TITLE );
@@ -71,25 +81,25 @@ public class DocumentHistoryJspBean extends PluginAdminPageJspBean
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
         Collection<HistoryEvent> listEvents = null;
 
-        if ( ( document != null ) &&
-                DocumentService.getInstance(  )
-                                   .isAuthorizedAdminDocument( document.getSpaceId(  ),
-                    document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_VIEW_HISTORY, getUser(  ) ) )
+        if ( ( document != null )
+                && DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                        document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_VIEW_HISTORY,
+                        getUser( ) ) )
         {
-            listEvents = HistoryEventHome.findByDocument( nDocumentId, getLocale(  ) );
+            listEvents = HistoryEventHome.findByDocument( nDocumentId, getLocale( ) );
         }
         else
         {
             document = null;
         }
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
 
         model.put( MARK_DOCUMENT, document );
         model.put( MARK_EVENTS_LIST, listEvents );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_HISTORY, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_HISTORY, getLocale( ), model );
 
-        return getAdminPage( template.getHtml(  ) );
+        return getAdminPage( template.getHtml( ) );
     }
 }

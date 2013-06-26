@@ -48,8 +48,6 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -58,17 +56,26 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * This class provides the user interface to manage Document Portlet
  */
 public class DocumentPortletJspBean extends PortletJspBean
 {
+
     ////////////////////////////////////////////////////////////////////////////
     // Constants
 
     // Right
     public static final String RIGHT_MANAGE_ADMIN_SITE = "CORE_ADMIN_SITE";
+
+    /**
+     * Generated serial version UID
+     */
+    private static final long serialVersionUID = -5162094873312077653L;
+
     private static final String MARK_DOCUMENT_TYPE_LIST = "document_type_list";
     private static final String MARK_CATEGORY_LIST = "category_list";
     private static final String MARK_CODE_TYPE_DOCUMENT = "code_type_document";
@@ -85,17 +92,17 @@ public class DocumentPortletJspBean extends PortletJspBean
 
     /**
      * Returns portlet's properties prefix
-     *
+     * 
      * @return prefix
      */
-    public String getPropertiesPrefix(  )
+    public String getPropertiesPrefix( )
     {
         return "portlet.document";
     }
 
     /**
      * Returns the Download portlet creation form
-     *
+     * 
      * @param request The http request
      * @return The HTML form
      */
@@ -103,18 +110,18 @@ public class DocumentPortletJspBean extends PortletJspBean
     {
         String strIdPage = request.getParameter( PARAMETER_PAGE_ID );
         String strIdPortletType = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
-        AdminUser user = getUser(  );
+        AdminUser user = getUser( );
 
         HtmlTemplate template = getCreateTemplate( strIdPage, strIdPortletType );
         template.substitute( COMBO_DOCUMENT_TYPE_LIST, getDocumentTypesList( "" ) );
         template.substitute( COMBO_DOCUMENT_CATEGORY_LIST, getCategoryList( "", user ) );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
      * Returns the Download portlet modification form
-     *
+     * 
      * @param request The Http request
      * @return The HTML form
      */
@@ -123,25 +130,25 @@ public class DocumentPortletJspBean extends PortletJspBean
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = IntegerUtils.convert( strPortletId );
         DocumentPortlet portlet = (DocumentPortlet) PortletHome.findByPrimaryKey( nPortletId );
-        AdminUser user = getUser(  );
+        AdminUser user = getUser( );
 
         HtmlTemplate template = getModifyTemplate( portlet );
         // Format the specific modify form (composed of the article)
         template.substitute( COMBO_DOCUMENT_TYPE_LIST, getDocumentTypesList( strPortletId ) );
         template.substitute( COMBO_DOCUMENT_CATEGORY_LIST, getCategoryList( strPortletId, user ) );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
      * Process portlet's creation
-     *
+     * 
      * @param request The Http request
      * @return The Jsp management URL of the process result
      */
     public String doCreate( HttpServletRequest request )
     {
-        DocumentPortlet portlet = new DocumentPortlet(  );
+        DocumentPortlet portlet = new DocumentPortlet( );
         String strIdPage = request.getParameter( PARAMETER_PAGE_ID );
         int nIdPage = IntegerUtils.convert( strIdPage );
 
@@ -165,7 +172,7 @@ public class DocumentPortletJspBean extends PortletJspBean
         portlet.setIdCategory( setIdCategory( request ) );
 
         //Portlet creation
-        DocumentPortletHome.getInstance(  ).create( portlet );
+        DocumentPortletHome.getInstance( ).create( portlet );
 
         //Displays the page with the new Portlet
         return getPageUrl( nIdPage );
@@ -173,7 +180,7 @@ public class DocumentPortletJspBean extends PortletJspBean
 
     /**
      * Process portlet's modification
-     *
+     * 
      * @param request The http request
      * @return Management's Url
      */
@@ -185,7 +192,7 @@ public class DocumentPortletJspBean extends PortletJspBean
         int nPortletId = IntegerUtils.convert( strPortletId );
         DocumentPortlet portlet = (DocumentPortlet) DocumentPortletHome.findByPrimaryKey( nPortletId );
         int[] arrayIdCategories = setIdCategory( request );
-        int[] arrayOldIdCategories = portlet.getIdCategory(  );
+        int[] arrayOldIdCategories = portlet.getIdCategory( );
 
         if ( arrayIdCategories != null )
         {
@@ -197,12 +204,12 @@ public class DocumentPortletJspBean extends PortletJspBean
             Arrays.sort( arrayOldIdCategories );
         }
 
-        if ( ( !Arrays.equals( arrayIdCategories, arrayOldIdCategories ) ||
-                !portlet.getDocumentTypeCode(  ).equals( strDocumentTypeCode ) ) &&
-                ( PublishingService.getInstance(  ).getAssignedDocumentsByPortletId( nPortletId ).size(  ) != 0 ) )
+        if ( ( !Arrays.equals( arrayIdCategories, arrayOldIdCategories ) || !portlet.getDocumentTypeCode( ).equals(
+                strDocumentTypeCode ) )
+                && ( PublishingService.getInstance( ).getAssignedDocumentsByPortletId( nPortletId ).size( ) != 0 ) )
         {
             return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENTS_MUST_BE_UNASSIGNED,
-                AdminMessage.TYPE_STOP );
+                    AdminMessage.TYPE_STOP );
         }
 
         // retrieve portlet common attributes
@@ -219,10 +226,10 @@ public class DocumentPortletJspBean extends PortletJspBean
         portlet.setIdCategory( arrayIdCategories );
 
         // updates the portlet
-        portlet.update(  );
+        portlet.update( );
 
         // displays the page withe the potlet updated
-        return getPageUrl( portlet.getPageId(  ) );
+        return getPageUrl( portlet.getPageId( ) );
     }
 
     /**
@@ -261,23 +268,23 @@ public class DocumentPortletJspBean extends PortletJspBean
 
         if ( IntegerUtils.isNumeric( strPortletId ) )
         {
-            DocumentPortlet portlet = (DocumentPortlet) PortletHome.findByPrimaryKey( IntegerUtils.convert( 
-                        strPortletId ) );
+            DocumentPortlet portlet = (DocumentPortlet) PortletHome.findByPrimaryKey( IntegerUtils
+                    .convert( strPortletId ) );
 
             if ( portlet != null )
             {
-                strCodeTypeDocument = portlet.getDocumentTypeCode(  );
+                strCodeTypeDocument = portlet.getDocumentTypeCode( );
             }
         }
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
 
         model.put( MARK_CODE_TYPE_DOCUMENT, strCodeTypeDocument );
-        model.put( MARK_DOCUMENT_TYPE_LIST, DocumentTypeHome.getDocumentTypesList(  ) );
+        model.put( MARK_DOCUMENT_TYPE_LIST, DocumentTypeHome.getDocumentTypesList( ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_TYPE_LIST, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_TYPE_LIST, getLocale( ), model );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
@@ -288,16 +295,16 @@ public class DocumentPortletJspBean extends PortletJspBean
      */
     private String getCategoryList( String strPortletId, AdminUser user )
     {
-        Collection<CategoryDisplay> listCategoriesDisplay = new ArrayList<CategoryDisplay>(  );
+        Collection<CategoryDisplay> listCategoriesDisplay = new ArrayList<CategoryDisplay>( );
 
         if ( IntegerUtils.isNumeric( strPortletId ) )
         {
-            DocumentPortlet portlet = (DocumentPortlet) PortletHome.findByPrimaryKey( IntegerUtils.convert( 
-                        strPortletId ) );
+            DocumentPortlet portlet = (DocumentPortlet) PortletHome.findByPrimaryKey( IntegerUtils
+                    .convert( strPortletId ) );
 
             if ( portlet != null )
             {
-                listCategoriesDisplay = CategoryService.getAllCategoriesDisplay( portlet.getIdCategory(  ), user );
+                listCategoriesDisplay = CategoryService.getAllCategoriesDisplay( portlet.getIdCategory( ), user );
             }
         }
         else
@@ -305,12 +312,12 @@ public class DocumentPortletJspBean extends PortletJspBean
             listCategoriesDisplay = CategoryService.getAllCategoriesDisplay( user );
         }
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
 
         model.put( MARK_CATEGORY_LIST, listCategoriesDisplay );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CATEGORY_DOCUMENT_LIST, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CATEGORY_DOCUMENT_LIST, getLocale( ), model );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 }

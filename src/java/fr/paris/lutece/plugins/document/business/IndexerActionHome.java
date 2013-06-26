@@ -101,7 +101,6 @@ public final class IndexerActionHome
      * Returns an instance of a IndexerAction whose identifier is specified in parameter
      *
      * @param nKey The indexerAction primary key
-     * @param plugin the Plugin
      * @return an instance of IndexerAction
      */
     public static IndexerAction findByPrimaryKey( int nKey )
@@ -113,7 +112,6 @@ public final class IndexerActionHome
      * Loads the data of all the IndexerAction who verify the filter and returns them in a list
      *
      *@param  filter the filter
-     * @param plugin the Plugin
      * @return the list which contains the data of all the  indexerAction
      */
     public static List<IndexerAction> getList( IndexerActionFilter filter )

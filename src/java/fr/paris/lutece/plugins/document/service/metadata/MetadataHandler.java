@@ -46,20 +46,20 @@ public interface MetadataHandler
     /**
      * Get the create form
      * @param request The request
-     * @return
+     * @return The HTML form
      */
     String getCreateForm( HttpServletRequest request );
 
     /**
      * @param request The request
      * @param strXmlData
-     * @return
+     * @return The HTML form
      */
     String getModifyForm( HttpServletRequest request, String strXmlData );
 
     /**
      * @param parameters The parameters
-     * @return
+     * @return The XML metadata
      */
     String getXmlMetadata( Map<String, String[]> parameters );
 }

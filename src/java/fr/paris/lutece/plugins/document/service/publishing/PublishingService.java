@@ -245,7 +245,6 @@ public class PublishingService
     /**
      * Check if the specified {@link Document} is published into the specified {@link Portlet}
      * @param nDocumentId The {@link Document} identifier
-     * @param nPortletId The {@link Portlet} identifier
      * @return True if {@link Document} is published, false else (unpublished or not assigned)
      */
     public boolean isPublished( int nDocumentId )

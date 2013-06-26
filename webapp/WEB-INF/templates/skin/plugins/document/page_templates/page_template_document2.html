@@ -15,9 +15,6 @@ Available objects :
 		${document}
 	</div>
 	<div id="sidebar" class="span3">
-<!-- 		<a href="jsp/site/plugins/document/SendDocument.jsp?document_id=${document_id}" target="_send">#i18n{document.document_content_service.buttonSend}</a> |  -->
-<!-- 		<a href="jsp/site/plugins/document/PrintDocument.jsp?document_id=${document_id}" target="_print">#i18n{document.document_content_service.buttonPrint}</a> |  -->
-<!-- 		<a href="javascript:window.history.back();">#i18n{document.document_content_service.buttonBack}</a> -->
 		@Extender[${document_id},document,actionbar]@
 		@Extender[${document_id},document,hit,{show:true}]@
 		@Extender[${document_id},document,rating,{show:"all"}]@

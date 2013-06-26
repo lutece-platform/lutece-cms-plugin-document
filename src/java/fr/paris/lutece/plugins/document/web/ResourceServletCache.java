@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.web;
 
 import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
+
 import net.sf.ehcache.Cache;
 
 
@@ -44,6 +45,9 @@ public class ResourceServletCache extends AbstractCacheableService
 {
     private static final String NAME = "Document ResourceServlet Cache";
 
+    /**
+     * Default constructor
+     */
     public ResourceServletCache(  )
     {
         initCache( getName(  ) );

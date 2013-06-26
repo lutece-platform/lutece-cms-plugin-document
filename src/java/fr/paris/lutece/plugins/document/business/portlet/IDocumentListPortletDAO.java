@@ -85,6 +85,7 @@ public interface IDocumentListPortletDAO extends IPortletInterfaceDAO
      * @param nDocumentId the document ID
      * @param strCodeDocumentType The code
      * @param pOrder order of the portlets
+     * @param pFilter The portlet filter
      * @return The Collection of the ReferenceItem
      */
     Collection<ReferenceItem> selectByDocumentIdAndDocumentType( int nDocumentId, String strCodeDocumentType,

@@ -50,23 +50,29 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+
 
 /**
- * This class provides the user interface to manage Lutece group features ( manage, create, modify, remove )
+ * This class provides the user interface to manage Lutece group features (
+ * manage, create, modify, remove )
  */
 public class CategoryJspBean extends AdminFeaturesPageJspBean
 {
     // Right
     public static final String RIGHT_CATEGORY_MANAGEMENT = "DOCUMENT_CATEGORY_MANAGEMENT";
+
+    /**
+     * Generated serial version UID
+     */
+    private static final long serialVersionUID = -3587422846030414228L;
 
     //Constants
     private static final String REGEX_ID = "^[\\d]+$";
@@ -107,7 +113,7 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
     /**
      * Creates a new CategoryJspBean object.
      */
-    public CategoryJspBean(  )
+    public CategoryJspBean( )
     {
     }
 
@@ -120,14 +126,14 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
     {
         setPageTitleProperty( null );
 
-        AdminUser user = getUser(  );
+        AdminUser user = getUser( );
 
-        HashMap<String, Collection<CategoryDisplay>> model = new HashMap<String, Collection<CategoryDisplay>>(  );
+        HashMap<String, Collection<CategoryDisplay>> model = new HashMap<String, Collection<CategoryDisplay>>( );
         model.put( MARK_CATEGORY_LIST, CategoryService.getAllCategoriesDisplay( user ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_CATEGORY, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_CATEGORY, getLocale( ), model );
 
-        return getAdminPage( template.getHtml(  ) );
+        return getAdminPage( template.getHtml( ) );
     }
 
     /**
@@ -139,20 +145,20 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
     {
         setPageTitleProperty( PROPERTY_PAGE_TITLE_CREATE_CATEGORY );
 
-        AdminUser user = getUser(  );
-        ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( user, getLocale(  ) );
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        AdminUser user = getUser( );
+        ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( user, getLocale( ) );
+        Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
 
         //LUTECE-890 : the first workgroup will be selected by default
-        if ( !refListWorkGroups.isEmpty(  ) )
+        if ( !refListWorkGroups.isEmpty( ) )
         {
-            model.put( MARK_WORKGROUP_SELECTED, refListWorkGroups.get( 0 ).getCode(  ) );
+            model.put( MARK_WORKGROUP_SELECTED, refListWorkGroups.get( 0 ).getCode( ) );
         }
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_CATEGORY, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_CATEGORY, getLocale( ), model );
 
-        return getAdminPage( template.getHtml(  ) );
+        return getAdminPage( template.getHtml( ) );
     }
 
     /**
@@ -162,22 +168,22 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
      */
     public String doCreateCategory( HttpServletRequest request )
     {
-        Category category = new Category(  );
-        String strCategoryName = request.getParameter( PARAMETER_CATEGORY_NAME ).trim(  );
-        String strCategoryDescription = request.getParameter( PARAMETER_CATEGORY_DESCRIPTION ).trim(  );
+        Category category = new Category( );
+        String strCategoryName = request.getParameter( PARAMETER_CATEGORY_NAME ).trim( );
+        String strCategoryDescription = request.getParameter( PARAMETER_CATEGORY_DESCRIPTION ).trim( );
         String strWorkgroup = request.getParameter( PARAMETER_WORKGROUP_KEY );
 
         MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
         FileItem item = mRequest.getFile( PARAMETER_IMAGE_CONTENT );
 
         // Mandatory field
-        if ( ( strCategoryName.length(  ) == 0 ) || ( strCategoryDescription.length(  ) == 0 ) )
+        if ( ( strCategoryName.length( ) == 0 ) || ( strCategoryDescription.length( ) == 0 ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
         // check if category exist
-        if ( CategoryHome.findByName( strCategoryName ).size(  ) > 0 )
+        if ( CategoryHome.findByName( strCategoryName ).size( ) > 0 )
         {
             return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_EXIST, AdminMessage.TYPE_STOP );
         }
@@ -185,10 +191,10 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
         category.setName( strCategoryName );
         category.setDescription( strCategoryDescription );
 
-        byte[] bytes = item.get(  );
+        byte[] bytes = item.get( );
 
         category.setIconContent( bytes );
-        category.setIconMimeType( item.getContentType(  ) );
+        category.setIconMimeType( item.getContentType( ) );
         category.setWorkgroup( strWorkgroup );
         CategoryHome.create( category );
 
@@ -204,8 +210,8 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
     {
         setPageTitleProperty( PROPERTY_PAGE_TITLE_MODIFY_CATEGORY );
 
-        AdminUser user = getUser(  );
-        ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( user, getLocale(  ) );
+        AdminUser user = getUser( );
+        ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( user, getLocale( ) );
         int nIdCategory = checkCategoryId( request );
 
         if ( nIdCategory == ERROR_ID_CATEGORY )
@@ -213,14 +219,14 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
             return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_ERROR, AdminMessage.TYPE_ERROR );
         }
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
 
         model.put( MARK_CATEGORY_DISPLAY, CategoryService.getCategoryDisplay( nIdCategory ) );
         model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_CATEGORY, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_CATEGORY, getLocale( ), model );
 
-        return getAdminPage( template.getHtml(  ) );
+        return getAdminPage( template.getHtml( ) );
     }
 
     /**
@@ -231,8 +237,8 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
     public String doModifyCategory( HttpServletRequest request )
     {
         Category category = null;
-        String strCategoryName = request.getParameter( PARAMETER_CATEGORY_NAME ).trim(  );
-        String strCategoryDescription = request.getParameter( PARAMETER_CATEGORY_DESCRIPTION ).trim(  );
+        String strCategoryName = request.getParameter( PARAMETER_CATEGORY_NAME ).trim( );
+        String strCategoryDescription = request.getParameter( PARAMETER_CATEGORY_DESCRIPTION ).trim( );
         String strCategoryUpdateIcon = request.getParameter( PARAMETER_CATEGORY_UPDATE_ICON );
         String strWorkgroup = request.getParameter( PARAMETER_WORKGROUP_KEY );
 
@@ -244,7 +250,7 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
         }
 
         // Mandatory field
-        if ( ( strCategoryName.length(  ) == 0 ) || ( strCategoryDescription.length(  ) == 0 ) )
+        if ( ( strCategoryName.length( ) == 0 ) || ( strCategoryDescription.length( ) == 0 ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
@@ -252,7 +258,7 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
         // check if category exist
         Collection<Category> categoriesList = CategoryHome.findByName( strCategoryName );
 
-        if ( !categoriesList.isEmpty(  ) && ( categoriesList.iterator(  ).next(  ).getId(  ) != nIdCategory ) )
+        if ( !categoriesList.isEmpty( ) && ( categoriesList.iterator( ).next( ).getId( ) != nIdCategory ) )
         {
             return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_EXIST, AdminMessage.TYPE_STOP );
         }
@@ -266,9 +272,9 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
             MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
             FileItem item = mRequest.getFile( PARAMETER_IMAGE_CONTENT );
 
-            byte[] bytes = item.get(  );
+            byte[] bytes = item.get( );
             category.setIconContent( bytes );
-            category.setIconMimeType( item.getContentType(  ) );
+            category.setIconMimeType( item.getContentType( ) );
         }
 
         category.setWorkgroup( strWorkgroup );
@@ -280,7 +286,7 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
 
     /**
      * Returns the page of confirmation for deleting a workgroup
-     *
+     * 
      * @param request The Http Request
      * @return the confirmation url
      */
@@ -302,8 +308,8 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
         UrlItem url = new UrlItem( JSP_URL_REMOVE_CATEGORY );
         url.addParameter( PARAMETER_CATEGORY_ID, Integer.toString( nIdCategory ) );
 
-        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_CATEGORY, url.getUrl(  ),
-            AdminMessage.TYPE_CONFIRMATION );
+        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_CATEGORY, url.getUrl( ),
+                AdminMessage.TYPE_CONFIRMATION );
     }
 
     /**
@@ -332,7 +338,7 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
     }
 
     /**
-     *
+     * 
      * @param request The http request
      * @return id of category, ERROR_ID_CATEGORY else
      */

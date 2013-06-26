@@ -72,8 +72,8 @@ public final class HistoryEventDAO implements IHistoryEventDAO
 
     /**
      * Delete a record from the table
-     *
-     * @param nDocumentId
+     * 
+     * @param nDocumentId The id of the document
      */
     public void delete( int nDocumentId )
     {

@@ -53,29 +53,43 @@ public class MetadataService
 
     ////////////////////////////////////////////////////////////////////////////
     // Metadata handling
-    public static ReferenceList getMetadataHandlersList(  )
+    /**
+     * Get the list of metadata handlers
+     * @return The list fo metadata handlers
+     */
+    public static ReferenceList getMetadataHandlersList( )
     {
-        ReferenceList listHandlers = new ReferenceList(  );
+        ReferenceList listHandlers = new ReferenceList( );
 
         listHandlers.addItem( NO_HANDLER, NO_HANDLER_LABEL );
 
         String strHandlersList = AppPropertiesService.getProperty( PROPERTY_HANDLERS_LIST );
         StringTokenizer st = new StringTokenizer( strHandlersList );
 
-        while ( st.hasMoreTokens(  ) )
+        while ( st.hasMoreTokens( ) )
         {
-            String strHandlerKey = st.nextToken(  );
+            String strHandlerKey = st.nextToken( );
             listHandlers.addItem( strHandlerKey, getDescription( strHandlerKey ) );
         }
 
         return listHandlers;
     }
 
+    /**
+     * Get the description of a handler
+     * @param strHandlerKey The key of the handler
+     * @return The description of a handler
+     */
     public static String getDescription( String strHandlerKey )
     {
         return AppPropertiesService.getProperty( PREFIX_HANDLER + strHandlerKey + SUFFIX_DESCRIPTION );
     }
 
+    /**
+     * Get the bean name of a handler
+     * @param strHandlerKey The key of the handler
+     * @return The name of the bean of a handler
+     */
     public static String getBeanName( String strHandlerKey )
     {
         return AppPropertiesService.getProperty( PREFIX_HANDLER + strHandlerKey + SUFFIX_BEAN_NAME );

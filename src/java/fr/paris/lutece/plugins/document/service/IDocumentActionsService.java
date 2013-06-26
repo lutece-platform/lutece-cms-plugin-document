@@ -42,18 +42,20 @@ import java.util.Locale;
 
 
 /**
-*
-*Interface IDocumentActionsService
-*
-*/
+ * 
+ * Interface IDocumentActionsService
+ * 
+ */
 public interface IDocumentActionsService
 {
     /**
-     * Add to the document all permitted actions according to the current user and
+     * Add to the document all permitted actions according to the current user
+     * and
      * using the current locale
      * @param user The current user
      * @param document The document
      * @param locale The Locale
+     * @return The list of document actions
      */
     List<DocumentAction> getActions( Document document, Locale locale, AdminUser user );
 }

@@ -53,12 +53,14 @@ public interface IRuleTypesSet
 
     /**
      * Returns the rule types list
+     * @param locale the locale
      * @return The rule types list
      */
     ReferenceList getRuleTypesList( Locale locale );
 
     /**
      * Returns the rule type of a given class type
+     * @param rule the rule
      * @return The rule type
      */
     String getRuleTypeKey( Rule rule );

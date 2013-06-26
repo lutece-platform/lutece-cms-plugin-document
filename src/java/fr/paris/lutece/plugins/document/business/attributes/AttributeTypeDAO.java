@@ -160,7 +160,7 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
     /**
      * Load the list of Attribute Types
      * @return The Collection of the DocumentAttributeTypes
-     * @param locale
+     * @param locale The locale
      */
     public ReferenceList selectAttributeTypeList( Locale locale )
     {
@@ -211,7 +211,7 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
     /**
      * Load the list of attributeTypeParameters
      * @return The Collection of the AttributeTypeParameters
-     * @param strAttributeTypeCode
+     * @param strAttributeTypeCode The attribute type code
      */
     public List<AttributeTypeParameter> selectAttributeTypeParameterList( String strAttributeTypeCode )
     {

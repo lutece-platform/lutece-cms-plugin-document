@@ -44,7 +44,6 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -417,7 +416,7 @@ public class DocumentType implements RBACResource
 
     /**
      * Returns the metahandler
-     * @returns the metahandler
+     * @return the metahandler
      */
     public MetadataHandler metadataHandler(  )
     {

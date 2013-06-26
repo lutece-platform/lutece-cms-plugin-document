@@ -85,8 +85,8 @@ public final class DocumentAttributeHome
 
     /**
      * Remove the DocumentAttribute whose identifier is specified in parameter
-     *
-     * @param nAttributeId
+     * 
+     * @param nAttributeId The id of the attribute
      */
     public static void remove( int nAttributeId )
     {
@@ -109,7 +109,7 @@ public final class DocumentAttributeHome
 
     /**
      * Returns a collection of documentAttributes objects
-     * @param documentType
+     * @param documentType The document type
      */
     public static void setDocumentTypeAttributes( DocumentType documentType )
     {
@@ -127,10 +127,10 @@ public final class DocumentAttributeHome
     }
 
     /**
-     *
-     * @param nAttributeId
-     * @param locale
-     * @return
+     * Get the attribute type parameters of an attribute
+     * @param nAttributeId The id of the attribute to get the parameter of
+     * @param locale The locale
+     * @return The list of parameters
      */
     public static Collection<AttributeTypeParameter> getAttributeParametersValues( int nAttributeId, Locale locale )
     {
@@ -140,10 +140,10 @@ public final class DocumentAttributeHome
     }
 
     /**
-     *
-     * @param nAttributeId
-     * @param strParameterName
-     * @return
+     * Get the list of values of a parameters of an attribute
+     * @param nAttributeId The id of the attribute
+     * @param strParameterName The name of the parameter
+     * @return The list of values of the parameter of the attribute
      */
     public static List<String> getAttributeParameterValues( int nAttributeId, String strParameterName )
     {

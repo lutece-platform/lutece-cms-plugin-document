@@ -83,7 +83,7 @@ public class ResourceServletContentTypeCache extends AbstractCacheableService
     /**
      * Put an object into the cache
      * @param strKey The key
-     * @param content The value
+     * @param strContentType The value
      */
     public void put( String strKey, String strContentType )
     {

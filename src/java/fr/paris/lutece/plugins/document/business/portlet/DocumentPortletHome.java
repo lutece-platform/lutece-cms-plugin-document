@@ -56,7 +56,7 @@ public class DocumentPortletHome extends PortletHome
     /**
      * Constructor
      */
-    public DocumentPortletHome(  )
+    public DocumentPortletHome( )
     {
         if ( _singleton == null )
         {
@@ -66,14 +66,14 @@ public class DocumentPortletHome extends PortletHome
 
     /**
      * Returns the instance of DocumentPortletHome
-     *
+     * 
      * @return the DocumentPortletHome instance
      */
-    public static PortletHome getInstance(  )
+    public static PortletHome getInstance( )
     {
         if ( _singleton == null )
         {
-            _singleton = new DocumentPortletHome(  );
+            _singleton = new DocumentPortletHome( );
         }
 
         return _singleton;
@@ -81,12 +81,12 @@ public class DocumentPortletHome extends PortletHome
 
     /**
      * Returns the identifier of the portlet type
-     *
+     * 
      * @return the portlet type identifier
      */
-    public String getPortletTypeId(  )
+    public String getPortletTypeId( )
     {
-        String strCurrentClassName = this.getClass(  ).getName(  );
+        String strCurrentClassName = this.getClass( ).getName( );
         String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
 
         return strPortletTypeId;
@@ -94,28 +94,35 @@ public class DocumentPortletHome extends PortletHome
 
     /**
      * Returns the instance of the portlet DAO singleton
-     *
+     * 
      * @return the instance of the DAO singleton
      */
-    public IPortletInterfaceDAO getDAO(  )
+    public IPortletInterfaceDAO getDAO( )
     {
         return _dao;
     }
 
     /**
-     * Returns a list of couple id_portlet/name filtered by documentType and category
+     * Returns a list of couple id_portlet/name filtered by documentType and
+     * category
      * @param nDocumentId the Document ID
      * @param strCodeDocumentType the code
      * @param pOrder the order of the portlets
+     * @param pFilter The portlet filter
      * @return A collection of referenceItem
      */
     public static Collection<ReferenceItem> findByCodeDocumentTypeAndCategory( int nDocumentId,
-        String strCodeDocumentType, PortletOrder pOrder, PortletFilter pFilter )
+            String strCodeDocumentType, PortletOrder pOrder, PortletFilter pFilter )
     {
         //FIXME : method should access to different home business methods
         return _dao.selectByDocumentOdAndDocumentType( nDocumentId, strCodeDocumentType, pOrder, pFilter );
     }
 
+    /**
+     * Check whether a portlet is an alias portlet
+     * @param nPortletId The id of the portlet
+     * @return True if the portlet is an alias portlet, false otherwise
+     */
     public static boolean checkIsAliasPortlet( int nPortletId )
     {
         return _dao.checkIsAliasPortlet( nPortletId );

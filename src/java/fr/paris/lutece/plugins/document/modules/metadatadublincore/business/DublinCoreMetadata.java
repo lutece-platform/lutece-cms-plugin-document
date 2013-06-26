@@ -37,16 +37,14 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.xml.XmlUtil;
 
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.xmlrules.DigesterLoader;
-
-import org.xml.sax.SAXException;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
-
 import java.net.URL;
+
+import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.xmlrules.DigesterLoader;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -88,7 +86,10 @@ public class DublinCoreMetadata
     private String _strCoverage;
     private String _strRights;
 
-    public DublinCoreMetadata(  )
+    /**
+     * Default constructor
+     */
+    public DublinCoreMetadata( )
     {
         _strTitle = AppPropertiesService.getProperty( PROPERTY_DEFAULT_TITLE );
         _strCreator = AppPropertiesService.getProperty( PROPERTY_DEFAULT_CREATOR );
@@ -111,7 +112,7 @@ public class DublinCoreMetadata
      * Returns the Title
      * @return The Title
      */
-    public String getTitle(  )
+    public String getTitle( )
     {
         return _strTitle;
     }
@@ -129,7 +130,7 @@ public class DublinCoreMetadata
      * Returns the Creator
      * @return The Creator
      */
-    public String getCreator(  )
+    public String getCreator( )
     {
         return _strCreator;
     }
@@ -147,7 +148,7 @@ public class DublinCoreMetadata
      * Returns the Subject
      * @return The Subject
      */
-    public String getSubject(  )
+    public String getSubject( )
     {
         return _strSubject;
     }
@@ -165,7 +166,7 @@ public class DublinCoreMetadata
      * Returns the Description
      * @return The Description
      */
-    public String getDescription(  )
+    public String getDescription( )
     {
         return _strDescription;
     }
@@ -183,7 +184,7 @@ public class DublinCoreMetadata
      * Returns the Publisher
      * @return The Publisher
      */
-    public String getPublisher(  )
+    public String getPublisher( )
     {
         return _strPublisher;
     }
@@ -201,7 +202,7 @@ public class DublinCoreMetadata
      * Returns the Contributor
      * @return The Contributor
      */
-    public String getContributor(  )
+    public String getContributor( )
     {
         return _strContributor;
     }
@@ -219,7 +220,7 @@ public class DublinCoreMetadata
      * Returns the Date
      * @return The Date
      */
-    public String getDate(  )
+    public String getDate( )
     {
         return _strDate;
     }
@@ -237,7 +238,7 @@ public class DublinCoreMetadata
      * Returns the Type
      * @return The Type
      */
-    public String getType(  )
+    public String getType( )
     {
         return _strType;
     }
@@ -255,7 +256,7 @@ public class DublinCoreMetadata
      * Returns the Format
      * @return The Format
      */
-    public String getFormat(  )
+    public String getFormat( )
     {
         return _strFormat;
     }
@@ -273,7 +274,7 @@ public class DublinCoreMetadata
      * Returns the Identifier
      * @return The Identifier
      */
-    public String getIdentifier(  )
+    public String getIdentifier( )
     {
         return _strIdentifier;
     }
@@ -291,7 +292,7 @@ public class DublinCoreMetadata
      * Returns the Source
      * @return The Source
      */
-    public String getSource(  )
+    public String getSource( )
     {
         return _strSource;
     }
@@ -309,7 +310,7 @@ public class DublinCoreMetadata
      * Returns the Language
      * @return The Language
      */
-    public String getLanguage(  )
+    public String getLanguage( )
     {
         return _strLanguage;
     }
@@ -327,7 +328,7 @@ public class DublinCoreMetadata
      * Returns the Relation
      * @return The Relation
      */
-    public String getRelation(  )
+    public String getRelation( )
     {
         return _strRelation;
     }
@@ -345,7 +346,7 @@ public class DublinCoreMetadata
      * Returns the Coverage
      * @return The Coverage
      */
-    public String getCoverage(  )
+    public String getCoverage( )
     {
         return _strCoverage;
     }
@@ -363,23 +364,27 @@ public class DublinCoreMetadata
      * Returns the Rigths
      * @return The Rigths
      */
-    public String getRights(  )
+    public String getRights( )
     {
         return _strRights;
     }
 
     /**
      * Sets the Rigths
-     * @param strRigths The Rigths
+     * @param strRights The Rigths
      */
     public void setRights( String strRights )
     {
         _strRights = strRights;
     }
 
-    public String getXml(  )
+    /**
+     * Get the XML of the current dublin core metadata
+     * @return The XML representing this dublin core metadata
+     */
+    public String getXml( )
     {
-        StringBuffer sbXml = new StringBuffer(  );
+        StringBuffer sbXml = new StringBuffer( );
         XmlUtil.beginElement( sbXml, "metadata" );
 
         if ( ( _strTitle != null ) && ( !_strTitle.equals( "" ) ) )
@@ -459,13 +464,17 @@ public class DublinCoreMetadata
 
         XmlUtil.endElement( sbXml, "metadata" );
 
-        return sbXml.toString(  );
+        return sbXml.toString( );
     }
 
+    /**
+     * Load dublin core metadata from an XML stream
+     * @param strXmlData The XML content to get the attributes from
+     */
     public void load( String strXmlData )
     {
         // Configure Digester from XML ruleset
-        URL rules = getClass(  ).getResource( FILE_RULES );
+        URL rules = getClass( ).getResource( FILE_RULES );
         Digester digester = DigesterLoader.createDigester( rules );
 
         // Push empty List onto Digester's Stack
@@ -481,15 +490,15 @@ public class DublinCoreMetadata
         }
         catch ( FileNotFoundException e )
         {
-            AppLogService.error( e.getMessage(  ), e );
+            AppLogService.error( e.getMessage( ), e );
         }
         catch ( SAXException e )
         {
-            AppLogService.error( e.getMessage(  ), e );
+            AppLogService.error( e.getMessage( ), e );
         }
         catch ( IOException e )
         {
-            AppLogService.error( e.getMessage(  ), e );
+            AppLogService.error( e.getMessage( ), e );
         }
     }
 }

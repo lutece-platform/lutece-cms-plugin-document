@@ -47,8 +47,6 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -56,12 +54,19 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * DocSearchJspBean
  */
 public class DocSearchJspBean extends PluginAdminPageJspBean
 {
+    /**
+     * Generated serial version UID
+     */
+    private static final long serialVersionUID = 1299568272034875394L;
+
     ////////////////////////////////////////////////////////////////////////////
     // Constants
     private static final String TEMPLATE_RESULTS = "admin/plugins/document/docsearch/search_results.html";
@@ -93,7 +98,7 @@ public class DocSearchJspBean extends PluginAdminPageJspBean
 
     /**
      * Returns search results
-     *
+     * 
      * @param request The HTTP request.
      * @return The HTML code of the page.
      */
@@ -104,8 +109,8 @@ public class DocSearchJspBean extends PluginAdminPageJspBean
         String strQuery = request.getParameter( PARAMETER_QUERY );
         String strSearchPageUrl = AppPropertiesService.getProperty( PROPERTY_SEARCH_PAGE_URL );
         String strError = StringUtils.EMPTY;
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        Locale locale = getLocale(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
+        Locale locale = getLocale( );
 
         // Check XSS characters
         if ( ( strQuery != null ) && ( StringUtil.containsXssCharacters( strQuery ) ) )
@@ -172,14 +177,14 @@ public class DocSearchJspBean extends PluginAdminPageJspBean
                 url.addParameter( PARAMETER_DATE, strDate );
             }
 
-            model.put( MARK_TYPE_LIST, AdvancedSearch.getRefListDocumentType(  ) );
+            model.put( MARK_TYPE_LIST, AdvancedSearch.getRefListDocumentType( ) );
 
-            listResults = DocSearchService.getInstance(  ).getSearchResults( strQuery, bTitle, bSummary, strDate,
+            listResults = DocSearchService.getInstance( ).getSearchResults( strQuery, bTitle, bSummary, strDate,
                     docType );
         }
         else
         {
-            listResults = DocSearchService.getInstance(  ).getSearchResults( strQuery, nStartIndex, getUser(  ) );
+            listResults = DocSearchService.getInstance( ).getSearchResults( strQuery, nStartIndex, getUser( ) );
         }
 
         url.addParameter( PARAMETER_QUERY, strQuery );
@@ -191,17 +196,17 @@ public class DocSearchJspBean extends PluginAdminPageJspBean
         }
 
         LocalizedPaginator<DocSearchItem> paginator = new LocalizedPaginator<DocSearchItem>( listResults,
-                nNbItemsPerPage, url.getUrl(  ), PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
+                nNbItemsPerPage, url.getUrl( ), PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale( ) );
 
-        model.put( MARK_RESULTS_LIST, paginator.getPageItems(  ) );
+        model.put( MARK_RESULTS_LIST, paginator.getPageItems( ) );
         model.put( MARK_QUERY, strQuery );
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_NB_ITEMS_PER_PAGE, strNbItemPerPage );
         model.put( MARK_ERROR, strError );
-        model.put( MARK_LOCALE, request.getLocale(  ) );
+        model.put( MARK_LOCALE, request.getLocale( ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_RESULTS, locale, model );
 
-        return getAdminPage( template.getHtml(  ) );
+        return getAdminPage( template.getHtml( ) );
     }
 }

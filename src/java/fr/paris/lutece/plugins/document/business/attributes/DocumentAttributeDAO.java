@@ -188,6 +188,7 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
     /**
      * Delete a record from the table
      * @param nAttributeId The DocumentAttribute Id
+     * @param strParameterName The parameter name
      */
     private void deleteParameter( int nAttributeId, String strParameterName )
     {

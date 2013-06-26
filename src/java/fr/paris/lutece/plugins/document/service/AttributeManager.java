@@ -114,7 +114,7 @@ public interface AttributeManager
      * Gets extra parameters values for the attribute
      * @param locale The current Locale
      * @param nAttributeId
-     * @return
+     * @return The extra parameters values for the attribute
      */
     Collection<AttributeTypeParameter> getExtraParametersValues( Locale locale, int nAttributeId );
 

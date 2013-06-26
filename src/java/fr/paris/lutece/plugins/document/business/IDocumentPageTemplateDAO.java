@@ -36,6 +36,9 @@ package fr.paris.lutece.plugins.document.business;
 import java.util.List;
 
 
+/**
+ * Interface for document page template DAO
+ */
 public interface IDocumentPageTemplateDAO
 {
     /**

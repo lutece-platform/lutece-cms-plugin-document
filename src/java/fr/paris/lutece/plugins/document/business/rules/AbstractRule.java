@@ -107,8 +107,8 @@ public abstract class AbstractRule implements Rule
     }
 
     /**
-     *
-     * @return
+     * Get the locale
+     * @return The locale
      */
     public Locale getLocale(  )
     {
@@ -116,9 +116,9 @@ public abstract class AbstractRule implements Rule
     }
 
     /**
-     *
-     * @param strAttributeName
-     * @param strAttributeValue
+     * Set an attribute
+     * @param strAttributeName the name of the attribute
+     * @param strAttributeValue the value of the attribute
      */
     public void setAttribute( String strAttributeName, String strAttributeValue )
     {
@@ -126,9 +126,9 @@ public abstract class AbstractRule implements Rule
     }
 
     /**
-     *
-     * @param strAttributeName
-     * @return
+     * Get the value of an attribute from its name
+     * @param strAttributeNamethe name of the attribute
+     * @return the value of the attribute
      */
     public String getAttribute( String strAttributeName )
     {
@@ -136,8 +136,8 @@ public abstract class AbstractRule implements Rule
     }
 
     /**
-     *
-     * @param request
+     * Read attributes from a request
+     * @param request The request
      */
     public void readAttributes( HttpServletRequest request )
     {
@@ -157,6 +157,9 @@ public abstract class AbstractRule implements Rule
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public abstract boolean equals( Object obj );
 

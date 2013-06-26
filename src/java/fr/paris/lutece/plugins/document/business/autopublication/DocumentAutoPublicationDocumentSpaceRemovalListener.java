@@ -41,6 +41,9 @@ import java.util.Collection;
 import java.util.Locale;
 
 
+/**
+ * DocumentAutoPublicationDocumentSpaceRemovalListener
+ */
 public class DocumentAutoPublicationDocumentSpaceRemovalListener implements RemovalListener
 {
     private static final String PROPERTY_DOCUMENT_SPACE_CANNOT_BE_REMOVED = "document.message.autoPublication.documentSpaceCannotBeRemoved";

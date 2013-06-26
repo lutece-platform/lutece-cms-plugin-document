@@ -48,23 +48,23 @@ import java.util.Map;
 public class AttributeService
 {
     private static AttributeService _singleton;
-    private static Map<String, AttributeManager> _mapManagers = new HashMap<String, AttributeManager>(  );
+    private static Map<String, AttributeManager> _mapManagers = new HashMap<String, AttributeManager>( );
 
     /** Creates a new instance of AttributeService */
-    private AttributeService(  )
+    private AttributeService( )
     {
     }
 
     /**
      * Get the unique instance of the service
-     * @return
+     * @return The instance of the attribute service
      */
-    public static synchronized AttributeService getInstance(  )
+    public static synchronized AttributeService getInstance( )
     {
         if ( _singleton == null )
         {
-            _singleton = new AttributeService(  );
-            _singleton.init(  );
+            _singleton = new AttributeService( );
+            _singleton.init( );
         }
 
         return _singleton;
@@ -73,32 +73,32 @@ public class AttributeService
     /**
      * Initializes the service
      */
-    private void init(  )
+    private void init( )
     {
-        ReferenceList listManagers = AttributeTypeHome.getAttributeManagersList(  );
+        ReferenceList listManagers = AttributeTypeHome.getAttributeManagersList( );
 
         for ( ReferenceItem item : listManagers )
         {
-            String strManagerKey = item.getCode(  );
-            String strManagerClass = item.getName(  );
+            String strManagerKey = item.getCode( );
+            String strManagerClass = item.getName( );
 
             try
             {
-                AttributeManager manager = (AttributeManager) Class.forName( strManagerClass ).newInstance(  );
-                manager.setAttributeTypeCode( item.getCode(  ) );
+                AttributeManager manager = (AttributeManager) Class.forName( strManagerClass ).newInstance( );
+                manager.setAttributeTypeCode( item.getCode( ) );
                 _mapManagers.put( strManagerKey, manager );
             }
             catch ( IllegalAccessException e )
             {
-                AppLogService.error( e.getMessage(  ), e );
+                AppLogService.error( e.getMessage( ), e );
             }
             catch ( ClassNotFoundException e )
             {
-                AppLogService.error( e.getMessage(  ), e );
+                AppLogService.error( e.getMessage( ), e );
             }
             catch ( InstantiationException e )
             {
-                AppLogService.error( e.getMessage(  ), e );
+                AppLogService.error( e.getMessage( ), e );
             }
         }
     }

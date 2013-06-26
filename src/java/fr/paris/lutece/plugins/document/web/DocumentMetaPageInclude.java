@@ -41,16 +41,14 @@ import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.includes.PageInclude;
 import fr.paris.lutece.portal.service.util.AppPathService;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.FileInputStream;
-
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -103,6 +101,7 @@ public class DocumentMetaPageInclude implements PageInclude
 
     /**
      * Load the XSL stylesheet used to convert document metadata into meta tags
+     * @return The source stream
      */
     private Source loadXsl(  )
     {

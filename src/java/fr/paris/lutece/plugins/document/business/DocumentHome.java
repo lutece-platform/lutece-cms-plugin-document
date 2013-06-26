@@ -44,7 +44,8 @@ import java.util.Locale;
 
 
 /**
- * This class provides instances management methods (create, find, ...) for Document objects
+ * This class provides instances management methods (create, find, ...) for
+ * Document objects
  */
 public final class DocumentHome
 {
@@ -54,22 +55,27 @@ public final class DocumentHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private DocumentHome(  )
+    private DocumentHome( )
     {
     }
 
     /**
      * Creation of an instance of document
-     *
-     * @param document The instance of the document which contains the informations to store
-     * @return The  instance of document which has been created with its primary key.
+     * 
+     * @param document The instance of the document which contains the
+     *            informations to store
+     * @return The instance of document which has been created with its primary
+     *         key.
      */
     public static Document create( Document document )
     {
         _dao.insert( document );
-        DocSearchService.getInstance(  ).addIndexerAction( document.getId(  ), IndexerAction.TASK_CREATE );
+        DocSearchService.getInstance( ).addIndexerAction( document.getId( ), IndexerAction.TASK_CREATE );
 
-        /*IndexationService.addIndexerAction( document.getId(), DocumentIndexer.INDEXER_NAME, IndexerAction.TASK_CREATE );*/
+        /*
+         * IndexationService.addIndexerAction( document.getId(),
+         * DocumentIndexer.INDEXER_NAME, IndexerAction.TASK_CREATE );
+         */
         return document;
     }
 
@@ -84,15 +90,17 @@ public final class DocumentHome
     public static Document update( Document document, boolean bUpdateContent )
     {
         _dao.store( document, bUpdateContent );
-        DocSearchService.getInstance(  ).addIndexerAction( document.getId(  ), IndexerAction.TASK_MODIFY );
+        DocSearchService.getInstance( ).addIndexerAction( document.getId( ), IndexerAction.TASK_MODIFY );
 
-        /* if(PublishingService.getInstance().isPublished(document.getId()))
-         {
-                 IndexationService.getInstance().addIndexerAction( document.getId()
-                                 , DocumentIndexer.INDEXER_NAME
-                                 , IndexerAction.TASK_MODIFY
-                                 , IndexationService.ALL_DOCUMENT );
-         }    */
+        /*
+         * if(PublishingService.getInstance().isPublished(document.getId()))
+         * {
+         * IndexationService.getInstance().addIndexerAction( document.getId()
+         * , DocumentIndexer.INDEXER_NAME
+         * , IndexerAction.TASK_MODIFY
+         * , IndexationService.ALL_DOCUMENT );
+         * }
+         */
         return document;
     }
 
@@ -113,7 +121,7 @@ public final class DocumentHome
     public static void remove( int nDocumentId )
     {
         _dao.delete( nDocumentId );
-        DocSearchService.getInstance(  ).addIndexerAction( nDocumentId, IndexerAction.TASK_DELETE );
+        DocSearchService.getInstance( ).addIndexerAction( nDocumentId, IndexerAction.TASK_DELETE );
         // We remove extensions of the removed document if any
         ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Document.PROPERTY_RESOURCE_TYPE,
                 Integer.toString( nDocumentId ) );
@@ -123,8 +131,9 @@ public final class DocumentHome
     // Finders
 
     /**
-     * Returns an instance of a document whose identifier is specified in parameter
-     *
+     * Returns an instance of a document whose identifier is specified in
+     * parameter
+     * 
      * @param nKey The Primary key of the document
      * @return An instance of document
      */
@@ -134,8 +143,9 @@ public final class DocumentHome
     }
 
     /**
-     * Returns an instance of a document whose identifier is specified in parameter
-     *
+     * Returns an instance of a document whose identifier is specified in
+     * parameter
+     * 
      * @param nKey The Primary key of the document
      * @return An instance of document
      */
@@ -157,7 +167,7 @@ public final class DocumentHome
     /**
      * Returns a collection of documents ids
      * @return A collection of documents ids
-     * @param filter
+     * @param filter The filter
      * @param locale The locale
      */
     public static Collection<Integer> findPrimaryKeysByFilter( DocumentFilter filter, Locale locale )
@@ -168,7 +178,7 @@ public final class DocumentHome
     /**
      * Returns a collection of documents objects
      * @return A collection of documents
-     * @param filter
+     * @param filter The filter
      * @param locale The locale
      */
     public static List<Document> findByFilter( DocumentFilter filter, Locale locale )
@@ -181,7 +191,8 @@ public final class DocumentHome
     /**
      * Returns a collection of documents objects
      * If more than one category is specified on filter,
-     * the result will corresponding to the document wich matched with one category at least.
+     * the result will corresponding to the document wich matched with one
+     * category at least.
      * @param document The {@link Document}
      * @param locale The {@link Locale}
      * @return A collection of documents
@@ -194,10 +205,10 @@ public final class DocumentHome
     }
 
     /**
-     *
-     * @param nDocumentId
-     * @param nAttributeId
-     * @return
+     * Get the validated resource of an attribute of a document
+     * @param nDocumentId The id of the document
+     * @param nAttributeId The id of the attribute to get the resource of
+     * @return the document resource, of null if none was found
      */
     public static DocumentResource getValidatedResource( int nDocumentId, int nAttributeId )
     {
@@ -205,11 +216,11 @@ public final class DocumentHome
     }
 
     /**
-    *
-    * @param nDocumentId
-    * @param nAttributeId
-    * @return
-    */
+     * Get the working resource of an attribute of a document
+     * @param nDocumentId The id of the document
+     * @param nAttributeId the id of the attribute
+     * @return the document resource, of null if none was found
+     */
     public static DocumentResource getWorkingResource( int nDocumentId, int nAttributeId )
     {
         return _dao.loadSpecificResource( nDocumentId, nAttributeId, false );
@@ -229,27 +240,27 @@ public final class DocumentHome
      * Get a new primary key
      * @return The new primary key
      */
-    public static int newPrimaryKey(  )
+    public static int newPrimaryKey( )
     {
-        return _dao.newPrimaryKey(  );
+        return _dao.newPrimaryKey( );
     }
 
     /**
      * Gets all documents id
      * @return A collection of Integer
      */
-    public static Collection<Integer> findAllPrimaryKeys(  )
+    public static Collection<Integer> findAllPrimaryKeys( )
     {
-        return _dao.selectAllPrimaryKeys(  );
+        return _dao.selectAllPrimaryKeys( );
     }
 
     /**
      * Get the list of every documents
      * @return The list of every documents
      */
-    public static List<Document> findAll(  )
+    public static List<Document> findAll( )
     {
-        return _dao.selectAll(  );
+        return _dao.selectAll( );
     }
 
     /**
@@ -264,7 +275,8 @@ public final class DocumentHome
     /**
      * Load document attributes
      * @param document the document reference
-     * @param bValidated true if the content of the document must be validated, false otherwise
+     * @param bValidated true if the content of the document must be validated,
+     *            false otherwise
      */
     public static void loadAttributesWithoutBinaries( Document document, boolean bValidated )
     {
@@ -294,7 +306,7 @@ public final class DocumentHome
 
     /**
      * Load the data of last Document the user worked in from the table
-     *
+     * 
      * @param strUserName the user name
      * @return the instance of the Document
      */
@@ -305,11 +317,11 @@ public final class DocumentHome
 
     /**
      * Load the data of last Document the user worked in from the table
-     *
+     * 
      * @return the instance of the Document
      */
-    public static Document loadLastPublishedDocument(  )
+    public static Document loadLastPublishedDocument( )
     {
-        return _dao.loadLastPublishedDocument(  );
+        return _dao.loadLastPublishedDocument( );
     }
 }

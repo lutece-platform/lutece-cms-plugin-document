@@ -71,6 +71,10 @@ public class DublinCoreMetadataHandler implements MetadataHandler
     private static final String PARAMETER_RIGTHS = "dc_rights";
     private static final String MARK_METADATA = "metadata";
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String getCreateForm( HttpServletRequest request )
     {
         DublinCoreMetadata metadata = new DublinCoreMetadata(  );
@@ -83,6 +87,10 @@ public class DublinCoreMetadataHandler implements MetadataHandler
         return template.getHtml(  );
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String getModifyForm( HttpServletRequest request, String strXmlData )
     {
         DublinCoreMetadata metadata = new DublinCoreMetadata(  );
@@ -97,6 +105,10 @@ public class DublinCoreMetadataHandler implements MetadataHandler
         return template.getHtml(  );
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String getXmlMetadata( Map<String, String[]> parameters )
     {
         DublinCoreMetadata meta = new DublinCoreMetadata(  );

@@ -88,12 +88,17 @@ import org.apache.commons.lang.StringUtils;
 
 
 /**
- *
+ * DocumentPublishingJspBean
  */
 public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 {
     public static final String RIGHT_DOCUMENT_MANAGEMENT = "DOCUMENT_MANAGEMENT";
     public static final String RIGHT_MANAGE_ADMIN_SITE = "CORE_ADMIN_SITE";
+    /**
+     * Generated serial version UID
+     */
+    private static final long serialVersionUID = -7693499948082725314L;
+
     private static final String REGEX_ID = "^[\\d]+$";
 
     private static final int MODE_PUBLICATION_STANDARD = 0;

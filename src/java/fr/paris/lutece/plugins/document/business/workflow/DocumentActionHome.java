@@ -76,6 +76,6 @@ public final class DocumentActionHome
     {
         List<DocumentAction> listActions = _dao.selectActions( document );
 
-        return (List) I18nService.localizeCollection( listActions, locale );
+        return I18nService.localizeCollection( listActions, locale );
     }
 }

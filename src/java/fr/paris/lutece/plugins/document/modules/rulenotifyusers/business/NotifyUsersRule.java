@@ -58,13 +58,13 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -393,7 +393,7 @@ public class NotifyUsersRule extends AbstractRule
 
         while ( strTokens.hasMoreTokens(  ) )
         {
-            String strMessageKey = (String) strTokens.nextToken(  );
+            String strMessageKey = strTokens.nextToken( );
             String strTemplateDescription = getMessageDescription( strMessageKey, locale );
             listTemplates.addItem( strMessageKey, strTemplateDescription );
         }

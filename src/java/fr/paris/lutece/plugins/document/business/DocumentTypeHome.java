@@ -82,8 +82,8 @@ public final class DocumentTypeHome
 
     /**
      * Remove the DocumentType whose identifier is specified in parameter
-     *
-     * @param strCode
+     * 
+     * @param strCode The document type code
      */
     public static void remove( String strCode )
     {
@@ -94,10 +94,11 @@ public final class DocumentTypeHome
     // Finders
 
     /**
-     * Returns an instance of a documentType whose identifier is specified in parameter
-     *
+     * Returns an instance of a documentType whose identifier is specified in
+     * parameter
+     * 
      * @return An instance of documentType
-     * @param strCode
+     * @param strCode The document type code
      */
     public static DocumentType findByPrimaryKey( String strCode )
     {
@@ -115,8 +116,8 @@ public final class DocumentTypeHome
 
     /**
      * Checks if type has documents
-     * @param strCode
-     * @return
+     * @param strCode The document type code
+     * @return True if the given type has documents
      */
     public static boolean checkDocuments( String strCode )
     {
@@ -125,11 +126,11 @@ public final class DocumentTypeHome
 
     /**
      * Reorder Attributes
-     *
-     * @param nIdAttribute1
-     * @param nOrderAttribute1
-     * @param nIdAttribute2
-     * @param nOrderAttribute2
+     * 
+     * @param nIdAttribute1 The id of the first attribute
+     * @param nOrderAttribute1 The order of the first attribute
+     * @param nIdAttribute2 The id of the second attribute
+     * @param nOrderAttribute2 The order of the second attribute
      */
     public static void reorderAttributes( int nIdAttribute1, int nOrderAttribute1, int nIdAttribute2,
         int nOrderAttribute2 )

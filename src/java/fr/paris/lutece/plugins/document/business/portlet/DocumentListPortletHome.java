@@ -110,6 +110,7 @@ public class DocumentListPortletHome extends PortletHome
      * @param nDocumentId the document ID
      * @param strCodeDocumentType The code
      * @param pOrder order of the portlets
+     * @param pFilter The portlet filter
      * @return The Collection of the ReferenceItem
      */
     public static Collection<ReferenceItem> findByCodeDocumentTypeAndCategory( int nDocumentId,
@@ -119,6 +120,11 @@ public class DocumentListPortletHome extends PortletHome
         return _dao.selectByDocumentIdAndDocumentType( nDocumentId, strCodeDocumentType, pOrder, pFilter );
     }
 
+    /**
+     * Check whether a portlet is an alias portlet
+     * @param nPortletId The id of the portlet
+     * @return True if the portlet is an alias portlet, false otherwise
+     */
     public static boolean checkIsAliasPortlet( int nPortletId )
     {
         return _dao.checkIsAliasPortlet( nPortletId );

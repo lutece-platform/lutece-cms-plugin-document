@@ -127,7 +127,7 @@ public final class DocumentDAO implements IDocumentDAO
         "c.code_document_type , c.document_type_attr_name, c.description, c.attr_order, c.required, c.searchable , " +
         "b.text_value, b.mime_type , b.binary_value " + "FROM document a, document_content b, document_type_attr c " +
         " WHERE a.code_document_type = c.code_document_type " + " AND a.id_document = b.id_document  " +
-        " AND b.id_document_attr = c.id_document_attr " + " AND a.id_document = ? ";
+        " AND b.id_document_attr = c.id_document_attr AND a.id_document = ? ";
     private static final String SQL_QUERY_SELECT_ATTRIBUTES_WITHOUT_BINARIES = "SELECT c.id_document_attr , c.code , c.code_attr_type , " +
         "c.code_document_type , c.document_type_attr_name, c.description, c.attr_order, c.required, c.searchable , " +
         "b.text_value, b.mime_type " + "FROM document a, document_content b, document_type_attr c " +
@@ -350,8 +350,8 @@ public final class DocumentDAO implements IDocumentDAO
 
     /**
      * Load from space id.
-     *
-     * @param nSpaceId
+     * 
+     * @param nSpaceId The id of the document space
      * @return the instance of the Document
      */
     public List<Document> loadFromSpaceId( int nSpaceId )
@@ -857,11 +857,8 @@ public final class DocumentDAO implements IDocumentDAO
 
             listDocument.add( returnDocument );
 
-            if ( document != null )
-            {
-                loadAttributes( document );
-                document.setCategories( selectCategories( document.getId(  ) ) );
-            }
+            loadAttributes( document );
+            document.setCategories( selectCategories( document.getId(  ) ) );
         }
 
         daoUtil.free(  );
@@ -1089,8 +1086,9 @@ public final class DocumentDAO implements IDocumentDAO
     }
 
     /**
-     * Load document type and date last modification for HTTP GET conditional request ("If-Modified-Since")
-     * @param nDocumentId
+     * Load document type and date last modification for HTTP GET conditional
+     * request ("If-Modified-Since")
+     * @param nIdDocument The id of the document
      * @return the document
      */
     public Document loadLastModifiedAttributes( int nIdDocument )

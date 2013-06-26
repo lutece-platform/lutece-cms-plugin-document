@@ -135,8 +135,8 @@ public class AttributeTypeParameter implements Localizable
     }
 
     /**
-     *
-     * @param listValues
+     * Set the value list
+     * @param listValues The new list of values
      */
     public void setValueList( List<String> listValues )
     {
@@ -190,9 +190,8 @@ public class AttributeTypeParameter implements Localizable
     }
 
     /**
-     * Returns the default value
-     *
-     * @return The default value
+     * Set the default value
+     * @param listDefaultValue The list of default values
      */
     public void setDefaultValue( List<String> listDefaultValue )
     {

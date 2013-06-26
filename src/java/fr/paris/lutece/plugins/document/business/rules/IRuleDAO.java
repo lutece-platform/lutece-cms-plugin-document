@@ -43,31 +43,31 @@ public interface IRuleDAO
 {
     /**
      * Delete a record from the table
-     *
+     * 
      * @param nRuleId The Rule Id
      */
     void delete( int nRuleId );
 
     /**
      * Insert a new record in the table.
-     *
-     *
+     * 
+     * 
      * @param rule The rule object
      */
     void insert( Rule rule );
 
     /**
      * Load the data of Rule from the table
-     *
-     *
+     * 
      * @param nRuleId The identifier of Rule
+     * @param ruleTypesSet The rule type set
      * @return the instance of the Rule
      */
     Rule load( int nRuleId, IRuleTypesSet ruleTypesSet );
 
     /**
      * Load the list of rules
-     *
+     * @param ruleTypesSet The rule type set
      * @return The Collection of the Rules
      */
     List<Rule> selectRuleList( IRuleTypesSet ruleTypesSet );
@@ -82,7 +82,7 @@ public interface IRuleDAO
 
     /**
      * Update the record in the table
-     *
+     * 
      * @param rule The reference of rule
      */
     void store( Rule rule );

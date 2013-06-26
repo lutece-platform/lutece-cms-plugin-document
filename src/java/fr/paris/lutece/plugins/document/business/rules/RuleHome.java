@@ -116,7 +116,7 @@ public final class RuleHome
     {
         List<Rule> listRules = _dao.selectRuleList( _ruleTypesSet );
 
-        return (List<Rule>) I18nService.localizeCollection( listRules, locale );
+        return I18nService.localizeCollection( listRules, locale );
     }
 
     /**

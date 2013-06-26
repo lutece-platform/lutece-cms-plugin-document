@@ -37,6 +37,8 @@ import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.util.xml.XmlUtil;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * File attribute implementation
@@ -55,7 +57,7 @@ public class FileManager extends DefaultManager
      * Gets the template to enter the attribute value
      * @return The template to enter the attribute value
      */
-    String getCreateTemplate(  )
+    String getCreateTemplate( )
     {
         return TEMPLATE_CREATE_ATTRIBUTE;
     }
@@ -64,7 +66,7 @@ public class FileManager extends DefaultManager
      * Gets the template to modify the attribute value
      * @return The template to modify the attribute value
      */
-    String getModifyTemplate(  )
+    String getModifyTemplate( )
     {
         return TEMPLATE_MODIFY_ATTRIBUTE;
     }
@@ -73,7 +75,7 @@ public class FileManager extends DefaultManager
      * Gets the template to enter the parameters of the attribute value
      * @return The template to enter the parameters of the attribute value
      */
-    String getCreateParametersTemplate(  )
+    String getCreateParametersTemplate( )
     {
         return null;
     }
@@ -82,36 +84,34 @@ public class FileManager extends DefaultManager
      * Gets the template to modify the parameters of the attribute value
      * @return The template to modify the parameters of the attribute value
      */
-    String getModifyParametersTemplate(  )
+    String getModifyParametersTemplate( )
     {
         return null;
     }
 
     /**
-     * Get the XML data corresponding to the attribute to build the document XML content
+     * Get the XML data corresponding to the attribute to build the document XML
+     * content
      * @param document The document
-     * @param attribute  The attribute
+     * @param attribute The attribute
      * @return The XML value of the attribute
      */
     public String getAttributeXmlValue( Document document, DocumentAttribute attribute )
     {
-        StringBuffer sbXml = new StringBuffer(  );
+        StringBuffer sbXml = new StringBuffer( );
 
-        if ( ( attribute.getBinaryValue(  ) != null ) && ( attribute.getBinaryValue(  ).length != 0 ) )
+        if ( ( attribute.getBinaryValue( ) != null ) && ( attribute.getBinaryValue( ).length != 0 ) )
         {
             XmlUtil.beginElement( sbXml, TAG_FILE_RESOURCE );
-            XmlUtil.addElement( sbXml, TAG_DOCUMENT_ID, document.getId(  ) );
-            XmlUtil.addElement( sbXml, TAG_ATTRIBUTE_ID, attribute.getId(  ) );
-            XmlUtil.addElement( sbXml, TAG_CONTENT_TYPE, attribute.getValueContentType(  ) );
+            XmlUtil.addElement( sbXml, TAG_DOCUMENT_ID, document.getId( ) );
+            XmlUtil.addElement( sbXml, TAG_ATTRIBUTE_ID, attribute.getId( ) );
+            XmlUtil.addElement( sbXml, TAG_CONTENT_TYPE, attribute.getValueContentType( ) );
             XmlUtil.endElement( sbXml, TAG_FILE_RESOURCE );
 
-            XmlUtil.addElement( sbXml, TAG_FILE_SIZE, attribute.getBinaryValue(  ).length );
+            XmlUtil.addElement( sbXml, TAG_FILE_SIZE, attribute.getBinaryValue( ).length );
 
-            return sbXml.toString(  );
+            return sbXml.toString( );
         }
-        else
-        {
-            return "";
-        }
+        return StringUtils.EMPTY;
     }
 }

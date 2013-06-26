@@ -41,7 +41,8 @@ import java.util.Locale;
 
 
 /**
- * This class provides instances management methods (create, find, ...) for SpaceAction objects
+ * This class provides instances management methods (create, find, ...) for
+ * SpaceAction objects
  */
 public final class SpaceActionHome
 {
@@ -51,7 +52,7 @@ public final class SpaceActionHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private SpaceActionHome(  )
+    private SpaceActionHome( )
     {
     }
 
@@ -62,8 +63,8 @@ public final class SpaceActionHome
      */
     public static List<SpaceAction> getActionsList( Locale locale )
     {
-        List<SpaceAction> listActions = _dao.selectActions(  );
+        List<SpaceAction> listActions = _dao.selectActions( );
 
-        return (List) I18nService.localizeCollection( listActions, locale );
+        return I18nService.localizeCollection( listActions, locale );
     }
 }
