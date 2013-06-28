@@ -18,7 +18,7 @@
     	 <xsl:value-of select="space-id" />
     </xsl:variable>
         <li id="node-{$index}">
-            <!-- img src="{space-icon-url}" alt="" hspace="5" / -->
+            <img src="{space-icon-url}" alt="" hspace="5" />
             <a href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter={space-id}">
                <xsl:choose>
                     <xsl:when test="space-id=$current-space-id" >
