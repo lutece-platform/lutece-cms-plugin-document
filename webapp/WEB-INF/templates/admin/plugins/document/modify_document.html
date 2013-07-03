@@ -61,8 +61,10 @@ ${extendableResourceActionsHtml!}
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="document_summary">#i18n{document.modify_document.labelDocumentSummary}* : </label>
-                    <textarea type="text" name="document_summary" id="document_summary" class="input-xlarge" rows="2" >${document.summary}</textarea> 
-                    <p class="help-block">#i18n{document.modify_document.helpDocumentSummary}</p>
+                    <div class="controls">
+                        <textarea name="document_summary" id="document_summary" class="input-xlarge" rows="2" >${document.summary}</textarea> 
+                    	<p class="help-block">#i18n{document.modify_document.helpDocumentSummary}</p>
+                    </div>
                 </div>
             </fieldset> 
             <fieldset>
@@ -78,6 +80,7 @@ ${extendableResourceActionsHtml!}
 </div>
 </#escape>
 <#include "/admin/util/editor/editor.html" />
+<@initEditor />
 <script src="js/jquery/plugins/ui/jquery-ui-1.8.16.custom.min.js"></script>
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <@getDatePickerRange idFieldFrom="document_validity_begin" idFieldTo="document_validity_end" language=locale />
@@ -87,9 +90,9 @@ ${extendableResourceActionsHtml!}
         doToggleId( "#dublin_core_meta" );
         $("#comments").next().toggle();
         doToggleId( "#comments" );
-		if( $("div#category-content ul li input:checked").length == 0 ){
+// 		if( $("div#category-content ul li input:checked").length == 0 ){
 			$("#category").next().toggle();
-		}
+// 		}
 		doToggleId( "#category" );
     });
 
