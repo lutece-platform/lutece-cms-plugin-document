@@ -1,5 +1,4 @@
-<script type="text/javascript" src="js/jquery/plugins/ui/datepicker/ui.datepicker.js" ></script>
-<script type="text/javascript" src="js/jquery/plugins/ui/datepicker/ui.datepicker-${locale.language}.js" ></script>
+
 <#escape x as x?html>
 <div class="row-fluid">
 	<form method="post" action="jsp/admin/plugins/document/DoCreateDocument.jsp" enctype="multipart/form-data" >
@@ -67,6 +66,7 @@
 </#escape>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
+
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />
 <@getDatePickerRange idFieldFrom="document_validity_begin" idFieldTo="document_validity_end" language=locale />
