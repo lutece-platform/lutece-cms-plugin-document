@@ -53,7 +53,7 @@
         </fieldset>
         
     </div>
-    <div class="span8">
+    <div class="span9">
         <fieldset>
             <legend>#i18n{document.modify_document_type.titleAttributesList}</legend>
             <form class="form-search" method="post" name="AddAttribute" action="jsp/admin/plugins/document/AddDocumentTypeAttribute.jsp">
@@ -67,7 +67,7 @@
                     <tr>
                         <th>#i18n{document.modify_document_type.columnAttributeName}</th>
                         <th>#i18n{document.modify_document_type.columnAttributeCode}</th>
-                        <th>#i18n{document.modify_document_type.columnAttributeDescription}</th>
+                        <!-- th>#i18n{document.modify_document_type.columnAttributeDescription}</th -->
                         <th>#i18n{document.modify_document_type.columnAttributeType}</th>
                         <th>#i18n{document.modify_document_type.columnAttributeRequired}</th>
                         <th>#i18n{document.modify_document_type.columnAttributeSearchable}</th>
@@ -77,9 +77,8 @@
                 <tbody>      
                     <#list document_type.attributes as attribute >
                     <tr>
-                        <td> ${attribute.name}</td>
+                        <td> ${attribute.name}<br><small>${attribute.description} </small></td>
                         <td> ${attribute.code} </td>
-                        <td> ${attribute.description} </td>
                         <td> ${attribute.codeAttributeType} </td>
                         <td>
                             <#if attribute.required = true >#i18n{portal.util.labelYes}<#else>#i18n{portal.util.labelNo}</#if>
@@ -133,7 +132,7 @@
                                     <input type="file" id="stylesheet_content" name="stylesheet_content" maxlength="100"/>
                                 </div>
                                 <div class="controls">
-                                    <label class="checkbox" for="stylesheet_admin_update" >
+                                    <label class="checkbox" for="stylesheet_content_update" >
                                         <input type="checkbox" id="stylesheet_content_update" name="stylesheet_content_update" value="true" />#i18n{document.modify_document_type.labelStyleSheetContentUpdate}
                                     </label>
                                 </div> 

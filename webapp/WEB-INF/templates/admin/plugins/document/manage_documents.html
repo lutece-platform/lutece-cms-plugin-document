@@ -101,7 +101,7 @@
             <table class="table table-striped table-condensed">
                 <tr>
                     <th><input id="select_all" name="select_all" type="checkbox" /></th>
-                    <th>#i18n{document.manage_documents.labelDocument}</th>
+                    <th class="span7">#i18n{document.manage_documents.labelDocument}</th>
                     <th>#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url="jsp/admin/plugins/document/ManageDocuments.jsp" attribute="publishedStatus" /></th>
                     <th>#i18n{document.manage_documents.labelActions}</th>
                 </tr>
@@ -109,9 +109,13 @@
                 <tr>
                     <td><input id="document_selection" name="document_selection" type="checkbox" value="${document.id}" /></td>
                     <td>
-                        <p><img src="${document.thumbnail}&nocache" alt="${document.title}" title="${document.title} - ${document.type}" class="thumblist" />${document.id} - ${document.title}</p>
-                        <#if document.comment != ""> <p class="alert alert-error">${document.comment}</p></#if>
-                        <p>#i18n{document.manage_documents.labelState} : <strong>${document.state}</strong> | ${document.dateModification}</p>
+                        <p>
+						 <#if document.thumbnail != "images/admin/skin/plugins/document/default_icon.png"><img src="${document.thumbnail}&nocache" alt="${document.title}" title="${document.title} - ${document.type}" class="thumblist" /></#if>
+						${document.id} - ${document.title}</p>
+                        <#if document.comment != "">
+							<p class="alert alert-error">${document.comment}</p>
+						</#if>
+						<p>#i18n{document.manage_documents.labelState} : <strong>${document.state}</strong> | <i class="icon-calendar"></i> ${document.dateModification}</p>
                     </td>
                     <td>
                         <#if document.publishedStatus = 0> 
