@@ -41,13 +41,14 @@
             <div class="controls">
 			<label class="checkbox" for="required" >
 				<input class="checkbox" type="checkbox" name="required" id="required" tabindex="4" <#if required>checked="checked"</#if> />
-				#i18n{document.add_document_type_attribute.helpRequired}</label>
-			</div>
+				#i18n{document.add_document_type_attribute.helpRequired}
+			</label>
+		</div>
 	</div>
     <div class="control-group">
 		<label class="control-label" for="searchable" >#i18n{document.add_document_type_attribute.labelSearchable} :</label>
             <div class="controls">
-			<label class="checkbox" for="required" >
+			<label class="checkbox" for="searchable" >
 				<input class="checkbox" type="checkbox" name="searchable" id="searchable" tabindex="5" <#if searchable>checked="checked"</#if> />
 			 	#i18n{document.add_document_type_attribute.helpSearchable}
 			</label>
