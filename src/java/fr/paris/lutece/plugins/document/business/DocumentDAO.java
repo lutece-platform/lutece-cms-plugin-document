@@ -59,7 +59,7 @@ public final class DocumentDAO implements IDocumentDAO
         " a.date_validity_end , a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document FROM document a," +
         " document_space b, document_workflow_state c, document_type d WHERE a.id_space = b.id_space AND a.id_state = c.id_state" +
         " AND a.code_document_type = d.code_document_type AND a.id_document = ?  ";
-    private static final String SQL_QUERY_SELECT_FROM_SPACE_ID = " SELECT a.id_document, a.document_summary" +
+    private static final String SQL_QUERY_SELECT_FROM_SPACE_ID = " SELECT a.id_document, a.title, a.document_summary" +
         " FROM document a WHERE a.id_space = ?  ";
     private static final String SQL_QUERY_INSERT = " INSERT INTO document ( id_document, code_document_type, title, date_creation, " +
         " date_modification, xml_working_content, xml_validated_content, id_space, id_state	, document_summary, document_comment , " +
@@ -366,7 +366,8 @@ public final class DocumentDAO implements IDocumentDAO
         {
             Document document = new Document(  );
             document.setId( daoUtil.getInt( 1 ) );
-            document.setSummary( daoUtil.getString( 2 ) );
+            document.setTitle(daoUtil.getString( 2 ) );
+            document.setSummary( daoUtil.getString( 3 ) );
             list.add( document );
         }
 
