@@ -1,13 +1,15 @@
 <div class="control-group">
-    <label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
-    <select id="${attribute.code}" name="${attribute.code}" >			
-    <#list parameters.items as item>
-        <#if attribute.textValue="${item}">
-            <option selected="selected" value="${item}" >${item}</option>    			    			
-        <#else>
-            <option value="${item}" >${item}</option>
-        </#if>
-    </#list>		
-    </select>
-    <p class="help-block">${attribute.description}</p>
+	<label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
+	<div class="controls">
+		<select id="${attribute.code}" name="${attribute.code}" >
+			<#list parameters.items as item>
+				<#if attribute.textValue="${item}">
+					<option selected="selected" value="${item}" >${item}</option>
+				<#else>
+					<option value="${item}" >${item}</option>
+				</#if>
+			</#list>		
+		</select>
+		<p class="help-block">${attribute.description}</p>
+	</div>
 </div>
