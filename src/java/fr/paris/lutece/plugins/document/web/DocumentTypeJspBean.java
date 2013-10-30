@@ -361,6 +361,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
             UrlItem url = new UrlItem( JSP_ADD_DOCUMENT_TYPE_ATTRIBUTE );
             url.addParameter( PARAMETER_SESSION, PARAMETER_SESSION );
             url.addParameter( PARAMETER_ATTRIBUTE_TYPE_CODE, strAttributeTypeCode );
+            url.addParameter( PARAMETER_DOCUMENT_TYPE_CODE, _strDocumentTypeCode );
 
             return url.getUrl( );
         }

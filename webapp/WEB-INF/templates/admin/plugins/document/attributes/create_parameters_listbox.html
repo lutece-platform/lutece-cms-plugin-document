@@ -53,7 +53,11 @@
 		<button  name="bydefault" value="bydefault" class="btn btn-primary btn-small" type="submit" >
 			#i18n{document.attributeType.listbox.btnDefItem}
 		</button>
-		<label for="${defaultValue.name}">&nbsp;</label>
+	</div>
+</div>
+<div class="control-group">
+	<label for="${defaultValue.name}">#i18n{document.attributeType.listbox.defaultValue}</label>
+	<div class="controls">
 		<input type="text" id="${defaultValue.name}" name="${defaultValue.name}" value="${valueDefaultValue!}" readonly="readonly" tabindex="11" />
 	</div>
 </div>
