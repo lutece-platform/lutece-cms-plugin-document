@@ -48,6 +48,7 @@ import fr.paris.lutece.plugins.document.business.workflow.DocumentActionHome;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataHandler;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
+import fr.paris.lutece.plugins.document.utils.ImageUtils;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.plugins.document.web.DocumentResourceServlet;
 import fr.paris.lutece.portal.business.portlet.Portlet;
@@ -66,6 +67,7 @@ import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.xml.XmlUtil;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,6 +76,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 
@@ -93,6 +96,8 @@ public class DocumentService
     private static final String PARAMETER_PAGE_TEMPLATE_DOCUMENT_ID = "page_template_id";
     private static final String PARAMETER_CATEGORY = "category_id";
     private static final String PARAMETER_ATTRIBUTE_UPDATE = "update_";
+    private static final String PARAMETER_CROPPABLE = "_croppable";
+    private static final String PARAMETER_WIDTH = "_width";
 
     //MESSAGES
     private static final String MESSAGE_ERROR_DATEEND_BEFORE_DATEBEGIN = "document.message.dateEndBeforeDateBegin";
@@ -654,7 +659,9 @@ public class DocumentService
         String strParameterStringValue = mRequest.getParameter( attribute.getCode( ) );
         FileItem fileParameterBinaryValue = mRequest.getFile( attribute.getCode( ) );
         String strIsUpdatable = mRequest.getParameter( PARAMETER_ATTRIBUTE_UPDATE + attribute.getCode( ) );
+        String strToResize = mRequest.getParameter( attribute.getCode( ) + PARAMETER_CROPPABLE );
         boolean bIsUpdatable = ( ( strIsUpdatable == null ) || strIsUpdatable.equals( "" ) ) ? false : true;
+        boolean bToResize = ( ( strToResize == null ) || strToResize.equals( "" ) ) ? false : true;
 
         if ( strParameterStringValue != null ) // If the field is a string
         {
@@ -717,6 +724,29 @@ public class DocumentService
 
                 return AdminMessageService.getMessageUrl( mRequest, MESSAGE_ATTRIBUTE_VALIDATION_ERROR, listArguments,
                         AdminMessage.TYPE_STOP );
+            }
+
+            if ( bToResize && !ArrayUtils.isEmpty( bytes ) )
+            {
+                // Resize image
+                String strWidth = mRequest.getParameter( attribute.getCode( ) + PARAMETER_WIDTH );
+
+                if ( !StringUtils.isNumeric( strWidth ) )
+                {
+                    String[] listArguments = { attribute.getName( ), "La largeur doit être un nombre" };
+                    return AdminMessageService.getMessageUrl( mRequest, MESSAGE_ATTRIBUTE_VALIDATION_ERROR,
+                            listArguments, AdminMessage.TYPE_STOP );
+                }
+
+                try
+                {
+                    bytes = ImageUtils.resizeImage( bytes, Integer.valueOf( strWidth ) );
+                }
+                catch ( IOException e )
+                {
+                    return AdminMessageService.getMessageUrl( mRequest, "Erreur lors du redimenssionnement de l'image",
+                            AdminMessage.TYPE_STOP );
+                }
             }
 
             attribute.setBinaryValue( bytes );
