@@ -105,6 +105,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.Source;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 
@@ -117,8 +118,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     public static final String PARAMETER_SPACE_ID_FILTER = "id_space_filter";
 
     private static final long serialVersionUID = 3884593136805763150L;
-    private static final String SPACE_TREE_XSL_UNIQUE_PREFIX = UniqueIDGenerator.getNewId(  ) + "SpacesTree";
-    private static final String DOCUMENT_STYLE_PREFIX_ID = UniqueIDGenerator.getNewId(  ) + "document-";
+    private static final String SPACE_TREE_XSL_UNIQUE_PREFIX = UniqueIDGenerator.getNewId( ) + "SpacesTree";
+    private static final String DOCUMENT_STYLE_PREFIX_ID = UniqueIDGenerator.getNewId( ) + "document-";
 
     // Templates
     private static final String TEMPLATE_MANAGE_DOCUMENTS = "admin/plugins/document/manage_documents.html";
@@ -234,7 +235,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     /**
      * Constructor
      */
-    public DocumentJspBean(  )
+    public DocumentJspBean( )
     {
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DOCUMENTS_PER_PAGE, 10 );
     }
@@ -249,10 +250,10 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         this._strSavedReferer = null;
         setPageTitleProperty( null );
 
-        AdminUser user = getUser(  );
+        AdminUser user = getUser( );
 
         // Gets new criterias or space changes from the request
-        DocumentFilter filter = new DocumentFilter(  );
+        DocumentFilter filter = new DocumentFilter( );
         _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
         _strCurrentDocumentTypeFilter = getDocumentType( request, filter );
         _strCurrentStateFilter = getState( request, filter );
@@ -262,72 +263,72 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         _strViewType = getViewType( request );
 
         //Check if space is authorized, change space to default space else
-        if ( !DocumentSpacesService.getInstance(  )
-                                       .isAuthorizedViewByWorkgroup( IntegerUtils.convert( _strCurrentSpaceId ), user ) ||
-                !DocumentSpacesService.getInstance(  )
-                                          .isAuthorizedViewByRole( IntegerUtils.convert( _strCurrentSpaceId ), user ) )
+        if ( !DocumentSpacesService.getInstance( ).isAuthorizedViewByWorkgroup(
+                IntegerUtils.convert( _strCurrentSpaceId ), user )
+                || !DocumentSpacesService.getInstance( ).isAuthorizedViewByRole(
+                        IntegerUtils.convert( _strCurrentSpaceId ), user ) )
         {
-            filter.setIdSpace( DocumentSpacesService.getInstance(  ).getUserDefaultSpace( user ) );
-            _strCurrentSpaceId = Integer.toString( filter.getIdSpace(  ) );
+            filter.setIdSpace( DocumentSpacesService.getInstance( ).getUserDefaultSpace( user ) );
+            _strCurrentSpaceId = Integer.toString( filter.getIdSpace( ) );
         }
 
         // Build document list according criterias
-        Collection<Integer> listDocumentIds = DocumentHome.findPrimaryKeysByFilter( filter, getLocale(  ) );
+        Collection<Integer> listDocumentIds = DocumentHome.findPrimaryKeysByFilter( filter, getLocale( ) );
 
         // Spaces
-        String strXmlSpaces = DocumentSpacesService.getInstance(  ).getXmlSpacesList( user );
-        Source sourceXsl = DocumentSpacesService.getInstance(  ).getTreeXsl(  );
-        Map<String, String> htXslParameters = new HashMap<String, String>(  );
+        String strXmlSpaces = DocumentSpacesService.getInstance( ).getXmlSpacesList( user );
+        Source sourceXsl = DocumentSpacesService.getInstance( ).getTreeXsl( );
+        Map<String, String> htXslParameters = new HashMap<String, String>( );
         htXslParameters.put( XSL_PARAMETER_CURRENT_SPACE, _strCurrentSpaceId );
 
-        XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
+        XmlTransformerService xmlTransformerService = new XmlTransformerService( );
         String strSpacesTree = xmlTransformerService.transformBySourceWithXslCache( strXmlSpaces, sourceXsl,
                 SPACE_TREE_XSL_UNIQUE_PREFIX, htXslParameters, null );
 
-        List<SpaceAction> listSpaceActions = SpaceActionHome.getActionsList( getLocale(  ) );
+        List<SpaceAction> listSpaceActions = SpaceActionHome.getActionsList( getLocale( ) );
         int nCurrentSpaceId = IntegerUtils.convert( _strCurrentSpaceId );
         DocumentSpace currentSpace = DocumentSpaceHome.findByPrimaryKey( nCurrentSpaceId );
         listSpaceActions = (List<SpaceAction>) RBACService.getAuthorizedActionsCollection( listSpaceActions,
-                currentSpace, getUser(  ) );
+                currentSpace, getUser( ) );
 
         // Build filter combos
         // Document Types
-        ReferenceList listDocumentTypes = DocumentSpaceHome.getAllowedDocumentTypes( IntegerUtils.convert(
-                    _strCurrentSpaceId ) );
+        ReferenceList listDocumentTypes = DocumentSpaceHome.getAllowedDocumentTypes( IntegerUtils
+                .convert( _strCurrentSpaceId ) );
         listDocumentTypes = RBACService.getAuthorizedReferenceList( listDocumentTypes, DocumentType.RESOURCE_TYPE,
                 DocumentTypeResourceIdService.PERMISSION_VIEW, user );
-        listDocumentTypes.addItem( FILTER_ALL, I18nService.getLocalizedString( PROPERTY_FILTER_ALL, getLocale(  ) ) );
+        listDocumentTypes.addItem( FILTER_ALL, I18nService.getLocalizedString( PROPERTY_FILTER_ALL, getLocale( ) ) );
 
         // Documents States
-        ReferenceList listStates = DocumentStateHome.getDocumentStatesList( getLocale(  ) );
-        listStates.addItem( FILTER_ALL, I18nService.getLocalizedString( PROPERTY_FILTER_ALL, getLocale(  ) ) );
+        ReferenceList listStates = DocumentStateHome.getDocumentStatesList( getLocale( ) );
+        listStates.addItem( FILTER_ALL, I18nService.getLocalizedString( PROPERTY_FILTER_ALL, getLocale( ) ) );
 
         // Childs spaces
         Collection<DocumentSpace> listChildSpaces = DocumentSpaceHome.findChilds( nCurrentSpaceId );
         listChildSpaces = AdminWorkgroupService.getAuthorizedCollection( listChildSpaces, user );
 
         // Creation document types list for the current space
-        ReferenceList listCreateDocumentTypes = DocumentSpaceHome.getAllowedDocumentTypes( IntegerUtils.convert(
-                    _strCurrentSpaceId ) );
+        ReferenceList listCreateDocumentTypes = DocumentSpaceHome.getAllowedDocumentTypes( IntegerUtils
+                .convert( _strCurrentSpaceId ) );
         listCreateDocumentTypes = RBACService.getAuthorizedReferenceList( listCreateDocumentTypes,
                 DocumentType.RESOURCE_TYPE, DocumentTypeResourceIdService.PERMISSION_CREATE, user );
 
         LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( (List<Integer>) listDocumentIds,
                 _nItemsPerPage, getHomeUrl( request ), Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex,
-                getLocale(  ) );
+                getLocale( ) );
 
-        List<Document> listDocuments = new ArrayList<Document>(  );
+        List<Document> listDocuments = new ArrayList<Document>( );
 
-        for ( Integer documentId : paginator.getPageItems(  ) )
+        for ( Integer documentId : paginator.getPageItems( ) )
         {
             Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( documentId );
 
             if ( document != null )
             {
-                document.setLocale( getLocale(  ) );
-                DocumentService.getInstance(  ).getActions( document, getLocale(  ), getUser(  ) );
+                document.setLocale( getLocale( ) );
+                DocumentService.getInstance( ).getActions( document, getLocale( ), getUser( ) );
 
-                DocumentService.getInstance(  ).getPublishedStatus( document );
+                DocumentService.getInstance( ).getPublishedStatus( document );
                 listDocuments.add( document );
             }
         }
@@ -344,13 +345,13 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             Collections.sort( listDocuments, new AttributeComparator( strSortedAttributeName, bIsAscSort ) );
         }
 
-        HashMap<String, Object> model = new HashMap<String, Object>(  );
+        HashMap<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_SPACES_TREE, strSpacesTree );
         model.put( MARK_SPACE_ACTIONS_LIST, listSpaceActions );
         model.put( MARK_SPACE, currentSpace );
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_NB_ITEMS_PER_PAGE, StringUtils.EMPTY + _nItemsPerPage );
-        model.put( MARK_VIEW_TYPES_LIST, DocumentSpaceHome.getViewTypeList( getLocale(  ) ) );
+        model.put( MARK_VIEW_TYPES_LIST, DocumentSpaceHome.getViewTypeList( getLocale( ) ) );
         model.put( MARK_VIEW_TYPE, _strViewType );
         model.put( MARK_DOCUMENTS_LIST, listDocuments );
         model.put( MARK_DOCUMENT_TYPES_FILTER_LIST, listDocumentTypes );
@@ -360,9 +361,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         model.put( MARK_CHILD_SPACES_LIST, listChildSpaces );
         model.put( MARK_DOCUMENT_TYPES_LIST, listCreateDocumentTypes );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_DOCUMENTS, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_DOCUMENTS, getLocale( ), model );
 
-        return getAdminPage( template.getHtml(  ) );
+        return getAdminPage( template.getHtml( ) );
     }
 
     /**
@@ -375,10 +376,10 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         saveReferer( request );
         String strDocumentTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
 
-        if ( ( _strCurrentSpaceId == null ) ||
-                ( !DocumentService.getInstance(  )
-                                      .isAuthorizedAdminDocument( IntegerUtils.convert( _strCurrentSpaceId ),
-                    strDocumentTypeCode, DocumentTypeResourceIdService.PERMISSION_CREATE, getUser(  ) ) ) )
+        if ( ( _strCurrentSpaceId == null )
+                || ( !DocumentService.getInstance( ).isAuthorizedAdminDocument(
+                        IntegerUtils.convert( _strCurrentSpaceId ), strDocumentTypeCode,
+                        DocumentTypeResourceIdService.PERMISSION_CREATE, getUser( ) ) ) )
         {
             return getManageDocuments( request );
         }
@@ -386,10 +387,10 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strDocumentTypeCode );
         DateFormat dateFormat = new SimpleDateFormat( CONSTANT_DATE_FORMAT, getLocale( ) );
         String strCurrentDate = dateFormat.format( new Date( ) );
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        model.put( MARK_LOCALE, getLocale(  ).getLanguage(  ) );
-        model.put( MARK_DOCUMENT_TYPE, documentType.getCode(  ) );
+        model.put( MARK_LOCALE, getLocale( ).getLanguage( ) );
+        model.put( MARK_DOCUMENT_TYPE, documentType.getCode( ) );
 
         model.put( MARK_CATEGORY, getCategoryCreateForm( request ) );
         model.put( MARK_METADATA, getMetadataCreateForm( request, strDocumentTypeCode ) );
@@ -401,12 +402,12 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         // PageTemplate
         int nIndexRow = 1;
-        StringBuffer strPageTemplatesRow = new StringBuffer(  );
+        StringBuffer strPageTemplatesRow = new StringBuffer( );
 
         // Scan of the list
-        for ( DocumentPageTemplate documentPageTemplate : DocumentPageTemplateHome.getPageTemplatesList(  ) )
+        for ( DocumentPageTemplate documentPageTemplate : DocumentPageTemplateHome.getPageTemplatesList( ) )
         {
-            strPageTemplatesRow.append( getTemplatesPageList( documentPageTemplate.getId(  ), 0,
+            strPageTemplatesRow.append( getTemplatesPageList( documentPageTemplate.getId( ), 0,
                     Integer.toString( nIndexRow ) ) );
             nIndexRow++;
         }
@@ -416,12 +417,12 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         model.put( MARK_DOCUMENT_PAGE_TEMPLATES_LIST, strPageTemplatesRow );
 
-        ReferenceList listMailingLists = AdminMailingListService.getMailingLists( getUser(  ) );
+        ReferenceList listMailingLists = AdminMailingListService.getMailingLists( getUser( ) );
         model.put( MARK_MAILINGLISTS_LIST, listMailingLists );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_DOCUMENT, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_DOCUMENT, getLocale( ), model );
 
-        return getAdminPage( template.getHtml(  ) );
+        return getAdminPage( template.getHtml( ) );
     }
 
     /**
@@ -431,13 +432,13 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     private String getCategoryCreateForm( HttpServletRequest request )
     {
-        AdminUser user = getUser(  );
-        HashMap<String, Collection<CategoryDisplay>> model = new HashMap<String, Collection<CategoryDisplay>>(  );
+        AdminUser user = getUser( );
+        HashMap<String, Collection<CategoryDisplay>> model = new HashMap<String, Collection<CategoryDisplay>>( );
         model.put( MARK_CATEGORY_LIST, CategoryService.getAllCategoriesDisplay( user ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_FORM_CATEGORY, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_FORM_CATEGORY, getLocale( ), model );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
@@ -448,15 +449,15 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     private String getCategoryModifyForm( HttpServletRequest request, Document document )
     {
-        HashMap<String, Collection<CategoryDisplay>> model = new HashMap<String, Collection<CategoryDisplay>>(  );
-        Collection<CategoryDisplay> listCategoryDisplay = CategoryService.getAllCategoriesDisplay( document.getCategories(  ),
-                getUser(  ) );
+        HashMap<String, Collection<CategoryDisplay>> model = new HashMap<String, Collection<CategoryDisplay>>( );
+        Collection<CategoryDisplay> listCategoryDisplay = CategoryService.getAllCategoriesDisplay(
+                document.getCategories( ), getUser( ) );
 
         model.put( MARK_CATEGORY_LIST, listCategoryDisplay );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_FORM_CATEGORY, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_FORM_CATEGORY, getLocale( ), model );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
@@ -480,7 +481,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     private String getMetadataModifyForm( HttpServletRequest request, Document document )
     {
-        MetadataHandler hMetadata = getMetadataHandler( document.getCodeDocumentType(  ) );
+        MetadataHandler hMetadata = getMetadataHandler( document.getCodeDocumentType( ) );
 
         return ( hMetadata != null ) ? hMetadata.getModifyForm( request, document.getXmlMetadata( ) )
                 : StringUtils.EMPTY;
@@ -495,7 +496,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     {
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strDocumentTypeCode );
 
-        return documentType.metadataHandler(  );
+        return documentType.metadataHandler( );
     }
 
     /**
@@ -508,21 +509,20 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         saveReferer( request );
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
-        AdminUser user = getUser(  );
+        AdminUser user = getUser( );
 
         String strDocumentTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
 
-        if ( !DocumentService.getInstance(  )
-                                 .isAuthorizedAdminDocument( IntegerUtils.convert( _strCurrentSpaceId ),
-                    strDocumentTypeCode, DocumentTypeResourceIdService.PERMISSION_CREATE, user ) )
+        if ( !DocumentService.getInstance( ).isAuthorizedAdminDocument( IntegerUtils.convert( _strCurrentSpaceId ),
+                strDocumentTypeCode, DocumentTypeResourceIdService.PERMISSION_CREATE, user ) )
         {
             return getHomeUrl( request );
         }
 
-        Document document = new Document(  );
+        Document document = new Document( );
         document.setCodeDocumentType( strDocumentTypeCode );
 
-        String strError = DocumentService.getInstance(  ).getDocumentData( multipartRequest, document, getLocale(  ) );
+        String strError = DocumentService.getInstance( ).getDocumentData( multipartRequest, document, getLocale( ) );
 
         if ( strError != null )
         {
@@ -531,19 +531,19 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         document.setSpaceId( IntegerUtils.convert( _strCurrentSpaceId ) );
         document.setStateId( 1 );
-        document.setCreatorId( getUser(  ).getUserId(  ) );
+        document.setCreatorId( getUser( ).getUserId( ) );
 
         try
         {
-            DocumentService.getInstance(  ).createDocument( document, getUser(  ) );
+            DocumentService.getInstance( ).createDocument( document, getUser( ) );
         }
         catch ( DocumentException e )
         {
-            return getErrorMessageUrl( request, e.getI18nMessage(  ) );
+            return getErrorMessageUrl( request, e.getI18nMessage( ) );
         }
 
         // process
-        ResourceEnhancer.doCreateResourceAddOn( request, PROPERTY_RESOURCE_TYPE, document.getId(  ) );
+        ResourceEnhancer.doCreateResourceAddOn( request, PROPERTY_RESOURCE_TYPE, document.getId( ) );
 
         return getHomeUrl( request );
     }
@@ -559,60 +559,60 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
 
-        if ( !DocumentService.getInstance( )
-                                    .isAuthorizedAdminDocument( document.getSpaceId(  ),
-                    document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_MODIFY, getUser(  ) ) )
+        if ( !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_MODIFY, getUser( ) ) )
         {
             return getManageDocuments( request );
         }
 
-        String strStateId = ( request.getParameter( PARAMETER_STATE_ID ) != null )
-            ? request.getParameter( PARAMETER_STATE_ID ) : StringUtils.EMPTY;
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        String strStateId = ( request.getParameter( PARAMETER_STATE_ID ) != null ) ? request
+                .getParameter( PARAMETER_STATE_ID ) : StringUtils.EMPTY;
+        Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        model.put( MARK_LOCALE, getLocale(  ).getLanguage(  ) );
+        model.put( MARK_LOCALE, getLocale( ).getLanguage( ) );
         model.put( MARK_DOCUMENT, document );
 
         // Date Management
-        model.put( MARK_DATE_VALIDITY_BEGIN,
-            ( document.getDateValidityBegin(  ) == null ) ? StringUtils.EMPTY
-                                                          : DateUtil.getDateString(
-                new Date( document.getDateValidityBegin(  ).getTime(  ) ), getLocale(  ) ) );
-        model.put( MARK_DATE_VALIDITY_END,
-            ( document.getDateValidityEnd(  ) == null ) ? StringUtils.EMPTY
-                                                        : DateUtil.getDateString(
-                new Date( document.getDateValidityEnd(  ).getTime(  ) ), getLocale(  ) ) );
+        model.put( MARK_DATE_VALIDITY_BEGIN, ( document.getDateValidityBegin( ) == null ) ? StringUtils.EMPTY
+                : DateUtil.getDateString( new Date( document.getDateValidityBegin( ).getTime( ) ), getLocale( ) ) );
+        model.put(
+                MARK_DATE_VALIDITY_END,
+                ( document.getDateValidityEnd( ) == null ) ? StringUtils.EMPTY : DateUtil.getDateString( new Date(
+                        document.getDateValidityEnd( ).getTime( ) ), getLocale( ) ) );
 
         // PageTemplate
         int nIndexRow = 1;
-        StringBuffer strPageTemplatesRow = new StringBuffer(  );
+        StringBuffer strPageTemplatesRow = new StringBuffer( );
 
         // Scan of the list
-        for ( DocumentPageTemplate documentPageTemplate : DocumentPageTemplateHome.getPageTemplatesList(  ) )
+        for ( DocumentPageTemplate documentPageTemplate : DocumentPageTemplateHome.getPageTemplatesList( ) )
         {
-            strPageTemplatesRow.append( getTemplatesPageList( documentPageTemplate.getId(  ),
-                    document.getPageTemplateDocumentId(  ), Integer.toString( nIndexRow ) ) );
+            strPageTemplatesRow.append( getTemplatesPageList( documentPageTemplate.getId( ),
+                    document.getPageTemplateDocumentId( ), Integer.toString( nIndexRow ) ) );
             nIndexRow++;
         }
 
         model.put( MARK_DOCUMENT_PAGE_TEMPLATES_LIST, strPageTemplatesRow );
 
-        ReferenceList listMailingLists = AdminMailingListService.getMailingLists( getUser(  ) );
+        ReferenceList listMailingLists = AdminMailingListService.getMailingLists( getUser( ) );
         model.put( MARK_MAILINGLISTS_LIST, listMailingLists );
 
         model.put( MARK_CATEGORY, getCategoryModifyForm( request, document ) );
         model.put( MARK_METADATA, getMetadataModifyForm( request, document ) );
-        model.put( MARK_FIELDS,
-            DocumentService.getInstance(  ).getModifyForm( document, getLocale(  ), AppPathService.getBaseUrl( request ) ) );
+        model.put(
+                MARK_FIELDS,
+                DocumentService.getInstance( ).getModifyForm( document, getLocale( ),
+                        AppPathService.getBaseUrl( request ) ) );
         model.put( MARK_STATE_ID, strStateId );
 
-        ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, strDocumentId, Document.PROPERTY_RESOURCE_TYPE );
+        ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, strDocumentId,
+                Document.PROPERTY_RESOURCE_TYPE );
 
-        ResourceEnhancer.getModifyResourceModelAddOn( model, PROPERTY_RESOURCE_TYPE, document.getId(  ) );
+        ResourceEnhancer.getModifyResourceModelAddOn( model, PROPERTY_RESOURCE_TYPE, document.getId( ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_DOCUMENT, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_DOCUMENT, getLocale( ), model );
 
-        return getAdminPage( template.getHtml(  ) );
+        return getAdminPage( template.getHtml( ) );
     }
 
     /**
@@ -634,7 +634,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             return getHomeUrl( request );
         }
 
-        String strError = DocumentService.getInstance(  ).getDocumentData( multipartRequest, document, getLocale(  ) );
+        String strError = DocumentService.getInstance( ).getDocumentData( multipartRequest, document, getLocale( ) );
 
         if ( strError != null )
         {
@@ -643,11 +643,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         try
         {
-            DocumentService.getInstance(  ).modifyDocument( document, getUser(  ) );
+            DocumentService.getInstance( ).modifyDocument( document, getUser( ) );
         }
         catch ( DocumentException e )
         {
-            return getErrorMessageUrl( request, e.getI18nMessage(  ) );
+            return getErrorMessageUrl( request, e.getI18nMessage( ) );
         }
 
         // If a state is defined, it should be set after to the document after the modification
@@ -659,15 +659,15 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
             try
             {
-                DocumentService.getInstance(  ).changeDocumentState( document, getUser(  ), nStateId );
+                DocumentService.getInstance( ).changeDocumentState( document, getUser( ), nStateId );
             }
             catch ( DocumentException e )
             {
-                return getErrorMessageUrl( request, e.getI18nMessage(  ) );
+                return getErrorMessageUrl( request, e.getI18nMessage( ) );
             }
         }
 
-        ResourceEnhancer.doModifyResourceAddOn( request, PROPERTY_RESOURCE_TYPE, document.getId(  ) );
+        ResourceEnhancer.doModifyResourceAddOn( request, PROPERTY_RESOURCE_TYPE, document.getId( ) );
 
         return getHomeUrl( request );
     }
@@ -684,18 +684,18 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-        if ( !DocumentService.getInstance(  ).isAuthorizedAdminDocument( document.getSpaceId(  ),
-                    document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_DELETE, getUser(  ) ) )
+        if ( !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_DELETE, getUser( ) ) )
         {
             return getHomeUrl( request );
         }
 
-        Object[] messageArgs = { document.getTitle(  ) };
+        Object[] messageArgs = { document.getTitle( ) };
         UrlItem url = new UrlItem( PATH_JSP + JSP_DELETE_DOCUMENT );
         url.addParameter( PARAMETER_DOCUMENT_ID, nDocumentId );
 
-        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE, messageArgs, url.getUrl(  ),
-            AdminMessage.TYPE_CONFIRMATION );
+        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE, messageArgs, url.getUrl( ),
+                AdminMessage.TYPE_CONFIRMATION );
     }
 
     /**
@@ -710,21 +710,20 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-        if ( ( document != null ) &&
-                !DocumentService.getInstance(  )
-                                    .isAuthorizedAdminDocument( document.getSpaceId(  ),
-                    document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_DELETE, getUser(  ) ) )
+        if ( ( document != null )
+                && !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                        document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_DELETE, getUser( ) ) )
         {
             return getHomeUrl( request );
         }
 
         // Test if the document is published or assigned
-        boolean bPublishedDocument = PublishingService.getInstance(  ).isAssigned( nDocumentId );
+        boolean bPublishedDocument = PublishingService.getInstance( ).isAssigned( nDocumentId );
 
         if ( bPublishedDocument )
         {
             return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED,
-                AdminMessage.TYPE_STOP );
+                    AdminMessage.TYPE_STOP );
         }
 
         DocumentHome.remove( nDocumentId );
@@ -760,22 +759,23 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
         DocumentAction action = DocumentActionHome.findByPrimaryKey( nActionId );
 
-        if ( ( action == null ) || ( action.getFinishDocumentState(  ) == null ) || ( document == null ) ||
-                !DocumentService.getInstance(  )
-                                    .isAuthorizedAdminDocument( document.getSpaceId(  ),
-                    document.getCodeDocumentType(  ), action.getPermission(  ), getUser(  ) ) )
+        if ( ( action == null )
+                || ( action.getFinishDocumentState( ) == null )
+                || ( document == null )
+                || !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                        document.getCodeDocumentType( ), action.getPermission( ), getUser( ) ) )
         {
             return getHomeUrl( request );
         }
 
         try
         {
-            DocumentService.getInstance(  )
-                           .changeDocumentState( document, getUser(  ), action.getFinishDocumentState(  ).getId(  ) );
+            DocumentService.getInstance( ).changeDocumentState( document, getUser( ),
+                    action.getFinishDocumentState( ).getId( ) );
         }
         catch ( DocumentException e )
         {
-            return getErrorMessageUrl( request, e.getI18nMessage(  ) );
+            return getErrorMessageUrl( request, e.getI18nMessage( ) );
         }
 
         return getHomeUrl( request );
@@ -807,39 +807,47 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
         DocumentAction action = DocumentActionHome.findByPrimaryKey( nActionId );
 
-        if ( ( action == null ) || ( action.getFinishDocumentState(  ) == null ) || ( document == null ) ||
-                !DocumentService.getInstance(  )
-                                    .isAuthorizedAdminDocument( document.getSpaceId(  ),
-                    document.getCodeDocumentType(  ), action.getPermission(  ), getUser(  ) ) )
+        if ( ( action == null )
+                || ( action.getFinishDocumentState( ) == null )
+                || ( document == null )
+                || !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                        document.getCodeDocumentType( ), action.getPermission( ), getUser( ) ) )
         {
             return getHomeUrl( request );
         }
 
         try
         {
-            DocumentService.getInstance(  )
-                           .validateDocument( document, getUser(  ), action.getFinishDocumentState(  ).getId(  ) );
+            DocumentService.getInstance( ).validateDocument( document, getUser( ),
+                    action.getFinishDocumentState( ).getId( ) );
         }
         catch ( DocumentException e )
         {
-            return getErrorMessageUrl( request, e.getI18nMessage(  ) );
+            return getErrorMessageUrl( request, e.getI18nMessage( ) );
         }
 
         String strIdDocument = Integer.toString( nDocumentId );
         IndexationService.addIndexerAction( strIdDocument, DocumentIndexer.INDEXER_NAME, IndexerAction.TASK_MODIFY,
-            IndexationService.ALL_DOCUMENT );
+                IndexationService.ALL_DOCUMENT );
 
-        DocumentIndexerUtils.addIndexerAction( strIdDocument, IndexerAction.TASK_MODIFY, IndexationService.ALL_DOCUMENT );
+        DocumentIndexerUtils
+                .addIndexerAction( strIdDocument, IndexerAction.TASK_MODIFY, IndexationService.ALL_DOCUMENT );
 
-        /*Collection<Portlet> portlets = PublishingService.getInstance().getPortletsByDocumentId(Integer.toString(nDocumentId));
-        for(Portlet portlet : portlets)
-        {
-                if(PublishingService.getInstance().isPublished(nDocumentId,         portlet.getId()))
-                {
-                         IndexationService.getInstance().addIndexerAction(portlet.getPageId(), PageIndexer.INDEXER_NAME, IndexerAction.TASK_MODIFY);
-                }
-
-        }*/
+        /*
+         * Collection<Portlet> portlets =
+         * PublishingService.getInstance().getPortletsByDocumentId
+         * (Integer.toString(nDocumentId));
+         * for(Portlet portlet : portlets)
+         * {
+         * if(PublishingService.getInstance().isPublished(nDocumentId,
+         * portlet.getId()))
+         * {
+         * IndexationService.getInstance().addIndexerAction(portlet.getPageId(),
+         * PageIndexer.INDEXER_NAME, IndexerAction.TASK_MODIFY);
+         * }
+         * 
+         * }
+         */
         return getHomeUrl( request );
     }
 
@@ -869,10 +877,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
         DocumentAction action = DocumentActionHome.findByPrimaryKey( nActionId );
 
-        if ( ( action == null ) || ( action.getFinishDocumentState(  ) == null ) || ( document == null ) ||
-                !DocumentService.getInstance(  )
-                                    .isAuthorizedAdminDocument( document.getSpaceId(  ),
-                    document.getCodeDocumentType(  ), action.getPermission(  ), getUser(  ) ) )
+        if ( ( action == null )
+                || ( action.getFinishDocumentState( ) == null )
+                || ( document == null )
+                || !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                        document.getCodeDocumentType( ), action.getPermission( ), getUser( ) ) )
         {
             return getHomeUrl( request );
         }
@@ -882,15 +891,15 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         url.addParameter( PARAMETER_ACTION_ID, nActionId );
 
         // Test if the document is published or assigned
-        boolean bPublishedDocument = PublishingService.getInstance(  ).isAssigned( nDocumentId );
+        boolean bPublishedDocument = PublishingService.getInstance( ).isAssigned( nDocumentId );
 
         if ( bPublishedDocument )
         {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_DOCUMENT_IS_PUBLISHED,
-                PATH_JSP + url.getUrl(  ), AdminMessage.TYPE_QUESTION );
+            return AdminMessageService.getMessageUrl( request, MESSAGE_DOCUMENT_IS_PUBLISHED, PATH_JSP + url.getUrl( ),
+                    AdminMessage.TYPE_QUESTION );
         }
 
-        return url.getUrl(  );
+        return url.getUrl( );
     }
 
     /**
@@ -910,24 +919,22 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
                 Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-                if ( !DocumentService.getInstance(  )
-                                         .isAuthorizedAdminDocument( document.getSpaceId(  ),
-                            document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_DELETE,
-                            getUser(  ) ) )
+                if ( !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                        document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_DELETE, getUser( ) ) )
                 {
                     return getHomeUrl( request );
                 }
 
-                if ( ( document.getStateId(  ) == DocumentState.STATE_WRITING ) ||
-                        ( document.getStateId(  ) == DocumentState.STATE_ARCHIVED ) )
+                if ( ( document.getStateId( ) == DocumentState.STATE_WRITING )
+                        || ( document.getStateId( ) == DocumentState.STATE_ARCHIVED ) )
                 {
                     // Test if the document is published or assigned
-                    boolean bPublishedDocument = PublishingService.getInstance(  ).isAssigned( nDocumentId );
+                    boolean bPublishedDocument = PublishingService.getInstance( ).isAssigned( nDocumentId );
 
                     if ( bPublishedDocument )
                     {
                         return AdminMessageService.getMessageUrl( request,
-                            MESSAGE_ERROR_DOCUMENT_SELECTED_IS_PUBLISHED, AdminMessage.TYPE_STOP );
+                                MESSAGE_ERROR_DOCUMENT_SELECTED_IS_PUBLISHED, AdminMessage.TYPE_STOP );
                     }
 
                     DocumentHome.remove( nDocumentId );
@@ -963,12 +970,12 @@ public class DocumentJspBean extends PluginAdminPageJspBean
                 {
                     try
                     {
-                        DocumentService.getInstance(  )
-                                       .archiveDocument( document, getUser(  ), DocumentState.STATE_ARCHIVED );
+                        DocumentService.getInstance( ).archiveDocument( document, getUser( ),
+                                DocumentState.STATE_ARCHIVED );
                     }
                     catch ( DocumentException e )
                     {
-                        return getErrorMessageUrl( request, e.getI18nMessage(  ) );
+                        return getErrorMessageUrl( request, e.getI18nMessage( ) );
                     }
                 }
             }
@@ -989,184 +996,181 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     public String doActionSelectionDocument( HttpServletRequest request )
     {
         String strAction = request.getParameter( PARAMETER_SELECTION );
-        String[] strIdDocuments = (String[]) request.getParameterMap(  ).get( PARAMETER_DOCUMENT_SELECTION );
+        String[] strIdDocuments = (String[]) request.getParameterMap( ).get( PARAMETER_DOCUMENT_SELECTION );
         _multiSelectionValues = strIdDocuments;
 
         int nbDocumentsAffected = 0;
-
-        if ( strAction.equals( CONSTANT_REMOVE ) )
+        if ( !ArrayUtils.isEmpty( strIdDocuments ) )
         {
-            UrlItem url = new UrlItem( JSP_DO_REMOVE_SELECTION );
-
-            return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE_SELECTION, url.getUrl(  ),
-                AdminMessage.TYPE_CONFIRMATION );
-        }
-        else if ( strAction.equals( CONSTANT_ARCHIVE ) )
-        {
-            UrlItem url = new UrlItem( JSP_DO_ARCHIVE_SELECTION );
-
-            for ( String strIdDocument : _multiSelectionValues )
+            if ( strAction.equals( CONSTANT_REMOVE ) )
             {
-                int nIdDocument = IntegerUtils.convert( strIdDocument );
+                UrlItem url = new UrlItem( JSP_DO_REMOVE_SELECTION );
 
-                Document document = DocumentHome.findByPrimaryKey( nIdDocument );
+                return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE_SELECTION, url.getUrl( ),
+                        AdminMessage.TYPE_CONFIRMATION );
+            }
+            else if ( strAction.equals( CONSTANT_ARCHIVE ) )
+            {
+                UrlItem url = new UrlItem( JSP_DO_ARCHIVE_SELECTION );
 
-                // Test if the document is published or assigned
-                boolean bPublishedDocument = PublishingService.getInstance(  ).isAssigned( nIdDocument );
-
-                if ( ( document != null ) && ( document.getStateId(  ) == DocumentState.STATE_VALIDATE ) &&
-                        ( bPublishedDocument ) )
+                for ( String strIdDocument : _multiSelectionValues )
                 {
-                    return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_ARCHIVE_SELECTION,
-                        PATH_JSP + url.getUrl(  ), AdminMessage.TYPE_QUESTION );
+                    int nIdDocument = IntegerUtils.convert( strIdDocument );
+
+                    Document document = DocumentHome.findByPrimaryKey( nIdDocument );
+
+                    // Test if the document is published or assigned
+                    boolean bPublishedDocument = PublishingService.getInstance( ).isAssigned( nIdDocument );
+
+                    if ( ( document != null ) && ( document.getStateId( ) == DocumentState.STATE_VALIDATE )
+                            && ( bPublishedDocument ) )
+                    {
+                        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_ARCHIVE_SELECTION, PATH_JSP
+                                + url.getUrl( ), AdminMessage.TYPE_QUESTION );
+                    }
+                }
+
+                for ( String strIdDocument : _multiSelectionValues )
+                {
+                    int nIdDocument = IntegerUtils.convert( strIdDocument );
+
+                    Document document = DocumentHome.findByPrimaryKey( nIdDocument );
+
+                    try
+                    {
+                        if ( ( document != null ) && ( document.getStateId( ) == DocumentState.STATE_VALIDATE )
+                                && isAuthorized( DocumentAction.ACTION_ARCHIVE, document ) )
+                        {
+                            DocumentService.getInstance( ).archiveDocument( document, getUser( ),
+                                    DocumentState.STATE_ARCHIVED );
+                        }
+                    }
+                    catch ( DocumentException e )
+                    {
+                        return getErrorMessageUrl( request, e.getI18nMessage( ) );
+                    }
                 }
             }
-
-            for ( String strIdDocument : _multiSelectionValues )
+            else
             {
-                int nIdDocument = IntegerUtils.convert( strIdDocument );
-
-                Document document = DocumentHome.findByPrimaryKey( nIdDocument );
-
-                try
+                for ( String strIdDocument : strIdDocuments )
                 {
-                    if ( ( document != null ) && ( document.getStateId(  ) == DocumentState.STATE_VALIDATE ) &&
-                            isAuthorized( DocumentAction.ACTION_ARCHIVE, document ) )
-                    {
-                        DocumentService.getInstance(  )
-                                       .archiveDocument( document, getUser(  ), DocumentState.STATE_ARCHIVED );
-                    }
-                }
-                catch ( DocumentException e )
-                {
-                    return getErrorMessageUrl( request, e.getI18nMessage(  ) );
-                }
-            }
-        }
-        else
-        {
-            for ( String strIdDocument : strIdDocuments )
-            {
-                int nIdDocument = IntegerUtils.convert( strIdDocument );
-                int nActionId = -1;
-                Document document = DocumentHome.findByPrimaryKey( nIdDocument );
+                    int nIdDocument = IntegerUtils.convert( strIdDocument );
+                    int nActionId = -1;
+                    Document document = DocumentHome.findByPrimaryKey( nIdDocument );
 
-                if ( document != null )
-                {
-                    int stateId = document.getStateId(  );
-
-                    if ( ( strAction.equals( CONSTANT_VALIDATE ) ) &&
-                            ( ( stateId == DocumentState.STATE_WAITING_FOR_APPROVAL ) ||
-                            ( stateId == DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL ) ) )
+                    if ( document != null )
                     {
-                        try
-                        {
-                            //set the action
-                            if ( stateId == DocumentState.STATE_WAITING_FOR_APPROVAL )
-                            {
-                                nActionId = DocumentAction.ACTION_VALIDATE;
-                            }
-                            else if ( stateId == DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL )
-                            {
-                                nActionId = DocumentAction.ACTION_VALIDATE_CHANGE;
-                            }
+                        int stateId = document.getStateId( );
 
-                            if ( isAuthorized( nActionId, document ) )
-                            {
-                                DocumentService.getInstance(  )
-                                               .validateDocument( document, getUser(  ), DocumentState.STATE_VALIDATE );
-                                nbDocumentsAffected++;
-                            }
-                        }
-                        catch ( DocumentException e )
+                        if ( ( strAction.equals( CONSTANT_VALIDATE ) )
+                                && ( ( stateId == DocumentState.STATE_WAITING_FOR_APPROVAL ) || ( stateId == DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL ) ) )
                         {
-                            return getErrorMessageUrl( request, e.getI18nMessage(  ) );
-                        }
-                    }
-                    else if ( ( strAction.equals( CONSTANT_REFUSE ) ) &&
-                            ( ( stateId == DocumentState.STATE_WAITING_FOR_APPROVAL ) ||
-                            ( stateId == DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL ) ) )
-                    {
-                        try
-                        {
-                            if ( stateId == DocumentState.STATE_WAITING_FOR_APPROVAL )
+                            try
                             {
-                                nActionId = DocumentAction.ACTION_REFUSE;
+                                //set the action
+                                if ( stateId == DocumentState.STATE_WAITING_FOR_APPROVAL )
+                                {
+                                    nActionId = DocumentAction.ACTION_VALIDATE;
+                                }
+                                else if ( stateId == DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL )
+                                {
+                                    nActionId = DocumentAction.ACTION_VALIDATE_CHANGE;
+                                }
 
                                 if ( isAuthorized( nActionId, document ) )
                                 {
-                                    DocumentService.getInstance(  )
-                                                   .changeDocumentState( document, getUser(  ),
-                                        DocumentState.STATE_REJECTED );
+                                    DocumentService.getInstance( ).validateDocument( document, getUser( ),
+                                            DocumentState.STATE_VALIDATE );
+                                    nbDocumentsAffected++;
                                 }
                             }
-                            else if ( stateId == DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL )
+                            catch ( DocumentException e )
                             {
-                                nActionId = DocumentAction.ACTION_REFUSE_CHANGE;
-
-                                if ( isAuthorized( nActionId, document ) )
+                                return getErrorMessageUrl( request, e.getI18nMessage( ) );
+                            }
+                        }
+                        else if ( ( strAction.equals( CONSTANT_REFUSE ) )
+                                && ( ( stateId == DocumentState.STATE_WAITING_FOR_APPROVAL ) || ( stateId == DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL ) ) )
+                        {
+                            try
+                            {
+                                if ( stateId == DocumentState.STATE_WAITING_FOR_APPROVAL )
                                 {
-                                    DocumentService.getInstance(  )
-                                                   .changeDocumentState( document, getUser(  ),
-                                        DocumentState.STATE_IN_CHANGE );
+                                    nActionId = DocumentAction.ACTION_REFUSE;
+
+                                    if ( isAuthorized( nActionId, document ) )
+                                    {
+                                        DocumentService.getInstance( ).changeDocumentState( document, getUser( ),
+                                                DocumentState.STATE_REJECTED );
+                                    }
                                 }
-                            }
-
-                            nbDocumentsAffected++;
-                        }
-                        catch ( DocumentException e )
-                        {
-                            return getErrorMessageUrl( request, e.getI18nMessage(  ) );
-                        }
-                    }
-                    else if ( ( strAction.equals( CONSTANT_UNARCHIVE ) ) && ( stateId == DocumentState.STATE_ARCHIVED ) )
-                    {
-                        nActionId = DocumentAction.ACTION_UNARCHIVE;
-
-                        try
-                        {
-                            if ( isAuthorized( nActionId, document ) )
-                            {
-                                DocumentService.getInstance(  )
-                                               .changeDocumentState( document, getUser(  ), DocumentState.STATE_VALIDATE );
-                                nbDocumentsAffected++;
-                            }
-                        }
-                        catch ( DocumentException e )
-                        {
-                            return getErrorMessageUrl( request, e.getI18nMessage(  ) );
-                        }
-                    }
-                    else if ( strAction.equals( CONSTANT_SUBMIT ) )
-                    {
-                        try
-                        {
-                            if ( ( stateId == DocumentState.STATE_WRITING ) ||
-                                    ( stateId == DocumentState.STATE_REJECTED ) )
-                            {
-                                nActionId = DocumentAction.ACTION_SUBMIT;
-                                DocumentService.getInstance(  )
-                                               .changeDocumentState( document, getUser(  ),
-                                    DocumentState.STATE_WAITING_FOR_APPROVAL );
-                                nbDocumentsAffected++;
-                            }
-                            else if ( ( stateId == DocumentState.STATE_IN_CHANGE ) )
-                            {
-                                nActionId = DocumentAction.ACTION_SUBMIT_CHANGE;
-
-                                if ( isAuthorized( nActionId, document ) )
+                                else if ( stateId == DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL )
                                 {
-                                    DocumentService.getInstance(  )
-                                                   .changeDocumentState( document, getUser(  ),
-                                        DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL );
+                                    nActionId = DocumentAction.ACTION_REFUSE_CHANGE;
+
+                                    if ( isAuthorized( nActionId, document ) )
+                                    {
+                                        DocumentService.getInstance( ).changeDocumentState( document, getUser( ),
+                                                DocumentState.STATE_IN_CHANGE );
+                                    }
                                 }
 
                                 nbDocumentsAffected++;
                             }
+                            catch ( DocumentException e )
+                            {
+                                return getErrorMessageUrl( request, e.getI18nMessage( ) );
+                            }
                         }
-                        catch ( DocumentException e )
+                        else if ( ( strAction.equals( CONSTANT_UNARCHIVE ) )
+                                && ( stateId == DocumentState.STATE_ARCHIVED ) )
                         {
-                            return getErrorMessageUrl( request, e.getI18nMessage(  ) );
+                            nActionId = DocumentAction.ACTION_UNARCHIVE;
+
+                            try
+                            {
+                                if ( isAuthorized( nActionId, document ) )
+                                {
+                                    DocumentService.getInstance( ).changeDocumentState( document, getUser( ),
+                                            DocumentState.STATE_VALIDATE );
+                                    nbDocumentsAffected++;
+                                }
+                            }
+                            catch ( DocumentException e )
+                            {
+                                return getErrorMessageUrl( request, e.getI18nMessage( ) );
+                            }
+                        }
+                        else if ( strAction.equals( CONSTANT_SUBMIT ) )
+                        {
+                            try
+                            {
+                                if ( ( stateId == DocumentState.STATE_WRITING )
+                                        || ( stateId == DocumentState.STATE_REJECTED ) )
+                                {
+                                    nActionId = DocumentAction.ACTION_SUBMIT;
+                                    DocumentService.getInstance( ).changeDocumentState( document, getUser( ),
+                                            DocumentState.STATE_WAITING_FOR_APPROVAL );
+                                    nbDocumentsAffected++;
+                                }
+                                else if ( ( stateId == DocumentState.STATE_IN_CHANGE ) )
+                                {
+                                    nActionId = DocumentAction.ACTION_SUBMIT_CHANGE;
+
+                                    if ( isAuthorized( nActionId, document ) )
+                                    {
+                                        DocumentService.getInstance( ).changeDocumentState( document, getUser( ),
+                                                DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL );
+                                    }
+
+                                    nbDocumentsAffected++;
+                                }
+                            }
+                            catch ( DocumentException e )
+                            {
+                                return getErrorMessageUrl( request, e.getI18nMessage( ) );
+                            }
                         }
                     }
                 }
@@ -1203,22 +1207,23 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
         DocumentAction action = DocumentActionHome.findByPrimaryKey( nActionId );
 
-        if ( ( action == null ) || ( action.getFinishDocumentState(  ) == null ) || ( document == null ) ||
-                !DocumentService.getInstance(  )
-                                    .isAuthorizedAdminDocument( document.getSpaceId(  ),
-                    document.getCodeDocumentType(  ), action.getPermission(  ), getUser(  ) ) )
+        if ( ( action == null )
+                || ( action.getFinishDocumentState( ) == null )
+                || ( document == null )
+                || !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                        document.getCodeDocumentType( ), action.getPermission( ), getUser( ) ) )
         {
             return getHomeUrl( request );
         }
 
         try
         {
-            DocumentService.getInstance(  )
-                           .archiveDocument( document, getUser(  ), action.getFinishDocumentState(  ).getId(  ) );
+            DocumentService.getInstance( ).archiveDocument( document, getUser( ),
+                    action.getFinishDocumentState( ).getId( ) );
         }
         catch ( DocumentException e )
         {
-            return getErrorMessageUrl( request, e.getI18nMessage(  ) );
+            return getErrorMessageUrl( request, e.getI18nMessage( ) );
         }
 
         return getHomeUrl( request );
@@ -1251,9 +1256,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             return AdminMessageService.getMessageUrl( request, MESSAGE_DOCUMENT_NOT_FOUND, AdminMessage.TYPE_STOP );
         }
 
-        if ( !DocumentService.getInstance(  )
-                                 .isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
-                    DocumentTypeResourceIdService.PERMISSION_VIEW, getUser(  ) ) )
+        if ( !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_VIEW, getUser( ) ) )
         {
             return AdminMessageService.getMessageUrl( request, MESSAGE_DOCUMENT_NOT_AUTHORIZED, AdminMessage.TYPE_STOP );
         }
@@ -1261,7 +1265,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         UrlItem url = new UrlItem( JSP_PREVIEW_DOCUMENT );
         url.addParameter( PARAMETER_DOCUMENT_ID, nDocumentId );
 
-        return url.getUrl(  );
+        return url.getUrl( );
     }
 
     /**
@@ -1279,32 +1283,32 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-        if ( ( document == null ) ||
-                !DocumentService.getInstance(  )
-                                    .isAuthorizedAdminDocument( document.getSpaceId(  ),
-                    document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_VIEW, getUser(  ) ) )
+        if ( ( document == null )
+                || !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                        document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_VIEW, getUser( ) ) )
         {
             return getManageDocuments( request );
         }
 
-        document.setLocale( getLocale(  ) );
-        DocumentService.getInstance(  ).getActions( document, getLocale(  ), getUser(  ) );
+        document.setLocale( getLocale( ) );
+        DocumentService.getInstance( ).getActions( document, getLocale( ), getUser( ) );
 
-        DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
+        DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType( ) );
 
-        XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
-        String strPreview = xmlTransformerService.transformBySourceWithXslCache( document.getXmlWorkingContent(  ),
-                type.getAdminXslSource(  ), DOCUMENT_STYLE_PREFIX_ID + type.getAdminStyleSheetId(  ), null, null );
+        XmlTransformerService xmlTransformerService = new XmlTransformerService( );
+        String strPreview = xmlTransformerService.transformBySourceWithXslCache( document.getXmlWorkingContent( ),
+                type.getAdminXslSource( ), DOCUMENT_STYLE_PREFIX_ID + type.getAdminStyleSheetId( ), null, null );
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_DOCUMENT, document );
         model.put( MARK_PREVIEW, strPreview );
 
-		ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, strDocumentId, Document.PROPERTY_RESOURCE_TYPE );
+        ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, strDocumentId,
+                Document.PROPERTY_RESOURCE_TYPE );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PREVIEW_DOCUMENT, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PREVIEW_DOCUMENT, getLocale( ), model );
 
-        return getAdminPage( template.getHtml(  ) );
+        return getAdminPage( template.getHtml( ) );
     }
 
     /**
@@ -1320,15 +1324,14 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
 
-        if ( ( document == null ) ||
-                !DocumentService.getInstance(  )
-                                    .isAuthorizedAdminDocument( document.getSpaceId(  ),
-                    document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_MOVE, getUser(  ) ) )
+        if ( ( document == null )
+                || !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                        document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_MOVE, getUser( ) ) )
         {
             return getManageDocuments( request );
         }
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
         String strSpaceId = request.getParameter( DocumentSpacesService.PARAMETER_BROWSER_SELECTED_SPACE_ID );
         boolean bSubmitButtonDisabled = Boolean.TRUE;
 
@@ -1339,13 +1342,13 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         // Spaces browser
         model.put( MARK_SPACES_BROWSER,
-            DocumentSpacesService.getInstance(  ).getSpacesBrowser( request, getUser(  ), getLocale(  ), true, true ) );
+                DocumentSpacesService.getInstance( ).getSpacesBrowser( request, getUser( ), getLocale( ), true, true ) );
         model.put( MARK_DOCUMENT, document );
         model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MOVE_DOCUMENT, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MOVE_DOCUMENT, getLocale( ), model );
 
-        return getAdminPage( template.getHtml(  ) );
+        return getAdminPage( template.getHtml( ) );
     }
 
     /**
@@ -1375,19 +1378,17 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         }
 
         // Check if user have rights to create a document into this space
-        if ( !DocumentService.getInstance(  )
-                                 .isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
-                    DocumentTypeResourceIdService.PERMISSION_MOVE, getUser(  ) ) ||
-                !DocumentService.getInstance(  )
-                                    .isAuthorizedAdminDocument( nSpaceIdDestination, document.getCodeDocumentType(  ),
-                    DocumentTypeResourceIdService.PERMISSION_MOVE, getUser(  ) ) )
+        if ( !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_MOVE, getUser( ) )
+                || !DocumentService.getInstance( ).isAuthorizedAdminDocument( nSpaceIdDestination,
+                        document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_MOVE, getUser( ) ) )
         {
             return getHomeUrl( request );
         }
 
-        for ( String documentType : space.getAllowedDocumentTypes(  ) )
+        for ( String documentType : space.getAllowedDocumentTypes( ) )
         {
-            if ( document.getCodeDocumentType(  ).equals( documentType ) )
+            if ( document.getCodeDocumentType( ).equals( documentType ) )
             {
                 bTypeAllowed = Boolean.TRUE;
             }
@@ -1438,7 +1439,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         if ( space != null )
         {
-            _strViewType = space.getViewType(  );
+            _strViewType = space.getViewType( );
         }
     }
 
@@ -1472,7 +1473,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         if ( !strCodeDocumentTypeFilter.equals( _strCurrentDocumentTypeFilter ) )
         {
-            resetPageIndex(  );
+            resetPageIndex( );
         }
 
         return strCodeDocumentTypeFilter;
@@ -1508,7 +1509,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         if ( !strStateId.equals( _strCurrentStateFilter ) )
         {
-            resetPageIndex(  );
+            resetPageIndex( );
         }
 
         return strStateId;
@@ -1532,7 +1533,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             }
             else
             {
-                int nSpaceId = DocumentSpacesService.getInstance(  ).getUserDefaultSpace( getUser(  ) );
+                int nSpaceId = DocumentSpacesService.getInstance( ).getUserDefaultSpace( getUser( ) );
                 strSpaceId = Integer.toString( nSpaceId );
             }
         }
@@ -1543,7 +1544,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         if ( !strSpaceId.equals( _strCurrentSpaceId ) )
         {
             // Reset the page index
-            resetPageIndex(  );
+            resetPageIndex( );
 
             // Sets the view corresponding to the new space
             setView( nSpaceId );
@@ -1555,7 +1556,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     /**
      * Reset Page Index
      */
-    private void resetPageIndex(  )
+    private void resetPageIndex( )
     {
         _strCurrentPageIndex = PAGE_INDEX_FIRST;
     }
@@ -1585,12 +1586,14 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private String getErrorMessageUrl( HttpServletRequest request, String strI18nMessage )
     {
         return AdminMessageService.getMessageUrl( request, MESSAGE_DOCUMENT_ERROR,
-            new String[] { I18nService.getLocalizedString( strI18nMessage, getLocale(  ) ) }, AdminMessage.TYPE_ERROR );
+                new String[] { I18nService.getLocalizedString( strI18nMessage, getLocale( ) ) },
+                AdminMessage.TYPE_ERROR );
     }
 
     /**
-     * Gets an html template displaying the patterns list available in the portal for the layout
-     *
+     * Gets an html template displaying the patterns list available in the
+     * portal for the layout
+     * 
      * @param nTemplatePageId The identifier of the layout to select in the list
      * @param nPageTemplateDocumentId The page template id
      * @param nIndexRow the index row
@@ -1598,29 +1601,30 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     private String getTemplatesPageList( int nTemplatePageId, int nPageTemplateDocumentId, String nIndexRow )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
         DocumentPageTemplate documentPageTemplate = DocumentPageTemplateHome.findByPrimaryKey( nTemplatePageId );
         model.put( MARK_DOCUMENT_PAGE_TEMPLATE, documentPageTemplate );
 
         model.put( MARK_INDEX_ROW, nIndexRow );
 
-        String strChecked = ( documentPageTemplate.getId(  ) == nPageTemplateDocumentId ) ? "checked=\"checked\"" : "";
+        String strChecked = ( documentPageTemplate.getId( ) == nPageTemplateDocumentId ) ? "checked=\"checked\"" : "";
         model.put( MARK_DOCUMENT_PAGE_TEMPLATE_CHECKED, strChecked );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_PAGE_TEMPLATE_ROW, getLocale(  ),
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_PAGE_TEMPLATE_ROW, getLocale( ),
                 model );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     private boolean isAuthorized( int nActionId, Document document )
     {
         DocumentAction action = DocumentActionHome.findByPrimaryKey( nActionId );
 
-        if ( ( action == null ) || ( action.getFinishDocumentState(  ) == null ) || ( document == null ) ||
-                !DocumentService.getInstance(  )
-                                    .isAuthorizedAdminDocument( document.getSpaceId(  ),
-                    document.getCodeDocumentType(  ), action.getPermission(  ), getUser(  ) ) )
+        if ( ( action == null )
+                || ( action.getFinishDocumentState( ) == null )
+                || ( document == null )
+                || !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                        document.getCodeDocumentType( ), action.getPermission( ), getUser( ) ) )
         {
             return false;
         }
