@@ -105,6 +105,9 @@ public class DocumentService
     private static final String MESSAGE_INVALID_DATEBEGIN = "document.message.invalidDateBegin";
     private static final String MESSAGE_INVALID_DATE_BEFORE_70 = "document.message.invalidDate.before1970";
     private static final String MESSAGE_ATTRIBUTE_VALIDATION_ERROR = "document.message.attributeValidationError";
+    private static final String MESSAGE_ATTRIBUTE_WIDTH_ERROR = "document.message.widthError";
+    private static final String MESSAGE_ATTRIBUTE_RESIZE_ERROR = "document.message.resizeError";
+
     private static DocumentService _singleton = new DocumentService( );
     private static final String TAG_DOCUMENT_ID = "document-id";
     private static final String TAG_DOCUMENT_TITLE = "document-title";
@@ -733,7 +736,7 @@ public class DocumentService
 
                 if ( !StringUtils.isNumeric( strWidth ) )
                 {
-                    String[] listArguments = { attribute.getName( ), "La largeur doit être un nombre" };
+                    String[] listArguments = { attribute.getName( ), MESSAGE_ATTRIBUTE_WIDTH_ERROR };
                     return AdminMessageService.getMessageUrl( mRequest, MESSAGE_ATTRIBUTE_VALIDATION_ERROR,
                             listArguments, AdminMessage.TYPE_STOP );
                 }
@@ -744,7 +747,7 @@ public class DocumentService
                 }
                 catch ( IOException e )
                 {
-                    return AdminMessageService.getMessageUrl( mRequest, "Erreur lors du redimenssionnement de l'image",
+                    return AdminMessageService.getMessageUrl( mRequest, MESSAGE_ATTRIBUTE_RESIZE_ERROR,
                             AdminMessage.TYPE_STOP );
                 }
             }
