@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.document.business.portlet;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
-import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.util.xml.XmlUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,34 +59,34 @@ public class DocumentListPortlet extends Portlet
     private int[] _nArrayIdCategory;
 
     /**
-     * Sets the identifier of the portlet type to the value specified in the ArticlesListPortletHome class
+     * Sets the identifier of the portlet type to the value specified in the
+     * ArticlesListPortletHome class
      */
-    public DocumentListPortlet(  )
+    public DocumentListPortlet( )
     {
-        setPortletTypeId( DocumentListPortletHome.getInstance(  ).getPortletTypeId(  ) );
+        setPortletTypeId( DocumentListPortletHome.getInstance( ).getPortletTypeId( ) );
     }
 
     /**
      * Returns the Xml code of the Document List portlet without XML heading
-     *
+     * 
      * @param request The HTTP Servlet request
      * @return the Xml code of the Document List portlet content
      */
     public String getXml( HttpServletRequest request )
     {
-        StringBuffer strXml = new StringBuffer(  );
+        StringBuffer strXml = new StringBuffer( );
         XmlUtil.beginElement( strXml, TAG_DOCUMENT_LIST_PORTLET );
 
-        for ( Document document : PublishingService.getInstance(  ).getPublishedDocumentsByPortletId( getId(  ) ) )
+        for ( Document document : PublishingService.getInstance( ).getPublishedDocumentsByPortletId( getId( ) ) )
         {
-            if ( document.isValid(  ) ) // to have only the valid documents                
+            if ( document.isValid( ) ) // to have only the valid documents                
             {
-                strXml.append( document.getXml( request, getId(  ) ) );
+                strXml.append( document.getXml( request, getId( ) ) );
             }
         }
 
         XmlUtil.endElement( strXml, TAG_DOCUMENT_LIST_PORTLET );
-        ResourceEnhancer.getXmlAddOn( strXml, DocumentListPortlet.RESOURCE_ID, getId(  ) );
 
         String str = addPortletTags( strXml );
 
@@ -96,44 +95,44 @@ public class DocumentListPortlet extends Portlet
 
     /**
      * Returns the Xml code of the Articles List portlet with XML heading
-     *
+     * 
      * @param request The HTTP Servlet Request
      * @return the Xml code of the Articles List portlet
      */
     public String getXmlDocument( HttpServletRequest request )
     {
-        return XmlUtil.getXmlHeader(  ) + getXml( request );
+        return XmlUtil.getXmlHeader( ) + getXml( request );
     }
 
     /**
      * Updates the current instance of the Articles List Portlet object
      */
-    public void update(  )
+    public void update( )
     {
-        DocumentListPortletHome.getInstance(  ).update( this );
+        DocumentListPortletHome.getInstance( ).update( this );
     }
 
     /**
      * Removes the current instance of the Articles List Portlet object
      */
-    public void remove(  )
+    public void remove( )
     {
-        DocumentListPortletHome.getInstance(  ).remove( this );
+        DocumentListPortletHome.getInstance( ).remove( this );
     }
 
     /**
      * Returns the nPortletId
-     *
+     * 
      * @return The nPortletId
      */
-    public int getPortletId(  )
+    public int getPortletId( )
     {
         return _nPortletId;
     }
 
     /**
      * Sets the IdPortlet
-     *
+     * 
      * @param nPortletId The nPortletId
      */
     public void setPortletId( int nPortletId )
@@ -142,8 +141,9 @@ public class DocumentListPortlet extends Portlet
     }
 
     /**
-     * Sets the parent page identifier of the portlet to the value specified in parameter
-     *
+     * Sets the parent page identifier of the portlet to the value specified in
+     * parameter
+     * 
      * @param strDocumentTypeCode the code
      */
     public void setDocumentTypeCode( String strDocumentTypeCode )
@@ -153,10 +153,10 @@ public class DocumentListPortlet extends Portlet
 
     /**
      * Returns the identifier of the parent page of the portlet
-     *
+     * 
      * @return the parent page identifier
      */
-    public String getDocumentTypeCode(  )
+    public String getDocumentTypeCode( )
     {
         return _strDocumentTypeCode;
     }
@@ -164,7 +164,7 @@ public class DocumentListPortlet extends Portlet
     /**
      * @return the _nIdCategory
      */
-    public int[] getIdCategory(  )
+    public int[] getIdCategory( )
     {
         return _nArrayIdCategory;
     }
