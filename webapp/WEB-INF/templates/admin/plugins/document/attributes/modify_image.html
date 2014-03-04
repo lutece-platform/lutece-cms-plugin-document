@@ -3,7 +3,7 @@
     <div class="controls">
     <#if attribute.textValue?has_content>
         <a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true">
-            <img src='<@getThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" width="40" height="40" />
+            <img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" width="40" height="40" />
             &nbsp;${attribute.description}
         </a>
         <input type="file" name="${attribute.code}" id="${attribute.code}" >

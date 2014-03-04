@@ -41,7 +41,7 @@
             </xsl:when>
             <xsl:otherwise>
                 <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}"> 
-                    <img src="images/admin/skin/plugins/document/filetypes/file.png" border="0" />
+                    <img src="images/local/skin/plugins/document/filetypes/file.png" border="0" />
                 </a>
             </xsl:otherwise>        
         </xsl:choose>

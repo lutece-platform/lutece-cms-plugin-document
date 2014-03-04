@@ -110,7 +110,7 @@
                     <td><input id="document_selection" name="document_selection" type="checkbox" value="${document.id}" /></td>
                     <td>
                         <p>
-						 <#if document.thumbnail != "images/admin/skin/plugins/document/default_icon.png"><img src="${document.thumbnail}&nocache" alt="${document.title}" title="${document.title} - ${document.type}" class="thumblist" /></#if>
+						 <#if document.thumbnail != "images/admin/skin/plugins/document/default_icon.png"><img src="${document.thumbnail}" alt="${document.title}" title="${document.title} - ${document.type}" class="thumblist" /></#if>
 						${document.id} - ${document.title}</p>
                         <#if document.comment != "">
 							<p class="alert alert-error">${document.comment}</p>

@@ -33,7 +33,7 @@
             </xsl:when>
             <xsl:when test="(resource-content-type='application/pdf')">
                 <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
-                    <img src="images/admin/skin/plugins/document/filetypes/pdf.png" />
+                    <img src="images/local/skin/plugins/document/filetypes/pdf.png" />
                 </a>
             </xsl:when>
             <xsl:when test="(resource-content-type='application/binary')">
@@ -48,12 +48,12 @@
             </xsl:when>
             <xsl:when test="(resource-content-type='audio/mpeg')">
                 <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
-                    <img src="images/admin/skin/plugins/document/filetypes/audio.png" />
+                    <img src="images/local/skin/plugins/document/filetypes/audio.png" />
                 </a>
             </xsl:when>
             <xsl:otherwise>
                 <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
-                    <img src="images/admin/skin/plugins/document/filetypes/file.png" />
+                    <img src="images/local/skin/plugins/document/filetypes/file.png" />
                 </a>
             </xsl:otherwise>
         </xsl:choose>

@@ -57,7 +57,7 @@
 					<a
 						href="document?id={pdf-file/file-resource/resource-document-id}&amp;id_attribute={pdf-file/file-resource/resource-attribute-id}">
 						<img
-							src="images/admin/skin/plugins/document/filetypes/pdf.png" />
+							src="images/local/skin/plugins/document/filetypes/pdf.png" />
 					</a>
 				</xsl:when>
 				<xsl:otherwise></xsl:otherwise>

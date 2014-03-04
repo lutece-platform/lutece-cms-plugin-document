@@ -1,7 +1,7 @@
 <div class="control-group">
 <label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
 <#if attribute.textValue?has_content>
-    <a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true"><img src='<@getThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" width="40" height="40" />&nbsp;${attribute.description}</a>
+    <a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true"><img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" width="40" height="40" />&nbsp;${attribute.description}</a>
     <div class="controls">
 	<input type="file" name="${attribute.code}" id="${attribute.code}" />
     </div>
