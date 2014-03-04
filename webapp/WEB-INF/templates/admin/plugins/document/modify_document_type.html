@@ -3,6 +3,7 @@
         <fieldset>
             <legend>#i18n{document.modify_document_type.titleProperties}</legend>
             <form class="form" method="post" action="jsp/admin/plugins/document/DoModifyDocumentType.jsp">
+                <input type="hidden" id="old_code" name="old_code" value="${document_type.code}" />
                 <div class="control-group">
                     <label class="control-label" for="code" >#i18n{document.modify_document_type.labelCode}* :</label>
                     <div class="controls">

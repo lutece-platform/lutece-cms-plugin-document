@@ -118,6 +118,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
     private static final String MARK_NB_REGULAR_EXPRESSION = "nb_regular_expression";
     private static final String PARAMETER_DOCUMENT_TYPE_CODE = "document_type_code";
     private static final String PARAMETER_NAME = "name";
+    private static final String PARAMETER_OLD_CODE = "old_code";
     private static final String PARAMETER_CODE = "code";
     private static final String PARAMETER_DESCRIPTION = "description";
     private static final String PARAMETER_THUMBNAIL_ATTRIBUTE = "thumbnail_attribute";
@@ -267,6 +268,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
      */
     public String doModifyDocumentType( HttpServletRequest request )
     {
+        String strOldCode = request.getParameter( PARAMETER_OLD_CODE );
         String strCode = request.getParameter( PARAMETER_CODE );
         String strName = request.getParameter( PARAMETER_NAME );
         String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
@@ -287,7 +289,9 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
-        DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strCode );
+        DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strOldCode );
+        documentType.setOldCode( strOldCode );
+        documentType.setCode( strCode );
         documentType.setName( strName );
         documentType.setDefaultThumbnailUrl( strIconUrl );
         documentType.setThumbnailAttributeId( nThumbnailAttribute );
