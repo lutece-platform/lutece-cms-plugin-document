@@ -50,7 +50,6 @@ import fr.paris.lutece.portal.service.search.IndexationService;
 import fr.paris.lutece.portal.service.search.SearchIndexer;
 import fr.paris.lutece.portal.service.search.SearchItem;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
-import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceItem;
@@ -58,24 +57,15 @@ import fr.paris.lutece.util.url.UrlItem;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.demo.html.HTMLParser;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.StoredField;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.html.HtmlParser;
-import org.apache.tika.sax.BodyContentHandler;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -231,66 +221,58 @@ public class DocumentIndexer implements SearchIndexer
         // make a new, empty document
         org.apache.lucene.document.Document doc = new org.apache.lucene.document.Document( );
 
-        FieldType ft = new FieldType( StringField.TYPE_STORED );
-        ft.setOmitNorms( false );
-
         // Add the url as a field named "url".  Use an UnIndexed field, so
         // that the url is just stored with the document, but is not searchable.
-        doc.add( new Field( SearchItem.FIELD_URL, strUrl, ft ) );
+        doc.add( new Field( SearchItem.FIELD_URL, strUrl, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
 
         // Add the PortletDocumentId as a field named "document_portlet_id".  
-        doc.add( new Field( SearchItem.FIELD_DOCUMENT_PORTLET_ID, strPortletDocumentId, ft ) );
+        doc.add( new Field( SearchItem.FIELD_DOCUMENT_PORTLET_ID, strPortletDocumentId, Field.Store.YES,
+                Field.Index.NOT_ANALYZED ) );
 
         // Add the last modified date of the file a field named "modified".
         // Use a field that is indexed (i.e. searchable), but don't tokenize
         // the field into words.
         String strDate = DateTools.dateToString( document.getDateModification( ), DateTools.Resolution.DAY );
-        doc.add( new Field( SearchItem.FIELD_DATE, strDate, ft ) );
+        doc.add( new Field( SearchItem.FIELD_DATE, strDate, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
 
         // Add the uid as a field, so that index can be incrementally maintained.
         // This field is not stored with document, it is indexed, but it is not
         // tokenized prior to indexing.
         String strIdDocument = String.valueOf( document.getId( ) );
-        doc.add( new Field( SearchItem.FIELD_UID, strIdDocument + "_" + DocumentIndexer.SHORT_NAME, ft ) );
+        doc.add( new Field( SearchItem.FIELD_UID, strIdDocument + "_" + DocumentIndexer.SHORT_NAME, Field.Store.YES,
+                Field.Index.NOT_ANALYZED ) );
 
         String strContentToIndex = getContentToIndex( document );
-        ContentHandler handler = new BodyContentHandler( );
-        Metadata metadata = new Metadata( );
-        try
-        {
-            new HtmlParser( ).parse( new ByteArrayInputStream( strContentToIndex.getBytes( ) ), handler, metadata,
-                    new ParseContext( ) );
-        }
-        catch ( SAXException e )
-        {
-            throw new AppException( "Error during document parsing." );
-        }
-        catch ( TikaException e )
-        {
-            throw new AppException( "Error during document parsing." );
-        }
+        StringReader readerPage = new StringReader( strContentToIndex );
+        HTMLParser parser = new HTMLParser( readerPage );
 
         //the content of the article is recovered in the parser because this one
         //had replaced the encoded caracters (as &eacute;) by the corresponding special caracter (as ?)
-        StringBuilder sb = new StringBuilder( handler.toString( ) );
+        Reader reader = parser.getReader( );
+        int c;
+        StringBuilder sb = new StringBuilder( );
+
+        while ( ( c = reader.read( ) ) != -1 )
+        {
+            sb.append( String.valueOf( (char) c ) );
+        }
+
+        reader.close( );
 
         // Add the tag-stripped contents as a Reader-valued Text field so it will
         // get tokenized and indexed.
-        doc.add( new Field( SearchItem.FIELD_CONTENTS, sb.toString( ), TextField.TYPE_NOT_STORED ) );
+        doc.add( new Field( SearchItem.FIELD_CONTENTS, sb.toString( ), Field.Store.NO, Field.Index.ANALYZED ) );
 
         // Add the title as a separate Text field, so that it can be searched
         // separately.
-        FieldType ft2 = new FieldType( TextField.TYPE_STORED );
-        ft2.setOmitNorms( true );
-        doc.add( new Field( SearchItem.FIELD_TITLE, document.getTitle( ), ft2 ) );
+        doc.add( new Field( SearchItem.FIELD_TITLE, document.getTitle( ), Field.Store.YES, Field.Index.NO ) );
 
-        doc.add( new Field( SearchItem.FIELD_TYPE, document.getType( ), ft ) );
+        doc.add( new Field( SearchItem.FIELD_TYPE, document.getType( ), Field.Store.YES, Field.Index.NOT_ANALYZED ) );
 
-        doc.add( new Field( SearchItem.FIELD_ROLE, strRole, ft ) );
+        doc.add( new Field( SearchItem.FIELD_ROLE, strRole, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
 
         // add metadata (mapped to summary)
-        doc.add( new Field( SearchItem.FIELD_METADATA, document.getSummary( ), TextField.TYPE_NOT_STORED ) );
-        doc.add( new StoredField( SearchItem.FIELD_SUMMARY, document.getSummary( ) ) );
+        doc.add( new Field( SearchItem.FIELD_METADATA, document.getSummary( ), Field.Store.NO, Field.Index.ANALYZED ) );
 
         // return the document
         return doc;
@@ -344,7 +326,7 @@ public class DocumentIndexer implements SearchIndexer
 
         // Index Metadata
         sbContentToIndex.append( " " );
-        sbContentToIndex.append( StringUtils.defaultString( document.getXmlMetadata( ) ) );
+        sbContentToIndex.append( document.getXmlMetadata( ) );
 
         return sbContentToIndex.toString( );
     }
