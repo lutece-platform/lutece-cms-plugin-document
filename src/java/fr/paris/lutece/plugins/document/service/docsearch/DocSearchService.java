@@ -353,7 +353,7 @@ public class DocSearchService
             Query query = null;
             QueryParser parser = new QueryParser( IndexationService.LUCENE_INDEX_VERSION, DocSearchItem.FIELD_CONTENTS,
                     _analyzer );
-            query = parser.parse( ( strQuery != null ) ? strQuery : StringUtils.EMPTY );
+            query = parser.parse( ( StringUtils.isNotBlank( strQuery ) ) ? strQuery : "*:*" );
 
             List<DocumentSpace> listSpaces = DocumentSpacesService.getInstance( ).getUserAllowedSpaces( user );
             Filter[] filters = new Filter[listSpaces.size( )];
@@ -378,8 +378,6 @@ public class DocSearchService
                 DocSearchItem si = new DocSearchItem( document );
                 listResults.add( si );
             }
-
-            //           _searcher.close();
         }
         catch ( Exception e )
         {
