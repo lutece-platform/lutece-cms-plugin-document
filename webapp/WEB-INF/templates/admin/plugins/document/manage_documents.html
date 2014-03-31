@@ -115,7 +115,7 @@
                         <#if document.comment != "">
 							<p class="alert alert-error">${document.comment}</p>
 						</#if>
-						<p>#i18n{document.manage_documents.labelState} : <strong>${document.state}</strong> | <i class="icon-calendar"></i> ${document.dateModification}</p>
+						<p>#i18n{document.manage_documents.labelType} : <strong>${document.type}</strong> | #i18n{document.manage_documents.labelState} : <strong>${document.state}</strong> | <i class="icon-calendar"></i> ${document.dateModification}</p>
                     </td>
                     <td>
                         <#if document.publishedStatus = 0> 
