@@ -41,7 +41,7 @@
     <xsl:template match="file-resource">
         <xsl:choose>
             <xsl:when test="(resource-content-type='image/jpeg' or resource-content-type='image/jpg' or  resource-content-type='image/pjpeg' or resource-content-type='image/gif' or resource-content-type='image/png')">
-                <img src="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}" align="right" />
+                <img src="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}&amp;working_content=true" align="right" />
             </xsl:when>
             <xsl:when test="(resource-content-type='application/pdf')">
                 <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}&amp;working_content=true"> 
@@ -49,22 +49,22 @@
                 </a>
             </xsl:when>
             <xsl:when test="(resource-content-type='application/binary')">
-                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}"> 
+                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}&amp;working_content=true"> 
                     <img src="images/admin/skin/plugins/document/filetypes/compressed.png" />
                 </a>
             </xsl:when>
             <xsl:when test="(resource-content-type='video/mpeg')">
-                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}"> 
+                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}&amp;working_content=true"> 
                     <img src="images/admin/skin/plugins/document/filetypes/video.png" />
                 </a>
             </xsl:when>
             <xsl:when test="(resource-content-type='audio/mpeg')">
-                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}"> 
+                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}&amp;working_content=true"> 
                     <img src="images/local/skin/plugins/document/filetypes/audio.png" />
                 </a>
             </xsl:when>
             <xsl:otherwise>
-                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}"> 
+                <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}&amp;working_content=true"> 
                     <img src="images/local/skin/plugins/document/filetypes/file.png" />
                 </a>
             </xsl:otherwise>        
