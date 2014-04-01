@@ -9,6 +9,9 @@ Available objects :
 - DocumentPublication 	publication 		The publication object. 
 How to display the date publication : ${publication.datePublishing?date} or ${publication.datePublishing?datetime}
 -->
+<#if isExtendInstalled?? && isExtendInstalled>
+	@ExtenderParameter[${document_id},document,opengraph]@
+</#if>
 <div class="row">
     <div id="content" class="span8">
     	<#if portlet?has_content >

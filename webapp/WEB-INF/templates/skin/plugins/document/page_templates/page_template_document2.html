@@ -9,22 +9,28 @@ Available objects :
  - DocumentPublication 	publication 		The publication object. 
  											How to display the date publication : ${publication.datePublishing?date} or ${publication.datePublishing?datetime}
 -->
-@ExtenderParameter[${document_id},document,opengraph]@
+<#if isExtendInstalled?? && isExtendInstalled>
+	@ExtenderParameter[${document_id},document,opengraph]@
+</#if>
 <div class="row-fluid">
 	<div id="content" class="span8">
 		${document}
 	</div>
 	<div id="sidebar" class="span3">
-		@Extender[${document_id},document,actionbar]@
-		@Extender[${document_id},document,hit,{show:true}]@
-		@Extender[${document_id},document,rating,{show:"all"}]@
-		@Extender[${document_id},document,opengraph,{footer:false, header:false}]@
+		<#if isExtendInstalled?? && isExtendInstalled>
+			@Extender[${document_id},document,actionbar]@
+			@Extender[${document_id},document,hit,{show:true}]@
+			@Extender[${document_id},document,rating,{show:"all"}]@
+			@Extender[${document_id},document,opengraph,{footer:false, header:false}]@
+		</#if>
 		<#if portlet?has_content >
 			${portlet}
 		</#if>
 	</div>
 </div>
 <div class="clearfix">&nbsp;</div>
-@Extender[${document_id},document,comment]@
-@Extender[${document_id},document,feedback]@
-@Extender[${document_id},document,opengraph,{footer:true}]@
+<#if isExtendInstalled?? && isExtendInstalled>
+	@Extender[${document_id},document,comment]@
+	@Extender[${document_id},document,feedback]@
+	@Extender[${document_id},document,opengraph,{footer:true}]@
+</#if>
