@@ -33,6 +33,15 @@
  */
 package fr.paris.lutece.plugins.document.web.category;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.category.Category;
 import fr.paris.lutece.plugins.document.business.category.CategoryHome;
 import fr.paris.lutece.plugins.document.service.category.CategoryService;
@@ -49,15 +58,6 @@ import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -219,9 +219,16 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
             return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_ERROR, AdminMessage.TYPE_ERROR );
         }
 
+        CategoryDisplay categoryDisplay = CategoryService.getCategoryDisplay( nIdCategory );
+
+        if ( categoryDisplay == null )
+        {
+            return getManageCategory( request );
+        }
+
         Map<String, Object> model = new HashMap<String, Object>( );
 
-        model.put( MARK_CATEGORY_DISPLAY, CategoryService.getCategoryDisplay( nIdCategory ) );
+        model.put( MARK_CATEGORY_DISPLAY, categoryDisplay );
         model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_CATEGORY, getLocale( ), model );
