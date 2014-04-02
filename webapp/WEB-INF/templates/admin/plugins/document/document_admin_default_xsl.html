@@ -18,16 +18,24 @@
              <xsl:apply-templates select="document" />            
         </p>
         <p>
-            <strong>${attribute.name} : </strong> 
-            <xsl:choose>
-                <xsl:when test="${document_type.code}-${attribute.code}/file-resource!=''">
-                    <xsl:apply-templates select="${document_type.code}-${attribute.code}/file-resource" />
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="${document_type.code}-${attribute.code}" />
-                </xsl:otherwise>        
-            </xsl:choose>
-        </p>
+            <strong>${attribute.name} : </strong>
+			<#if attribute.codeAttributeType = "richtext" || attribute.codeAttributeType = "internallink">
+				<xsl:if test="${document_type.code}-${attribute.code}/text() != ''">
+					<div>
+						<xsl:value-of disable-output-escaping="yes" select="${document_type.code}-${attribute.code}" />
+					</div>
+				</xsl:if>
+			<#else> 
+	            <xsl:choose>
+	                <xsl:when test="${document_type.code}-${attribute.code}/file-resource!=''">
+	                    <xsl:apply-templates select="${document_type.code}-${attribute.code}/file-resource" />
+	                </xsl:when>
+	                <xsl:otherwise>
+	                    <xsl:value-of select="${document_type.code}-${attribute.code}" />
+	                </xsl:otherwise>        
+	            </xsl:choose>
+			</#if>
+         </p>
         </#list>
     </xsl:template>
     <xsl:template match="document">
