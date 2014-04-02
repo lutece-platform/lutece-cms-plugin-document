@@ -47,14 +47,17 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.KeywordAnalyzer;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.misc.ChainedFilter;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queries.ChainedFilter;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.Filter;
@@ -62,11 +65,11 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.NIOFSDirectory;
+import org.apache.lucene.util.Version;
 
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
@@ -93,17 +96,11 @@ public class DocSearchService
     public static final String PATH_INDEX = "document.docsearch.lucene.indexPath";
     public static final String PARAM_FORCING = "forcing";
     public static final String PATTERN_DATE = "dd/MM/yy";
-    private static final String PROPERTY_WRITER_MERGE_FACTOR = "document.docsearch.lucene.writer.mergeFactor";
-    private static final String PROPERTY_WRITER_MAX_FIELD_LENGTH = "document.docsearch.lucene.writer.maxFieldLength";
     private static final String PROPERTY_ANALYSER_CLASS_NAME = "document.docsearch.lucene.analyser.className";
-    private static final int DEFAULT_WRITER_MERGE_FACTOR = 20;
-    private static final int DEFAULT_WRITER_MAX_FIELD_LENGTH = 1000000;
     private static final int MAX_RESPONSES = 1000000;
     private static String _strIndex;
-    private static int _nWriterMergeFactor;
-    private static int _nWriterMaxFieldLength;
     private static Analyzer _analyzer;
-    private static Searcher _searcher;
+    private static IndexSearcher _searcher;
     private static DocSearchService _singleton;
     private static IDocSearchIndexer _indexer;
 
@@ -117,11 +114,6 @@ public class DocSearchService
         {
             throw new AppException( "Lucene index path not found in document.properties", null );
         }
-
-        _nWriterMergeFactor = AppPropertiesService.getPropertyInt( PROPERTY_WRITER_MERGE_FACTOR,
-                DEFAULT_WRITER_MERGE_FACTOR );
-        _nWriterMaxFieldLength = AppPropertiesService.getPropertyInt( PROPERTY_WRITER_MAX_FIELD_LENGTH,
-                DEFAULT_WRITER_MAX_FIELD_LENGTH );
 
         String strAnalyserClassName = AppPropertiesService.getProperty( PROPERTY_ANALYSER_CLASS_NAME );
 
@@ -174,15 +166,24 @@ public class DocSearchService
 
             Directory dir = NIOFSDirectory.open( new File( _strIndex ) );
 
-            if ( !IndexReader.indexExists( dir ) )
+            if ( !DirectoryReader.indexExists( dir ) )
             { //init index
                 bCreateIndex = true;
             }
 
             Date start = new Date( );
-            writer = new IndexWriter( dir, _analyzer, bCreateIndex, IndexWriter.MaxFieldLength.UNLIMITED );
-            writer.setMergeFactor( _nWriterMergeFactor );
-            writer.setMaxFieldLength( _nWriterMaxFieldLength );
+            IndexWriterConfig conf = new IndexWriterConfig( Version.LUCENE_46, _analyzer );
+
+            if ( bCreateIndex )
+            {
+                conf.setOpenMode( OpenMode.CREATE );
+            }
+            else
+            {
+                conf.setOpenMode( OpenMode.APPEND );
+            }
+
+            writer = new IndexWriter( dir, conf );
 
             if ( !bCreateIndex )
             {
@@ -290,8 +291,6 @@ public class DocSearchService
                 }
             }
 
-            writer.optimize( );
-
             Date end = new Date( );
             sbLogs.append( "Duration of the treatment : " );
             sbLogs.append( end.getTime( ) - start.getTime( ) );
@@ -337,13 +336,13 @@ public class DocSearchService
 
         try
         {
-            Directory dir = NIOFSDirectory.open( new File( _strIndex ) );
-            _searcher = new IndexSearcher( dir, true );
+            IndexReader ir = DirectoryReader.open( NIOFSDirectory.open( new File( _strIndex ) ) );
+            _searcher = new IndexSearcher( ir );
 
             Query query = null;
             QueryParser parser = new QueryParser( IndexationService.LUCENE_INDEX_VERSION, DocSearchItem.FIELD_CONTENTS,
                     _analyzer );
-            query = parser.parse( ( strQuery != null ) ? strQuery : StringUtils.EMPTY );
+            query = parser.parse( ( StringUtils.isNotBlank( strQuery ) ) ? strQuery : "*:*" );
 
             List<DocumentSpace> listSpaces = DocumentSpacesService.getInstance( ).getUserAllowedSpaces( user );
             Filter[] filters = new Filter[listSpaces.size( )];
@@ -368,8 +367,6 @@ public class DocSearchService
                 DocSearchItem si = new DocSearchItem( document );
                 listResults.add( si );
             }
-
-            //           _searcher.close();
         }
         catch ( Exception e )
         {
@@ -395,8 +392,8 @@ public class DocSearchService
 
         try
         {
-            Directory dir = NIOFSDirectory.open( new File( _strIndex ) );
-            _searcher = new IndexSearcher( dir, true );
+            IndexReader ir = DirectoryReader.open( NIOFSDirectory.open( new File( _strIndex ) ) );
+            _searcher = new IndexSearcher( ir );
 
             Collection<String> queries = new ArrayList<String>( );
             Collection<String> fields = new ArrayList<String>( );
