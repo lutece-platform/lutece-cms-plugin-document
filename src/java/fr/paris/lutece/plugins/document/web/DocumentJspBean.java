@@ -33,6 +33,22 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.Source;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentFilter;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
@@ -91,22 +107,6 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.transform.Source;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -559,8 +559,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
 
-        if ( !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
-                document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_MODIFY, getUser( ) ) )
+        if ( document == null
+                || !DocumentService.getInstance( ).isAuthorizedAdminDocument( document.getSpaceId( ),
+                        document.getCodeDocumentType( ), DocumentTypeResourceIdService.PERMISSION_MODIFY, getUser( ) ) )
         {
             return getManageDocuments( request );
         }

@@ -33,6 +33,21 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+import org.xml.sax.InputSource;
+
 import fr.paris.lutece.plugins.document.business.DocumentResource;
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
@@ -62,21 +77,6 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
-
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
-import org.xml.sax.InputSource;
 
 
 /**
@@ -249,6 +249,12 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         }
 
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strDocumentTypeCode );
+
+        if ( documentType == null )
+        {
+            return getManageDocumentTypes( request );
+        }
+
         ReferenceList listAttributeTypes = AttributeTypeHome.getAttributeTypesList( getLocale( ) );
         Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_DOCUMENT_TYPE, documentType );
@@ -556,6 +562,12 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
         int nAttributeId = IntegerUtils.convert( strAttributeId );
         DocumentAttribute attribute = DocumentAttributeHome.findByPrimaryKey( nAttributeId );
+
+        if ( attribute == null )
+        {
+            return getManageDocumentTypes( request );
+        }
+
         AttributeManager manager = AttributeService.getInstance( ).getManager( attribute.getCodeAttributeType( ) );
 
         UrlItem url = new UrlItem( request.getRequestURI( ) );
