@@ -33,6 +33,18 @@
  */
 package fr.paris.lutece.plugins.document.service;
 
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
@@ -66,18 +78,6 @@ import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.xml.XmlUtil;
-
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -734,9 +734,10 @@ public class DocumentService
                 // Resize image
                 String strWidth = mRequest.getParameter( attribute.getCode( ) + PARAMETER_WIDTH );
 
-                if ( !StringUtils.isNumeric( strWidth ) )
+                if ( StringUtils.isBlank( strWidth ) || !StringUtils.isNumeric( strWidth ) )
                 {
-                    String[] listArguments = { attribute.getName( ), MESSAGE_ATTRIBUTE_WIDTH_ERROR };
+                    String[] listArguments = { attribute.getName( ),
+                            I18nService.getLocalizedString( MESSAGE_ATTRIBUTE_WIDTH_ERROR, mRequest.getLocale( ) ) };
                     return AdminMessageService.getMessageUrl( mRequest, MESSAGE_ATTRIBUTE_VALIDATION_ERROR,
                             listArguments, AdminMessage.TYPE_STOP );
                 }
