@@ -39,7 +39,6 @@ ${extendableResourceActionsHtml!}
             </div>
             </#if>
 			-->
-            <#noescape>${metadata}</#noescape>
         </div>
         <div class="span9">
             <fieldset>
@@ -70,6 +69,7 @@ ${extendableResourceActionsHtml!}
             <fieldset>
                 <legend>#i18n{document.modify_document.attributTitle}</legend>    
                 <#noescape>${fields}</#noescape>
+            <#noescape>${metadata}</#noescape>
                 <div class="form-actions">
                     <button class="btn btn-primary btn-small" type="submit" ><i class="icon-edit icon-white"></i>#i18n{document.modify_document.buttonModify}</button>
                     <button class="btn btn-small" type="button" onclick="javascript:window.history.back()" ><i class=" icon-remove-circle"></i>#i18n{portal.admin.message.buttonCancel}</button>
