@@ -17,8 +17,6 @@
                 ${spaces_tree}
             </fieldset>
         </div>
-        <#if document_types_list?has_content >
-            <#if document_types_filter_list?size &gt; 1 >
             <fieldset>
                 <legend>#i18n{document.manage_documents.buttonSearch}</legend>
                 <form class="form" method="post" id="SearchDocumentById" name="SearchDocumentById" action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
@@ -41,8 +39,6 @@
                     <p class="help-block">#i18n{document.manage_documents.labelFullTextSearch}</p>
                 </form>
             </fieldset>
-             </#if>
-        </#if>
     </div>
     <div class="span8">
         <#if space?has_content >
