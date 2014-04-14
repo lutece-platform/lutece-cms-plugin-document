@@ -36,12 +36,14 @@ package fr.paris.lutece.plugins.document.service;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -73,6 +75,7 @@ import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.date.DateUtil;
@@ -99,6 +102,9 @@ public class DocumentService
     private static final String PARAMETER_CROPPABLE = "_croppable";
     private static final String PARAMETER_WIDTH = "_width";
 
+    // Properties
+    private static final String PROPERTY_AUTHORIZED_EXTENSION = "document.manageDocuments.authorizedExtension";
+
     //MESSAGES
     private static final String MESSAGE_ERROR_DATEEND_BEFORE_DATEBEGIN = "document.message.dateEndBeforeDateBegin";
     private static final String MESSAGE_INVALID_DATEEND = "document.message.invalidDateEnd";
@@ -107,6 +113,7 @@ public class DocumentService
     private static final String MESSAGE_ATTRIBUTE_VALIDATION_ERROR = "document.message.attributeValidationError";
     private static final String MESSAGE_ATTRIBUTE_WIDTH_ERROR = "document.message.widthError";
     private static final String MESSAGE_ATTRIBUTE_RESIZE_ERROR = "document.message.resizeError";
+    private static final String MESSAGE_EXTENSION_ERROR = "document.message.extensionError";
 
     private static DocumentService _singleton = new DocumentService( );
     private static final String TAG_DOCUMENT_ID = "document-id";
@@ -692,10 +699,11 @@ public class DocumentService
         else if ( fileParameterBinaryValue != null ) // If the field is a file
         {
             attribute.setBinary( true );
-
             String strContentType = fileParameterBinaryValue.getContentType( );
             byte[] bytes = fileParameterBinaryValue.get( );
             String strFileName = fileParameterBinaryValue.getName( );
+            String strExtension = FilenameUtils.getExtension( strFileName );
+            String[] listExtension = AppPropertiesService.getProperty( PROPERTY_AUTHORIZED_EXTENSION ).split( "," );
 
             if ( !bIsUpdatable )
             {
@@ -715,6 +723,10 @@ public class DocumentService
             if ( attribute.isRequired( ) && ( ( bytes == null ) || ( bytes.length == 0 ) ) )
             {
                 return AdminMessageService.getMessageUrl( mRequest, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
+            }
+            else if ( bIsUpdatable && !Arrays.asList( listExtension ).contains( strExtension ) )
+            {
+                return AdminMessageService.getMessageUrl( mRequest, MESSAGE_EXTENSION_ERROR, AdminMessage.TYPE_STOP );
             }
 
             // Check for specific attribute validation
