@@ -33,11 +33,11 @@
  */
 package fr.paris.lutece.plugins.document.service.attributes;
 
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.util.xml.XmlUtil;
-
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -52,6 +52,8 @@ public class FileManager extends DefaultManager
     private static final String TAG_FILE_SIZE = "file-size";
     private static final String TEMPLATE_CREATE_ATTRIBUTE = "admin/plugins/document/attributes/create_file.html";
     private static final String TEMPLATE_MODIFY_ATTRIBUTE = "admin/plugins/document/attributes/modify_file.html";
+    private static final String TEMPLATE_CREATE_PARAMETERS_ATTRIBUTE = "admin/plugins/document/attributes/create_parameters_file.html";
+    private static final String TEMPLATE_MODIFY_PARAMETERS_ATTRIBUTE = "admin/plugins/document/attributes/modify_parameters_file.html";
 
     /**
      * Gets the template to enter the attribute value
@@ -77,7 +79,7 @@ public class FileManager extends DefaultManager
      */
     String getCreateParametersTemplate( )
     {
-        return null;
+        return TEMPLATE_CREATE_PARAMETERS_ATTRIBUTE;
     }
 
     /**
@@ -86,7 +88,7 @@ public class FileManager extends DefaultManager
      */
     String getModifyParametersTemplate( )
     {
-        return null;
+        return TEMPLATE_MODIFY_PARAMETERS_ATTRIBUTE;
     }
 
     /**

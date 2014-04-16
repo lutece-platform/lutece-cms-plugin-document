@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.service.attributes;
 
-
 /**
  * ImageFileManager
  */
@@ -41,12 +40,14 @@ public class ImageFileManager extends FileManager
 {
     private static final String TEMPLATE_CREATE_ATTRIBUTE = "admin/plugins/document/attributes/create_image.html";
     private static final String TEMPLATE_MODIFY_ATTRIBUTE = "admin/plugins/document/attributes/modify_image.html";
+    private static final String TEMPLATE_CREATE_PARAMETERS_ATTRIBUTE = "admin/plugins/document/attributes/create_parameters_image.html";
+    private static final String TEMPLATE_MODIFY_PARAMETERS_ATTRIBUTE = "admin/plugins/document/attributes/modify_parameters_image.html";
 
     /**
      * Gets the template to enter the attribute value
      * @return The template to enter the attribute value
      */
-    String getCreateTemplate(  )
+    String getCreateTemplate( )
     {
         return TEMPLATE_CREATE_ATTRIBUTE;
     }
@@ -55,16 +56,34 @@ public class ImageFileManager extends FileManager
      * Gets the template to modify the attribute value
      * @return The template to modify the attribute value
      */
-    String getModifyTemplate(  )
+    String getModifyTemplate( )
     {
         return TEMPLATE_MODIFY_ATTRIBUTE;
+    }
+
+    /**
+     * Gets the template to enter the parameters of the attribute value
+     * @return The template to enter the parameters of the attribute value
+     */
+    String getCreateParametersTemplate( )
+    {
+        return TEMPLATE_CREATE_PARAMETERS_ATTRIBUTE;
+    }
+
+    /**
+     * Gets the template to modify the parameters of the attribute value
+     * @return The template to modify the parameters of the attribute value
+     */
+    String getModifyParametersTemplate( )
+    {
+        return TEMPLATE_MODIFY_PARAMETERS_ATTRIBUTE;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean canBeUsedAsThumbnail(  )
+    public boolean canBeUsedAsThumbnail( )
     {
         return true;
     }

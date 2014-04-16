@@ -20,6 +20,8 @@ INSERT INTO document_attr_type_parameter (code_attr_type,parameter_name,paramete
 INSERT INTO document_attr_type_parameter (code_attr_type,parameter_name,parameter_label_key,parameter_index,parameter_description_key,parameter_default_value) VALUES ('numerictext','maxlength','document.attributeType.numerictext.parameter.maxlength.label',2,'document.attributeType.numerictext.parameter.maxlength.description','5');
 INSERT INTO document_attr_type_parameter (code_attr_type,parameter_name,parameter_label_key,parameter_index,parameter_description_key,parameter_default_value) VALUES ('date','defaultvalue','document.attributeType.date.parameter.defaultvalue.label',1,'document.attributeType.date.parameter.defaultvalue.description','');
 INSERT INTO document_attr_type_parameter (code_attr_type,parameter_name,parameter_label_key,parameter_index,parameter_description_key,parameter_default_value) VALUES ('date','currentdate','document.attributeType.date.parameter.currentdate.label',2,'document.attributeType.date.parameter.currentdate.description','');
+INSERT INTO document_attr_type_parameter (code_attr_type,parameter_name,parameter_label_key,parameter_index,parameter_description_key,parameter_default_value) VALUES ('file', 'extension', 'document.attributeType.file.parameter.extension.label', 1, 'document.attributeType.file.parameter.extension.description', 'docx,xlsx,pdf');
+INSERT INTO document_attr_type_parameter (code_attr_type, parameter_name, parameter_label_key, parameter_index, parameter_description_key, parameter_default_value) VALUES ('image', 'extension', 'document.attributeType.image.parameter.extension.label', 1, 'document.attributeType.image.parameter.extension.description', 'jpg,jpeg,png');
 
 --
 -- Dumping data for table document_page_template

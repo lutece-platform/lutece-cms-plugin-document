@@ -1,0 +1,9 @@
+<#list parameters as parameter>
+<div class="control-group">
+<label class="control-label" for="${parameter.name}" >${parameter.label} :</label>
+	<div class="controls">
+			<input type="text" name="${parameter.name}" id="${parameter.name}" value="<#list parameter.valueList as values >${values}</#list>"/> 
+			<span class="help-block">${parameter.description}</span>
+	 </div>
+</div>
+</#list>

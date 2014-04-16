@@ -33,6 +33,16 @@
  */
 package fr.paris.lutece.plugins.document.service.attributes;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeHome;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
@@ -43,16 +53,6 @@ import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
 import fr.paris.lutece.portal.service.regularexpression.RegularExpressionService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -210,9 +210,9 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
-    public Collection<AttributeTypeParameter> getExtraParametersValues( Locale locale, int nAttributeId )
+    public List<AttributeTypeParameter> getExtraParametersValues( Locale locale, int nAttributeId )
     {
-        Collection<AttributeTypeParameter> listParameters = getExtraParameters( locale );
+        List<AttributeTypeParameter> listParameters = getExtraParameters( locale );
 
         for ( AttributeTypeParameter parameter : listParameters )
         {

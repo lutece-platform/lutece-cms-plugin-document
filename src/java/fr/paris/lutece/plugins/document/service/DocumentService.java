@@ -36,12 +36,12 @@ package fr.paris.lutece.plugins.document.service;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -51,6 +51,7 @@ import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
+import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.category.Category;
 import fr.paris.lutece.plugins.document.business.category.CategoryHome;
@@ -75,7 +76,6 @@ import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.date.DateUtil;
@@ -101,9 +101,6 @@ public class DocumentService
     private static final String PARAMETER_ATTRIBUTE_UPDATE = "update_";
     private static final String PARAMETER_CROPPABLE = "_croppable";
     private static final String PARAMETER_WIDTH = "_width";
-
-    // Properties
-    private static final String PROPERTY_AUTHORIZED_EXTENSION = "document.manageDocuments.authorizedExtension";
 
     //MESSAGES
     private static final String MESSAGE_ERROR_DATEEND_BEFORE_DATEBEGIN = "document.message.dateEndBeforeDateBegin";
@@ -703,7 +700,8 @@ public class DocumentService
             byte[] bytes = fileParameterBinaryValue.get( );
             String strFileName = fileParameterBinaryValue.getName( );
             String strExtension = FilenameUtils.getExtension( strFileName );
-            String[] listExtension = AppPropertiesService.getProperty( PROPERTY_AUTHORIZED_EXTENSION ).split( "," );
+
+            AttributeManager manager = AttributeService.getInstance( ).getManager( attribute.getCodeAttributeType( ) );
 
             if ( !bIsUpdatable )
             {
@@ -716,7 +714,18 @@ public class DocumentService
                     bytes = oldAttribute.getBinaryValue( );
                     strContentType = oldAttribute.getValueContentType( );
                     strFileName = oldAttribute.getTextValue( );
+                    strExtension = FilenameUtils.getExtension( strFileName );
                 }
+            }
+
+            List<AttributeTypeParameter> parameters = manager.getExtraParametersValues( locale, attribute.getId( ) );
+
+            String extensionList = StringUtils.EMPTY;
+
+            if ( CollectionUtils.isNotEmpty( parameters )
+                    && CollectionUtils.isNotEmpty( parameters.get( 0 ).getValueList( ) ) )
+            {
+                extensionList = parameters.get( 0 ).getValueList( ).get( 0 );
             }
 
             // Check for mandatory value
@@ -724,13 +733,16 @@ public class DocumentService
             {
                 return AdminMessageService.getMessageUrl( mRequest, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
             }
-            else if ( bIsUpdatable && !Arrays.asList( listExtension ).contains( strExtension ) )
+            else if ( StringUtils.isNotBlank( extensionList ) && !extensionList.contains( strExtension ) )
             {
-                return AdminMessageService.getMessageUrl( mRequest, MESSAGE_EXTENSION_ERROR, AdminMessage.TYPE_STOP );
+                Object[] params = new Object[2];
+                params[0] = attribute.getName( );
+                params[1] = extensionList;
+                return AdminMessageService.getMessageUrl( mRequest, MESSAGE_EXTENSION_ERROR, params,
+                        AdminMessage.TYPE_STOP );
             }
 
             // Check for specific attribute validation
-            AttributeManager manager = AttributeService.getInstance( ).getManager( attribute.getCodeAttributeType( ) );
             String strValidationErrorMessage = manager.validateValue( attribute.getId( ), strFileName, locale );
 
             if ( strValidationErrorMessage != null )

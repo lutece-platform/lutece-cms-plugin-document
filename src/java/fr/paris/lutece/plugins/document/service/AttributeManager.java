@@ -33,15 +33,14 @@
  */
 package fr.paris.lutece.plugins.document.service;
 
-import fr.paris.lutece.plugins.document.business.Document;
-import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
-import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
-
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+
+import fr.paris.lutece.plugins.document.business.Document;
+import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
+import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 
 
 /**
@@ -59,7 +58,7 @@ public interface AttributeManager
      * Return the attribute Type code
      * @return The Attribute Type Code
      */
-    String getAttributeTypeCode(  );
+    String getAttributeTypeCode( );
 
     /**
      * Gets the part of an HTML form to enter attribute data
@@ -116,7 +115,7 @@ public interface AttributeManager
      * @param nAttributeId
      * @return The extra parameters values for the attribute
      */
-    Collection<AttributeTypeParameter> getExtraParametersValues( Locale locale, int nAttributeId );
+    List<AttributeTypeParameter> getExtraParametersValues( Locale locale, int nAttributeId );
 
     /**
      * Validate the value for the attribute
@@ -136,9 +135,10 @@ public interface AttributeManager
     String validateValueParameters( List<AttributeTypeParameter> listParameters, Locale locale );
 
     /**
-     * Get the XML data corresponding to the attribute to build the docuemnt XML content
+     * Get the XML data corresponding to the attribute to build the docuemnt XML
+     * content
      * @param document The document
-     * @param attribute  The attribute
+     * @param attribute The attribute
      * @return The XML value of the attribute
      */
     String getAttributeXmlValue( Document document, DocumentAttribute attribute );
@@ -147,7 +147,7 @@ public interface AttributeManager
      * Tells if the attrubute can be used as Thumbnail (image)
      * @return true if the attrubute can be used as Thumbnail, otherwise false
      */
-    boolean canBeUsedAsThumbnail(  );
+    boolean canBeUsedAsThumbnail( );
 
     /**
      * Get the value parameters
