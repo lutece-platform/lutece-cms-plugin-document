@@ -1,15 +1,28 @@
-<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
-${extendableResourceActionsHtml!}
-</#if>
 <#escape x as x?html>
 <div class="row-fluid">
-    <form method="post" action="jsp/admin/plugins/document/DoModifyDocument.jsp" enctype="multipart/form-data" >
-        <div class="span3">
+	<div class="span12">
+		<span class="pull-right btn-group spaced">
+			<button class="btn btn-small btn-primary" type="submit" >
+				<i class="icon-edit icon-white"></i>
+				&nbsp;#i18n{document.modify_document.buttonModify}&nbsp;&nbsp;&nbsp;
+			</button>
+		</span>
+		<#noescape>
+			<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>${extendableResourceActionsHtml!}</#if>
+		</#noescape>
+	</div>
+</div>
+<div class="row-fluid">
+	<form method="post" action="jsp/admin/plugins/document/DoModifyDocument.jsp" enctype="multipart/form-data" >
+       <div class="span3">
             <input type="hidden" name="id_document" value="${document.id}" />
             <input type="hidden" name="id_state" value="${id_state}" />  
-            <div class="well">            
-                <fieldset>
-                    <legend>#i18n{document.modify_document.advancedPropertiesTitle}</legend>
+            <div class="well well-small">            
+			<fieldset>
+				<legend id="properties">
+					<i class="icon-chevron-down"></i>&nbsp; #i18n{document.modify_document.advancedPropertiesTitle}
+				</legend>
+				<div id="properties-content"> 
                     <label>#i18n{document.modify_document.labelDocumentValidity}</label>
                     <label for="document_validity_begin">#i18n{document.modify_document.labelDocumentValidityBegin}</label>
                     <div class="input-prepend">
@@ -29,53 +42,43 @@ ${extendableResourceActionsHtml!}
                     <label class="control-label" for="document_comment">#i18n{document.modify_document.labelDocumentComment} : </label>
                     <textarea type="text" name="document_comment" id="document_comment" cols="60" rows="2" >${document.comment}</textarea> 
                     <p class="help-block">#i18n{document.modify_document.helpDocumentComment}</p>
+				</div>
                 </fieldset>
             </div>
             <#noescape>${category}</#noescape>
-			<!-- DEPRECATED 
-            <#if is_votable?has_content>
-            <div class="well"> 
-                <#include "/admin/plugins/rating/modify_resource_add_on.html" />
-            </div>
-            </#if>
-			-->
-        </div>
-        <div class="span9">
-            <fieldset>
-                <legend>
-                    #i18n{document.modify_document.title} &#34; ${document.title} &#34;
-                    <span class="pull-right btn-group">
-                        <button class="btn btn-small btn-primary" type="submit" >
-                            <i class="icon-edit icon-white"></i>
-                            &nbsp;#i18n{document.modify_document.buttonModify}
-                        </button>
-                    </span>
-                </legend>
-                <div class="control-group">
-                    <label class="control-label" for="document_title">#i18n{document.modify_document.labelDocumentTitle}* : </label>
-                    <div class="controls">
-                        <input type="text" name="document_title" id="document_title" value="${document.title}" class="input-xxlarge" maxlength="255"/>
-                        <p class="help-block">#i18n{document.modify_document.helpDocumentTitle}</p>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="document_summary">#i18n{document.modify_document.labelDocumentSummary}* : </label>
-                    <div class="controls">
-                        <textarea name="document_summary" id="document_summary" class="input-xxlarge" rows="5" >${document.summary}</textarea> 
-                    	<p class="help-block">#i18n{document.modify_document.helpDocumentSummary}</p>
-                    </div>
-                </div>
-            </fieldset> 
-            <fieldset>
-                <legend>#i18n{document.modify_document.attributTitle}</legend>    
-                <#noescape>${fields}</#noescape>
-            <#noescape>${metadata}</#noescape>
-                <div class="form-actions">
-                    <button class="btn btn-primary btn-small" type="submit" ><i class="icon-edit icon-white"></i>#i18n{document.modify_document.buttonModify}</button>
-                    <button class="btn btn-small" type="button" onclick="javascript:window.history.back()" ><i class=" icon-remove-circle"></i>#i18n{portal.admin.message.buttonCancel}</button>
-                </div>
-            </fieldset>
-        </div>
+		</div>
+		<div class="span6">
+			<div class="well">
+				<fieldset>
+					<legend>${document.title} <small class="pull-right">#i18n{document.modify_document.title}</small></legend>
+					<div class="control-group">
+						<label class="control-label" for="document_title">#i18n{document.modify_document.labelDocumentTitle}* : </label>
+						<div class="controls">
+							<input type="text" name="document_title" id="document_title" value="${document.title}" class="input-xxlarge" maxlength="255"/>
+							<p class="help-block">#i18n{document.modify_document.helpDocumentTitle}</p>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="document_summary">#i18n{document.modify_document.labelDocumentSummary}* : </label>
+						<div class="controls">
+							<textarea name="document_summary" id="document_summary" class="input-xxlarge" rows="5" >${document.summary}</textarea> 
+							<p class="help-block">#i18n{document.modify_document.helpDocumentSummary}</p>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>#i18n{document.modify_document.attributTitle}</legend>    
+					<#noescape>${fields}</#noescape>
+					<div class="form-actions">
+						<button class="btn btn-primary btn-small" type="submit" ><i class="icon-edit icon-white"></i>#i18n{document.modify_document.buttonModify}</button>
+						<button class="btn btn-small" type="button" onclick="javascript:window.history.back()" ><i class=" icon-remove-circle"></i>#i18n{portal.admin.message.buttonCancel}</button>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+		<div class="span3">
+			  <#noescape>${metadata}</#noescape>
+		</div>
     </form>
 </div>
 </#escape>
@@ -85,20 +88,16 @@ ${extendableResourceActionsHtml!}
 <@initEditor />
 <@getDatePickerRange idFieldFrom="document_validity_begin" idFieldTo="document_validity_end" language=locale />
 <script>
-    $(document).ready( function () {
-        $("#dublin_core_meta").next().toggle();
-        doToggleId( "#dublin_core_meta" );
-        $("#comments").next().toggle();
-        doToggleId( "#comments" );
-// 		if( $("div#category-content ul li input:checked").length == 0 ){
-			$("#category").next().toggle();
-// 		}
-		doToggleId( "#category" );
-    });
+function doToggleId( idParent ){
+	$( idParent ).click( function(){ 
+		$(this).next().toggle();
+		$(this).children().toggleClass("icon-chevron-down icon-chevron-up");
 
-    function doToggleId( idParent ){
-        $( idParent ).click( function(){ 
-            $(this).next().toggle();
-        });
-    }
+	});
+}
+$(document).ready( function () {
+	doToggleId( "#category" );
+	doToggleId( "#dublin_core_meta" );
+	doToggleId( "#properties" );
+});
 </script>

@@ -1,8 +1,9 @@
 <#if category_list?has_content >
-<div class="well">
-	<span id="category">
+<div class="well well-small">
+	<fieldset>
+	<legend id="category">
 		<i class="icon-chevron-down"></i>&nbsp;#i18n{document.list_category.boxTitle}
-	</span>
+	</legend>
 	<div id="category-content" >
 		<ul class="unstyled">
 			<#list category_list as categoryDisplay >
@@ -13,5 +14,6 @@
 			</#list>
 		</ul>
 	</div>
+	</fieldset>
 </div>
 </#if>

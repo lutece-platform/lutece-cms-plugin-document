@@ -1,6 +1,30 @@
 <div class="row-fluid">
     <div class="span4">
-        <div class="well">
+		<div class="well well-small">
+			<fieldset>
+				<legend>#i18n{document.manage_documents.buttonSearch}</legend>
+				<form class="form" method="post" id="SearchDocumentById" name="SearchDocumentById" action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
+					<div class="input-append">
+						<input type="text" id="id_document" name="id_document" class="input-mini"  maxlength="10" >
+						<button class="btn btn-primary btn-small" type="submit" title="#i18n{document.manage_documents.buttonSearch}" >
+							<i class="icon-search icon-white"></i>
+						</button>
+					</div>
+					<p class="help-block">#i18n{document.manage_documents.labelSearchById}</p>
+				</form>
+				<form class="form-inline" method="post" id="FullTextSearchDocument" name="FullTextSearchDocument" action="jsp/admin/plugins/document/DocumentSearch.jsp">
+					<input type="hidden" id="id_document" name="id_document">
+					<div class="input-append">
+						<input type="text" id="query" name="query" class="input-large" maxlength="50" >
+						<button class="btn btn-primary" type="submit" title="#i18n{document.manage_documents.buttonSearch}" >
+							<i class="icon-search icon-white"></i>
+						</button>
+					</div>
+					<p class="help-block">#i18n{document.manage_documents.labelFullTextSearch}</p>
+				</form>
+			</fieldset>
+		</div>
+       <div class="well well-small">
             <fieldset>
                 <legend>
                     #i18n{document.manage_documents.labelSpaces}
@@ -17,29 +41,8 @@
                 ${spaces_tree}
             </fieldset>
         </div>
-            <fieldset>
-                <legend>#i18n{document.manage_documents.buttonSearch}</legend>
-                <form class="form" method="post" id="SearchDocumentById" name="SearchDocumentById" action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
-                    <div class="input-append">
-                        <input type="text" id="id_document" name="id_document" class="input-mini"  maxlength="10" >
-                        <button class="btn btn-primary btn-small" type="submit" title="#i18n{document.manage_documents.buttonSearch}" >
-                            <i class="icon-search icon-white"></i>
-                        </button>
-                    </div>
-                    <p class="help-block">#i18n{document.manage_documents.labelSearchById}</p>
-                </form>
-                <form class="form-inline" method="post" id="FullTextSearchDocument" name="FullTextSearchDocument" action="jsp/admin/plugins/document/DocumentSearch.jsp">
-                    <input type="hidden" id="id_document" name="id_document">
-                    <div class="input-append">
-                        <input type="text" id="query" name="query" class="input-large" maxlength="50" >
-						<button class="btn btn-primary" type="submit" title="#i18n{document.manage_documents.buttonSearch}" >
-                            <i class="icon-search icon-white"></i>
-                        </button>
-                    </div>
-                    <p class="help-block">#i18n{document.manage_documents.labelFullTextSearch}</p>
-                </form>
-            </fieldset>
-    </div>
+		
+	</div>
     <div class="span8">
         <#if space?has_content >
         <div class="lead">#i18n{document.manage_documents.listTitle}
@@ -106,12 +109,12 @@
                     <td><input id="document_selection" name="document_selection" type="checkbox" value="${document.id}" /></td>
                     <td>
                         <p>
-						 <#if document.thumbnail != "images/admin/skin/plugins/document/default_icon.png"><img src="${document.thumbnail}" alt="${document.title}" title="${document.title} - ${document.type}" class="thumblist" /></#if>
+						 <#if document.thumbnail != "images/admin/skin/plugins/document/default_icon.png"><img src="${document.thumbnail}&nocache" alt="${document.title}" title="${document.title} - ${document.type}" class="thumblist" /></#if>
 						${document.id} - ${document.title}</p>
                         <#if document.comment != "">
 							<p class="alert alert-error">${document.comment}</p>
 						</#if>
-						<p>#i18n{document.manage_documents.labelType} : <strong>${document.type}</strong> | #i18n{document.manage_documents.labelState} : <strong>${document.state}</strong> | <i class="icon-calendar"></i> ${document.dateModification}</p>
+						<p>#i18n{document.manage_documents.labelState} : <strong>${document.state}</strong> | <i class="icon-calendar"></i> ${document.dateModification}</p>
                     </td>
                     <td>
                         <#if document.publishedStatus = 0> 
@@ -220,7 +223,7 @@
                 "select_limit" : 1,
             },
             "themes" : {
-                "theme" : "default",
+                "theme" : "apple",
                 "icons" : false
             },
             "cookies" : {
@@ -235,6 +238,7 @@
         $("input[type='checkbox']").attr('checked',  this.checked);
     });
     
+    $("#FullTextSearchDocument p.help-block").text("#i18n{document.manage_document.labelAllTextSearch}");
     $("#FullTextSearchDocument").submit(function(){
         if( $.isNumeric($("#FullTextSearchDocument input#query").val()) ){
             $("#FullTextSearchDocument input#id_document").val($("#FullTextSearchDocument input#query").val());
