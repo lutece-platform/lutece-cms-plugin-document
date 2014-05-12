@@ -33,6 +33,21 @@
  */
 package fr.paris.lutece.plugins.document.service.docsearch;
 
+import fr.paris.lutece.plugins.document.business.DocumentHome;
+import fr.paris.lutece.plugins.document.business.DocumentType;
+import fr.paris.lutece.plugins.document.business.IndexerAction;
+import fr.paris.lutece.plugins.document.business.IndexerActionFilter;
+import fr.paris.lutece.plugins.document.business.IndexerActionHome;
+import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
+import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.search.IndexationService;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -67,21 +82,6 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.NIOFSDirectory;
-
-import fr.paris.lutece.plugins.document.business.DocumentHome;
-import fr.paris.lutece.plugins.document.business.DocumentType;
-import fr.paris.lutece.plugins.document.business.IndexerAction;
-import fr.paris.lutece.plugins.document.business.IndexerActionFilter;
-import fr.paris.lutece.plugins.document.business.IndexerActionHome;
-import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
-import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
-import fr.paris.lutece.portal.business.user.AdminUser;
-import fr.paris.lutece.portal.service.search.IndexationService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
-import fr.paris.lutece.portal.service.util.AppException;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 
 /**
@@ -191,27 +191,36 @@ public class DocSearchService
                 //add all document which must be add
                 for ( IndexerAction action : getAllIndexerActionByTask( IndexerAction.TASK_CREATE ) )
                 {
-                    ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>( );
-                    luceneDocumentId.add( new Integer( action.getIdDocument( ) ) );
-
-                    List<org.apache.lucene.document.Document> luceneDocument = _indexer.getDocuments( luceneDocumentId );
-
-                    if ( ( luceneDocument != null ) && ( luceneDocument.size( ) > 0 ) )
+                    try
                     {
-                        Iterator<org.apache.lucene.document.Document> it = luceneDocument.iterator( );
+                        ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>( );
+                        luceneDocumentId.add( new Integer( action.getIdDocument( ) ) );
 
-                        while ( it.hasNext( ) )
+                        List<org.apache.lucene.document.Document> luceneDocument = _indexer
+                                .getDocuments( luceneDocumentId );
+
+                        if ( ( luceneDocument != null ) && ( luceneDocument.size( ) > 0 ) )
                         {
-                            org.apache.lucene.document.Document doc = it.next( );
-                            writer.addDocument( doc );
-                            sbLogs.append( "Adding " );
-                            sbLogs.append( doc.get( DocSearchItem.FIELD_TYPE ) );
-                            sbLogs.append( " #" );
-                            sbLogs.append( doc.get( DocSearchItem.FIELD_UID ) );
-                            sbLogs.append( " - " );
-                            sbLogs.append( doc.get( DocSearchItem.FIELD_TITLE ) );
-                            sbLogs.append( "\r\n" );
+                            Iterator<org.apache.lucene.document.Document> it = luceneDocument.iterator( );
+
+                            while ( it.hasNext( ) )
+                            {
+                                org.apache.lucene.document.Document doc = it.next( );
+                                writer.addDocument( doc );
+                                sbLogs.append( "Adding " );
+                                sbLogs.append( doc.get( DocSearchItem.FIELD_TYPE ) );
+                                sbLogs.append( " #" );
+                                sbLogs.append( doc.get( DocSearchItem.FIELD_UID ) );
+                                sbLogs.append( " - " );
+                                sbLogs.append( doc.get( DocSearchItem.FIELD_TITLE ) );
+                                sbLogs.append( "\r\n" );
+                            }
                         }
+                    }
+                    catch ( IOException e )
+                    {
+                        sbLogs.append( "Error durign document indexation parsing." );
+                        sbLogs.append( "\r\n" );
                     }
 
                     removeIndexerAction( action.getIdAction( ) );
@@ -220,29 +229,38 @@ public class DocSearchService
                 //Update all document which must be update
                 for ( IndexerAction action : getAllIndexerActionByTask( IndexerAction.TASK_MODIFY ) )
                 {
-                    ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>( );
-                    luceneDocumentId.add( new Integer( action.getIdDocument( ) ) );
-
-                    List<org.apache.lucene.document.Document> luceneDocument = _indexer.getDocuments( luceneDocumentId );
-
-                    if ( ( luceneDocument != null ) && ( luceneDocument.size( ) > 0 ) )
+                    try
                     {
-                        Iterator<org.apache.lucene.document.Document> it = luceneDocument.iterator( );
+                        ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>( );
+                        luceneDocumentId.add( new Integer( action.getIdDocument( ) ) );
 
-                        while ( it.hasNext( ) )
+                        List<org.apache.lucene.document.Document> luceneDocument = _indexer
+                                .getDocuments( luceneDocumentId );
+
+                        if ( ( luceneDocument != null ) && ( luceneDocument.size( ) > 0 ) )
                         {
-                            org.apache.lucene.document.Document doc = it.next( );
-                            writer.updateDocument(
-                                    new Term( DocSearchItem.FIELD_UID, Integer.toString( action.getIdDocument( ) ) ),
-                                    doc );
-                            sbLogs.append( "Updating " );
-                            sbLogs.append( doc.get( DocSearchItem.FIELD_TYPE ) );
-                            sbLogs.append( " #" );
-                            sbLogs.append( doc.get( DocSearchItem.FIELD_UID ) );
-                            sbLogs.append( " - " );
-                            sbLogs.append( doc.get( DocSearchItem.FIELD_TITLE ) );
-                            sbLogs.append( "\r\n" );
+                            Iterator<org.apache.lucene.document.Document> it = luceneDocument.iterator( );
+
+                            while ( it.hasNext( ) )
+                            {
+                                org.apache.lucene.document.Document doc = it.next( );
+                                writer.updateDocument(
+                                        new Term( DocSearchItem.FIELD_UID, Integer.toString( action.getIdDocument( ) ) ),
+                                        doc );
+                                sbLogs.append( "Updating " );
+                                sbLogs.append( doc.get( DocSearchItem.FIELD_TYPE ) );
+                                sbLogs.append( " #" );
+                                sbLogs.append( doc.get( DocSearchItem.FIELD_UID ) );
+                                sbLogs.append( " - " );
+                                sbLogs.append( doc.get( DocSearchItem.FIELD_TITLE ) );
+                                sbLogs.append( "\r\n" );
+                            }
                         }
+                    }
+                    catch ( IOException e )
+                    {
+                        sbLogs.append( "Error durign document indexation parsing." );
+                        sbLogs.append( "\r\n" );
                     }
 
                     removeIndexerAction( action.getIdAction( ) );
@@ -271,20 +289,28 @@ public class DocSearchService
 
                 for ( Integer nIdDocument : listIdDocuments )
                 {
-                    luceneDocumentId = new ArrayList<Integer>( );
-                    luceneDocumentId.add( nIdDocument );
-
-                    List<Document> listDocuments = _indexer.getDocuments( luceneDocumentId );
-
-                    for ( Document doc : listDocuments )
+                    try
                     {
-                        writer.addDocument( doc );
-                        sbLogs.append( "Indexing " );
-                        sbLogs.append( doc.get( DocSearchItem.FIELD_TYPE ) );
-                        sbLogs.append( " #" );
-                        sbLogs.append( doc.get( DocSearchItem.FIELD_UID ) );
-                        sbLogs.append( " - " );
-                        sbLogs.append( doc.get( DocSearchItem.FIELD_TITLE ) );
+                        luceneDocumentId = new ArrayList<Integer>( );
+                        luceneDocumentId.add( nIdDocument );
+
+                        List<Document> listDocuments = _indexer.getDocuments( luceneDocumentId );
+
+                        for ( Document doc : listDocuments )
+                        {
+                            writer.addDocument( doc );
+                            sbLogs.append( "Indexing " );
+                            sbLogs.append( doc.get( DocSearchItem.FIELD_TYPE ) );
+                            sbLogs.append( " #" );
+                            sbLogs.append( doc.get( DocSearchItem.FIELD_UID ) );
+                            sbLogs.append( " - " );
+                            sbLogs.append( doc.get( DocSearchItem.FIELD_TITLE ) );
+                            sbLogs.append( "\r\n" );
+                        }
+                    }
+                    catch ( IOException e )
+                    {
+                        sbLogs.append( "Error durign document indexation parsing." );
                         sbLogs.append( "\r\n" );
                     }
                 }
@@ -343,7 +369,7 @@ public class DocSearchService
             Query query = null;
             QueryParser parser = new QueryParser( IndexationService.LUCENE_INDEX_VERSION, DocSearchItem.FIELD_CONTENTS,
                     _analyzer );
-            query = parser.parse( ( strQuery != null ) ? strQuery : StringUtils.EMPTY );
+            query = parser.parse( StringUtils.isNotBlank( strQuery ) ? strQuery : "*:*" );
 
             List<DocumentSpace> listSpaces = DocumentSpacesService.getInstance( ).getUserAllowedSpaces( user );
             Filter[] filters = new Filter[listSpaces.size( )];
