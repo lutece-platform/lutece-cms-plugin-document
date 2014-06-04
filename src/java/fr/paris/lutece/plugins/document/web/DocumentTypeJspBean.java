@@ -150,6 +150,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
     private static final String SEPARATOR = "_";
     private static final String FILE_EXTENSION = ".xsl";
     private static final Object UPDATE_VALUE = "true";
+    private static final String PATTERN_CODE = "[a-zA-Z0-9_\\-]+";
     private static final int NO_THUMBNAIL_ATTRIBUTE = 0;
     private String _strDocumentTypeCode;
     private int _nItemsPerPage;
@@ -208,7 +209,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         }
 
         // Check Accentuated Character
-        if ( !StringUtil.checkAccentuatedCharacter( strCode ) )
+        if ( !checkDocumentTypeCodePattern( strCode ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MESSAGE_STRING_FORMAT, AdminMessage.TYPE_STOP );
         }
@@ -284,7 +285,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         String strMetadata = request.getParameter( PARAMETER_METADATA );
 
         // Check Accentuated Character
-        if ( !StringUtil.checkAccentuatedCharacter( strCode ) )
+        if ( !checkDocumentTypeCodePattern( strCode ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MESSAGE_STRING_FORMAT, AdminMessage.TYPE_STOP );
         }
@@ -996,5 +997,15 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         url.addParameter( PARAMETER_ATTRIBUTE_ID, nAttributeId );
 
         return url.getUrl( );
+    }
+
+    /**
+     * Check if there is no diacritics character
+     * @param strInput The input string
+     * @return 
+     */
+    private boolean checkDocumentTypeCodePattern(String strInput)
+    {
+        return strInput.matches( PATTERN_CODE );
     }
 }

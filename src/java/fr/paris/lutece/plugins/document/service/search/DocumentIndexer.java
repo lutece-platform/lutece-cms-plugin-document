@@ -35,15 +35,24 @@ package fr.paris.lutece.plugins.document.service.search;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.lucene.demo.html.HTMLParser;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
+import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.html.HtmlParser;
+import org.apache.tika.sax.BodyContentHandler;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
@@ -62,6 +71,7 @@ import fr.paris.lutece.portal.service.search.IndexationService;
 import fr.paris.lutece.portal.service.search.SearchIndexer;
 import fr.paris.lutece.portal.service.search.SearchItem;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceItem;
@@ -88,6 +98,7 @@ public class DocumentIndexer implements SearchIndexer
      * @throws java.io.IOException i/o exception
      * @throws java.lang.InterruptedException interrupted exception
      */
+    @Override
     public void indexDocuments( ) throws IOException, InterruptedException
     {
         String strBaseUrl = AppPropertiesService.getProperty( PROPERTY_PAGE_BASE_URL );
@@ -134,6 +145,7 @@ public class DocumentIndexer implements SearchIndexer
      * @throws IOexception i/o exception
      * @throws InterruptedException interrupted exception
      */
+    @Override
     public List<org.apache.lucene.document.Document> getDocuments( String strIdDocument ) throws IOException,
             InterruptedException
     {
@@ -167,6 +179,7 @@ public class DocumentIndexer implements SearchIndexer
      * Returns the indexer service name
      * @return the indexer service name
      */
+    @Override
     public String getName( )
     {
         return INDEXER_NAME;
@@ -176,6 +189,7 @@ public class DocumentIndexer implements SearchIndexer
      * Returns the indexer service version
      * @return The indexer service version
      */
+    @Override
     public String getVersion( )
     {
         return INDEXER_VERSION;
@@ -185,6 +199,7 @@ public class DocumentIndexer implements SearchIndexer
      * Returns the indexer service description
      * @return The indexer service description
      */
+    @Override
     public String getDescription( )
     {
         return INDEXER_DESCRIPTION;
@@ -194,6 +209,7 @@ public class DocumentIndexer implements SearchIndexer
      * Tells whether the service is enable or not
      * @return true if enable, otherwise false
      */
+    @Override
     public boolean isEnable( )
     {
         String strEnable = AppPropertiesService.getProperty( PROPERTY_INDEXER_ENABLE, "true" );
@@ -221,58 +237,66 @@ public class DocumentIndexer implements SearchIndexer
         // make a new, empty document
         org.apache.lucene.document.Document doc = new org.apache.lucene.document.Document( );
 
+        FieldType ft = new FieldType( StringField.TYPE_STORED );
+        ft.setOmitNorms( false );
+
         // Add the url as a field named "url".  Use an UnIndexed field, so
         // that the url is just stored with the document, but is not searchable.
-        doc.add( new Field( SearchItem.FIELD_URL, strUrl, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
+        doc.add( new Field( SearchItem.FIELD_URL, strUrl, ft ) );
 
         // Add the PortletDocumentId as a field named "document_portlet_id".  
-        doc.add( new Field( SearchItem.FIELD_DOCUMENT_PORTLET_ID, strPortletDocumentId, Field.Store.YES,
-                Field.Index.NOT_ANALYZED ) );
+        doc.add( new Field( SearchItem.FIELD_DOCUMENT_PORTLET_ID, strPortletDocumentId, ft ) );
 
         // Add the last modified date of the file a field named "modified".
         // Use a field that is indexed (i.e. searchable), but don't tokenize
         // the field into words.
         String strDate = DateTools.dateToString( document.getDateModification( ), DateTools.Resolution.DAY );
-        doc.add( new Field( SearchItem.FIELD_DATE, strDate, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
+        doc.add( new Field( SearchItem.FIELD_DATE, strDate, ft ) );
 
         // Add the uid as a field, so that index can be incrementally maintained.
         // This field is not stored with document, it is indexed, but it is not
         // tokenized prior to indexing.
         String strIdDocument = String.valueOf( document.getId( ) );
-        doc.add( new Field( SearchItem.FIELD_UID, strIdDocument + "_" + DocumentIndexer.SHORT_NAME, Field.Store.YES,
-                Field.Index.NOT_ANALYZED ) );
+        doc.add( new Field( SearchItem.FIELD_UID, strIdDocument + "_" + DocumentIndexer.SHORT_NAME, ft ) );
 
         String strContentToIndex = getContentToIndex( document );
-        StringReader readerPage = new StringReader( strContentToIndex );
-        HTMLParser parser = new HTMLParser( readerPage );
+        ContentHandler handler = new BodyContentHandler( );
+        Metadata metadata = new Metadata( );
+        try
+        {
+            new HtmlParser( ).parse( new ByteArrayInputStream( strContentToIndex.getBytes( ) ), handler, metadata,
+                    new ParseContext( ) );
+        }
+        catch ( SAXException e )
+        {
+            throw new AppException( "Error during document parsing." );
+        }
+        catch ( TikaException e )
+        {
+            throw new AppException( "Error during document parsing." );
+        }
 
         //the content of the article is recovered in the parser because this one
         //had replaced the encoded caracters (as &eacute;) by the corresponding special caracter (as ?)
-        Reader reader = parser.getReader( );
-        int c;
-        StringBuilder sb = new StringBuilder( );
-
-        while ( ( c = reader.read( ) ) != -1 )
-        {
-            sb.append( String.valueOf( (char) c ) );
-        }
-
-        reader.close( );
+        String strContent = handler.toString( );
 
         // Add the tag-stripped contents as a Reader-valued Text field so it will
         // get tokenized and indexed.
-        doc.add( new Field( SearchItem.FIELD_CONTENTS, sb.toString( ), Field.Store.NO, Field.Index.ANALYZED ) );
+        doc.add( new Field( SearchItem.FIELD_CONTENTS, strContent, TextField.TYPE_NOT_STORED ) );
 
         // Add the title as a separate Text field, so that it can be searched
         // separately.
-        doc.add( new Field( SearchItem.FIELD_TITLE, document.getTitle( ), Field.Store.YES, Field.Index.NO ) );
+        FieldType ft2 = new FieldType( TextField.TYPE_STORED );
+        ft2.setOmitNorms( true );
+        doc.add( new Field( SearchItem.FIELD_TITLE, document.getTitle( ), ft2 ) );
 
-        doc.add( new Field( SearchItem.FIELD_TYPE, document.getType( ), Field.Store.YES, Field.Index.NOT_ANALYZED ) );
+        doc.add( new Field( SearchItem.FIELD_TYPE, document.getType( ), ft ) );
 
-        doc.add( new Field( SearchItem.FIELD_ROLE, strRole, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
+        doc.add( new Field( SearchItem.FIELD_ROLE, strRole, ft ) );
 
         // add metadata (mapped to summary)
-        doc.add( new Field( SearchItem.FIELD_METADATA, document.getSummary( ), Field.Store.NO, Field.Index.ANALYZED ) );
+        doc.add( new Field( SearchItem.FIELD_METADATA, document.getSummary( ), TextField.TYPE_NOT_STORED ) );
+        doc.add( new StoredField( SearchItem.FIELD_SUMMARY, document.getSummary( ) ) );
 
         // return the document
         return doc;
@@ -326,7 +350,7 @@ public class DocumentIndexer implements SearchIndexer
 
         // Index Metadata
         sbContentToIndex.append( " " );
-        sbContentToIndex.append( document.getXmlMetadata( ) );
+        sbContentToIndex.append( StringUtils.defaultString( document.getXmlMetadata( ) ) );
 
         return sbContentToIndex.toString( );
     }
@@ -334,6 +358,7 @@ public class DocumentIndexer implements SearchIndexer
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getListType( )
     {
         List<String> typeList = new ArrayList<String>( );
@@ -349,6 +374,7 @@ public class DocumentIndexer implements SearchIndexer
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getSpecificSearchAppUrl( )
     {
         return JSP_PAGE_ADVANCED_SEARCH;
