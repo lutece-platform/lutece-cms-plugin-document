@@ -1,12 +1,7 @@
 <#escape x as x?html>
 <div class="row-fluid">
 	<div class="span12">
-		<span class="pull-right btn-group spaced">
-			<button class="btn btn-small btn-primary" type="submit" >
-				<i class="icon-edit icon-white"></i>
-				&nbsp;#i18n{document.modify_document.buttonModify}&nbsp;&nbsp;&nbsp;
-			</button>
-		</span>
+		
 		<#noescape>
 			<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>${extendableResourceActionsHtml!}</#if>
 		</#noescape>
@@ -50,7 +45,12 @@
 		<div class="span6">
 			<div class="well">
 				<fieldset>
-					<legend>${document.title} <small class="pull-right">#i18n{document.modify_document.title}</small></legend>
+					<legend>${document.title} 
+						<span class="pull-right">
+							<button class="btn btn-small btn-primary" type="submit" > <i class="icon-edit icon-white"></i> &nbsp;#i18n{document.modify_document.buttonModify}</button>
+							<button class="btn btn-small" type="button" onclick="javascript:window.history.back()" ><i class=" icon-remove-circle"></i>#i18n{portal.admin.message.buttonCancel}</button>
+						</span>
+					</legend>
 					<div class="control-group">
 						<label class="control-label" for="document_title">#i18n{document.modify_document.labelDocumentTitle}* : </label>
 						<div class="controls">

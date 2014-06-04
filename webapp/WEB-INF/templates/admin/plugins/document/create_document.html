@@ -73,6 +73,7 @@
 function doToggleId( idParent ){
 	$( idParent ).click( function(){ 
 		$(this).next().toggle();
+		$(this).children().toggleClass("icon-chevron-down icon-chevron-up");
 	});
 }
 $(document).ready( function () {

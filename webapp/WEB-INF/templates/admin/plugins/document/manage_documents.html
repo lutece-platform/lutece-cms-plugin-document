@@ -1,249 +1,299 @@
+<#macro setBtnAction action_nb >
+	<#switch action_nb>
+		<#case 1>
+		<#case 6>
+		<#case 8>
+		<#case 11>
+			<#assign btnAction="btn-danger" />
+			<#break>
+		<#case 14>
+		<#case 15>
+			<#assign btnAction="btn-info" />
+			<#break>	
+		<#case 4>
+		<#case 12>
+		<#case 13>
+			<#assign btnAction="btn-success" />
+			<#break>
+		<#case 10>
+			<#assign btnAction="btn-inverse" />
+			<#break>
+		<#case 5>
+			<#assign btnAction="btn-warning" />
+			<#break>
+		<#default>
+		<#assign btnAction="btn-primary" />
+	</#switch>
+	${btnAction}
+</#macro>
 <div class="row-fluid">
-    <div class="span4">
+	<div class="span3">
 		<div class="well well-small">
-			<fieldset>
-				<legend>#i18n{document.manage_documents.buttonSearch}</legend>
-				<form class="form" method="post" id="SearchDocumentById" name="SearchDocumentById" action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
-					<div class="input-append">
-						<input type="text" id="id_document" name="id_document" class="input-mini"  maxlength="10" >
-						<button class="btn btn-primary btn-small" type="submit" title="#i18n{document.manage_documents.buttonSearch}" >
-							<i class="icon-search icon-white"></i>
-						</button>
-					</div>
-					<p class="help-block">#i18n{document.manage_documents.labelSearchById}</p>
-				</form>
-				<form class="form-inline" method="post" id="FullTextSearchDocument" name="FullTextSearchDocument" action="jsp/admin/plugins/document/DocumentSearch.jsp">
-					<input type="hidden" id="id_document" name="id_document">
-					<div class="input-append">
-						<input type="text" id="query" name="query" class="input-large" maxlength="50" >
-						<button class="btn btn-primary" type="submit" title="#i18n{document.manage_documents.buttonSearch}" >
-							<i class="icon-search icon-white"></i>
-						</button>
-					</div>
-					<p class="help-block">#i18n{document.manage_documents.labelFullTextSearch}</p>
-				</form>
-			</fieldset>
-		</div>
-       <div class="well well-small">
-            <fieldset>
-                <legend>
-                    #i18n{document.manage_documents.labelSpaces}
-                    <#if space_actions_list?size != 0 >
-                    <div class="btn-group pull-right">
-                        <#list space_actions_list as space_action>
-                            <a href="${space_action.url}?id_space=${space.id}" alt="${space_action.description}" title="${space_action.description}" class="btn btn-small <#if space_action.permission="DELETE">btn-danger<#else>btn-primary</#if>">
-                                <i class="${space_action.iconUrl} icon-white"></i>
-                            </a>
-                        </#list>
-                    </div>
-                    </#if>
-                </legend>
-                ${spaces_tree}
-            </fieldset>
-        </div>
-		
-	</div>
-    <div class="span8">
-        <#if space?has_content >
-        <div class="lead">#i18n{document.manage_documents.listTitle}
-            <#if space.documentCreationAllowed >
-            <#if document_types_list?has_content >
-            <form class="form-inline pull-right" method="post" name="CreateDocument" action="jsp/admin/plugins/document/CreateDocument.jsp" >
-                <!--#i18n{document.manage_documents.labelCreate} :-->
-                <@comboWithParams name="document_type_code" default_value="" additionalParameters="class=\"input-normal\"" items=document_types_list />
-                <button class="btn btn-primary btn-small" type="submit" >
-                    <i class="icon-plus icon-white"></i>&nbsp;#i18n{document.manage_documents.buttonCreate}
-                </button>
-            </form>
-            </#if>
-            </#if>
-        </div>
-        <div class="well well-small">
-            <#if document_types_filter_list?size &gt; 1 >
-            <form class="form-inline span8" method="post" name="FilterDocumentsForm" action="jsp/admin/plugins/document/ManageDocuments.jsp">
-                <label>#i18n{document.manage_documents.labelType} :</label>
-                <@comboWithParams name="document_type_code_filter" default_value="${default_document_type}" additionalParameters="class=\"input-small\"" items=document_types_filter_list />
-                <label>#i18n{document.manage_documents.labelState} :</label>
-                <@comboWithParams name="id_state_filter" default_value="${default_state}" additionalParameters="class=\"input-normal\"" items=states_filter_list />
-                <button class="btn btn-primary btn-small" type="submit" title="#i18n{document.manage_documents.buttonFilter}">
-                    <i class="icon-filter icon-white"></i>
-                </button>
-            </form>
-            </#if>
-            <#if documents_list?size &gt; 0 >
-            <form class="form-inline"  method="post" action="jsp/admin/plugins/document/ManageDocuments.jsp">
-                <label>#i18n{document.manage_documents.labelViewType}</label>
-                <@comboWithParams name="view_type" default_value="${view_type}" additionalParameters="class=\"input-small\"" items=view_types_list />
-                <button class="btn btn-primary btn-small" type="submit" >
-                    <i class="icon-ok icon-white"></i>
-                </button>
-            </form>
-            </#if>
-        </div>		
-        <#if documents_list?size = 0 >
-        <p class="alert alert-error">#i18n{document.manage_documents.noDocument}</p>
-        <#else>
-        <#if view_type = "detail" >
-        <div class="pull-right"><@paginationAdmin paginator=paginator combo=1 /></div>
-        <form class="form-inline" id="documents_form" name="documents_form" method="post" action="jsp/admin/plugins/document/DoActionSelectionDocument.jsp">
-            <select id="selection" name="selection" class="input-medium">
-                <option value="validate">#i18n{document.manage_document.validate}</option>
-                <option value="submit">#i18n{document.manage_document.submit}</option>
-                <option value="refuse">#i18n{document.manage_document.refuse}</option>
-                <option value="remove">#i18n{document.manage_document.remove}</option>
-                <option value="archive">#i18n{document.manage_document.archive}</option>
-                <option value="unarchive">#i18n{document.manage_document.unarchive}</option>
-            </select>
-            <button class="btn btn-primary btn-small" type="submit" title="#i18n{document.manage_documents.applyToSelection}">
-                <i class="icon-ok icon-white"></i>
-            </button>
-            <table class="table table-striped table-condensed">
-                <tr>
-                    <th><input id="select_all" name="select_all" type="checkbox" /></th>
-                    <th class="span7">#i18n{document.manage_documents.labelDocument}</th>
-                    <th>#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url="jsp/admin/plugins/document/ManageDocuments.jsp" attribute="publishedStatus" /></th>
-                    <th>#i18n{document.manage_documents.labelActions}</th>
-                </tr>
-                <#list documents_list as document >
-                <tr>
-                    <td><input id="document_selection" name="document_selection" type="checkbox" value="${document.id}" /></td>
-                    <td>
-                        <p>
-						 <#if document.thumbnail != "images/admin/skin/plugins/document/default_icon.png"><img src="${document.thumbnail}&nocache" alt="${document.title}" title="${document.title} - ${document.type}" class="thumblist" /></#if>
-						${document.id} - ${document.title}</p>
-                        <#if document.comment != "">
-							<p class="alert alert-error">${document.comment}</p>
+			<h4>#i18n{document.manage_documents.buttonSearch}</h4>
+			<form class="form" method="post" id="SearchDocumentById" name="SearchDocumentById" action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
+				<div class="input-append">
+					<input type="text" id="id_document" name="id_document" class="input-mini"  maxlength="10" >
+					<button class="btn btn-primary btn-small" type="submit" title="#i18n{document.manage_documents.buttonSearch}" >
+						<i class="icon-search icon-white"></i>
+					</button>
+				</div>
+				<p class="help-block">#i18n{document.manage_documents.labelSearchById}</p>
+			</form>
+			<form class="form-inline" method="post" id="FullTextSearchDocument" name="FullTextSearchDocument" action="jsp/admin/plugins/document/DocumentSearch.jsp">
+				<input type="hidden" id="id_document" name="id_document">
+				<div class="input-append">
+					<input type="text" id="query" name="query" class="input-xlarge" maxlength="50" >
+					<button class="btn btn-primary" type="submit" title="#i18n{document.manage_documents.buttonSearch}" >
+						<i class="icon-search icon-white"></i>
+					</button>
+				</div>
+				<p class="help-block">#i18n{document.manage_documents.labelFullTextSearch}</p>
+			</form>
+			</div>
+		   <div class="well well-small">
+				<h4>#i18n{document.manage_documents.labelSpaces}
+						<#if space_actions_list?size != 0 >
+						<div class="btn-group pull-right">
+							<#list space_actions_list as space_action>
+								<a href="${space_action.url}?id_space=${space.id}" alt="${space_action.description}" title="${space_action.description}" class="btn btn-small <#if space_action.permission="DELETE">btn-danger<#else>btn-primary</#if>">
+									<i class="${space_action.iconUrl} icon-white"></i>
+								</a>
+							</#list>
+						</div>
 						</#if>
-						<p>#i18n{document.manage_documents.labelState} : <strong>${document.state}</strong> | <i class="icon-calendar"></i> ${document.dateModification}</p>
-                    </td>
-                    <td>
-                        <#if document.publishedStatus = 0> 
-                        <span class="label label-success"><i class="icon-ok-sign icon-white"></i> #i18n{document.manage_documents.PublishedStatus}</span>
-                        <#else>
-                        <span class="label label-important"><i class="icon-remove-sign icon-white"></i> #i18n{document.manage_documents.UnPublishedStatus}</span>
-                        </#if>
-                    </td>
-                    <td>
-                        <#list document.actions?reverse  as action >
-                        <#if action.url?has_content>
-                        <a class="btn btn-small <#if action.idAction==1 || action.idAction==6 || action.idAction==11>btn-danger<#elseif action.idAction==4 || action.idAction==12>btn-success<#elseif action.idAction==3 >btn-inverse<#else>btn-primary</#if>" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
-                            <i class="${action.iconUrl} icon-white"></i>
-                        </a>
-                        </#if>  
-                        </#list>
-                    </td>
-                </tr>
-                </#list>
-            </table>
-            <select id="selection" name="selection" class="input-medium">
-                <option value="validate">#i18n{document.manage_document.validate}</option>
-                <option value="submit">#i18n{document.manage_document.submit}</option>
-                <option value="refuse">#i18n{document.manage_document.refuse}</option>
-                <option value="remove">#i18n{document.manage_document.remove}</option>
-                <option value="archive">#i18n{document.manage_document.archive}</option>
-                <option value="unarchive">#i18n{document.manage_document.unarchive}</option>
-            </select>
-            <button class="btn btn-primary btn-small" type="submit" title="&nbsp;#i18n{document.manage_documents.applyToSelection}">
-                <i class="icon-ok icon-white"></i>
-            </button>					
-            <div class="pull-right">
-                <@paginationAdmin paginator=paginator combo=1 />
-            </div>
-        </form>
-        </#if>
-        </#if>
-        <#if view_type = "thumbnail">
-        <ul class="thumbnails">
-            <#list documents_list as document >
-            <li class="span4">
-                <div class="thumbnail">
-                    <img src="${document.thumbnail}&nocache" alt="${document.title}" title="${document.title} - ${document.type}" />
-                    <div class="caption">
-                        <p class="lead">
-                            <span class="badge">${document.id}</span>
-                            <small><#if document.title?length &gt; 20>${document.title?substring(0,20)}...<#else>${document.title}</#if></small>
-                        </p>
-                        <p>
-                            <#list document.actions?sort_by("idAction") as action >
-                            <#if action.url?has_content>
-                            <a class="btn btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
-                                <i class="${action.iconUrl}"></i>
-                            </a>
-                            </#if>
-                            </#list>
-                        </p>
-                    </div>
-                </div>
-            </li>
-            </#list>
-        </ul>
-        </#if>
-
-        <#else>
-        <#if child_spaces_list?size != 0 >
-        <fieldset>
-            <legend>#i18n{document.manage_documents.childSpacesList} :</legend>
-            <ul class="unstyled">
-                <#list child_spaces_list as child_space>
-                <li>
-                    <h4>
-                        <a href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${child_space.id}" >
-                            <img src="${child_space.iconUrl}" alt="${child_space.description}" title="${child_space.description}" />&nbsp;${child_space.name} <small>${child_space.description}</small>
-                        </a>
-                    </h4>
-                </li>
-                </#list>
-            </ul>
-        </fieldset>
-        </#if>
-
-        </#if>
-    </div>
+				</h4>
+				${spaces_tree}
+			</div>
+			
+		</div>
+		<div class="span9">
+			<#if space?has_content >
+			<div class="lead">#i18n{document.manage_documents.listTitle}
+				<#if space.documentCreationAllowed >
+					<#if document_types_list?has_content >
+						<form class="form-inline pull-right" method="post" name="CreateDocument" action="jsp/admin/plugins/document/CreateDocument.jsp" >
+							<!--#i18n{document.manage_documents.labelCreate} :-->
+							<@comboWithParams name="document_type_code" default_value="" additionalParameters="class=\"input-normal\"" items=document_types_list />
+							<button class="btn btn-primary btn-small" type="submit" >
+								<i class="icon-plus icon-white"></i>&nbsp;#i18n{document.manage_documents.buttonCreate}
+							</button>
+						</form>
+					</#if>
+				</#if>
+			</div>
+			<div class="well well-small">
+				<#if document_types_filter_list?size &gt; 1 >
+					<form class="form-inline span8" method="post" name="FilterDocumentsForm" action="jsp/admin/plugins/document/ManageDocuments.jsp">
+						<label>#i18n{document.manage_documents.labelType} :</label>
+						<@comboWithParams name="document_type_code_filter" default_value="${default_document_type}" additionalParameters="class=\"input-small\"" items=document_types_filter_list />
+						<label>#i18n{document.manage_documents.labelState} :</label>
+						<@comboWithParams name="id_state_filter" default_value="${default_state}" additionalParameters="class=\"input-normal\"" items=states_filter_list />
+						<button class="btn btn-primary btn-small" type="submit" title="#i18n{document.manage_documents.buttonFilter}">
+							<i class="icon-filter icon-white"></i>
+						</button>
+					</form>
+				</#if>
+				<#if documents_list?size &gt; 0 >
+					<form class="form-inline"  method="post" action="jsp/admin/plugins/document/ManageDocuments.jsp">
+						<label>#i18n{document.manage_documents.labelViewType}</label>
+						<@comboWithParams name="view_type" default_value="${view_type}" additionalParameters="class=\"input-medium\"" items=view_types_list />
+						<button class="btn btn-primary btn-small" type="submit" >
+							<i class="icon-ok icon-white"></i>
+						</button>
+					</form>
+				</#if>
+			</div>		
+			<#if documents_list?size = 0 >
+				<p class="alert alert-error">#i18n{document.manage_documents.noDocument}</p>
+			<#else>
+			<#if view_type = "detail" >
+				<form class="form-inline" id="documents_form" name="documents_form" method="post" action="jsp/admin/plugins/document/DoActionSelectionDocument.jsp">
+				<table class="table table-striped table-condensed table-document">
+					<tr>
+						<th><input id="select_all" name="select_all" type="checkbox" /></th>
+						<th class="span8">#i18n{document.manage_documents.labelDocument}
+						<span id="set_selection" >
+							<select id="selection" name="selection" class="input-medium disabled" disabled="disabled">
+								<option value="validate">#i18n{document.manage_document.validate}</option>
+								<option value="submit">#i18n{document.manage_document.submit}</option>
+								<option value="refuse">#i18n{document.manage_document.refuse}</option>
+								<option value="remove">#i18n{document.manage_document.remove}</option>
+								<option value="archive">#i18n{document.manage_document.archive}</option>
+								<option value="unarchive">#i18n{document.manage_document.unarchive}</option>
+							</select>
+							<button class="btn btn-primary btn-small disabled" disabled="disabled" type="submit" title="#i18n{document.manage_documents.applyToSelection}">
+								<i class="icon-ok icon-white"></i>
+							</button>
+						</span>
+						</th>
+						<th>#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url="jsp/admin/plugins/document/ManageDocuments.jsp" attribute="publishedStatus" /></th>
+						<th>#i18n{document.manage_documents.labelActions}</th>
+					</tr>
+					<#list documents_list as document >
+					<tr>
+						<td>
+							<input id="document_selection" name="document_selection" type="checkbox" value="${document.id}" />
+						</td>
+						<td>
+							<div class="row-fluid">
+								<div class="span8">
+									<p>${document.id} - ${document.title}</p>
+									<#if document.comment != "">
+										<p class="alert alert-warning"><i class="icon-info-sign" ></i> ${document.comment}</p>
+									</#if>
+								</div>
+								<div class="span1" title="#i18n{document.manage_documents.labelState}">
+								<#if document.stateId = 3> 
+									<span class="label label-success"><i class="icon-ok-sign icon-white"></i>&nbsp;&nbsp;${document.state}&nbsp;&nbsp;&nbsp;</span>
+								<#else>
+									<span class="label label-info"><i class="icon-remove-sign icon-white"></i>&nbsp;${document.state} </span>
+								</#if>
+								</div>
+								<div class="span3"  title="#i18n{document.manage_documents.labelDateModification}">
+								&nbsp;<i class="icon-calendar"></i> ${document.dateModification} 
+								</div>
+							</div>
+						</td>
+						<td>
+							<#if document.publishedStatus = 0> 
+								<span class="label label-success"><i class="icon-ok-sign icon-white"></i> #i18n{document.manage_documents.PublishedStatus}</span>
+							<#else>
+								<span class="label label-important"><i class="icon-remove-sign icon-white"></i> #i18n{document.manage_documents.UnPublishedStatus}</span>
+							</#if>
+						</td>
+						<td>
+							<#list document.actions?reverse  as action >
+								<#if action.url?has_content>
+									<a class="btn <@setBtnAction action_nb=action.idAction /> btn-mini" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+										<i class="${action.iconUrl} icon-white"></i>
+									</a>
+								</#if>  
+							</#list>
+						</td>
+					</tr>
+					</#list>
+				</table>
+			</form>
+			</#if>
+			</#if>
+			<#if view_type = "thumbnail">
+				<ul class="thumbnails">
+					<#list documents_list as document >
+					<li class="span4">
+						<div class="thumbnail">
+							<img src="${document.thumbnail}&nocache" alt="${document.title}" title="${document.title} - ${document.type}" />
+							<div class="caption">
+								<p>
+									<span class="badge">${document.id}</span> <small><#if document.title?length &gt; 50>${document.title?substring(0,50)}...<#else>${document.title}</#if></small>
+								</p>
+								<p>
+									<#list document.actions?sort_by("idAction") as action >
+										<#if action.url?has_content>
+											<a class="btn btn-mini <@setBtnAction action_nb=action.idAction />" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+												<i class="${action.iconUrl} icon-white"></i>
+											</a>
+										</#if>
+									</#list>
+								</p>
+							</div>
+						</div>
+					</li>
+					</#list>
+				</ul>
+				</#if>
+			 <div class="pull-right"><@paginationAdmin paginator=paginator combo=1 /></div>
+			<#else>
+			<#if child_spaces_list?size != 0 >
+			<fieldset>
+				<legend>#i18n{document.manage_documents.childSpacesList} :</legend>
+				<ul class="unstyled">
+					<#list child_spaces_list as child_space>
+					<li>
+						<h4>
+							<a href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${child_space.id}" >
+								<img src="${child_space.iconUrl}" alt="${child_space.description}" title="${child_space.description}" />&nbsp;${child_space.name} <small>${child_space.description}</small>
+							</a>
+						</h4>
+					</li>
+					</#list>
+				</ul>
+			</fieldset>
+			</#if>
+		</#if>
+	</div>
 </div>
+
 <script src="js/jquery/plugins/ui/jstree/jquery.jstree.js"></script>
 <script src="js/jquery/plugins/ui/jstree/jquery.cookie.js"></script>
 <script type="text/javascript"> 
-    jQuery(function($) {
-        // Set space_id
-        var spaceid = ${space.id};
-        // Get space_id from url parameter
-        var loc = location.search;
-        if ( spaceid != loc ) {
-            if ( loc.indexOf("id_space_filter") > 0 ){ 
-                // Set space_id from url parameter if exists
-                spaceid =  loc.slice( loc.lastIndexOf("=") + 1 );
-            } 
-        }
+jQuery(function($) {
+	// Set space_id
+	var spaceid = ${space.id};
+	// Get space_id from url parameter
+	var loc = location.search;
+	if ( spaceid != loc ) {
+		if ( loc.indexOf("id_space_filter") > 0 ){ 
+			// Set space_id from url parameter if exists
+			spaceid =  loc.slice( loc.lastIndexOf("=") + 1 );
+		} 
+	}
+	
+	// Set the cookie of jstree
+	$.cookie("jstree_select", "#node-" + spaceid );
+		$("#tree").jstree({
+			"ui" : {
+			"select_limit" : 1,
+		},"themes" : {
+				"theme" : "apple",
+				"icons" : false
+		},"cookies" : {
+			"save_opened" : true,
+		},"core" : { "initially_open" : [ "node-${space.id}" ]},
+		"plugins" : [ "themes", "html_data", "cookies", "ui" ]
+		});
+	});
+	
+	$("#select_all").click( function(){                    
+		$("input[type='checkbox']").attr('checked',  this.checked);
+	});
 
-        // Set the cookie of jstree
-        $.cookie("jstree_select", "#node-" + spaceid );
-        $("#tree").jstree(
-        {
-            "ui" : {
-                "select_limit" : 1,
-            },
-            "themes" : {
-                "theme" : "apple",
-                "icons" : false
-            },
-            "cookies" : {
-                "save_opened" : true,
-            },
-            "core" : { "initially_open" : [ "node-${space.id}" ]},
-            "plugins" : [ "themes", "html_data", "cookies", "ui" ]
-        });
-    });
-
-    $("#select_all").click( function(){                    
-        $("input[type='checkbox']").attr('checked',  this.checked);
-    });
-    
-    $("#FullTextSearchDocument p.help-block").text("#i18n{document.manage_documents.labelAllTextSearch}");
-    $("#FullTextSearchDocument").submit(function(){
-        if( $.isNumeric($("#FullTextSearchDocument input#query").val()) ){
-            $("#FullTextSearchDocument input#id_document").val($("#FullTextSearchDocument input#query").val());
-            $(this).attr("action", "jsp/admin/plugins/document/DoSearchDocumentById.jsp");
+	$("input[type='checkbox']").click( function(){    
+		if( $("input[type='checkbox']:checked").length > 0 ){
+			$("#set_selection").children().removeAttr("disabled");
+		} else {
+			$("#set_selection").children().attr("disabled","disabled");
 		}
 	});
-    $("#SearchDocumentById").hide();
+
+$("#FullTextSearchDocument p.help-block").text("#i18n{document.manage_document.labelAllTextSearch}");
+$("#FullTextSearchDocument").submit(function(){
+	if( $.isNumeric($("#FullTextSearchDocument input#query").val()) ){
+		$("#FullTextSearchDocument input#id_document").val($("#FullTextSearchDocument input#query").val());
+		$(this).attr("action", "jsp/admin/plugins/document/DoSearchDocumentById.jsp");
+	}
+});
+$("#SearchDocumentById").hide();
+</script> 
+
+<div id="modalPortletPublishing" class="modal hide fade" tabindex="-1" role="dialog">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">x</button>
+			<h3>Titre</h3>
+	</div>
+	<div class="modal-body">
+      <iframe id="portletPublishingFrame" src="#" frameborder="0" height="600" width="800"></iframe>
+	</div>
+	<div class="modal-footer"> 
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Fermer</button>
+	</div>
+</div>
+<script type="text/javascript"> 
+$( function(){
+	$( ".btn-dialog" ).click(function() {
+	var urlIframe= $(this).attr("href");
+	$("#portletPublishingFrame").attr( "src", $(this).attr("href") );
+	$("#modalPortletPublishing").modal({title:'eeee',backdrop:'static'});
+	return false;
+	});
+});
 </script> 
