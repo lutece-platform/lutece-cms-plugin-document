@@ -893,7 +893,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         {
             DocumentAction docAction = (DocumentAction) action;
 
-            if ( docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_PUBLISH ) )
+            if ( (docAction != null ) && docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_PUBLISH ) )
             {
                 model.put( MARK_PERMISSION_PUBLISH, 1 );
             }
