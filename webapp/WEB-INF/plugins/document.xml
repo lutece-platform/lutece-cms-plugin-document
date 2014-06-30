@@ -205,6 +205,11 @@
                 fr.paris.lutece.plugins.document.service.spaces.SpaceResourceIdService
 			</rbac-resource-type-class>
         </rbac-resource-type>
+        <rbac-resource-type>
+            <rbac-resource-type-class>
+                fr.paris.lutece.plugins.document.service.DocumentMassActionResourceService
+			</rbac-resource-type-class>
+        </rbac-resource-type>
     </rbac-resource-types>
 
     <!-- Page Includes -->

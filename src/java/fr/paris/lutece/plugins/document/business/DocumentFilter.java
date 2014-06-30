@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.business;
 
-
 /**
  *
  */
@@ -50,20 +49,23 @@ public class DocumentFilter
     private int[] _arrayId;
     // The default value is true to assure ascendant compatibility
     private boolean _bLoadBinaries = true;
+    private Boolean _bIsPublished;
+    private String _dateMin;
+    private String _dateMax;
 
     /**
      * Returns the IdSpace
-     *
+     * 
      * @return The IdSpace
      */
-    public int getIdSpace(  )
+    public int getIdSpace( )
     {
         return _nIdSpace;
     }
 
     /**
      * Sets the IdSpace
-     *
+     * 
      * @param nIdSpace The IdSpace
      */
     public void setIdSpace( int nIdSpace )
@@ -73,35 +75,37 @@ public class DocumentFilter
 
     /**
      * Tell if the filter contains a criteria on the Document space
-     * @return True if  the filter contains a criteria on the Document space otherwise false
+     * @return True if the filter contains a criteria on the Document space
+     *         otherwise false
      */
-    public boolean containsSpaceCriteria(  )
+    public boolean containsSpaceCriteria( )
     {
         return ( _nIdSpace != ALL_INT );
     }
 
     /**
      * Returns the IdState
-     *
+     * 
      * @return The IdState
      */
-    public int getIdState(  )
+    public int getIdState( )
     {
         return _nIdState;
     }
 
     /**
      * Tell if the filter contains a criteria on the Document state
-     * @return True if  the filter contains a criteria on the Document state otherwise false
+     * @return True if the filter contains a criteria on the Document state
+     *         otherwise false
      */
-    public boolean containsStateCriteria(  )
+    public boolean containsStateCriteria( )
     {
         return ( _nIdState != ALL_INT );
     }
 
     /**
      * Sets the IdState
-     *
+     * 
      * @param nIdState The IdState
      */
     public void setIdState( int nIdState )
@@ -111,17 +115,17 @@ public class DocumentFilter
 
     /**
      * Returns the CodeDocumentType
-     *
+     * 
      * @return The CodeDocumentType
      */
-    public String getCodeDocumentType(  )
+    public String getCodeDocumentType( )
     {
         return _strCodeDocumentType;
     }
 
     /**
      * Sets the CodeDocumentType
-     *
+     * 
      * @param strCodeDocumentType The CodeDocumentType
      */
     public void setCodeDocumentType( String strCodeDocumentType )
@@ -130,10 +134,11 @@ public class DocumentFilter
     }
 
     /**
-    * Tell if the filter contains a criteria on the Document type
-    * @return True if  the filter contains a criteria on the Document type otherwise false
-    */
-    public boolean containsDocumentTypeCriteria(  )
+     * Tell if the filter contains a criteria on the Document type
+     * @return True if the filter contains a criteria on the Document type
+     *         otherwise false
+     */
+    public boolean containsDocumentTypeCriteria( )
     {
         return ( !_strCodeDocumentType.equals( ALL_STRING ) );
     }
@@ -141,7 +146,7 @@ public class DocumentFilter
     /**
      * @return the _arrayCategoriesId
      */
-    public int[] getCategoriesId(  )
+    public int[] getCategoriesId( )
     {
         return _arrayCategoriesId;
     }
@@ -156,18 +161,19 @@ public class DocumentFilter
 
     /**
      * Tell if the filter contains a criteria on the Category
-     * @return True if  the filter contains a criteria on the categories otherwise false
+     * @return True if the filter contains a criteria on the categories
+     *         otherwise false
      */
-    public boolean containsCategoriesCriteria(  )
+    public boolean containsCategoriesCriteria( )
     {
         return ( ( _arrayCategoriesId != null ) && ( _arrayCategoriesId.length != 0 ) );
     }
 
     /**
      * Tell if the filter contains a criteria on the Id
-     * @return True if  the filter contains a criteria on the Ids otherwise false
+     * @return True if the filter contains a criteria on the Ids otherwise false
      */
-    public boolean containsIdsCriteria(  )
+    public boolean containsIdsCriteria( )
     {
         return ( ( _arrayId != null ) && ( _arrayId.length != 0 ) );
     }
@@ -175,7 +181,7 @@ public class DocumentFilter
     /**
      * @return the _arrayId
      */
-    public int[] getIds(  )
+    public int[] getIds( )
     {
         return _arrayId;
     }
@@ -207,4 +213,53 @@ public class DocumentFilter
     {
         this._bLoadBinaries = bLoadBinaries;
     }
+
+    /**
+     * @return the _bIsPublished
+     */
+    public Boolean isPublished( )
+    {
+        return _bIsPublished;
+    }
+
+    /**
+     * @param bIsPublished the _bIsPublished to set
+     */
+    public void setIsPublished( Boolean bIsPublished )
+    {
+        this._bIsPublished = bIsPublished;
+    }
+
+    /**
+     * @return the _dateMin
+     */
+    public String getDateMin( )
+    {
+        return _dateMin;
+    }
+
+    /**
+     * @param dateMin the _dateMin to set
+     */
+    public void setDateMin( String dateMin )
+    {
+        this._dateMin = dateMin;
+    }
+
+    /**
+     * @return the _dateMax
+     */
+    public String getDateMax( )
+    {
+        return _dateMax;
+    }
+
+    /**
+     * @param dateMax the _dateMax to set
+     */
+    public void setDateMax( String dateMax )
+    {
+        this._dateMax = dateMax;
+    }
+
 }

@@ -33,25 +33,10 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.transform.Source;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentFilter;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
+import fr.paris.lutece.plugins.document.business.DocumentMassAction;
 import fr.paris.lutece.plugins.document.business.DocumentPageTemplate;
 import fr.paris.lutece.plugins.document.business.DocumentPageTemplateHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
@@ -66,6 +51,7 @@ import fr.paris.lutece.plugins.document.business.workflow.DocumentActionHome;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentStateHome;
 import fr.paris.lutece.plugins.document.service.DocumentException;
+import fr.paris.lutece.plugins.document.service.DocumentMassActionResourceService;
 import fr.paris.lutece.plugins.document.service.DocumentService;
 import fr.paris.lutece.plugins.document.service.DocumentTypeResourceIdService;
 import fr.paris.lutece.plugins.document.service.category.CategoryService;
@@ -97,6 +83,8 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.constants.Parameters;
+import fr.paris.lutece.portal.web.pluginaction.DefaultPluginActionResult;
+import fr.paris.lutece.portal.web.pluginaction.IPluginActionResult;
 import fr.paris.lutece.portal.web.resource.ExtendableResourcePluginActionManager;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
@@ -107,6 +95,24 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.Source;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -129,12 +135,14 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String TEMPLATE_MOVE_DOCUMENT = "admin/plugins/document/move_document.html";
     private static final String TEMPLATE_DOCUMENT_PAGE_TEMPLATE_ROW = "admin/plugins/document/page_template_list_row.html";
     private static final String TEMPLATE_FORM_CATEGORY = "admin/plugins/document/category/list_category.html";
+    private static final String TEMPLATE_MASS_ARCHIVAL = "admin/plugins/document/mass_archival.html";
 
     // Markers
     private static final String MARK_DOCUMENT = "document";
     private static final String MARK_PREVIEW = "preview";
     private static final String MARK_DOCUMENTS_LIST = "documents_list";
     private static final String MARK_DOCUMENT_TYPES_LIST = "document_types_list";
+    private static final String MARK_MASS_ACTION = "mass_action";
     private static final String MARK_DOCUMENT_TYPES_FILTER_LIST = "document_types_filter_list";
     private static final String MARK_STATES_FILTER_LIST = "states_filter_list";
     private static final String MARK_SPACES_TREE = "spaces_tree";
@@ -145,6 +153,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MARK_FIELDS = "fields";
     private static final String MARK_CURRENT_DATE = "current_date";
     private static final String MARK_DOCUMENT_TYPE = "document_type";
+    private static final String MARK_DATE_MIN = "date_min";
+    private static final String MARK_DATE_MAX = "date_max";
     private static final String MARK_DEFAULT_DOCUMENT_TYPE = "default_document_type";
     private static final String MARK_DEFAULT_STATE = "default_state";
     private static final String MARK_PAGINATOR = "paginator";
@@ -165,9 +175,12 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MARK_INDEX_ROW = "index_row";
     private static final String MARK_DOCUMENT_PAGE_TEMPLATE_CHECKED = "checked";
     private static final String MARK_SPACES_BROWSER = "spaces_browser";
+    private static final String MARK_SELECTED_CRITERIA = "selected_criteria";
 
     // Parameters
     private static final String PARAMETER_DOCUMENT_TYPE_CODE = "document_type_code";
+    private static final String PARAMETER_DATE_MIN = "date_min";
+    private static final String PARAMETER_DATE_MAX = "date_max";
     private static final String PARAMETER_DOCUMENT_ID = "id_document";
     private static final String PARAMETER_STATE_ID = "id_state";
     private static final String PARAMETER_ACTION_ID = "id_action";
@@ -178,6 +191,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_DOCUMENT_SELECTION = "document_selection";
     private static final String PARAMETER_HEADER_REFERER = "referer";
     private static final String PARAMETER_FROM_URL = "fromUrl";
+    private static final String PARAMETER_ARCHIVAL_CRITERIA = "archival_criteria";
+    private static final String PARAMETER_ACTION = "action";
 
     // Properties
     private static final String PROPERTY_FILTER_ALL = "document.manage_documents.filter.labelAll";
@@ -196,6 +211,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
     // Messages
     private static final String MESSAGE_CONFIRM_DELETE = "document.message.confirmDeleteDocument";
+    private static final String MESSAGE_CONFIRM_MASS_ARCHIVE = "document.message.confirmMassArchivalDocument";
+    private static final String MESSAGE_NO_MASS_ARCHIVE = "document.message.noMassArchivalDocument";
     private static final String MESSAGE_INVALID_DOCUMENT_ID = "document.message.invalidDocumentId";
     private static final String MESSAGE_DOCUMENT_NOT_FOUND = "document.message.documentNotFound";
     private static final String MESSAGE_DOCUMENT_NOT_AUTHORIZED = "document.message.documentNotAuthorized";
@@ -360,6 +377,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         model.put( MARK_DEFAULT_STATE, _strCurrentStateFilter );
         model.put( MARK_CHILD_SPACES_LIST, listChildSpaces );
         model.put( MARK_DOCUMENT_TYPES_LIST, listCreateDocumentTypes );
+
+        model.put( MARK_MASS_ACTION, RBACService.isAuthorized( new DocumentMassAction( ),
+                DocumentMassActionResourceService.PERMISSION_MASS_ARCHIVE, user ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_DOCUMENTS, getLocale( ), model );
 
@@ -1403,6 +1423,183 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             return getHomeUrl( request );
         }
         return AdminMessageService.getMessageUrl( request, MESSAGE_MOVING_NOT_AUTHORIZED, AdminMessage.TYPE_STOP );
+    }
+
+    /**
+     * Gets the document creation page
+     * @param request The HTTP request
+     * @return The document creation page
+     */
+    public IPluginActionResult getMassArchivalDocument( HttpServletRequest request )
+    {
+        IPluginActionResult result = new DefaultPluginActionResult( );
+        if ( !RBACService.isAuthorized( new DocumentMassAction( ),
+                DocumentMassActionResourceService.PERMISSION_MASS_ARCHIVE, getUser( ) ) )
+        {
+            result.setHtmlContent( getManageDocuments( request ) );
+            return result;
+        }
+
+        // Empty previous just in case
+        request.getSession( ).removeAttribute( "to_archive" );
+        String strAction = request.getParameter( DocumentJspBean.PARAMETER_ACTION );
+        String strCriteria = request.getParameter( PARAMETER_ARCHIVAL_CRITERIA );
+        String strTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
+        String strDateMin = request.getParameter( PARAMETER_DATE_MIN );
+        String strDateMax = request.getParameter( PARAMETER_DATE_MAX );
+
+        if ( StringUtils.isBlank( strCriteria ) )
+        {
+            strCriteria = (String) request.getSession( ).getAttribute( PARAMETER_ARCHIVAL_CRITERIA );
+            request.getSession( ).removeAttribute( PARAMETER_ARCHIVAL_CRITERIA );
+        }
+
+        if ( StringUtils.isBlank( strTypeCode ) )
+        {
+            strTypeCode = (String) request.getSession( ).getAttribute( PARAMETER_DOCUMENT_TYPE_CODE );
+            request.getSession( ).removeAttribute( PARAMETER_DOCUMENT_TYPE_CODE );
+        }
+
+        if ( StringUtils.isBlank( strDateMin ) )
+        {
+            strDateMin = (String) request.getSession( ).getAttribute( PARAMETER_DATE_MIN );
+            request.getSession( ).removeAttribute( PARAMETER_DATE_MIN );
+        }
+
+        if ( StringUtils.isBlank( strDateMax ) )
+        {
+            strDateMax = (String) request.getSession( ).getAttribute( PARAMETER_DATE_MAX );
+            request.getSession( ).removeAttribute( PARAMETER_DATE_MAX );
+        }
+
+        if ( "apply".equals( strAction ) )
+        {
+            DocumentFilter filter = new DocumentFilter( );
+            filter.setIsPublished( false );
+
+            request.getSession( ).setAttribute( PARAMETER_ARCHIVAL_CRITERIA, strCriteria );
+            if ( "date".equals( strCriteria ) )
+            {
+
+                if ( StringUtils.isBlank( strDateMin ) && StringUtils.isBlank( strDateMax ) )
+                {
+                    result.setRedirect( AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS,
+                            "jsp/admin/plugins/document/MassArchivalDocument.jsp", AdminMessage.TYPE_ERROR ) );
+                }
+                else
+                {
+                    try
+                    {
+                        SimpleDateFormat sdf = new SimpleDateFormat( "dd/MM/yyyy" );
+                        SimpleDateFormat sqlSdf = new SimpleDateFormat( "yyyy-MM-dd" );
+                        if ( StringUtils.isNotBlank( strDateMin ) )
+                        {
+                            Date dateMin;
+                            dateMin = sdf.parse( strDateMin );
+                            filter.setDateMin( sqlSdf.format( dateMin ) );
+                        }
+                        if ( StringUtils.isNotBlank( strDateMax ) )
+                        {
+                            Date dateMax = sdf.parse( strDateMax );
+                            filter.setDateMax( sqlSdf.format( dateMax ) );
+                        }
+                        request.getSession( ).setAttribute( PARAMETER_DATE_MIN, strDateMin );
+                        request.getSession( ).setAttribute( PARAMETER_DATE_MAX, strDateMax );
+                    }
+                    catch ( ParseException e )
+                    {
+                        AppLogService.error( e );
+                    }
+                }
+            }
+            else if ( "space".equals( strCriteria ) )
+            {
+                String strSpaceId = request.getParameter( DocumentSpacesService.PARAMETER_BROWSER_SELECTED_SPACE_ID );
+
+                if ( StringUtils.isBlank( strSpaceId ) || !StringUtils.isNumeric( strSpaceId ) )
+                {
+                    result.setRedirect( AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS,
+                            "jsp/admin/plugins/document/MassArchivalDocument.jsp", AdminMessage.TYPE_ERROR ) );
+                }
+
+                filter.setIdSpace( Integer.valueOf( strSpaceId ) );
+            }
+            else if ( "type".equals( strCriteria ) )
+            {
+                request.getSession( ).setAttribute( PARAMETER_DOCUMENT_TYPE_CODE, strTypeCode );
+                filter.setCodeDocumentType( strTypeCode );
+            }
+            else
+            {
+                result.setRedirect( AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS,
+                        "jsp/admin/plugins/document/MassArchivalDocument.jsp", AdminMessage.TYPE_ERROR ) );
+            }
+
+            if ( result.getRedirect( ) == null )
+            {
+                List<Document> documents = DocumentHome.findByFilter( filter, getLocale( ) );
+                List<Document> toArchive = new ArrayList<Document>( );
+
+                for ( Document doc : documents )
+                {
+                    if ( isAuthorized( DocumentAction.ACTION_ARCHIVE, doc ) )
+                    {
+                        toArchive.add( doc );
+                    }
+                }
+
+                if ( CollectionUtils.isNotEmpty( toArchive ) )
+                {
+                    request.getSession( ).setAttribute( "to_archive", toArchive );
+                    result.setRedirect( AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_MASS_ARCHIVE,
+                            new String[] { toArchive.size( ) + "" },
+                            "jsp/admin/plugins/document/DoMassArchivalDocument.jsp", AdminMessage.TYPE_CONFIRMATION ) );
+                }
+                else
+                {
+                    result.setRedirect( AdminMessageService.getMessageUrl( request, MESSAGE_NO_MASS_ARCHIVE,
+                            "jsp/admin/plugins/document/MassArchivalDocument.jsp", AdminMessage.TYPE_ERROR ) );
+                }
+            }
+        }
+        else
+        {
+            Map<String, Object> model = new HashMap<String, Object>( );
+            model.put( MARK_SELECTED_CRITERIA, StringUtils.defaultString( strCriteria, "date" ) );
+            model.put( MARK_LOCALE, getLocale( ).getLanguage( ) );
+            model.put(
+                    MARK_SPACES_BROWSER,
+                    DocumentSpacesService.getInstance( ).getSpacesBrowser( request, getUser( ), getLocale( ), false,
+                            true ) );
+            model.put( MARK_DOCUMENT_TYPES_LIST, DocumentTypeHome.findAll( ) );
+            model.put( MARK_DOCUMENT_TYPE, StringUtils.defaultString( strTypeCode ) );
+            model.put( MARK_DATE_MIN, StringUtils.defaultString( strDateMin ) );
+            model.put( MARK_DATE_MAX, StringUtils.defaultString( strDateMax ) );
+
+            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MASS_ARCHIVAL, getLocale( ), model );
+            result.setHtmlContent( getAdminPage( template.getHtml( ) ) );
+        }
+
+        return result;
+    }
+
+    /**
+     * Gets the document creation page
+     * @param request The HTTP request
+     * @return The document creation page
+     * @throws DocumentException
+     */
+    public String doMassArchivalDocument( HttpServletRequest request ) throws DocumentException
+    {
+        List<Document> documents = (List<Document>) request.getSession( ).getAttribute( "to_archive" );
+        request.getSession( ).removeAttribute( "to_archive" );
+
+        for ( Document doc : documents )
+        {
+            DocumentService.getInstance( ).archiveDocument( doc, getUser( ), DocumentState.STATE_ARCHIVED );
+        }
+
+        return getManageDocuments( request );
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -64,7 +64,16 @@
 				</h4>
 				${spaces_tree}
 			</div>
-			
+			<#if mass_action?has_content && mass_action>
+		   <div class="well well-small">
+				<h4>#i18n{document.manage_documents.labelMoreActions}</h4>
+				<form class="form" method="post" id="archiveForm" name="archiveForm" action="jsp/admin/plugins/document/MassArchivalDocument.jsp">
+					<button class="btn btn-primary" type="submit" >
+						<i class="icon-lock icon-white"></i>&nbsp;#i18n{document.manage_document.mass_archival_labelBtn}
+					</button>
+				</form>
+			</div>
+			</#if>
 		</div>
 		<div class="span9">
 			<#if space?has_content >

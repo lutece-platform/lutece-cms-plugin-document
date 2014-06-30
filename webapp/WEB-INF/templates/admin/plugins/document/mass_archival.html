@@ -1,0 +1,87 @@
+<div class="row-fluid append-bottom">
+    <div class="span12">
+    	<form id="massArchivalForm" action="jsp/admin/plugins/document/MassArchivalDocument.jsp">
+        <fieldset>
+            <legend>#i18n{document.manage_document.mass_archival_labelBtn}</legend>
+            #i18n{document.manage_document.mass_archival.archiveInfo}
+            <div class="well well-small">
+				<input type="radio" name="archival_criteria" value="date" <#if selected_criteria == 'date'>checked</#if> onclick='$("#criteria_date").show();$("#criteria_space").hide();$("#criteria_type").hide();'>&nbsp;#i18n{document.manage_document.mass_archival.criteriaDate}<br>
+				<div id="criteria_date">
+                    <div class="control-group">
+                        <div class="controls">
+                        	Du
+                            <div class="input-prepend">
+                                <span class="add-on"><i class="icon-calendar"></i></span>
+                                <input type="text" class="input-small"  name="date_min" id="dateMin" value="${date_min!}" />
+                            </div>
+                        </div>
+                        <div class="controls">
+                        	au
+                            <div class="input-prepend">
+                                <span class="add-on"><i class="icon-calendar"></i></span>
+                                <input type="text" class="input-small"  name="date_max" id="dateMax" value="${date_max!}"/>
+                            </div>
+                        </div>
+                    </div>	
+				</div>
+
+				<input type="radio" name="archival_criteria" value="space" <#if selected_criteria == 'space'>checked</#if> onclick='$("#criteria_date").hide();$("#criteria_space").show();$("#criteria_type").hide();'>&nbsp;#i18n{document.manage_document.mass_archival.criteriaSpace}<br>
+				
+				<div id="criteria_space">
+					<div class="controls-group" >
+					    <label class="control-label" for="">Espace</label>
+					    <div class="controls" >
+					        ${spaces_browser}
+					    </div>
+				    </div>
+			   </div>
+				
+				<input type="radio" name="archival_criteria" value="type" <#if selected_criteria == 'type'>checked</#if> onclick='$("#criteria_date").hide();$("#criteria_space").hide();$("#criteria_type").show();'>&nbsp;#i18n{document.manage_document.mass_archival.criteriaType}<br>
+				<div id="criteria_type">
+					<div class="controls-group" >
+					    <label class="control-label" for="document_code">Type de document</label>
+					    <div class="controls" >
+    						<select class="input-normal" name="document_type_code" id ="document_type_code">
+    							<#list document_types_list as type>
+    							<#if document_type == type.code>
+                   				<option selected="selected" value="${type.code}" >${type.name}</option>
+                   				<#else>
+                   				<option value="${type.code}" >${type.name}</option>
+                   				</#if>
+                   				</#list>    			    			
+					       </select>
+					    </div>
+				    </div>
+			   </div>
+			</div>
+			<button class="btn btn-primary btn-small" type="submit" name="action" value="apply" title="#i18n{document.manage_documents.buttonSearch}" >
+				<i class="icon-search icon-white"></i>&nbsp;#i18n{document.manage_document.mass_archival.archiveLbl}
+			</button>
+        </fieldset>
+       </form>
+    </div>
+</div>
+
+<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
+<@getDatePickerRange idFieldFrom="dateMin" idFieldTo="dateMax" language=locale />
+
+<script>
+	$( document ).ready(function() {
+		var checked = $('input[name=archival_criteria]:checked', '#massArchivalForm').val()
+		
+		if (checked == "date") {
+			$("#criteria_date").show();
+			$("#criteria_space").hide();
+			$("#criteria_type").hide();
+		} else if ( checked == "type") {
+			$("#criteria_date").hide();
+			$("#criteria_space").hide();
+			$("#criteria_type").show();
+		} else {
+			$("#criteria_date").hide();
+			$("#criteria_space").show();
+			$("#criteria_type").hide();
+		}
+	});
+</script>
