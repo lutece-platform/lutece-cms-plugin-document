@@ -34,7 +34,7 @@
 			<form class="form" method="post" id="SearchDocumentById"
 				name="SearchDocumentById"
 				action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
-				<div class="input-append">
+				<div class="input-group">
 					<input type="text" id="id_document" name="id_document"
 						class="input-mini" maxlength="10">
 					<button class="btn btn-primary btn-sm" type="submit"
@@ -48,7 +48,7 @@
 				name="FullTextSearchDocument"
 				action="jsp/admin/plugins/document/DocumentSearch.jsp">
 				<input type="hidden" id="id_document" name="id_document">
-				<div class="input-append">
+				<div class="input-group">
 					<input type="text" class="form-control" id="query" name="query"
 						class="input-lg" maxlength="50">
 					<button class="btn btn-primary" type="submit"
@@ -212,7 +212,7 @@
 					</td>
 					<td><#list document.actions?reverse as action > <#if
 						action.url?has_content> <a
-						class="btn <@setBtnAction action_nb=action.idAction /> btn-mini"
+						class="btn <@setBtnAction action_nb=action.idAction /> btn-xs"
 						href="${action.url}id_document=${document.id}&id_action=${action.idAction}"
 						title="${action.description}"> <i class="${action.iconUrl}"></i>
 					</a> </#if> </#list>
@@ -238,7 +238,7 @@
 					<p>
 						<#list document.actions?sort_by("idAction") as action > <#if
 						action.url?has_content> <a
-							class="btn btn-primary btn-mini <@setBtnAction action_nb=action.idAction />"
+							class="btn btn-primary btn-xs <@setBtnAction action_nb=action.idAction />"
 							href="${action.url}id_document=${document.id}&id_action=${action.idAction}"
 							title="${action.description}"> <i class="${action.iconUrl}"></i>
 						</a> </#if> </#list>
