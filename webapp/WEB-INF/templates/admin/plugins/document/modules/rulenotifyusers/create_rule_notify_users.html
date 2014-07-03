@@ -1,5 +1,5 @@
 <input type="hidden" name="rule_attribute_selected" value="">
-<div class="controls">
+<div class="col-xs-12 col-sm-6 col-md-4">
 <p class="help-block">
 #i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText1} 
 <#if id_space_source?exists> 
@@ -8,10 +8,10 @@
     <#else>
     	 <span class="label label-inverse">#i18n{module.document.rulenotifyusers.create_rule_notify_users.noSpaceSelected}</span> 
   	</#if>
-<button class="btn btn-primary btn-small" onclick="selectSpace('id_space_source')" > #i18n{module.document.rulenotifyusers.create_rule_notify_users.buttonChoose}</button>
+<button class="btn btn-primary btn-sm" onclick="selectSpace('id_space_source')" > #i18n{module.document.rulenotifyusers.create_rule_notify_users.buttonChoose}</button>
 </p> 
 </div>
-<div class="controls">
+<div class="col-xs-12 col-sm-6 col-md-4">
 <p class="help-block">
 #i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText2} 
     <#if id_state?exists>
@@ -21,7 +21,7 @@
     </#if>
 </p> 
 </div>
-<div class="controls">
+<div class="col-xs-12 col-sm-6 col-md-4">
 <p class="help-block">
     #i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText3} 
     <#if id_mailinglist?exists>
@@ -31,7 +31,7 @@
     </#if>	
 </p>
 </div>
-<div class="controls">
+<div class="col-xs-12 col-sm-6 col-md-4">
 <p class="help-block">
 #i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText4} 
  <#if message_template_key?exists >

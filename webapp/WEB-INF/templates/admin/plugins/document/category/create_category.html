@@ -1,37 +1,39 @@
-<div class="row-fluid">
-    <div class="span12">
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12">
         <fieldset>
             <legend>#i18n{document.create_category.boxTitle}</legend>
             <form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoCreateCategory.jsp" enctype="multipart/form-data" >
-                <div class="control-group">
-                    <label class="control-label" for="category_name">#i18n{document.create_category.labelName} *</label>
-                    <div class="controls">
-                        <input type="text" id="category_name" name="category_name" maxlength="100" />
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="category_name">#i18n{document.create_category.labelName} *</label>
+                    <div class="col-xs-12 col-sm-8 col-md-8">
+                        <input type="text" class="form-control" id="category_name" name="category_name" maxlength="100" />
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="category_description">#i18n{document.create_category.labelDescription} * </label>
-                    <div class="controls">
-                        <input type="text" id="category_description" name="category_description" value="" class="input-xlarge" maxlength="255" />
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="category_description">#i18n{document.create_category.labelDescription} * </label>
+                    <div class="col-xs-12 col-sm-8 col-md-8">
+                        <input type="text" class="form-control" id="category_description" name="category_description" value="" class="input-sm" maxlength="255" />
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="workgroup_key">#i18n{document.create_category.labelWorkgroup} </label>		     
-                    <div class="controls">
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="workgroup_key">#i18n{document.create_category.labelWorkgroup} </label>		     
+                    <div class="col-xs-12 col-sm-8 col-md-8">
                         <@combo name="workgroup_key" items=user_workgroup_list default_value="${selected_workgroup}" />
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="category_icon">#i18n{document.create_category.labelIcon} </label>
-                    <div class="controls">
-                        <input type="file" id="category_icon" name="category_icon" class="input-large" value="" />
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="category_icon">#i18n{document.create_category.labelIcon} </label>
+                    <div class="col-xs-12 col-sm-8 col-md-8">
+                        <input type="file" id="category_icon" name="category_icon" class="input-sm" value="" />
                     </div>
                 </div>
-                <div class="form-actions">
-                    <button class="btn btn-primary btn-small" type="submit"><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.create_category.buttonLabelCreate}</button>
-                    <a class="btn btn-small" href="jsp/admin/plugins/document/ManageCategory.jsp?plugin_name=document">
-                       <i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
+                <div class="form-group">
+					<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-2 col-md-8">
+                    <button class="btn btn-primary btn-sm" type="submit"><i class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{document.create_category.buttonLabelCreate}</button>
+                    <a class="btn btn-default btn-sm" href="jsp/admin/plugins/document/ManageCategory.jsp?plugin_name=document">
+                       <i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
                     </a>
+					</div>
                 </div>
             </form>
         </fieldset>

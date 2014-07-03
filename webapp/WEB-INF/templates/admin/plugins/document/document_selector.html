@@ -1,11 +1,11 @@
 <div class="insert-service">
-    <div class="row-fluid">
-        <div class="span12">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
             <h4>#i18n{document.insertService.name}</h4>
             <#if documents_list?size = 0>
-            <div class="alert alert-error">#i18n{document.selector.document.noDocument}</div>
+            <div class="alert alert-danger">#i18n{document.selector.document.noDocument}</div>
             <p>
-                <button type="button" class="btn" onclick="javascript:history.go(-1);"><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}</button>
+                <button type="button" class="btn" onclick="javascript:history.go(-1);"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}</button>
             </p>
             <#else>
             <h4>#i18n{document.selector.document.insertListTitle}</h4>
@@ -14,9 +14,9 @@
                 <input type="hidden" name="portlet_id" value="${portlet_id}" />
                 <input type="hidden" name="subcategory" value="${type_filter}" />
                 <label for="name">#i18n{document.selector.document.linkName}</label>
-                <input type="text" name="name" id="name" value="" size="30" maxlength="50" />
+                <input type="text" class="form-control" name="name" id="name" value="" size="30" maxlength="50" />
                 <label for="alt">#i18n{document.selector.document.captionTitle}</label>
-                <input type="text" name="alt" id="alt" value="" size="30" maxlength="50" />
+                <input type="text" class="form-control" name="alt" id="alt" value="" size="30" maxlength="50" />
                 <label for="target">#i18n{document.selector.document.captionTarget}</label>
                 <select name="target" id="target" size=1>
                     <option value="_self">#i18n{document.selector.document.target.self}</option>
@@ -41,11 +41,11 @@
                     </tr>
                     </#list>
                 </table>
-                <button type="submit" class="btn btn-primary btn-small">
-                    <i class="icon-ok icon-white"></i>&nbsp;#i18n{portal.util.labelValidate}
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
                 </button> 
-                <button type="button btn-small" class="btn" onclick="javascript:history.go(-1);">
-                    <i class="icon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
+                <button type="button btn-sm" class="btn" onclick="javascript:history.go(-1);">
+                    <i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
                 </button>
             </form>
             </#if>

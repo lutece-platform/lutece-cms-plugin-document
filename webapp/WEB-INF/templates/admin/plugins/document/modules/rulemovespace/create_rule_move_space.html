@@ -1,5 +1,5 @@
 <input type="hidden" name="rule_attribute_selected" value="">
-<div class="controls">
+<div class="col-xs-12 col-sm-6 col-md-4">
 <p class="help-block">#i18n{module.document.rulemovespace.create_rule_move_space.ruleText1} 
 <#if id_space_source?exists> 
 	<span class="label label-info">${path_space_source}</span>
@@ -7,10 +7,10 @@
 <#else>
  	<span class="label label-inverse">#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</span>
 </#if>
-<button class="btn btn-small" onclick="selectSpace('id_space_source')" > #i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}</button>
+<button class="btn btn-sm" onclick="selectSpace('id_space_source')" > #i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}</button>
 </p>
 </div>
-<div class="controls">
+<div class="col-xs-12 col-sm-6 col-md-4">
 <p class="help-block">#i18n{module.document.rulemovespace.create_rule_move_space.ruleText2}
 <#if id_state?exists >
 	<@combo name="id_state" default_value="${id_state}" items=states_list />
@@ -20,7 +20,7 @@
     </#if>
 </p> 
 </div>
-<div class="controls">
+<div class="col-xs-12 col-sm-6 col-md-4">
 <p class="help-block">#i18n{module.document.rulemovespace.create_rule_move_space.ruleText3}
     <#if id_space_destination?exists> 
     	<span class="label label-success">${path_space_destination}</span>  

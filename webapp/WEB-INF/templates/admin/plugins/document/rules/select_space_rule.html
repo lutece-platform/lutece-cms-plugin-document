@@ -1,17 +1,17 @@
-<div class="row-fluid">
-<div class="span12" >
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12" >
 <fieldset>
 <legend>#i18n{document.select_space_rule.title}</legend>
 <form class="form-horizontal" name="formSelect" method="get" action="jsp/admin/plugins/document/DoSelectSpace.jsp" >
     <div class="well" >
-    <div class="controls-group" >
-    <label class="control-label" for="">#i18n{document.move_space.labelMove}</label>
+    <div class="form-group" >
+    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="">#i18n{document.move_space.labelMove}</label>
     <div class="controls" >
         ${spaces_browser}
     </div>
     </div>
-    <div class="form-actions" >
-    <button type="button" class="btn" onclick="javascript:history.back();" ><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+    <div class="" >
+    <button type="button" class="btn" onclick="javascript:history.back();" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
     </div>
     </div>
 </form>

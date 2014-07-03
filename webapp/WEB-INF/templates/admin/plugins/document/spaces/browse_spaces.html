@@ -1,16 +1,16 @@
-<div class="well well-small">
+<div class="well well-sm">
     <#if selected_space?has_content>
         <input type="hidden" name="browser_selected_space_id" value="${selected_space.id}" />
-        <a href="javascript:modifyChoice();" class="btn btn-small">
-            <i class="icon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
+        <a href="javascript:modifyChoice();" class="btn btn-sm">
+            <i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
         </a>
         <br>
         <img src="${selected_space.iconUrl}" alt="${selected_space.name}" />${selected_space.name}
     <#else>
         <input type="hidden" name="browser_id_space" value="${space.id}" />
         <#if space.id != -1 && go_up >
-            <a href="javascript:goUp();"class="btn btn-small">
-                <i class="icon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
+            <a href="javascript:goUp();"class="btn btn-sm">
+                <i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
             </a>
         </#if>
         <br>
@@ -26,8 +26,8 @@
         </label>    
         </#list>
         <br>
-        <button class="btn btn-primary btn-small" type="submit">
-            <i class="icon-ok icon-white"></i>&nbsp;#i18n{document.browse_spaces.validate}
+        <button class="btn btn-primary btn-sm" type="submit">
+            <i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{document.browse_spaces.validate}
         </button>
    </#if>
 </div>  

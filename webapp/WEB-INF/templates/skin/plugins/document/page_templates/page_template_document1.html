@@ -12,13 +12,13 @@ Available objects :
 <#if isExtendInstalled?? && isExtendInstalled>
 	@ExtenderParameter[${document_id},document,opengraph]@
 </#if>
-<div class="row-fluid">
-	<div id="content" class="span12">
+<div class="row">
+	<div id="content" class="col-xs-12 col-sm-12 col-md-12">
 		${document}
 	</div>
 </div>
-<div class="row-fluid">
-	<div id="sidebar" class="span12">
+<div class="row">
+	<div id="sidebar" class="col-xs-12 col-sm-12 col-md-12">
 		<#if isExtendInstalled?? && isExtendInstalled>
 			@Extender[${document_id},document,actionbar]@
 			@Extender[${document_id},document,hit,{show:true}]@

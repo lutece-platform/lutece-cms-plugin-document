@@ -1,39 +1,41 @@
 <#if space?exists>
-<div class="row-fluid">
-<div class="span12" >
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12" >
 <form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoModifySpace.jsp">
 <fieldset>
 <legend>#i18n{document.modify_space.title}</legend>
-<div class="control-group">
-	<label class="control-label" for="name" >#i18n{document.modify_space.labelName}* :</label>
-	<div class="controls">
-	<input type="text" name="name" id="name" tabindex="1" value="${space.name}" />
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{document.modify_space.labelName}* :</label>
+	<div class="col-xs-12 col-sm-6 col-md-6">
+	<input type="text" class="form-control" name="name" id="name" tabindex="1" value="${space.name}" />
 </div>
 </div>
-<div class="control-group">
-<label class="control-label" for="description" >#i18n{document.modify_space.labelDescription}* :</label>
-<div class="controls">
-<input type="text" name="description" id="description" value="${space.description}" tabindex="2" />
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="description" >#i18n{document.modify_space.labelDescription}* :</label>
+	<div class="col-xs-12 col-sm-6 col-md-6">
+		<input type="text" class="form-control" name="description" id="description" value="${space.description}" tabindex="2" />
+	</div>
 </div>
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="view_type" >#i18n{document.modify_space.labelView} :</label>
+	<div class="col-xs-12 col-sm-6 col-md-6">
+		<@combo name="view_type" default_value="${view_type}" items=view_types_list />
+	</div>
 </div>
-<div class="control-group">
-<label class="control-label" for="view_type" >#i18n{document.modify_space.labelView} :</label>
-<div class="controls">
-<@combo name="view_type" default_value="${view_type}" items=view_types_list />
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="icon" >#i18n{document.modify_space.labelIcon} :</label>
+		<div class="col-xs-12 col-sm-9 col-md-9">
+		<@radioImageList name="icon" default_value="${space.idIcon}" items=icons_list />
+		</div>
 </div>
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="document_type">#i18n{document.modify_space.labelDocumentTypes} :</label>
+	<div class="col-xs-12 col-sm-9 col-md-9">
+		<@checkboxList name="document_type" default_values="" items=document_types_list />
+	</div>
 </div>
-<div class="control-group">
-<label class="control-label" for="icon" >#i18n{document.modify_space.labelIcon} :</label>
-<@radioImageList name="icon" default_value="${space.idIcon}" items=icons_list />
-</div>
-<div class="control-group">
-<label class="control-label" for="document_type">#i18n{document.modify_space.labelDocumentTypes} :</label>
-<div class="controls">
-<@checkboxList name="document_type" default_values="" items=document_types_list />
-</div>
-</div>
-<div class="control-group">
-<div class="controls">
+<div class="form-group">
+	<div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-3 col-md-6">
 	<#if space.workgroup?exists>
 		<@combo name="workgroup_key"  items=user_workgroup_list default_value=space.workgroup />
 	<#else>
@@ -41,19 +43,25 @@
 	</#if>
 	</div>
 </div>
-<div class="control-group">
-<label class="control-label" for="allow_creation" >#i18n{document.modify_space.labelAllowCreation} :</label>
-<div class="controls">
-<label class="checkbox" for="allow_creation" >
-<input class="checkbox" type="checkbox" name="allow_creation" id="allow_creation" tabindex="5" <#if space.documentCreationAllowed>checked="checked"</#if> />#i18n{document.modify_space.labelAllowCreation}</label>
-<span class="help-text">#i18n{document.modify_space.helpAllowCreation}</span>
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="allow_creation" >#i18n{document.modify_space.labelAllowCreation} :</label>
+	<div class="col-xs-12 col-sm-9 col-md-9">
+		<div class="checkbox">
+		<label for="allow_creation" >
+		<input class="checkbox" type="checkbox" name="allow_creation" id="allow_creation" tabindex="5" <#if space.documentCreationAllowed>checked="checked"</#if> />#i18n{document.modify_space.labelAllowCreation}</label>
+		</div>
+		<span class="help-text">#i18n{document.modify_space.helpAllowCreation}</span>
+	</div>
 </div>
-</div>
-<input type="hidden" name="id_space" value="${space.id}" />
-<input type="hidden" name="id_parent_space" value="${space.idParent}" />
-<div class="form-actions">
-<button class="btn btn-primary btn-small" type="submit" ><i class="icon-edit icon-white"></i>&nbsp;#i18n{document.modify_space.buttonModify}</button>
-<button class="btn btn-small" onclick="javascript:window.history.go(-1)" type="button" ><i class="icon-remove-sign"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+<div class="form-group">
+	<div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-3 col-md-6">
+	<input type="hidden" name="id_space" value="${space.id}" />
+	<input type="hidden" name="id_parent_space" value="${space.idParent}" />
+	<div class="">
+		<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-edit"></i>&nbsp;#i18n{document.modify_space.buttonModify}</button>
+		<button class="btn btn-default btn-sm" onclick="javascript:window.history.go(-1)" type="button" ><i class="glyphicon glyphicon-remove-sign"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+	</div>
+	</div>
 </div>
 </fieldset>
 </form>

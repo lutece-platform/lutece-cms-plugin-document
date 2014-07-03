@@ -13,7 +13,7 @@ How to display the date publication : ${publication.datePublishing?date} or ${pu
 	@ExtenderParameter[${document_id},document,opengraph]@
 </#if>
 <div class="row">
-    <div id="content" class="span8">
+    <div id="content" class="col-xs-12 col-sm-9 col-md-9">
     	<#if portlet?has_content >
        		${portlet}
         </#if>
@@ -29,7 +29,7 @@ How to display the date publication : ${publication.datePublishing?date} or ${pu
 </div>
 <#if isExtendInstalled?? && isExtendInstalled>
 <div class="clearfix">
-	<div class="span3 pull-right">
+	<div class="col-xs-12 col-sm-3 col-md-3 pull-right">
 		@Extender[${document_id},document,opengraph,{footer:false, header:false}]@
         @Extender[${document_id},document,hit,{show:true}]@
         @Extender[${document_id},document,rating,{show:"all"}]@

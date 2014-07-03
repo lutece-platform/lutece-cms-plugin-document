@@ -1,6 +1,6 @@
-<div class="control-group">
-    <label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
-    <div class="controls">
+<div class="form-group">
+    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
+    <div class="col-xs-12 col-sm-10 col-md-10">
     <#list parameters.value as value>
         <#if value?has_content >
             <#assign defaultValue = "${value}">
@@ -8,7 +8,7 @@
             <#assign defaultValue = "">
         </#if>
     </#list>
-    <select id="${attribute.code}" name="${attribute.code}" class="input-normal">
+    <select id="${attribute.code}" name="${attribute.code}" class="input-sm">
         <#if parameters.items?size != 0>
             <#list parameters.items as item>
                 <#if defaultValue="${item}">

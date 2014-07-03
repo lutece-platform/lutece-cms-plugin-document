@@ -1,16 +1,16 @@
-<div class="control-group">
-    <label class="control-label" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
-    <div class="controls">
+<div class="form-group">
+    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
+    <div class="col-xs-12 col-sm-10 col-md-10">
     <textarea id="${attribute.code}" name="${attribute.code}" rows="5" cols="60" readonly="readonly" ></textarea> 
-    <button class="btn btn-small" onclick="javascript:linkservice${attribute.code}();return false;" >
-            <i class="icon-lutece-logo"></i>
+    <button class="btn btn-primary btn-sm" onclick="javascript:linkservice${attribute.code}();return false;" >
+            <i class="glyphicon glyphicon-lutece-logo"></i>
     </button>
     <!-- DOCUMENT-97: enable clearing internal link field. -->
-    <button class="btn btn-small" onclick="javascript:$('#show_preview_${attribute.code}').html($('#${attribute.code}').val() + '&nbsp;'); return false;" >
-            <i class="icon-eye-open"></i>
+    <button class="btn btn-default btn-sm" onclick="javascript:$('#show_preview_${attribute.code}').html($('#${attribute.code}').val() + '&nbsp;'); return false;" >
+            <i class="glyphicon glyphicon-eye-open"></i>
     </button>
-    <button class="btn btn-small btn-danger" onclick="javascript:linkservice_clear${attribute.code}();return false;" title="#i18n{document.attributeType.internallink.labelLinkServiceClear}" >
-            <i class="icon-trash icon-white"></i>
+    <button class="btn btn-sm btn-danger" onclick="javascript:linkservice_clear${attribute.code}();return false;" title="#i18n{document.attributeType.internallink.labelLinkServiceClear}" >
+            <i class="glyphicon glyphicon-trash"></i>
     </button>
     <p id="show_preview_section_${attribute.code}" style="display: none;">&nbsp;</p>
      <div id="show_preview_${attribute.code}">&nbsp;</div>

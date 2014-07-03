@@ -16,9 +16,9 @@
 		</td>
 		<td>
 			<#if last_modified_document.publishedStatus = 0> 
-				<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class=" icon-ok-sign icon-white"></i>	</span>	
+				<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class="glyphicon glyphicon-ok-sign"></i>	</span>	
 			<#else>
-				<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="icon-remove-sign icon-white"></i></span>	
+				<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>	
 			</#if>
 			
 		</td>
@@ -26,13 +26,13 @@
 			<p>
 			<#list last_modified_document.actions as action>
 			<#if action.url?exists>
-				<a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-mini <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
-					<i class="${action.iconUrl} icon-white"></i>
+				<a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
+					<i class="${action.iconUrl}"></i>
 				</a>
 			</#if>
 			</#list>
 			</p>
-			<#if last_modified_document.comment!= ""> <div class="alert alert-error span8">${last_modified_document.comment}</div></#if>
+			<#if last_modified_document.comment!= ""> <div class="alert alert-danger col-xs-12 col-sm-9 col-md-9">${last_modified_document.comment}</div></#if>
         </td>
     	</tr>
     </#if>
@@ -55,16 +55,16 @@
 			</td>
 			<td>
 				<#if last_published_document.publishedStatus = 0> 
-				<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class=" icon-ok-sign icon-white"></i>	</span>	
+				<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class=" icon-ok-sign"></i>	</span>	
 			<#else>
-				<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="icon-remove-sign icon-white"></i></span>	
+				<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>	
 			</#if>	     
 			</td>
             <td>
 				<#list last_published_document.actions as action>
 					<#if action.url?exists>
-					<a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-mini <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
-						<i class="${action.iconUrl} icon-white"></i>
+					<a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
+						<i class="${action.iconUrl}"></i>
 				</a>
 					</#if>
 				</#list>

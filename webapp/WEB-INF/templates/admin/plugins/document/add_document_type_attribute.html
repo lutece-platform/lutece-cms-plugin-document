@@ -10,59 +10,65 @@
 	<#assign required = attribute.required>
 	<#assign searchable = attribute.searchable>
 </#if>
-<div class="row-fluid">
-	<div class="span12" >
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12" >
 	<fieldset>
     <legend>#i18n{document.add_document_type_attribute.titleAddAttribute} </legend>
 	<form class="form-horizontal" method="post" name="docTypeAttr" action="jsp/admin/plugins/document/DoAddDocumentTypeAttribute.jsp">
-	<div class="control-group">
-		<label class="control-label" for="name" >#i18n{document.add_document_type_attribute.labelName}* :</label>
-        <div class="controls">
-			<input type="text" name="name" id="name" tabindex="1" value="${name}" />
+	<div class="form-group">
+		<label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{document.add_document_type_attribute.labelName}* :</label>
+        <div class="col-xs-12 col-sm-8 col-md-6">
+			<input type="text" class="form-control" name="name" id="name" tabindex="1" value="${name}" />
 			<span class="help-block">#i18n{document.add_document_type_attribute.helpName}</span>
 		</div>
 	</div>
-    <div class="control-group">
-		<label class="control-label" for="code" >#i18n{document.add_document_type_attribute.labelCode}* :</label>
-        <div class="controls">
-			<input type="text" name="code" id="code" tabindex="2" value="${code}" />
+    <div class="form-group">
+		<label class="control-label col-xs-12 col-sm-3 col-md-3" for="code" >#i18n{document.add_document_type_attribute.labelCode}* :</label>
+        <div class="col-xs-12 col-sm-8 col-md-6">
+			<input type="text" class="form-control" name="code" id="code" tabindex="2" value="${code}" />
 			<span class="help-block">#i18n{document.add_document_type_attribute.helpCode}</span>
 		</div>
 	</div>
-    <div class="control-group">
-		<label class="control-label" for="description" >#i18n{document.add_document_type_attribute.labelDescription}* :</label>
-            <div class="controls">
-				<input type="text" name="description" id="description" tabindex="3" value="${description}" />
+    <div class="form-group">
+		<label class="control-label col-xs-12 col-sm-3 col-md-3" for="description" >#i18n{document.add_document_type_attribute.labelDescription}* :</label>
+            <div class="col-xs-12 col-sm-8 col-md-6">
+				<input type="text" class="form-control" name="description" id="description" tabindex="3" value="${description}" />
 				<span class="help-block">#i18n{document.add_document_type_attribute.helpDescription}</span>
 		</div>
 	</div>
-    <div class="control-group">
-		<label class="control-label" for="required" >#i18n{document.add_document_type_attribute.labelRequired} :</label>
-            <div class="controls">
-			<label class="checkbox" for="required" >
+    <div class="form-group">
+		<label class="control-label col-xs-12 col-sm-3 col-md-3" for="required" >#i18n{document.add_document_type_attribute.labelRequired} :</label>
+            <div class="col-xs-12 col-sm-8 col-md-6">
+			<div class="checkbox">
+				<label for="required" >
 				<input class="checkbox" type="checkbox" name="required" id="required" tabindex="4" <#if required>checked="checked"</#if> />
 				#i18n{document.add_document_type_attribute.helpRequired}
-			</label>
+				</label>
+			</div>
 		</div>
 	</div>
-    <div class="control-group">
-		<label class="control-label" for="searchable" >#i18n{document.add_document_type_attribute.labelSearchable} :</label>
-            <div class="controls">
-			<label class="checkbox" for="searchable" >
+    <div class="form-group">
+		<label class="control-label col-xs-12 col-sm-3 col-md-3" for="searchable" >#i18n{document.add_document_type_attribute.labelSearchable} :</label>
+            <div class="col-xs-12 col-sm-8 col-md-6">
+			<div class="checkbox">
+				<label for="searchable" >
 				<input class="checkbox" type="checkbox" name="searchable" id="searchable" tabindex="5" <#if searchable>checked="checked"</#if> />
 			 	#i18n{document.add_document_type_attribute.helpSearchable}
-			</label>
+				</label>
+			</div>
 		</div>
 	</div>
 	${attribute_parameters}
-	<div class="form-actions">
-		<!--button class="btn btn-primary btn-small" name="save" type="submit"><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.add_document_type_attribute.buttonAddAttribute}</button>
-		<button class="btn btn-primary btn-small" name="apply" type="submit"><i class="icon-ok-sign icon-white"></i>&nbsp;#i18n{document.add_document_type_attribute.buttonApply}</button -->
-		<button type="submit" name="save" value="save" class="btn btn-primary btn-small" >
-			<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{document.add_document_type_attribute.buttonAddAttribute}
+	<div class="form-group">
+		<div class="col-xs-12 col-sm-offset-3 col-sm-8 col-md-offset-3 col-md-6">
+		<!--button class="btn btn-primary btn-sm" name="save" type="submit"><i class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{document.add_document_type_attribute.buttonAddAttribute}</button>
+		<button class="btn btn-primary btn-sm" name="apply" type="submit"><i class="glyphicon glyphicon-ok-sign"></i>&nbsp;#i18n{document.add_document_type_attribute.buttonApply}</button -->
+		<button type="submit" name="save" value="save" class="btn btn-primary btn-sm" >
+			<i class="glyphicon glyphicon-plus">&nbsp;</i>&nbsp;#i18n{document.add_document_type_attribute.buttonAddAttribute}
 		</button>
-        <!-- input type="submit" name="apply" value="#i18n{document.add_document_type_attribute.buttonApply}" class="btn btn-primary btn-small" / -->
-    	<button type="button" class="btn btn-small" onclick="javascript:window.history.back();" ><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+        <!-- input type="submit" name="apply" value="#i18n{document.add_document_type_attribute.buttonApply}" class="btn btn-primary btn-sm" / -->
+    	<button type="button" class="btn btn-default btn-sm" onclick="javascript:window.history.back();" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+		</div>
 	</div>
 	<input type="hidden" name="attribute_type_code" value="${attribute_type_code}" />
 </form>

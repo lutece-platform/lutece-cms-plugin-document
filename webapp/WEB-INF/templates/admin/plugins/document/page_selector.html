@@ -1,8 +1,8 @@
 <div class="insert-service">
 	<h4>#i18n{document.insertService.name}</h4>
 	<#if pages_list?size = 0>
-		<p class="alert alert-error">#i18n{document.selector.page.noPage}</p>
-		<button type="button" class="btn btn-small" onclick="javascript:history.go(-1);"><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}</button>
+		<p class="alert alert-danger">#i18n{document.selector.page.noPage}</p>
+		<button type="button" class="btn btn-sm" onclick="javascript:history.go(-1);"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}</button>
 	<#else>
 		<form method="post" name="fsubmit"	action="jsp/admin/plugins/document/DoSelectPage.jsp">
 		<input type="hidden" name="input" value="${input}" />
@@ -24,11 +24,11 @@
 			</tr>
 			</#list>
 		</table>
-		<button type="submit" class="btn btn-primary btn-small">
-			<i class="icon-ok icon-white"></i>&nbsp;#i18n{portal.util.labelValidate}
+		<button type="submit" class="btn btn-primary btn-sm">
+			<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
 		</button>
-		<button type="button" class="btn btn-small" onclick="javascript:history.go(-1);">
-			<i class="icon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
+		<button type="button" class="btn btn-sm" onclick="javascript:history.go(-1);">
+			<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
 		</button>
 		</form>
 	</#if>

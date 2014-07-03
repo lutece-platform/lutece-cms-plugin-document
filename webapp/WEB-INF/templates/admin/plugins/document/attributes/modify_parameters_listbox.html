@@ -6,19 +6,19 @@
 		<#assign items = parameter>
 	</#if>
 </#list>
-<div class="control-group">
-	<label class="control-label" for="${items.name}_value" >${items.label} :</label>
-	<div class="controls">
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${items.name}_value" >${items.label} :</label>
+	<div class="col-xs-12 col-sm-9 col-md-9">
 		<input type="text" id="${items.name}_value" name="${items.name}_value" tabindex="6" />
-		<button class="btn btn-primary btn-small" type="submit" name="add" value="add" >
+		<button class="btn btn-primary btn-sm" type="submit" name="add" value="add" >
 			#i18n{document.attributeType.listbox.btnAddItem}
 		</button>
 		<span class="help-block">${items.description}</span>
 	</div>
 </div>
-<div class="control-group">
-	<label class="control-label" for="${items.name}_select" >&nbsp;</label>
-	<div class="controls">
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${items.name}_select" >&nbsp;</label>
+	<div class="col-xs-12 col-sm-9 col-md-9">
 		<select id="${items.name}_select" name="${items.name}_select" size="4" style='width:200px;' tabindex="8">
 			<#list items.valueList as values >
 				<option value="${values}" >${values}</option>
@@ -31,17 +31,17 @@
 				</#list>		
 			</select>
 			</div>
-		<button class="btn btn-primary btn-small" name="delete"  value="delete" type="submit">
+		<button class="btn btn-primary btn-sm" name="delete"  value="delete" type="submit">
 				#i18n{document.attributeType.listbox.btnDelItem}
 		</button>
-		<button class="btn btn-primary btn-small"  value="bydefault" name="bydefault" type="submit">
+		<button class="btn btn-primary btn-sm"  value="bydefault" name="bydefault" type="submit">
 			#i18n{document.attributeType.listbox.btnDefItem}
 		</button>
 	</div>
 </div>
-<div class="control-group">
-	<label for="${defaultValue.name}">&nbsp;</label>
-	<div class="controls">
+<div class="form-group">
+	<label for="${defaultValue.name}" class="col-xs-12 col-sm-3 col-md-3">&nbsp;</label>
+	<div class="col-xs-12 col-sm-9 col-md-9">
 		<input type="text" id="${defaultValue.name}" name="${defaultValue.name}" value="<#list defaultValue.valueList as values >${values}</#list>" readonly="readonly" tabindex="11" >
 	</div>
 </div>

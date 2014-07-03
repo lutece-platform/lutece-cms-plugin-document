@@ -1,58 +1,64 @@
-<div class="row-fluid">
-    <div class="span12">
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12">
         <fieldset>    
             <legend>#i18n{document.modify_document_type_attribute.titleAddAttribute} ${document_type_code}</legend>
             <form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoModifyDocumentTypeAttribute.jsp">
                 <input type="hidden" name="attribute_id" value="${attribute.id}" >
                 <input type="hidden" name="attribute_type_code" value="${attribute_type_code}" >
-                <div class="control-group">
-                    <label class="control-label" for="name" >#i18n{document.modify_document_type_attribute.labelName}*</label>
-                    <div class="controls">
-                        <input type="text" name="name" id="name" tabindex="1" value="${attribute.name}"/>
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{document.modify_document_type_attribute.labelName}*</label>
+                    <div class="col-xs-12 col-sm-8 col-md-6">
+                        <input type="text" class="form-control" name="name" id="name" tabindex="1" value="${attribute.name}"/>
                         <span class="help-block">#i18n{document.modify_document_type_attribute.helpName}</span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="code" >#i18n{document.modify_document_type_attribute.labelCode}*</label>
-                    <div class="controls">
-                        <input type="text" name="code" id="code" tabindex="2" value="${attribute.code}" readonly="readonly">
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="code" >#i18n{document.modify_document_type_attribute.labelCode}*</label>
+                    <div class="col-xs-12 col-sm-8 col-md-6">
+                        <input type="text" class="form-control" name="code" id="code" tabindex="2" value="${attribute.code}" readonly="readonly">
                         <span class="help-block">#i18n{document.modify_document_type_attribute.helpCode}</span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="description" >#i18n{document.modify_document_type_attribute.labelDescription}* :</label>
-                    <div class="controls">
-                        <input type="text" name="description" id="description" tabindex="3" value="${attribute.description}" >
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="description" >#i18n{document.modify_document_type_attribute.labelDescription}* :</label>
+                    <div class="col-xs-12 col-sm-8 col-md-6">
+                        <input type="text" class="form-control" name="description" id="description" tabindex="3" value="${attribute.description}" >
                         <span class="help-block">#i18n{document.modify_document_type_attribute.helpDescription}</span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="required" >#i18n{document.modify_document_type_attribute.labelRequired}*</label>
-                    <div class="controls">
-                        <label class="checkbox">
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="required" >#i18n{document.modify_document_type_attribute.labelRequired}*</label>
+                    <div class="col-xs-12 col-sm-8 col-md-6">
+                        <div class="checkbox">
+							<label>
                             <input class="checkbox" type="checkbox" name="required" id="required" tabindex="4" <#if attribute.required >checked="checked"</#if> >
                             #i18n{document.modify_document_type_attribute.helpRequired}
-                        </label>
+							</label>
+                        </div>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="searchable" >#i18n{document.modify_document_type_attribute.labelSearchable}*</label>
-                    <div class="controls">
-                        <label class="checkbox">
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="searchable" >#i18n{document.modify_document_type_attribute.labelSearchable}*</label>
+                    <div class="col-xs-12 col-sm-8 col-md-6">
+                        <div class="checkbox">
+							<label>
                             <input class="checkbox" type="checkbox" name="searchable" id="searchable" tabindex="5" <#if attribute.searchable >checked="checked"</#if> >
                             #i18n{document.modify_document_type_attribute.helpSearchable}
-                        </label>
+							</label>
+                        </div>
                     </div>
                 </div>   
                 <!-- Specific attributes -->
                 ${attribute_parameters}
-                <div class="form-actions">
-                    <button class="btn btn-primary btn-small" type="submit" name="save" value="save">
-                        <i class="icon-ok icon-white"></i>&nbsp;#i18n{document.modify_document_type_attribute.buttonAddAttribute}
+                <div class="form-group">
+					<div class="col-xs-12 col-sm-offset-3 col-sm-8 col-md-offset-3 col-md-6">
+                    <button class="btn btn-primary btn-sm" type="submit" name="save" value="save">
+                        <i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{document.modify_document_type_attribute.buttonAddAttribute}
                     </button>
-                    <a class="btn btn-small" href="jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${document_type_code}">
-                        <i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
+                    <a class="btn btn-default btn-sm" href="jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${document_type_code}">
+                        <i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
                     </a>
+					</div>
                 </div>
             </form>
         </fieldset>
@@ -65,8 +71,8 @@
                     <input type="hidden" name="attribute_id" value="${attribute.id}" />
                     <label class="control-label" for="expression_id">#i18n{document.modify_document_type_attribute.manageRegularExpression.labelInsert}</label>
                     <@combo name="expression_id" items=regular_expression_to_add_list default_value=-1 />
-                    <button class="btn btn-primary btn-small" type="submit" >
-                        <i class="icon-plus icon-white"></i>&nbsp;#i18n{document.modify_document_type_attribute.manageRegularExpression.buttonInsert}
+                    <button class="btn btn-primary btn-sm" type="submit" >
+                        <i class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{document.modify_document_type_attribute.manageRegularExpression.buttonInsert}
                     </button>
                 </form>
             </legend>
@@ -89,8 +95,8 @@
                             <form class="form-inline" method="post" action="jsp/admin/plugins/document/DoDeleteRegularExpression.jsp">
                                 <input type="hidden" name="attribute_id" value="${attribute.id}" />
                                 <input type="hidden" name="expression_id" value="${regular_expression.idExpression}" />
-                                <button type="submit" class="btn btn-danger btn-small"  />
-                                <i class="icon-trash icon-white"></i>&nbsp;
+                                <button type="submit" class="btn btn-danger btn-sm"  />
+                                <i class="glyphicon glyphicon-trash"></i>&nbsp;
                                 #i18n{document.modify_document_type_attribute.manageRegularExpression.titleDelete}
                                 </button>
                             </form>

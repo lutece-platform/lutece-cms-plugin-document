@@ -1,22 +1,22 @@
-<div class="row-fluid">
-    <div class="span3">
+<div class="row">
+    <div class="col-xs-12 col-sm-3 col-md-3">
         <fieldset>
             <legend>#i18n{document.search_results.labelSearch}</legend>
             <form name="search" method="post" action="jsp/admin/plugins/document/DocumentSearch.jsp<#if advanced_search??>?advanced_search=true</#if>">
                 <input type="hidden" name="page" value="search" />
-                <div class="control-group">
-                    <label class="control-label" for="query">&nbsp;</label>
-                    <div class="controls">
-                        <input type="text" name="query" class="input-normal" value="<#if query??>${query}</#if>" />
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="query">&nbsp;</label>
+                    <div class="col-xs-12 col-sm-10 col-md-10">
+                        <input type="text" name="query" class="input-sm" value="<#if query??>${query}</#if>" />
                     </div>
                 </div>
                 <#-- Number of documents per page selector -->
                 #i18n{document.search_results.labelNbDocsPerPage} 
                 <@NbItemsPerPageSelectorCombo nb_items_per_page />
                 <#if advanced_search??>
-                    <div class="control-group">
-                        <label class="control-label" for="">#i18n{document.advanced_search.limit}:</label>
-                        <div class="controls">
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2 col-md-2" for="">#i18n{document.advanced_search.limit}:</label>
+                        <div class="col-xs-12 col-sm-10 col-md-10">
                             <label class="checkbox inline" for="title">
                                 <input name="title" id="title" type="checkbox" <#if title??>checked</#if>/>#i18n{document.advanced_search.checkbox.title}
                             </label>
@@ -25,38 +25,38 @@
                             </label>
                         </div>
                     </div>
-                    <div class="control-group">
-                        <label class="control-label" for="date">#i18n{document.advanced_search.checkbox.date}:</label>
-                        <div class="controls">
-                            <div class="input-prepend">
-                                <span class="add-on"><i class="icon-calendar"></i></span>
-                                <input type="text" class="input-small"  name="date" id="date" value="<#if date_query??>${date_query}</#if>">
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2 col-md-2" for="date">#i18n{document.advanced_search.checkbox.date}:</label>
+                        <div class="col-xs-12 col-sm-10 col-md-10">
+                            <div class="input-group">
+                                <span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+                                <input type="text" class="input-sm"  name="date" id="date" value="<#if date_query??>${date_query}</#if>">
                             </div>
                         </div>
                     </div>									
-                    <div class="control-group">
-                        <label class="control-label" for="document_type">#i18n{document.advanced_search.list.type}:</label>
-                        <div class="controls">
-                            <@comboWithParamsAndLength name="document_type" default_value=selected_type additionalParameters="class='span8'" items=document_type_list max_length=175 />
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2 col-md-2" for="document_type">#i18n{document.advanced_search.list.type}:</label>
+                        <div class="col-xs-12 col-sm-10 col-md-10">
+                            <@comboWithParamsAndLength name="document_type" default_value=selected_type additionalParameters="class='col-xs-12 col-sm-9 col-md-9'" items=document_type_list max_length=175 />
                       </div>
                     </div>
                 <#else>
-                <div class="control-group">
-                    <label class="control-label" for=""></label>
-                        <div class="controls">
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2 col-md-2" for=""></label>
+                        <div class="col-xs-12 col-sm-10 col-md-10">
                             <a class="btn btn-link" href=jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true<#if query??>&query=${query}</#if>>
-                                <i class="icon-chevron-down"></i>&nbsp;#i18n{document.manage_document_publishing.labelAdvancedSearch}
+                                <i class="glyphicon glyphicon-chevron-down"></i>&nbsp;#i18n{document.manage_document_publishing.labelAdvancedSearch}
                             </a>
                         </div>
                 </div>
                 </#if>
-                <div class="form-actions">
-                    <button class="btn btn-primary btn-small" type="submit" ><i class="icon-search icon-white"></i>&nbsp;#i18n{document.search_results.buttonSearch}</button>
+                <div class="">
+                    <button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-search"></i>&nbsp;#i18n{document.search_results.buttonSearch}</button>
                 </div>
         </fieldset>
         </form>
     </div>  
-    <div class="span8">
+    <div class="col-xs-12 col-sm-9 col-md-9">
         <fieldset>
             <legend>#i18n{document.search_results.labelDocumentsList}</legend>
             <div class="error"> ${error} </div>
@@ -106,16 +106,16 @@
 <#macro NbItemsPerPageSelectorRadioList nb_items_per_page>
 <#list [ "5" , "10" , "20" , "50" ] as nb>
     <#if nb = nb_items_per_page >
-        <div class="control-group">
-            <label class="control-label" for="items_per_page${nb}">${nb}</label>
-            <div class="controls">
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2 col-md-2" for="items_per_page${nb}">${nb}</label>
+            <div class="col-xs-12 col-sm-10 col-md-10">
                 <input value="${nb}" id="items_per_page${nb}" name="items_per_page" type="radio" class="radio" checked />
             </div>
         </div>
     <#else>
-        <div class="control-group">
-            <label class="control-label" for="items_per_page${nb}">${nb}</label>
-            <div class="controls">
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2 col-md-2" for="items_per_page${nb}">${nb}</label>
+            <div class="col-xs-12 col-sm-10 col-md-10">
                 <input value="${nb}" id="items_per_page${nb}" name="items_per_page" type="radio" class="radio" />
             </div>
         </div>
@@ -126,5 +126,5 @@
 <#if advanced_search??>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<@getDatePicker idField="date"  language=locale />
+<@getDatePicker idField="date" language=locale />
 </#if>

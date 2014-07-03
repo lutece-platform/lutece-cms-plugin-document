@@ -7,8 +7,8 @@
             <form class="form-inline pull-right" method="post" name="publishDocument" action="jsp/admin/plugins/document/DoPublishingDocument.jsp">
                 <input type="hidden" name="id_document" value="${document_published.id}" />
                 <input type="hidden" name="id_portlet" value="${portlet_id}" />
-                <button class="btn btn-success btn-small" type="submit" title="#i18n{document.manage_document_publishing.buttonPublish}">
-                    <i class="icon-ok icon-white"></i>
+                <button class="btn btn-success btn-sm" type="submit" title="#i18n{document.manage_document_publishing.buttonPublish}">
+                    <i class="glyphicon glyphicon-ok"></i>
                 </button>
             </form>
             </#if>
@@ -17,21 +17,21 @@
                 <input type="hidden" name="id_document" value="${document_published.id}" />
                 <input type="hidden" name="id_portlet" value="${portlet_id}" />
                 <input type="hidden" name="status" value="${status_unpublished}" />	                                            
-                <button type="submit" class="btn btn-small btn-danger" alt="#i18n{document.manage_document_publishing.labelUnAssigned}" title="#i18n{document.manage_document_publishing.labelUnAssigned}">
-                    <i class="icon-remove icon-white"></i>
+                <button type="submit" class="btn btn-sm btn-danger" alt="#i18n{document.manage_document_publishing.labelUnAssigned}" title="#i18n{document.manage_document_publishing.labelUnAssigned}">
+                    <i class="glyphicon glyphicon-remove"></i>
                 </button>
             </form>
             </#if>        
             <form class="form-inline pull-right" method="post" name="previewDocument" action="jsp/admin/plugins/document/PreviewDocument.jsp">
                 <input type="hidden" name="id_document" value="${document_published.id}" />
-                <button type="submit" class="btn btn-small btn-primary" alt="#i18n{document.published_document_list.labelPreview}" title="#i18n{document.published_document_list.labelPreview}">
-                    <i class="icon-eye-open icon-white"></i>
+                <button type="submit" class="btn btn-sm btn-primary" alt="#i18n{document.published_document_list.labelPreview}" title="#i18n{document.published_document_list.labelPreview}">
+                    <i class="glyphicon glyphicon-eye-open"></i>
                 </button>
             </form>
             <form class="form-inline pull-right" method="post" name="manageDocument" action="jsp/admin/plugins/document/ManageDocuments.jsp">
                 <input type="hidden" name="id_space_filter" value="${document_published.spaceId}" />
-                <button type="submit" class="btn btn-small btn-primary"  alt="#i18n{document.published_document_list.labelManageDocument}" title="#i18n{document.published_document_list.labelManageDocument}">
-                    <i class="icon-folder-open icon-white"></i>
+                <button type="submit" class="btn btn-sm btn-primary"  alt="#i18n{document.published_document_list.labelManageDocument}" title="#i18n{document.published_document_list.labelManageDocument}">
+                    <i class="glyphicon glyphicon-folder-open"></i>
                 </button>
             </form>
         </td>

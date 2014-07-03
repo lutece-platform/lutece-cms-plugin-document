@@ -1,67 +1,69 @@
-<div class="row-fluid" >
-    <div class="span3">
+<div class="row" >
+    <div class="col-xs-12 col-sm-3 col-md-3">
         <fieldset>
             <legend>#i18n{document.modify_document_type.titleProperties}</legend>
             <form class="form" method="post" action="jsp/admin/plugins/document/DoModifyDocumentType.jsp">
                 <input type="hidden" id="old_code" name="old_code" value="${document_type.code}" />
-                <div class="control-group">
-                    <label class="control-label" for="code" >#i18n{document.modify_document_type.labelCode}* :</label>
-                    <div class="controls">
-                        <input type="text" name="code" id="code" tabindex="1" maxlength="30" value="${document_type.code}"/>
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-12 col-md-12" for="code" >#i18n{document.modify_document_type.labelCode}* :</label>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <input type="text" class="form-control" name="code" id="code" tabindex="1" maxlength="30" value="${document_type.code}"/>
                         <span class="help-text">#i18n{document.modify_document_type.helpCode}</span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="name" >#i18n{document.modify_document_type.labelName}* :</label>
-                    <div class="controls">
-                        <input type="text" name="name" id="name" tabindex="2" maxlength="100" value="${document_type.name}" />
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-12 col-md-12" for="name" >#i18n{document.modify_document_type.labelName}* :</label>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <input type="text" class="form-control" name="name" id="name" tabindex="2" maxlength="100" value="${document_type.name}" />
                         <span class="help-text">#i18n{document.modify_document_type.helpName}</span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="name" >#i18n{document.modify_document_type.labelDescription}* :</label>
-                    <div class="controls">
-                        <input type="text" name="description" id="description" tabindex="3" value="${document_type.description}" />
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-12 col-md-12" for="name" >#i18n{document.modify_document_type.labelDescription}* :</label>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <input type="text" class="form-control" name="description" id="description" tabindex="3" value="${document_type.description}" />
                         <span class="help-text">#i18n{document.modify_document_type.helpDescription}</span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="icon_url" >#i18n{document.modify_document_type.labelThumbnailUrl} :</label>
-                    <div class="controls">
-                        <input type="text" name="icon_url" id="icon_url" tabindex="4" value="${document_type.defaultThumbnailUrl}" />
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-12 col-md-12" for="icon_url" >#i18n{document.modify_document_type.labelThumbnailUrl} :</label>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <input type="text" class="form-control" name="icon_url" id="icon_url" tabindex="4" value="${document_type.defaultThumbnailUrl}" />
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="icon_url" >#i18n{document.modify_document_type.labelThumbnailAttribute} :</label>
-                    <div class="controls">
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-12 col-md-12" for="icon_url" >#i18n{document.modify_document_type.labelThumbnailAttribute} :</label>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
                         <@combo name="thumbnail_attribute" items=thumbnail_attributes_list default_value="${document_type.thumbnailAttributeId}" />
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="name" >#i18n{document.modify_document_type.labelMetadata}* :</label>
-                    <div class="controls">
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-12 col-md-12" for="name" >#i18n{document.modify_document_type.labelMetadata}* :</label>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
                         <@combo name="metadata" items=metadata_handlers_list default_value="" />
                         <span class="help-text">#i18n{document.modify_document_type.helpMetadata}</span>
                     </div>
                 </div>
-                <div class="form-actions">
-                    <button class="btn btn-primary btn-small" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{document.modify_document_type.buttonModify}</button>
-                     <a class="btn btn-small" href="jsp/admin/plugins/document/ManageDocumentTypes.jsp?plugin_name=document">
-                       <i class="icon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
+                <div class="form-group">
+					<div class="col-xs-12 col-sm-12 col-md-12">
+                    <button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{document.modify_document_type.buttonModify}</button>
+                     <a class="btn btn-default btn-sm" href="jsp/admin/plugins/document/ManageDocumentTypes.jsp?plugin_name=document">
+                       <i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
                     </a>
+					</div>
                 </div>
             </form>
         </fieldset>
         
     </div>
-    <div class="span9">
+    <div class="col-xs-12 col-sm-9 col-md-9">
         <fieldset>
             <legend>#i18n{document.modify_document_type.titleAttributesList}</legend>
             <form class="form-search" method="post" name="AddAttribute" action="jsp/admin/plugins/document/AddDocumentTypeAttribute.jsp">
                 <input type="hidden" name="document_type_code" value="${document_type.code}" />
                 <label for="attribute_type_code" >#i18n{document.modify_document_type.labelAddAttribute} </label> 
                 <@combo name="attribute_type_code" default_value="" items=attribute_types_list />
-                <button class="btn btn-primary btn-small" type="submit" ><i class="icon-plus icon-white"></i>&nbsp;#i18n{document.modify_document_type.buttonAddAttribute}</button>
+                <button class="btn btn-primary btn-xs" type="submit" ><i class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{document.modify_document_type.buttonAddAttribute}</button>
             </form>
             <table class="table table-striped table-condensed">
                 <thead>  
@@ -88,15 +90,15 @@
                             <#if attribute.searchable = true >#i18n{portal.util.labelYes}<#else>#i18n{portal.util.labelNo}</#if>
                         </td>
                         <td>
-                            <a class="btn btn-primary btn-small" href="jsp/admin/plugins/document/ModifyDocumentTypeAttribute.jsp?attribute_id=${attribute.id}"  title="${attribute.name}" ><i class="icon-edit icon-white"></i></a>
-                            <a class="btn btn-primary btn-small" href="jsp/admin/plugins/document/DoAttributeMoveUp.jsp?index=${attribute.attributeOrder}"  title="#i18n{document.modify_document_type.buttonMoveUp}" >
-                                <i class="icon-arrow-up icon-white"></i>
+                            <a class="btn btn-primary btn-sm" href="jsp/admin/plugins/document/ModifyDocumentTypeAttribute.jsp?attribute_id=${attribute.id}"  title="${attribute.name}" ><i class="glyphicon glyphicon-edit"></i></a>
+                            <a class="btn btn-primary btn-sm" href="jsp/admin/plugins/document/DoAttributeMoveUp.jsp?index=${attribute.attributeOrder}"  title="#i18n{document.modify_document_type.buttonMoveUp}" >
+                                <i class="glyphicon glyphicon-arrow-up"></i>
                             </a>
-                            <a class="btn btn-primary btn-small" href="jsp/admin/plugins/document/DoAttributeMoveDown.jsp?index=${attribute.attributeOrder}"  title="#i18n{document.modify_document_type.buttonMoveDown}" >
-                                <i class="icon-arrow-down icon-white"></i>
+                            <a class="btn btn-primary btn-sm" href="jsp/admin/plugins/document/DoAttributeMoveDown.jsp?index=${attribute.attributeOrder}"  title="#i18n{document.modify_document_type.buttonMoveDown}" >
+                                <i class="glyphicon glyphicon-arrow-down"></i>
                             </a>
-                            <a class="btn btn-danger btn-small" href="jsp/admin/plugins/document/DoConfirmDeleteAttribute.jsp?attribute_id=${attribute.id}"  title="#i18n{document.modify_document_type.buttonDelete}" >
-                                <i class="icon-trash icon-white"></i></a>
+                            <a class="btn btn-danger btn-sm" href="jsp/admin/plugins/document/DoConfirmDeleteAttribute.jsp?attribute_id=${attribute.id}"  title="#i18n{document.modify_document_type.buttonDelete}" >
+                                <i class="glyphicon glyphicon-trash"></i></a>
                         </td>
                     </tr>
                     </#list>
@@ -108,46 +110,47 @@
                 <legend>#i18n{document.modify_document_type.titleStyleSheets}</legend>
                 <form method="post" action="jsp/admin/plugins/document/DoLoadDocumentTypeStyleSheets.jsp" enctype="multipart/form-data" name="create_stylesheet">
                     <input type="hidden" name="document_type_code" value="${document_type.code}" />
-                    <div class="row-fluid">    
-                        <div class="span5">
-                                <div class="controls">
+                    <div class="row">    
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
                                     <label for="stylesheet_source" >#i18n{document.modify_document_type.labelStyleSheetAdmin} : </label>
-                                    <input type="file" id="stylesheet_admin" name="stylesheet_admin" maxlength="100"/>
+                                    <input class="form-control" type="file" id="stylesheet_admin" name="stylesheet_admin" maxlength="100"/>
                                 </div>
-                                <div class="controls">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
                                     <label class="checkbox" for="stylesheet_admin_update" >
                                         <input type="checkbox" id="stylesheet_admin_update" name="stylesheet_admin_update" value="true" />#i18n{document.modify_document_type.labelStyleSheetAdminUpdate}
                                     </label>
                                 </div>
-                                <div class="controls">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
                                     <#if document_type.adminXsl?has_content>
-                                    <a class="label label-info" href="jsp/admin/plugins/document/ViewStyleSheetFile.jsp?document_type_code=${document_type.code}&stylesheet_type=stylesheet_admin"><i class="icon-download icon-white"></i>&nbsp;#i18n{document.modify_document_type.labelStyleSheetAdminDownload}</a>
+                                    <a class="label label-info" href="jsp/admin/plugins/document/ViewStyleSheetFile.jsp?document_type_code=${document_type.code}&stylesheet_type=stylesheet_admin"><i class="glyphicon glyphicon-download"></i>&nbsp;#i18n{document.modify_document_type.labelStyleSheetAdminDownload}</a>
                                     <#else>
                                     <p class="label label-warning">#i18n{document.modify_document_type.labelStyleSheetAdminNoFile}</p>
                                     </#if>
                                 </div> 
+                        </div>
+                        
+						<div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                <label for="stylesheet_source" >#i18n{document.modify_document_type.labelStyleSheetContent} : </label>
+                                <input class="form-control" type="file" id="stylesheet_content" name="stylesheet_content" maxlength="100"/>
                             </div>
-                            <div class="offset1 span5">
-                                <div class="controls">
-                                    <label for="stylesheet_source" >#i18n{document.modify_document_type.labelStyleSheetContent} : </label>
-                                    <input type="file" id="stylesheet_content" name="stylesheet_content" maxlength="100"/>
-                                </div>
-                                <div class="controls">
-                                    <label class="checkbox" for="stylesheet_content_update" >
-                                        <input type="checkbox" id="stylesheet_content_update" name="stylesheet_content_update" value="true" />#i18n{document.modify_document_type.labelStyleSheetContentUpdate}
-                                    </label>
-                                </div> 
-                                <div class="controls">
-                                    <#if document_type.contentServiceXsl?has_content>
-                                    <a class="label label-info" href="jsp/admin/plugins/document/ViewStyleSheetFile.jsp?document_type_code=${document_type.code}&stylesheet_type=stylesheet_content"><i class="icon-download icon-white"></i>&nbsp;#i18n{document.modify_document_type.labelStyleSheetContentDownload}</a>
-                                    <#else>
-                                    <p class="label label-warning">#i18n{document.modify_document_type.labelStyleSheetContentNoFile}</p>
-                                    </#if>
-                                </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                <label class="checkbox" for="stylesheet_content_update" >
+                                <input type="checkbox" id="stylesheet_content_update" name="stylesheet_content_update" value="true" />#i18n{document.modify_document_type.labelStyleSheetContentUpdate}
+                                </label>
+                            </div> 
+                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                <#if document_type.contentServiceXsl?has_content>
+                                <a class="label label-info" href="jsp/admin/plugins/document/ViewStyleSheetFile.jsp?document_type_code=${document_type.code}&stylesheet_type=stylesheet_content"><i class="glyphicon glyphicon-download"></i>&nbsp;#i18n{document.modify_document_type.labelStyleSheetContentDownload}</a>
+                                <#else>
+                                <p class="label label-warning">#i18n{document.modify_document_type.labelStyleSheetContentNoFile}</p>
+                                </#if>
                             </div>
                         </div>
-                    <div class="form-actions">
-                        <button class="btn btn-primary btn-small" type="submit" ><i class="icon-upload icon-white"></i>&nbsp;#i18n{document.modify_document_type.buttonLoadStyleSheets}</button>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-upload"></i>&nbsp;#i18n{document.modify_document_type.buttonLoadStyleSheets}</button>
                     </div>
                     <input type="hidden" name="mode_id" value="-1" />
                 </form>
