@@ -34,9 +34,9 @@
 			<form class="form" method="post" id="SearchDocumentById"
 				name="SearchDocumentById"
 				action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
-				<div class="input-group">
+				<div class="form-group">
 					<input type="text" id="id_document" name="id_document"
-						class="input-mini" maxlength="10">
+						class="input-sm" maxlength="10">
 					<button class="btn btn-primary btn-sm" type="submit"
 						title="#i18n{document.manage_documents.buttonSearch}">
 						<i class="glyphicon glyphicon-search"></i>
@@ -48,14 +48,16 @@
 				name="FullTextSearchDocument"
 				action="jsp/admin/plugins/document/DocumentSearch.jsp">
 				<input type="hidden" id="id_document" name="id_document">
-				<div class="input-group">
+				<div class="form-group">
+					<div class="col-xs-12 col-sm-12 col-md-12">
 					<input type="text" class="form-control" id="query" name="query"
-						class="input-lg" maxlength="50">
-					<button class="btn btn-primary" type="submit"
-						title="#i18n{document.manage_documents.buttonSearch}">
-						<i class="glyphicon glyphicon-search"></i>
-					</button>
+						class="input-sm" maxlength="50">
+					</div>
 				</div>
+				<button class="btn btn-primary btn-sm" type="submit"
+					title="#i18n{document.manage_documents.buttonSearch}">
+					<i class="glyphicon glyphicon-search"></i>
+				</button>
 				<p class="help-block">#i18n{document.manage_documents.labelFullTextSearch}</p>
 			</form>
 		</div>
@@ -142,7 +144,7 @@
 			</#if>
 		</div>
 		<#if documents_list?size = 0 >
-		<p class="alert alert-error">#i18n{document.manage_documents.noDocument}</p>
+		<p class="alert alert-danger">#i18n{document.manage_documents.noDocument}</p>
 		<#else> <#if view_type = "detail" >
 		<form class="form-inline" id="documents_form" name="documents_form"
 			method="post"
