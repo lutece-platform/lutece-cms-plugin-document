@@ -53,13 +53,13 @@ public final class DocumentSpaceHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private DocumentSpaceHome( )
+    private DocumentSpaceHome(  )
     {
     }
 
     /**
      * Creation of an instance of documentSpace
-     * 
+     *
      * @param documentSpace The instance of the documentSpace which contains the
      *            informations to store
      * @return The instance of documentSpace which has been created with its
@@ -74,7 +74,7 @@ public final class DocumentSpaceHome
 
     /**
      * Update of the documentSpace which is specified in parameter
-     * 
+     *
      * @param documentSpace The instance of the documentSpace which contains the
      *            data to store
      * @return The instance of the documentSpace which has been updated
@@ -88,7 +88,7 @@ public final class DocumentSpaceHome
 
     /**
      * Remove the DocumentSpace whose identifier is specified in parameter
-     * 
+     *
      * @param nDocumentSpaceId The id of the document space
      */
     public static void remove( int nDocumentSpaceId )
@@ -102,7 +102,7 @@ public final class DocumentSpaceHome
     /**
      * Returns an instance of a documentSpace whose identifier is specified in
      * parameter
-     * 
+     *
      * @param nKey The Primary key of the documentSpace
      * @return An instance of documentSpace
      */
@@ -113,7 +113,7 @@ public final class DocumentSpaceHome
 
     /**
      * Returns a collection of documentSpaces objects
-     * 
+     *
      * @return A collection of documentSpaces
      * @param nParentSpaceId The id of the parent document space
      */
@@ -124,7 +124,7 @@ public final class DocumentSpaceHome
 
     /**
      * Returns a collection of documentSpaces objects by type of document
-     * 
+     *
      * @return A collection of documentSpaces
      * @param nParentSpaceId The id of the parent document space
      * @param strCodeType the document type
@@ -136,14 +136,14 @@ public final class DocumentSpaceHome
 
     /**
      * Returns a collection of documentSpaces objects by type of document
-     * 
+     *
      * @param strCodeType the document type filter
      * @param createDocumentIsAllowed code to define if document creation is
      *            allowed or not
      * @return The Collection of the DocumentSpaces
      */
     public static List<DocumentSpace> findSpacesAllowingDocumentCreationByDocumentType( String strCodeType,
-            int createDocumentIsAllowed )
+        int createDocumentIsAllowed )
     {
         return _dao.selectSpacesAllowingDocumentCreationByDocumentType( strCodeType, createDocumentIsAllowed );
     }
@@ -152,14 +152,14 @@ public final class DocumentSpaceHome
      * Returns a ReferenceList of documentSpaces objects
      * @return A ReferenceList of documentSpaces
      */
-    public static ReferenceList getDocumentSpaceList( )
+    public static ReferenceList getDocumentSpaceList(  )
     {
-        return _dao.getDocumentSpaceList( );
+        return _dao.getDocumentSpaceList(  );
     }
 
     /**
      * Returns a ReferenceList of documentSpaces objects
-     * 
+     *
      * @return A ReferenceList of documentSpaces
      * @param locale The locale
      */
@@ -172,18 +172,18 @@ public final class DocumentSpaceHome
      * Gets a list of icons available or space customization
      * @return A list of icons
      */
-    public static ReferenceList getIconsList( )
+    public static ReferenceList getIconsList(  )
     {
-        return _dao.getIconsList( );
+        return _dao.getIconsList(  );
     }
 
     /**
      * Select all spaces
      * @return A collection of all spaces.
      */
-    public static Collection<DocumentSpace> findAll( )
+    public static Collection<DocumentSpace> findAll(  )
     {
-        return _dao.selectAll( );
+        return _dao.selectAll(  );
     }
 
     /**

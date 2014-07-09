@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.service.publishing;
 
+
 /**
  * PublishingEvent
  */
@@ -64,7 +65,7 @@ public class PublishingEvent
      * Returns the EventType
      * @return The EventType
      */
-    public int getEventType( )
+    public int getEventType(  )
     {
         return _nType;
     }
@@ -73,7 +74,7 @@ public class PublishingEvent
      * Returns the Document Id
      * @return The Document Id
      */
-    public int getnDocumentId( )
+    public int getnDocumentId(  )
     {
         return _nDocumentId;
     }
@@ -82,7 +83,7 @@ public class PublishingEvent
      * Returns the Portlet Id
      * @return The Portlet Id
      */
-    public int getPortletId( )
+    public int getPortletId(  )
     {
         return _nPortletId;
     }

@@ -47,14 +47,14 @@ import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -95,7 +95,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
      * Get rule
      * @return Rule
      */
-    public Rule getRuleSession( )
+    public Rule getRuleSession(  )
     {
         return _rule;
     }
@@ -113,7 +113,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
      * Get the RuleAttributeSelectedSession
      * @return RuleAttributeSelectedSession
      */
-    public String getRuleAttributeSelectedSession( )
+    public String getRuleAttributeSelectedSession(  )
     {
         return _StrRuleAttributeSelected;
     }
@@ -136,10 +136,10 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
     {
         setPageTitleProperty( null );
 
-        AdminUser user = getUser( );
+        AdminUser user = getUser(  );
 
-        List<Rule> listRules = RuleHome.findAll( getLocale( ) );
-        List<Rule> listRulesAuthorized = new ArrayList<Rule>( );
+        List<Rule> listRules = RuleHome.findAll( getLocale(  ) );
+        List<Rule> listRulesAuthorized = new ArrayList<Rule>(  );
 
         for ( Rule rule : listRules )
         {
@@ -150,13 +150,13 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
             }
         }
 
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_RULES_LIST, listRulesAuthorized );
-        model.put( MARK_RULE_TYPES_LIST, RuleHome.getRuleTypesList( getLocale( ) ) );
+        model.put( MARK_RULE_TYPES_LIST, RuleHome.getRuleTypesList( getLocale(  ) ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_RULES, getLocale( ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_RULES, getLocale(  ), model );
 
-        return getAdminPage( template.getHtml( ) );
+        return getAdminPage( template.getHtml(  ) );
     }
 
     /**
@@ -176,15 +176,15 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
             bSubmitButtonDisabled = Boolean.FALSE;
         }
 
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         // Spaces browser
         model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
         model.put( MARK_SPACES_BROWSER,
-                DocumentSpacesService.getInstance( ).getSpacesBrowser( request, getUser( ), getLocale( ), false, true ) );
+            DocumentSpacesService.getInstance(  ).getSpacesBrowser( request, getUser(  ), getLocale(  ), false, true ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECT_SPACE, getLocale( ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECT_SPACE, getLocale(  ), model );
 
-        return getAdminPage( template.getHtml( ) );
+        return getAdminPage( template.getHtml(  ) );
     }
 
     /**
@@ -202,7 +202,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
         }
 
         int nSpaceId = IntegerUtils.convert( strSpaceId );
-        getRuleSession( ).setAttribute( getRuleAttributeSelectedSession( ), Integer.toString( nSpaceId ) );
+        getRuleSession(  ).setAttribute( getRuleAttributeSelectedSession(  ), Integer.toString( nSpaceId ) );
 
         return AppPathService.getBaseUrl( request ) + JSP_CREATE_RULE_SESSION;
     }
@@ -219,24 +219,24 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
         String strRuleTypeId;
         Rule rule;
 
-        if ( getRuleSession( ) == null )
+        if ( getRuleSession(  ) == null )
         {
             strRuleTypeId = request.getParameter( PARAMETER_RULE_TYPE_ID );
             rule = RuleHome.newInstance( strRuleTypeId );
         }
         else
         {
-            rule = getRuleSession( );
-            strRuleTypeId = rule.getRuleTypeId( );
+            rule = getRuleSession(  );
+            strRuleTypeId = rule.getRuleTypeId(  );
         }
 
-        Map<String, Object> model = new HashMap<String, Object>( );
-        model.put( MARK_CREATE_FORM, rule.getCreateForm( getUser( ), getLocale( ) ) );
+        Map<String, Object> model = new HashMap<String, Object>(  );
+        model.put( MARK_CREATE_FORM, rule.getCreateForm( getUser(  ), getLocale(  ) ) );
         model.put( MARK_RULE_TYPE_ID, strRuleTypeId );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_RULE, getLocale( ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_RULE, getLocale(  ), model );
 
-        return getAdminPage( template.getHtml( ) );
+        return getAdminPage( template.getHtml(  ) );
     }
 
     /**
@@ -252,7 +252,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
             Rule rule = RuleHome.newInstance( strRuleTypeId );
             rule.readAttributes( request );
 
-            String strValidation = rule.validateRule( );
+            String strValidation = rule.validateRule(  );
 
             if ( strValidation != null )
             {
@@ -260,12 +260,12 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
             }
 
             // Check if rule already exist
-            for ( Rule checkRule : RuleHome.findByRuleTypeKey( rule.getRuleTypeId( ) ) )
+            for ( Rule checkRule : RuleHome.findByRuleTypeKey( rule.getRuleTypeId(  ) ) )
             {
                 if ( rule.equals( checkRule ) )
                 {
                     return AdminMessageService.getMessageUrl( request, PROPERTY_RULE_ALREADY_EXISTS,
-                            AdminMessage.TYPE_STOP );
+                        AdminMessage.TYPE_STOP );
                 }
             }
 
@@ -289,9 +289,9 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
         setRuleSession( rule );
         setRuleAttributeSelectedSession( strRuleAttributeNameSelected );
 
-        return AppPathService.getBaseUrl( request ) + JSP_SELECT_SPACE + "?"
-                + DocumentSpacesService.PARAMETER_BROWSER_SELECTED_SPACE_ID + "="
-                + rule.getAttribute( strRuleAttributeNameSelected );
+        return AppPathService.getBaseUrl( request ) + JSP_SELECT_SPACE + "?" +
+        DocumentSpacesService.PARAMETER_BROWSER_SELECTED_SPACE_ID + "=" +
+        rule.getAttribute( strRuleAttributeNameSelected );
     }
 
     /**
@@ -305,12 +305,12 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
         Rule rule = RuleHome.findByPrimaryKey( IntegerUtils.convert( strRuleId ) );
         UrlItem url = new UrlItem( JSP_DO_DELETE_RULE );
         url.addParameter( PARAMETER_RULE_ID, strRuleId );
-        rule.setLocale( getLocale( ) );
+        rule.setLocale( getLocale(  ) );
 
-        String[] args = { rule.getRule( ) };
+        String[] args = { rule.getRule(  ) };
 
-        return AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_RULE_DELETE, args, url.getUrl( ),
-                AdminMessage.TYPE_CONFIRMATION );
+        return AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_RULE_DELETE, args, url.getUrl(  ),
+            AdminMessage.TYPE_CONFIRMATION );
     }
 
     /**

@@ -50,8 +50,7 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     private static final String SQL_QUERY_UPDATE = "UPDATE document_portlet SET id_portlet = ?, code_document_type = ? WHERE id_portlet = ? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM document_portlet WHERE id_portlet= ? ";
     private static final String SQL_QUERY_DELETE_PUBLISHED_DOCUMENT_PORTLET = " DELETE FROM document_published WHERE id_portlet = ? ";
-    private static final String SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY = "SELECT DISTINCT b.id_portlet , a.name, a.date_update "
-            +
+    private static final String SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY = "SELECT DISTINCT b.id_portlet , a.name, a.date_update " +
         "FROM document_portlet b " +
         "LEFT JOIN document_published c ON b.id_portlet = c.id_portlet AND c.id_document= ? " +
         "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet " +

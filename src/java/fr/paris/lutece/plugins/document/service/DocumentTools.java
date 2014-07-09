@@ -52,14 +52,14 @@ public final class DocumentTools
     /**
      * Private constructor
      */
-    private DocumentTools( )
+    private DocumentTools(  )
     {
     }
 
     /**
      * Rebuild all XML content according data found in the document_content
      * table
-     * 
+     *
      * @param request The request
      * @return An output of the process
      */

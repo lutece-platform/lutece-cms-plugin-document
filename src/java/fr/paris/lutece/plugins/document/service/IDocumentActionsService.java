@@ -42,9 +42,9 @@ import java.util.Locale;
 
 
 /**
- * 
+ *
  * Interface IDocumentActionsService
- * 
+ *
  */
 public interface IDocumentActionsService
 {

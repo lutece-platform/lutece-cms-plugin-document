@@ -96,7 +96,6 @@ public class DocumentTypeResourceIdService extends ResourceIdService
     private static final String PROPERTY_LABEL_ARCHIVE = "document.workflow.permission.label.archive";
     private static final String PROPERTY_LABEL_PUBLISH = "document.workflow.permission.label.publish";
     private static final String PROPERTY_LABEL_ASSIGN = "document.workflow.permission.label.assign";
-
     private static final String PROPERTY_LABEL_VIEW_HISTORY = "document.workflow.permission.label.viewHistory";
     private static final String PLUGIN_NAME = "document";
 

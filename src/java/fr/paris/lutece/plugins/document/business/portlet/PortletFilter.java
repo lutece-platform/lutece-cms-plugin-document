@@ -39,7 +39,7 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 /**
  * PortletFilter class
  * @author merlinfe
- * 
+ *
  */
 public class PortletFilter
 {
@@ -48,8 +48,8 @@ public class PortletFilter
     public static final String PORTLET_NAME = AppPropertiesService.getProperty( "document.filter.portlet_name",
             "portlet_name" );
     public static final String PAGE_ID = AppPropertiesService.getProperty( "document.filter.page_id", "page_id" );
-    public static final int PROPERTY_NUMBER_OF_MAX_LATEST_PORTLETS_DISPLAY = AppPropertiesService.getPropertyInt(
-            "document.filter.number_of_max_latest_portlets_display", 10 );
+    public static final int PROPERTY_NUMBER_OF_MAX_LATEST_PORTLETS_DISPLAY = AppPropertiesService.getPropertyInt( "document.filter.number_of_max_latest_portlets_display",
+            10 );
     private static final String SQL_FILTER_PAGE_NAME = "  f.name like ? ";
     private static final String SQL_FILTER_BY_PAGE_ID = "  a.id_page=? ";
     private static final String SQL_FILTER_BY_PORTLET_NAME = " a.name like ? ";
@@ -73,7 +73,7 @@ public class PortletFilter
      * Get the page name list
      * @return The page name list
      */
-    public String[] getPageName( )
+    public String[] getPageName(  )
     {
         return _tabPageName;
     }
@@ -91,7 +91,7 @@ public class PortletFilter
      * Get the portlet title filter
      * @return The portlet title filter
      */
-    public String[] getPortletName( )
+    public String[] getPortletName(  )
     {
         return _tabPortletName;
     }
@@ -109,7 +109,7 @@ public class PortletFilter
      * Get the id of the page
      * @return The id of the page
      */
-    public Integer getIdPage( )
+    public Integer getIdPage(  )
     {
         return _nIdPage;
     }
@@ -128,7 +128,7 @@ public class PortletFilter
      * Get the display latest portlets filter attribute
      * @return The display latest portlets filter attribute
      */
-    public boolean isDisplayLatestPortlets( )
+    public boolean isDisplayLatestPortlets(  )
     {
         return _bIsDisplayLatestPortlets;
     }
@@ -146,21 +146,21 @@ public class PortletFilter
      * Get the portlet type
      * @return The portlet type
      */
-    public String getPortletFilterType( )
+    public String getPortletFilterType(  )
     {
         return _portletFilterType;
     }
 
     /**
      * Get the SQL query for searching
-     * 
+     *
      * @return the SQL query
      */
-    public String getSQLFilter( )
+    public String getSQLFilter(  )
     {
         if ( ( _portletFilterType != null ) && !_bIsDisplayLatestPortlets )
         {
-            StringBuilder sbSQL = new StringBuilder( );
+            StringBuilder sbSQL = new StringBuilder(  );
 
             if ( _portletFilterType.equals( PAGE_NAME ) && ( _tabPageName != null ) )
             {
@@ -199,7 +199,7 @@ public class PortletFilter
                 sbSQL.append( SQL_FILTER_BY_PAGE_ID );
             }
 
-            return sbSQL.toString( );
+            return sbSQL.toString(  );
         }
 
         return null;
@@ -218,7 +218,7 @@ public class PortletFilter
      * Get the search value
      * @return the search value
      */
-    public String getSearchValue( )
+    public String getSearchValue(  )
     {
         return _strSearchValue;
     }

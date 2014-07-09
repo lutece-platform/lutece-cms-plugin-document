@@ -54,6 +54,7 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -98,11 +99,11 @@ public class AdvancedSearch implements XPageApplication
      */
     public XPage getPage( HttpServletRequest request, int nMode, Plugin plugin )
     {
-        DocSearchService dss = DocSearchService.getInstance( );
-        XPage page = new XPage( );
-        HashMap<Object, Object> model = new HashMap<Object, Object>( );
+        DocSearchService dss = DocSearchService.getInstance(  );
+        XPage page = new XPage(  );
+        HashMap<Object, Object> model = new HashMap<Object, Object>(  );
 
-        String url = request.getRequestURL( ).toString( );
+        String url = request.getRequestURL(  ).toString(  );
         model.put( MARK_URL, url );
 
         if ( request.getParameter( PARAMETER_SEARCH_QUERY ) != null )
@@ -128,7 +129,7 @@ public class AdvancedSearch implements XPageApplication
 
             if ( ( strDate != null ) && !( strDate.equals( "" ) ) && !( isValidDate( strDate ) ) )
             {
-                model.put( MARK_DATE_ERROR, I18nService.getLocalizedString( MESSAGE_DATE_ERROR, request.getLocale( ) ) );
+                model.put( MARK_DATE_ERROR, I18nService.getLocalizedString( MESSAGE_DATE_ERROR, request.getLocale(  ) ) );
             }
 
             String strDocumentType = request.getParameter( PARAMETER_TYPE );
@@ -141,24 +142,24 @@ public class AdvancedSearch implements XPageApplication
             }
 
             List<DocSearchItem> result = dss.getSearchResults( strSearchQuery, bTitle, bSummary, strDate, docType );
-            List<HashMap<String, Object>> finalResult = new ArrayList<HashMap<String, Object>>( );
-            PublishingService service = PublishingService.getInstance( );
+            List<HashMap<String, Object>> finalResult = new ArrayList<HashMap<String, Object>>(  );
+            PublishingService service = PublishingService.getInstance(  );
 
-            Iterator<DocSearchItem> i = result.iterator( );
+            Iterator<DocSearchItem> i = result.iterator(  );
 
-            while ( i.hasNext( ) )
+            while ( i.hasNext(  ) )
             {
-                DocSearchItem docSearchItem = i.next( );
+                DocSearchItem docSearchItem = i.next(  );
 
-                if ( service.isPublished( IntegerUtils.convert( docSearchItem.getId( ) ) ) )
+                if ( service.isPublished( IntegerUtils.convert( docSearchItem.getId(  ) ) ) )
                 {
-                    Collection<Portlet> c = service.getPortletsByDocumentId( docSearchItem.getId( ) );
-                    Iterator<Portlet> it = c.iterator( );
+                    Collection<Portlet> c = service.getPortletsByDocumentId( docSearchItem.getId(  ) );
+                    Iterator<Portlet> it = c.iterator(  );
                     int idPortlet = -1;
 
-                    if ( it.hasNext( ) )
+                    if ( it.hasNext(  ) )
                     {
-                        idPortlet = it.next( ).getId( );
+                        idPortlet = it.next(  ).getId(  );
                     }
 
                     Page pagePortlet = null;
@@ -166,15 +167,14 @@ public class AdvancedSearch implements XPageApplication
                     if ( idPortlet != -1 )
                     {
                         Portlet portlet = DocumentPortletHome.findByPrimaryKey( idPortlet );
-                        pagePortlet = PageHome.getPage( portlet.getPageId( ) );
+                        pagePortlet = PageHome.getPage( portlet.getPageId(  ) );
                     }
 
-                    if ( ( pagePortlet == null )
-                            || ( pagePortlet.getRole( ).equals( Page.ROLE_NONE ) )
-                            || ( ( SecurityService.isAuthenticationEnable( ) ) && ( SecurityService.getInstance( )
-                                    .isUserInRole( request, pagePortlet.getRole( ) ) ) ) )
+                    if ( ( pagePortlet == null ) || ( pagePortlet.getRole(  ).equals( Page.ROLE_NONE ) ) ||
+                            ( ( SecurityService.isAuthenticationEnable(  ) ) &&
+                            ( SecurityService.getInstance(  ).isUserInRole( request, pagePortlet.getRole(  ) ) ) ) )
                     {
-                        HashMap<String, Object> currentHashMap = new HashMap<String, Object>( );
+                        HashMap<String, Object> currentHashMap = new HashMap<String, Object>(  );
                         currentHashMap.put( MARK_DOC_SEARCH_ITEM, docSearchItem );
                         currentHashMap.put( MARK_ID_PORTLET, idPortlet );
                         finalResult.add( currentHashMap );
@@ -188,7 +188,7 @@ public class AdvancedSearch implements XPageApplication
             model.put( MARK_QUERY, strSearchQuery );
             model.put( MARK_DATE_QUERY, strDate );
 
-            if ( finalResult.size( ) > 0 )
+            if ( finalResult.size(  ) > 0 )
             {
                 model.put( MARK_CONTENT, finalResult );
             }
@@ -198,14 +198,14 @@ public class AdvancedSearch implements XPageApplication
             model.put( MARK_SELECTED_TYPE, "-1" );
         }
 
-        model.put( MARK_TYPE_LIST, getRefListDocumentType( ) );
-        model.put( MARK_LOCALE, request.getLocale( ) );
+        model.put( MARK_TYPE_LIST, getRefListDocumentType(  ) );
+        model.put( MARK_LOCALE, request.getLocale(  ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADVANCED_SEARCH, request.getLocale( ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADVANCED_SEARCH, request.getLocale(  ), model );
 
-        page.setContent( template.getHtml( ) );
-        page.setTitle( I18nService.getLocalizedString( MESSAGE_TITLE, request.getLocale( ) ) );
-        page.setPathLabel( I18nService.getLocalizedString( MESSAGE_TITLE, request.getLocale( ) ) );
+        page.setContent( template.getHtml(  ) );
+        page.setTitle( I18nService.getLocalizedString( MESSAGE_TITLE, request.getLocale(  ) ) );
+        page.setPathLabel( I18nService.getLocalizedString( MESSAGE_TITLE, request.getLocale(  ) ) );
 
         return page;
     }
@@ -236,16 +236,16 @@ public class AdvancedSearch implements XPageApplication
      * The document referencelist
      * @return The document referencelist
      */
-    public static ReferenceList getRefListDocumentType( )
+    public static ReferenceList getRefListDocumentType(  )
     {
-        Collection<DocumentType> listDocumentType = DocumentTypeHome.findAll( );
-        ReferenceList reflistDocumentType = new ReferenceList( );
+        Collection<DocumentType> listDocumentType = DocumentTypeHome.findAll(  );
+        ReferenceList reflistDocumentType = new ReferenceList(  );
 
         reflistDocumentType.addItem( -1, " " );
 
         for ( DocumentType documentType : listDocumentType )
         {
-            reflistDocumentType.addItem( documentType.getCode( ), documentType.getName( ) );
+            reflistDocumentType.addItem( documentType.getCode(  ), documentType.getName(  ) );
         }
 
         return reflistDocumentType;

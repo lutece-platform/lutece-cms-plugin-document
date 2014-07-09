@@ -51,7 +51,7 @@ public final class DocumentIndexerUtils
     /**
      * Private constructor
      */
-    private DocumentIndexerUtils( )
+    private DocumentIndexerUtils(  )
     {
     }
 

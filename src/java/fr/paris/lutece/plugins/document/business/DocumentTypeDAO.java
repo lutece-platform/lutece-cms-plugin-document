@@ -59,21 +59,21 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
 
     /**
      * Insert a new record in the table.
-     * 
+     *
      * @param documentType The documentType object
      */
     public void insert( DocumentType documentType )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setString( 1, documentType.getCode( ) );
-        daoUtil.setString( 2, documentType.getName( ) );
-        daoUtil.setString( 3, documentType.getDescription( ) );
-        daoUtil.setInt( 4, documentType.getThumbnailAttributeId( ) );
-        daoUtil.setString( 5, documentType.getDefaultThumbnailUrl( ) );
-        daoUtil.setString( 6, documentType.getMetadataHandler( ) );
+        daoUtil.setString( 1, documentType.getCode(  ) );
+        daoUtil.setString( 2, documentType.getName(  ) );
+        daoUtil.setString( 3, documentType.getDescription(  ) );
+        daoUtil.setInt( 4, documentType.getThumbnailAttributeId(  ) );
+        daoUtil.setString( 5, documentType.getDefaultThumbnailUrl(  ) );
+        daoUtil.setString( 6, documentType.getMetadataHandler(  ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -85,13 +85,13 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
         daoUtil.setString( 1, strDocumentTypeCode );
-        daoUtil.executeQuery( );
+        daoUtil.executeQuery(  );
 
         DocumentType documentType = null;
 
-        if ( daoUtil.next( ) )
+        if ( daoUtil.next(  ) )
         {
-            documentType = new DocumentType( );
+            documentType = new DocumentType(  );
             documentType.setCode( daoUtil.getString( 1 ) );
             documentType.setName( daoUtil.getString( 2 ) );
             documentType.setDescription( daoUtil.getString( 3 ) );
@@ -103,7 +103,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
             DocumentAttributeHome.setDocumentTypeAttributes( documentType );
         }
 
-        daoUtil.free( );
+        daoUtil.free(  );
 
         return documentType;
     }
@@ -117,8 +117,8 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
         daoUtil.setString( 1, strCode );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -128,31 +128,31 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
     public void store( DocumentType documentType )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setString( 1, documentType.getCode( ) );
-        daoUtil.setString( 2, documentType.getName( ) );
-        daoUtil.setString( 3, documentType.getDescription( ) );
-        daoUtil.setInt( 4, documentType.getThumbnailAttributeId( ) );
-        daoUtil.setString( 5, documentType.getDefaultThumbnailUrl( ) );
-        daoUtil.setString( 6, documentType.getMetadataHandler( ) );
-        daoUtil.setString( 7, documentType.getOldCode( ) );
+        daoUtil.setString( 1, documentType.getCode(  ) );
+        daoUtil.setString( 2, documentType.getName(  ) );
+        daoUtil.setString( 3, documentType.getDescription(  ) );
+        daoUtil.setInt( 4, documentType.getThumbnailAttributeId(  ) );
+        daoUtil.setString( 5, documentType.getDefaultThumbnailUrl(  ) );
+        daoUtil.setString( 6, documentType.getMetadataHandler(  ) );
+        daoUtil.setString( 7, documentType.getOldCode(  ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
      * Load the list of documentTypes
      * @return The Collection of the DocumentTypes
      */
-    public Collection<DocumentType> selectDocumentTypeList( )
+    public Collection<DocumentType> selectDocumentTypeList(  )
     {
-        Collection<DocumentType> listDocumentTypes = new ArrayList<DocumentType>( );
+        Collection<DocumentType> listDocumentTypes = new ArrayList<DocumentType>(  );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery( );
+        daoUtil.executeQuery(  );
 
-        while ( daoUtil.next( ) )
+        while ( daoUtil.next(  ) )
         {
-            DocumentType documentType = new DocumentType( );
+            DocumentType documentType = new DocumentType(  );
             documentType.setCode( daoUtil.getString( 1 ) );
             documentType.setName( daoUtil.getString( 2 ) );
             documentType.setDescription( daoUtil.getString( 3 ) );
@@ -163,7 +163,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
             listDocumentTypes.add( documentType );
         }
 
-        daoUtil.free( );
+        daoUtil.free(  );
 
         return listDocumentTypes;
     }
@@ -172,27 +172,27 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
      * Load the Referencelist of documentTypes
      * @return listDocumentTypes
      */
-    public ReferenceList getDocumentTypeList( )
+    public ReferenceList getDocumentTypeList(  )
     {
-        ReferenceList listDocumentTypes = new ReferenceList( );
+        ReferenceList listDocumentTypes = new ReferenceList(  );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery( );
+        daoUtil.executeQuery(  );
 
-        while ( daoUtil.next( ) )
+        while ( daoUtil.next(  ) )
         {
-            DocumentType documentType = new DocumentType( );
+            DocumentType documentType = new DocumentType(  );
             documentType.setCode( daoUtil.getString( 1 ) );
             documentType.setName( daoUtil.getString( 2 ) );
-            listDocumentTypes.addItem( documentType.getCode( ), documentType.getName( ) );
+            listDocumentTypes.addItem( documentType.getCode(  ), documentType.getName(  ) );
         }
 
-        daoUtil.free( );
+        daoUtil.free(  );
 
         return listDocumentTypes;
     }
 
     /**
-     * 
+     *
      * @param strCode The code type
      * @return bCheck the boolean
      */
@@ -200,16 +200,16 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CHECK_DOCUMENTS );
         daoUtil.setString( 1, strCode );
-        daoUtil.executeQuery( );
+        daoUtil.executeQuery(  );
 
-        boolean bCheck = daoUtil.next( );
-        daoUtil.free( );
+        boolean bCheck = daoUtil.next(  );
+        daoUtil.free(  );
 
         return bCheck;
     }
 
     /**
-     * 
+     *
      * @param nIdAttribute1 the attribute order
      * @param nOrderAttribute1 the attribute order
      * @param nIdAttribute2 the attribute order
@@ -220,11 +220,11 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REORDER_ATTRIBUTES );
         daoUtil.setInt( 1, nOrderAttribute1 );
         daoUtil.setInt( 2, nIdAttribute1 );
-        daoUtil.executeUpdate( );
+        daoUtil.executeUpdate(  );
         daoUtil.setInt( 1, nOrderAttribute2 );
         daoUtil.setInt( 2, nIdAttribute2 );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -238,8 +238,8 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
         daoUtil.setBytes( 1, baXslAdmin );
         daoUtil.setString( 2, strCodeType );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -253,7 +253,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
         daoUtil.setBytes( 1, baXslContent );
         daoUtil.setString( 2, strCodeType );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 }

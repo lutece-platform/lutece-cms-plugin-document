@@ -33,6 +33,12 @@
  */
 package fr.paris.lutece.plugins.document.service.attributes;
 
+import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
+import fr.paris.lutece.plugins.document.business.attributes.DocumentAttributeHome;
+import fr.paris.lutece.portal.web.constants.Messages;
+
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,12 +49,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
-import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
-import fr.paris.lutece.plugins.document.business.attributes.DocumentAttributeHome;
-import fr.paris.lutece.portal.web.constants.Messages;
 
 
 /**
@@ -77,7 +77,7 @@ public class ListBoxManager extends DefaultManager
      * Gets the template to enter the attribute value
      * @return The template to enter the attribute value
      */
-    String getCreateTemplate( )
+    String getCreateTemplate(  )
     {
         return TEMPLATE_CREATE_ATTRIBUTE;
     }
@@ -86,7 +86,7 @@ public class ListBoxManager extends DefaultManager
      * Gets the template to modify the attribute value
      * @return The template to modify the attribute value
      */
-    String getModifyTemplate( )
+    String getModifyTemplate(  )
     {
         return TEMPLATE_MODIFY_ATTRIBUTE;
     }
@@ -95,7 +95,7 @@ public class ListBoxManager extends DefaultManager
      * Gets the template to enter the parameters of the attribute value
      * @return The template to enter the parameters of the attribute value
      */
-    String getCreateParametersTemplate( )
+    String getCreateParametersTemplate(  )
     {
         return TEMPLATE_CREATE_PARAMETERS_ATTRIBUTE;
     }
@@ -104,7 +104,7 @@ public class ListBoxManager extends DefaultManager
      * Gets the template to modify the parameters of the attribute value
      * @return The template to modify the parameters of the attribute value
      */
-    String getModifyParametersTemplate( )
+    String getModifyParametersTemplate(  )
     {
         return TEMPLATE_MODIFY_PARAMETERS_ATTRIBUTE;
     }
@@ -119,7 +119,7 @@ public class ListBoxManager extends DefaultManager
     {
         for ( AttributeTypeParameter parameter : listParameters )
         {
-            if ( !parameter.getValueList( ).iterator( ).hasNext( ) )
+            if ( !parameter.getValueList(  ).iterator(  ).hasNext(  ) )
             {
                 return Messages.MANDATORY_FIELDS;
             }
@@ -139,14 +139,16 @@ public class ListBoxManager extends DefaultManager
         {
             for ( AttributeTypeParameter attributeParameter : listParameters )
             {
-                List<String> listValues = attributeParameter.getValueList( );
-                if ( listValues != null && listValues.size( ) > 0 )
+                List<String> listValues = attributeParameter.getValueList(  );
+
+                if ( ( listValues != null ) && ( listValues.size(  ) > 0 ) )
                 {
                     Collections.sort( listValues );
                     attributeParameter.setValueList( listValues );
                 }
             }
         }
+
         return super.getCreateParametersFormHtml( listParameters, locale );
     }
 
@@ -161,7 +163,7 @@ public class ListBoxManager extends DefaultManager
         for ( AttributeTypeParameter parameter : listParameters )
         {
             List<String> listValues = DocumentAttributeHome.getAttributeParameterValues( nAttributeId,
-                    parameter.getName( ) );
+                    parameter.getName(  ) );
             Collections.sort( listValues );
             parameter.setValueList( listValues );
         }
@@ -185,10 +187,10 @@ public class ListBoxManager extends DefaultManager
 
         for ( AttributeTypeParameter parameter : listParameters )
         {
-            List<String> listValues = new ArrayList<String>( );
-            String[] arrayStrValues = request.getParameterValues( parameter.getName( ) );
+            List<String> listValues = new ArrayList<String>(  );
+            String[] arrayStrValues = request.getParameterValues( parameter.getName(  ) );
 
-            if ( NAME_VALUE.equals( parameter.getName( ) ) )
+            if ( NAME_VALUE.equals( parameter.getName(  ) ) )
             {
                 // Define default value
                 if ( bByDefault )
@@ -208,7 +210,7 @@ public class ListBoxManager extends DefaultManager
                     }
                 }
             }
-            else if ( NAME_ITEMS.equals( parameter.getName( ) ) )
+            else if ( NAME_ITEMS.equals( parameter.getName(  ) ) )
             {
                 if ( ( arrayStrValues != null ) && ( arrayStrValues.length > 0 ) )
                 {
@@ -240,8 +242,9 @@ public class ListBoxManager extends DefaultManager
             }
 
             parameter.setValueList( listValues );
-            listValues.clear( );
+            listValues.clear(  );
         }
+
         return listParameters;
     }
 
@@ -251,23 +254,23 @@ public class ListBoxManager extends DefaultManager
     @Override
     protected Map<String, List<String>> getParameters( int nAttributeId, Locale locale )
     {
-        HashMap<String, List<String>> mapParameters = new HashMap<String, List<String>>( );
+        HashMap<String, List<String>> mapParameters = new HashMap<String, List<String>>(  );
         Collection<AttributeTypeParameter> listParameters = getAttributeParametersValues( nAttributeId, locale );
 
         for ( AttributeTypeParameter parameter : listParameters )
         {
             // We sort attributes alphabetically
-            List<String> listValues = parameter.getValueList( );
+            List<String> listValues = parameter.getValueList(  );
             Collections.sort( listValues );
-            mapParameters.put( parameter.getName( ), listValues );
+            mapParameters.put( parameter.getName(  ), listValues );
         }
 
         // Set all missing parameters with their default values
         for ( AttributeTypeParameter parameter : getExtraParameters( locale ) )
         {
-            if ( !mapParameters.containsKey( parameter.getName( ) ) )
+            if ( !mapParameters.containsKey( parameter.getName(  ) ) )
             {
-                mapParameters.put( parameter.getName( ), parameter.getDefaultValue( ) );
+                mapParameters.put( parameter.getName(  ), parameter.getDefaultValue(  ) );
             }
         }
 
@@ -283,11 +286,11 @@ public class ListBoxManager extends DefaultManager
     {
         for ( AttributeTypeParameter parameter : listParameters )
         {
-            if ( NAME_VALUE.equals( parameter.getName( ) ) )
+            if ( NAME_VALUE.equals( parameter.getName(  ) ) )
             {
                 if ( StringUtils.isNotBlank( strValueToRemove ) )
                 {
-                    List<String> listValues = parameter.getValueList( );
+                    List<String> listValues = parameter.getValueList(  );
                     listValues.remove( strValueToRemove );
                     parameter.setValueList( listValues );
 

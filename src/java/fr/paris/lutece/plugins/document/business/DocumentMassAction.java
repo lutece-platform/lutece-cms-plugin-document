@@ -44,13 +44,13 @@ public class DocumentMassAction implements RBACResource
     public static final String RESOURCE_TYPE = "DOCUMENT_MASS_ACTION";
 
     @Override
-    public String getResourceTypeCode( )
+    public String getResourceTypeCode(  )
     {
         return RESOURCE_TYPE;
     }
 
     @Override
-    public String getResourceId( )
+    public String getResourceId(  )
     {
         return "*";
     }

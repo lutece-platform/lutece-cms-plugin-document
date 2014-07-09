@@ -50,7 +50,7 @@ public class DocumentStateDAO implements IDocumentStateDAO
 
     /**
      * Load the data of Rule from the table
-     * 
+     *
      * @param nDocumentStateId The document state id
      * @return the instance of the Rule
      */

@@ -33,16 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.service.attributes;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeHome;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
@@ -53,6 +43,16 @@ import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
 import fr.paris.lutece.portal.service.regularexpression.RegularExpressionService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -71,13 +71,13 @@ public abstract class DefaultManager implements AttributeManager
      * Returns the Create HTML template corresponding to this attribute
      * @return The Create HTML template corresponding to this attribute
      */
-    abstract String getCreateTemplate( );
+    abstract String getCreateTemplate(  );
 
     /**
      * Returns the Modify HTML template corresponding to this attribute
      * @return the Modify HTML template corresponding to this attribute
      */
-    abstract String getModifyTemplate( );
+    abstract String getModifyTemplate(  );
 
     /**
      * Returns the Create HTML template for parameters corresponding to this
@@ -85,7 +85,7 @@ public abstract class DefaultManager implements AttributeManager
      * @return the Create HTML template for parameters corresponding to this
      *         attribute
      */
-    abstract String getCreateParametersTemplate( );
+    abstract String getCreateParametersTemplate(  );
 
     /**
      * Returns the Modify HTML template for parameters corresponding to this
@@ -93,22 +93,22 @@ public abstract class DefaultManager implements AttributeManager
      * @return the Modify HTML template for parameters corresponding to this
      *         attribute
      */
-    abstract String getModifyParametersTemplate( );
+    abstract String getModifyParametersTemplate(  );
 
     /**
      * {@inheritDoc}
      */
     public String getCreateFormHtml( DocumentAttribute attribute, Locale locale, String strBaseUrl )
     {
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_ATTRIBUTE, attribute );
-        model.put( MARK_ATTRIBUTE_PARAMETERS, getParameters( attribute.getId( ), locale ) );
+        model.put( MARK_ATTRIBUTE_PARAMETERS, getParameters( attribute.getId(  ), locale ) );
         model.put( MARK_LOCALE, locale );
         model.put( MARK_BASE_URL, strBaseUrl );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( getCreateTemplate( ), locale, model );
+        HtmlTemplate template = AppTemplateService.getTemplate( getCreateTemplate(  ), locale, model );
 
-        return template.getHtml( );
+        return template.getHtml(  );
     }
 
     /**
@@ -116,16 +116,16 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getModifyFormHtml( DocumentAttribute attribute, Document document, Locale locale, String strBaseUrl )
     {
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_ATTRIBUTE, attribute );
-        model.put( MARK_ATTRIBUTE_PARAMETERS, getParameters( attribute.getId( ), locale ) );
+        model.put( MARK_ATTRIBUTE_PARAMETERS, getParameters( attribute.getId(  ), locale ) );
         model.put( MARK_DOCUMENT, document );
         model.put( MARK_LOCALE, locale );
         model.put( MARK_BASE_URL, strBaseUrl );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( getModifyTemplate( ), locale, model );
+        HtmlTemplate template = AppTemplateService.getTemplate( getModifyTemplate(  ), locale, model );
 
-        return template.getHtml( );
+        return template.getHtml(  );
     }
 
     /**
@@ -133,8 +133,8 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getCreateParametersFormHtml( Locale locale )
     {
-        Map<String, Object> model = new HashMap<String, Object>( );
-        String strUrlTemplate = getCreateParametersTemplate( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
+        String strUrlTemplate = getCreateParametersTemplate(  );
 
         if ( strUrlTemplate == null )
         {
@@ -144,9 +144,9 @@ public abstract class DefaultManager implements AttributeManager
         model.put( MARK_ATTRIBUTE_PARAMETERS, getExtraParameters( locale ) );
         model.put( MARK_LOCALE, locale );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( getCreateParametersTemplate( ), locale, model );
+        HtmlTemplate template = AppTemplateService.getTemplate( getCreateParametersTemplate(  ), locale, model );
 
-        return template.getHtml( );
+        return template.getHtml(  );
     }
 
     /**
@@ -154,15 +154,15 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getCreateParametersFormHtml( List<AttributeTypeParameter> listParameters, Locale locale )
     {
-        Map<String, Object> model = new HashMap<String, Object>( );
-        String strUrlTemplate = getCreateParametersTemplate( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
+        String strUrlTemplate = getCreateParametersTemplate(  );
 
         if ( strUrlTemplate == null )
         {
             return StringUtils.EMPTY;
         }
 
-        if ( ( listParameters != null ) && !listParameters.isEmpty( ) )
+        if ( ( listParameters != null ) && !listParameters.isEmpty(  ) )
         {
             model.put( MARK_ATTRIBUTE_PARAMETERS, listParameters );
         }
@@ -173,9 +173,9 @@ public abstract class DefaultManager implements AttributeManager
 
         model.put( MARK_LOCALE, locale );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( getCreateParametersTemplate( ), locale, model );
+        HtmlTemplate template = AppTemplateService.getTemplate( getCreateParametersTemplate(  ), locale, model );
 
-        return template.getHtml( );
+        return template.getHtml(  );
     }
 
     /**
@@ -183,8 +183,8 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getModifyParametersFormHtml( Locale locale, int nAttributeId )
     {
-        Map<String, Object> model = new HashMap<String, Object>( );
-        String strUrlTemplate = getModifyParametersTemplate( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
+        String strUrlTemplate = getModifyParametersTemplate(  );
 
         if ( strUrlTemplate == null )
         {
@@ -196,7 +196,7 @@ public abstract class DefaultManager implements AttributeManager
 
         HtmlTemplate template = AppTemplateService.getTemplate( strUrlTemplate, locale, model );
 
-        return template.getHtml( );
+        return template.getHtml(  );
     }
 
     /**
@@ -204,7 +204,7 @@ public abstract class DefaultManager implements AttributeManager
      */
     public List<AttributeTypeParameter> getExtraParameters( Locale locale )
     {
-        return AttributeTypeHome.getAttributeTypeParameterList( getAttributeTypeCode( ), locale );
+        return AttributeTypeHome.getAttributeTypeParameterList( getAttributeTypeCode(  ), locale );
     }
 
     /**
@@ -217,7 +217,7 @@ public abstract class DefaultManager implements AttributeManager
         for ( AttributeTypeParameter parameter : listParameters )
         {
             parameter.setValueList( DocumentAttributeHome.getAttributeParameterValues( nAttributeId,
-                    parameter.getName( ) ) );
+                    parameter.getName(  ) ) );
         }
 
         return listParameters;
@@ -234,7 +234,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
-    public String getAttributeTypeCode( )
+    public String getAttributeTypeCode(  )
     {
         return _strAttributeTypeCode;
     }
@@ -245,21 +245,21 @@ public abstract class DefaultManager implements AttributeManager
     public String validateValue( int nAttributeId, String strValue, Locale locale )
     {
         // Regular expression validation
-        if ( RegularExpressionService.getInstance( ).isAvailable( ) && ( strValue != null ) && !strValue.equals( "" ) )
+        if ( RegularExpressionService.getInstance(  ).isAvailable(  ) && ( strValue != null ) &&
+                !strValue.equals( "" ) )
         {
-            Collection<Integer> colRegularExpression = DocumentAttributeHome
-                    .getListRegularExpressionKeyByIdAttribute( nAttributeId );
+            Collection<Integer> colRegularExpression = DocumentAttributeHome.getListRegularExpressionKeyByIdAttribute( nAttributeId );
 
-            if ( ( colRegularExpression != null ) && ( colRegularExpression.size( ) != 0 ) )
+            if ( ( colRegularExpression != null ) && ( colRegularExpression.size(  ) != 0 ) )
             {
                 for ( Integer nExpressionId : colRegularExpression )
                 {
-                    RegularExpression regularExpression = RegularExpressionService.getInstance( )
-                            .getRegularExpressionByKey( nExpressionId );
+                    RegularExpression regularExpression = RegularExpressionService.getInstance(  )
+                                                                                  .getRegularExpressionByKey( nExpressionId );
 
-                    if ( !RegularExpressionService.getInstance( ).isMatches( strValue, regularExpression ) )
+                    if ( !RegularExpressionService.getInstance(  ).isMatches( strValue, regularExpression ) )
                     {
-                        return regularExpression.getErrorMessage( );
+                        return regularExpression.getErrorMessage(  );
                     }
                 }
             }
@@ -281,7 +281,7 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getAttributeXmlValue( Document document, DocumentAttribute attribute )
     {
-        return attribute.getTextValue( );
+        return attribute.getTextValue(  );
     }
 
     /**
@@ -298,7 +298,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
-    public boolean canBeUsedAsThumbnail( )
+    public boolean canBeUsedAsThumbnail(  )
     {
         return false;
     }
@@ -319,20 +319,20 @@ public abstract class DefaultManager implements AttributeManager
      */
     protected Map<String, List<String>> getParameters( int nAttributeId, Locale locale )
     {
-        HashMap<String, List<String>> mapParameters = new HashMap<String, List<String>>( );
+        HashMap<String, List<String>> mapParameters = new HashMap<String, List<String>>(  );
         Collection<AttributeTypeParameter> listParameters = getAttributeParametersValues( nAttributeId, locale );
 
         for ( AttributeTypeParameter parameter : listParameters )
         {
-            mapParameters.put( parameter.getName( ), parameter.getValueList( ) );
+            mapParameters.put( parameter.getName(  ), parameter.getValueList(  ) );
         }
 
         // Set all missing parameters with their default values
         for ( AttributeTypeParameter parameter : getExtraParameters( locale ) )
         {
-            if ( !mapParameters.containsKey( parameter.getName( ) ) )
+            if ( !mapParameters.containsKey( parameter.getName(  ) ) )
             {
-                mapParameters.put( parameter.getName( ), parameter.getDefaultValue( ) );
+                mapParameters.put( parameter.getName(  ), parameter.getDefaultValue(  ) );
             }
         }
 

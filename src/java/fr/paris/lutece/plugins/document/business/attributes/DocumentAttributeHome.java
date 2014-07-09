@@ -85,7 +85,7 @@ public final class DocumentAttributeHome
 
     /**
      * Remove the DocumentAttribute whose identifier is specified in parameter
-     * 
+     *
      * @param nAttributeId The id of the attribute
      */
     public static void remove( int nAttributeId )

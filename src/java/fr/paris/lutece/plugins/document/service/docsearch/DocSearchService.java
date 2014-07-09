@@ -47,18 +47,9 @@ import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import java.io.File;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.document.Document;
@@ -84,6 +75,20 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.NIOFSDirectory;
 import org.apache.lucene.util.Version;
 
+import java.io.File;
+import java.io.IOException;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+
 
 /**
  * DocumentSearchService
@@ -103,7 +108,7 @@ public class DocSearchService
     private static IDocSearchIndexer _indexer;
 
     /** Creates a new instance of DocumentSearchService */
-    private DocSearchService( )
+    private DocSearchService(  )
     {
         // Read configuration properties
         _strIndex = AppPathService.getPath( PATH_INDEX );
@@ -124,7 +129,7 @@ public class DocSearchService
 
         try
         {
-            _analyzer = (Analyzer) Class.forName( strAnalyserClassName ).newInstance( );
+            _analyzer = (Analyzer) Class.forName( strAnalyserClassName ).newInstance(  );
         }
         catch ( Exception e )
         {
@@ -136,11 +141,11 @@ public class DocSearchService
      * The singleton
      * @return instance of DocSearchService
      */
-    public static DocSearchService getInstance( )
+    public static DocSearchService getInstance(  )
     {
         if ( _singleton == null )
         {
-            _singleton = new DocSearchService( );
+            _singleton = new DocSearchService(  );
         }
 
         return _singleton;
@@ -153,7 +158,7 @@ public class DocSearchService
      */
     public String processIndexing( boolean bCreate )
     {
-        StringBuilder sbLogs = new StringBuilder( );
+        StringBuilder sbLogs = new StringBuilder(  );
 
         IndexWriter writer = null;
         boolean bCreateIndex = bCreate;
@@ -165,11 +170,11 @@ public class DocSearchService
             Directory dir = NIOFSDirectory.open( new File( _strIndex ) );
 
             if ( !DirectoryReader.indexExists( dir ) )
-             { //init index
+            { //init index
                 bCreateIndex = true;
             }
 
-            Date start = new Date( );
+            Date start = new Date(  );
             IndexWriterConfig conf = new IndexWriterConfig( Version.LUCENE_46, _analyzer );
 
             if ( bCreateIndex )
@@ -192,18 +197,18 @@ public class DocSearchService
                 {
                     try
                     {
-                        ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>( );
-                        luceneDocumentId.add( action.getIdDocument( ));
+                        ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>(  );
+                        luceneDocumentId.add( action.getIdDocument(  ) );
 
                         List<org.apache.lucene.document.Document> luceneDocument = _indexer.getDocuments( luceneDocumentId );
 
-                        if ( ( luceneDocument != null ) && ( luceneDocument.size( ) > 0 ) )
+                        if ( ( luceneDocument != null ) && ( luceneDocument.size(  ) > 0 ) )
                         {
-                            Iterator<org.apache.lucene.document.Document> it = luceneDocument.iterator( );
+                            Iterator<org.apache.lucene.document.Document> it = luceneDocument.iterator(  );
 
-                            while ( it.hasNext( ) )
+                            while ( it.hasNext(  ) )
                             {
-                                org.apache.lucene.document.Document doc = it.next( );
+                                org.apache.lucene.document.Document doc = it.next(  );
                                 writer.addDocument( doc );
                                 sbLogs.append( "Adding " );
                                 sbLogs.append( doc.get( DocSearchItem.FIELD_TYPE ) );
@@ -221,7 +226,7 @@ public class DocSearchService
                         sbLogs.append( "\r\n" );
                     }
 
-                    removeIndexerAction( action.getIdAction( ) );
+                    removeIndexerAction( action.getIdAction(  ) );
                 }
 
                 //Update all document which must be update
@@ -229,21 +234,20 @@ public class DocSearchService
                 {
                     try
                     {
-                        ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>( );
-                        luceneDocumentId.add( action.getIdDocument( ));
+                        ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>(  );
+                        luceneDocumentId.add( action.getIdDocument(  ) );
 
-                    List<org.apache.lucene.document.Document> luceneDocument = _indexer.getDocuments( luceneDocumentId );
+                        List<org.apache.lucene.document.Document> luceneDocument = _indexer.getDocuments( luceneDocumentId );
 
-                        if ( ( luceneDocument != null ) && ( luceneDocument.size( ) > 0 ) )
+                        if ( ( luceneDocument != null ) && ( luceneDocument.size(  ) > 0 ) )
                         {
-                            Iterator<org.apache.lucene.document.Document> it = luceneDocument.iterator( );
+                            Iterator<org.apache.lucene.document.Document> it = luceneDocument.iterator(  );
 
-                            while ( it.hasNext( ) )
+                            while ( it.hasNext(  ) )
                             {
-                                org.apache.lucene.document.Document doc = it.next( );
-                                writer.updateDocument(
-                                        new Term( DocSearchItem.FIELD_UID, Integer.toString( action.getIdDocument( ) ) ),
-                                        doc );
+                                org.apache.lucene.document.Document doc = it.next(  );
+                                writer.updateDocument( new Term( DocSearchItem.FIELD_UID,
+                                        Integer.toString( action.getIdDocument(  ) ) ), doc );
                                 sbLogs.append( "Updating " );
                                 sbLogs.append( doc.get( DocSearchItem.FIELD_TYPE ) );
                                 sbLogs.append( " #" );
@@ -260,35 +264,35 @@ public class DocSearchService
                         sbLogs.append( "\r\n" );
                     }
 
-                    removeIndexerAction( action.getIdAction( ) );
+                    removeIndexerAction( action.getIdAction(  ) );
                 }
 
                 //delete all document which must be delete
                 for ( IndexerAction action : getAllIndexerActionByTask( IndexerAction.TASK_DELETE ) )
                 {
                     writer.deleteDocuments( new Term( DocSearchItem.FIELD_UID,
-                            Integer.toString( action.getIdDocument( ) ) ) );
+                            Integer.toString( action.getIdDocument(  ) ) ) );
                     sbLogs.append( "Deleting " );
                     sbLogs.append( " #" );
-                    sbLogs.append( action.getIdDocument( ) );
+                    sbLogs.append( action.getIdDocument(  ) );
                     sbLogs.append( "\r\n" );
 
-                    removeIndexerAction( action.getIdAction( ) );
+                    removeIndexerAction( action.getIdAction(  ) );
                 }
             }
             else
             {
                 //delete all incremental action
-                removeAllIndexerAction( );
+                removeAllIndexerAction(  );
 
-                Collection<Integer> listIdDocuments = DocumentHome.findAllPrimaryKeys( );
+                Collection<Integer> listIdDocuments = DocumentHome.findAllPrimaryKeys(  );
                 ArrayList<Integer> luceneDocumentId;
 
                 for ( Integer nIdDocument : listIdDocuments )
                 {
                     try
                     {
-                        luceneDocumentId = new ArrayList<Integer>( );
+                        luceneDocumentId = new ArrayList<Integer>(  );
                         luceneDocumentId.add( nIdDocument );
 
                         List<Document> listDocuments = _indexer.getDocuments( luceneDocumentId );
@@ -313,19 +317,19 @@ public class DocSearchService
                 }
             }
 
-            Date end = new Date( );
+            Date end = new Date(  );
             sbLogs.append( "Duration of the treatment : " );
-            sbLogs.append( end.getTime( ) - start.getTime( ) );
+            sbLogs.append( end.getTime(  ) - start.getTime(  ) );
             sbLogs.append( " milliseconds\r\n" );
         }
         catch ( Exception e )
         {
             sbLogs.append( " caught a " );
-            sbLogs.append( e.getClass( ) );
+            sbLogs.append( e.getClass(  ) );
             sbLogs.append( "\n with message: " );
-            sbLogs.append( e.getMessage( ) );
+            sbLogs.append( e.getMessage(  ) );
             sbLogs.append( "\r\n" );
-            AppLogService.error( "Indexing error : " + e.getMessage( ), e );
+            AppLogService.error( "Indexing error : " + e.getMessage(  ), e );
         }
         finally
         {
@@ -333,16 +337,16 @@ public class DocSearchService
             {
                 if ( writer != null )
                 {
-                    writer.close( );
+                    writer.close(  );
                 }
             }
             catch ( IOException e )
             {
-                AppLogService.error( e.getMessage( ), e );
+                AppLogService.error( e.getMessage(  ), e );
             }
         }
 
-        return sbLogs.toString( );
+        return sbLogs.toString(  );
     }
 
     /**
@@ -354,7 +358,7 @@ public class DocSearchService
      */
     public List<DocSearchItem> getSearchResults( String strQuery, int nStartIndex, AdminUser user )
     {
-        ArrayList<DocSearchItem> listResults = new ArrayList<DocSearchItem>( );
+        ArrayList<DocSearchItem> listResults = new ArrayList<DocSearchItem>(  );
 
         try
         {
@@ -365,13 +369,13 @@ public class DocSearchService
                     _analyzer );
             Query query = parser.parse( ( StringUtils.isNotBlank( strQuery ) ) ? strQuery : "*:*" );
 
-            List<DocumentSpace> listSpaces = DocumentSpacesService.getInstance( ).getUserAllowedSpaces( user );
-            Filter[] filters = new Filter[listSpaces.size( )];
+            List<DocumentSpace> listSpaces = DocumentSpacesService.getInstance(  ).getUserAllowedSpaces( user );
+            Filter[] filters = new Filter[listSpaces.size(  )];
             int nIndex = 0;
 
             for ( DocumentSpace space : listSpaces )
             {
-                Query querySpace = new TermQuery( new Term( DocSearchItem.FIELD_SPACE, "s" + space.getId( ) ) );
+                Query querySpace = new TermQuery( new Term( DocSearchItem.FIELD_SPACE, "s" + space.getId(  ) ) );
                 filters[nIndex++] = new CachingWrapperFilter( new QueryWrapperFilter( querySpace ) );
             }
 
@@ -381,7 +385,7 @@ public class DocSearchService
             TopDocs topDocs = _searcher.search( query, filter, MAX_RESPONSES );
             ScoreDoc[] hits = topDocs.scoreDocs;
 
-            for ( ScoreDoc hit : hits)
+            for ( ScoreDoc hit : hits )
             {
                 int docId = hit.doc;
                 Document document = _searcher.doc( docId );
@@ -391,7 +395,7 @@ public class DocSearchService
         }
         catch ( Exception e )
         {
-            AppLogService.error( e.getMessage( ), e );
+            AppLogService.error( e.getMessage(  ), e );
         }
 
         return listResults;
@@ -407,23 +411,23 @@ public class DocSearchService
      * @return Results as a collection of SarchItem
      */
     public List<DocSearchItem> getSearchResults( String strQuery, boolean bTitle, boolean bSummary, String date,
-            DocumentType documentType )
+        DocumentType documentType )
     {
-        ArrayList<DocSearchItem> listResults = new ArrayList<DocSearchItem>( );
+        ArrayList<DocSearchItem> listResults = new ArrayList<DocSearchItem>(  );
 
         try
         {
             IndexReader ir = DirectoryReader.open( NIOFSDirectory.open( new File( _strIndex ) ) );
             _searcher = new IndexSearcher( ir );
 
-            Collection<String> queries = new ArrayList<String>( );
-            Collection<String> fields = new ArrayList<String>( );
-            Collection<BooleanClause.Occur> flags = new ArrayList<BooleanClause.Occur>( );
+            Collection<String> queries = new ArrayList<String>(  );
+            Collection<String> fields = new ArrayList<String>(  );
+            Collection<BooleanClause.Occur> flags = new ArrayList<BooleanClause.Occur>(  );
 
             if ( bTitle )
             {
                 Query queryTitle = new TermQuery( new Term( DocSearchItem.FIELD_TITLE, strQuery ) );
-                queries.add( queryTitle.toString( ) );
+                queries.add( queryTitle.toString(  ) );
                 fields.add( DocSearchItem.FIELD_TITLE );
                 flags.add( BooleanClause.Occur.SHOULD );
             }
@@ -431,7 +435,7 @@ public class DocSearchService
             if ( bSummary )
             {
                 Query querySummary = new TermQuery( new Term( DocSearchItem.FIELD_SUMMARY, strQuery ) );
-                queries.add( querySummary.toString( ) );
+                queries.add( querySummary.toString(  ) );
                 fields.add( DocSearchItem.FIELD_SUMMARY );
                 flags.add( BooleanClause.Occur.SHOULD );
             }
@@ -439,7 +443,7 @@ public class DocSearchService
             if ( !( bTitle ) && !( bSummary ) && !( strQuery.equals( StringUtils.EMPTY ) ) )
             {
                 Query queryContents = new TermQuery( new Term( DocSearchItem.FIELD_CONTENTS, strQuery ) );
-                queries.add( queryContents.toString( ) );
+                queries.add( queryContents.toString(  ) );
                 fields.add( DocSearchItem.FIELD_CONTENTS );
                 flags.add( BooleanClause.Occur.SHOULD );
             }
@@ -450,9 +454,9 @@ public class DocSearchService
             {
                 if ( documentType != null )
                 {
-                    Query queryType = new TermQuery( new Term( DocSearchItem.FIELD_TYPE, "\"" + documentType.getName( )
-                            + "\"" ) );
-                    queries.add( queryType.toString( ) );
+                    Query queryType = new TermQuery( new Term( DocSearchItem.FIELD_TYPE,
+                                "\"" + documentType.getName(  ) + "\"" ) );
+                    queries.add( queryType.toString(  ) );
                     fields.add( DocSearchItem.FIELD_TYPE );
                     flags.add( BooleanClause.Occur.SHOULD );
                 }
@@ -462,29 +466,29 @@ public class DocSearchService
                     String formatedDate = formatDate( date );
 
                     Query queryDate = new TermQuery( new Term( DocSearchItem.FIELD_DATE, formatedDate ) );
-                    queries.add( queryDate.toString( ) );
+                    queries.add( queryDate.toString(  ) );
                     fields.add( DocSearchItem.FIELD_DATE );
                     flags.add( BooleanClause.Occur.SHOULD );
                 }
 
-                KeywordAnalyzer analyzer = new KeywordAnalyzer( );
+                KeywordAnalyzer analyzer = new KeywordAnalyzer(  );
 
                 queryMulti = MultiFieldQueryParser.parse( IndexationService.LUCENE_INDEX_VERSION,
-                        queries.toArray( new String[queries.size( )] ), fields.toArray( new String[fields.size( )] ),
-                        flags.toArray( new BooleanClause.Occur[flags.size( )] ), analyzer );
+                        queries.toArray( new String[queries.size(  )] ), fields.toArray( new String[fields.size(  )] ),
+                        flags.toArray( new BooleanClause.Occur[flags.size(  )] ), analyzer );
             }
             else
             {
                 queryMulti = MultiFieldQueryParser.parse( IndexationService.LUCENE_INDEX_VERSION,
-                        queries.toArray( new String[queries.size( )] ), fields.toArray( new String[fields.size( )] ),
-                        flags.toArray( new BooleanClause.Occur[flags.size( )] ), IndexationService.getAnalyser( ) );
+                        queries.toArray( new String[queries.size(  )] ), fields.toArray( new String[fields.size(  )] ),
+                        flags.toArray( new BooleanClause.Occur[flags.size(  )] ), IndexationService.getAnalyser(  ) );
             }
 
-            List<Filter> filterList = new ArrayList<Filter>( );
+            List<Filter> filterList = new ArrayList<Filter>(  );
 
             if ( documentType != null )
             {
-                Query queryType = new TermQuery( new Term( DocSearchItem.FIELD_TYPE, documentType.getName( ) ) );
+                Query queryType = new TermQuery( new Term( DocSearchItem.FIELD_TYPE, documentType.getName(  ) ) );
                 filterList.add( new CachingWrapperFilter( new QueryWrapperFilter( queryType ) ) );
             }
 
@@ -497,9 +501,9 @@ public class DocSearchService
 
             TopDocs topDocs = null;
 
-            if ( filterList.size( ) > 0 )
+            if ( filterList.size(  ) > 0 )
             {
-                ChainedFilter chainedFilter = new ChainedFilter( filterList.toArray( new Filter[filterList.size( )] ),
+                ChainedFilter chainedFilter = new ChainedFilter( filterList.toArray( new Filter[filterList.size(  )] ),
                         ChainedFilter.AND );
                 topDocs = _searcher.search( queryMulti, chainedFilter, MAX_RESPONSES );
             }
@@ -510,7 +514,7 @@ public class DocSearchService
 
             ScoreDoc[] hits = topDocs.scoreDocs;
 
-            for (ScoreDoc hit : hits)
+            for ( ScoreDoc hit : hits )
             {
                 int docId = hit.doc;
                 Document document = _searcher.doc( docId );
@@ -519,7 +523,7 @@ public class DocSearchService
         }
         catch ( Exception e )
         {
-            AppLogService.error( e.getMessage( ), e );
+            AppLogService.error( e.getMessage(  ), e );
         }
 
         return listResults;
@@ -532,7 +536,7 @@ public class DocSearchService
      */
     public List<IndexerAction> getAllIndexerActionByTask( int nIdTask )
     {
-        IndexerActionFilter filter = new IndexerActionFilter( );
+        IndexerActionFilter filter = new IndexerActionFilter(  );
         filter.setIdTask( nIdTask );
 
         return IndexerActionHome.getList( filter );
@@ -549,11 +553,11 @@ public class DocSearchService
 
     /**
      * Remove all Indexer Action
-     * 
+     *
      */
-    public static void removeAllIndexerAction( )
+    public static void removeAllIndexerAction(  )
     {
-        IndexerActionHome.removeAll( );
+        IndexerActionHome.removeAll(  );
     }
 
     /**
@@ -563,7 +567,7 @@ public class DocSearchService
      */
     public void addIndexerAction( int nIdDocument, int nIdTask )
     {
-        IndexerAction indexerAction = new IndexerAction( );
+        IndexerAction indexerAction = new IndexerAction(  );
         indexerAction.setIdDocument( nIdDocument );
         indexerAction.setIdTask( nIdTask );
         IndexerActionHome.create( indexerAction );
@@ -583,7 +587,7 @@ public class DocSearchService
 
         try
         {
-            formatedDate = dateFormat.parse( date.trim( ) );
+            formatedDate = dateFormat.parse( date.trim(  ) );
         }
         catch ( ParseException e )
         {

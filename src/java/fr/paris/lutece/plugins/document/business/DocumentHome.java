@@ -55,13 +55,13 @@ public final class DocumentHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private DocumentHome( )
+    private DocumentHome(  )
     {
     }
 
     /**
      * Creation of an instance of document
-     * 
+     *
      * @param document The instance of the document which contains the
      *            informations to store
      * @return The instance of document which has been created with its primary
@@ -70,7 +70,7 @@ public final class DocumentHome
     public static Document create( Document document )
     {
         _dao.insert( document );
-        DocSearchService.getInstance( ).addIndexerAction( document.getId( ), IndexerAction.TASK_CREATE );
+        DocSearchService.getInstance(  ).addIndexerAction( document.getId(  ), IndexerAction.TASK_CREATE );
 
         /*
          * IndexationService.addIndexerAction( document.getId(),
@@ -81,7 +81,7 @@ public final class DocumentHome
 
     /**
      * Update of the document which is specified in parameter
-     * 
+     *
      * @return The instance of the document which has been updated
      * @param bUpdateContent True to update content, false otherwise
      * @param document The instance of the document which contains the data to
@@ -90,7 +90,7 @@ public final class DocumentHome
     public static Document update( Document document, boolean bUpdateContent )
     {
         _dao.store( document, bUpdateContent );
-        DocSearchService.getInstance( ).addIndexerAction( document.getId( ), IndexerAction.TASK_MODIFY );
+        DocSearchService.getInstance(  ).addIndexerAction( document.getId(  ), IndexerAction.TASK_MODIFY );
 
         /*
          * if(PublishingService.getInstance().isPublished(document.getId()))
@@ -115,16 +115,16 @@ public final class DocumentHome
 
     /**
      * Remove the Document whose identifier is specified in parameter
-     * 
+     *
      * @param nDocumentId The id of the document to remove
      */
     public static void remove( int nDocumentId )
     {
         _dao.delete( nDocumentId );
-        DocSearchService.getInstance( ).addIndexerAction( nDocumentId, IndexerAction.TASK_DELETE );
+        DocSearchService.getInstance(  ).addIndexerAction( nDocumentId, IndexerAction.TASK_DELETE );
         // We remove extensions of the removed document if any
         ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Document.PROPERTY_RESOURCE_TYPE,
-                Integer.toString( nDocumentId ) );
+            Integer.toString( nDocumentId ) );
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -133,7 +133,7 @@ public final class DocumentHome
     /**
      * Returns an instance of a document whose identifier is specified in
      * parameter
-     * 
+     *
      * @param nKey The Primary key of the document
      * @return An instance of document
      */
@@ -145,7 +145,7 @@ public final class DocumentHome
     /**
      * Returns an instance of a document whose identifier is specified in
      * parameter
-     * 
+     *
      * @param nKey The Primary key of the document
      * @return An instance of document
      */
@@ -240,27 +240,27 @@ public final class DocumentHome
      * Get a new primary key
      * @return The new primary key
      */
-    public static int newPrimaryKey( )
+    public static int newPrimaryKey(  )
     {
-        return _dao.newPrimaryKey( );
+        return _dao.newPrimaryKey(  );
     }
 
     /**
      * Gets all documents id
      * @return A collection of Integer
      */
-    public static Collection<Integer> findAllPrimaryKeys( )
+    public static Collection<Integer> findAllPrimaryKeys(  )
     {
-        return _dao.selectAllPrimaryKeys( );
+        return _dao.selectAllPrimaryKeys(  );
     }
 
     /**
      * Get the list of every documents
      * @return The list of every documents
      */
-    public static List<Document> findAll( )
+    public static List<Document> findAll(  )
     {
-        return _dao.selectAll( );
+        return _dao.selectAll(  );
     }
 
     /**
@@ -306,7 +306,7 @@ public final class DocumentHome
 
     /**
      * Load the data of last Document the user worked in from the table
-     * 
+     *
      * @param strUserName the user name
      * @return the instance of the Document
      */
@@ -317,11 +317,11 @@ public final class DocumentHome
 
     /**
      * Load the data of last Document the user worked in from the table
-     * 
+     *
      * @return the instance of the Document
      */
-    public static Document loadLastPublishedDocument( )
+    public static Document loadLastPublishedDocument(  )
     {
-        return _dao.loadLastPublishedDocument( );
+        return _dao.loadLastPublishedDocument(  );
     }
 }

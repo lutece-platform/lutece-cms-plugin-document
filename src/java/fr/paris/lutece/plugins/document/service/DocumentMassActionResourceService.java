@@ -58,7 +58,7 @@ public class DocumentMassActionResourceService extends ResourceIdService
     private static final String PROPERTY_LABEL_RESOURCE_TYPE = "document.workflow.mass_action";
 
     /** Creates a new instance of DocumentTypeResourceIdService */
-    public DocumentMassActionResourceService( )
+    public DocumentMassActionResourceService(  )
     {
         setPluginName( PLUGIN_NAME );
     }
@@ -66,15 +66,15 @@ public class DocumentMassActionResourceService extends ResourceIdService
     /**
      * Initializes the service
      */
-    public void register( )
+    public void register(  )
     {
-        ResourceType rt = new ResourceType( );
-        rt.setResourceIdServiceClass( DocumentMassActionResourceService.class.getName( ) );
+        ResourceType rt = new ResourceType(  );
+        rt.setResourceIdServiceClass( DocumentMassActionResourceService.class.getName(  ) );
         rt.setPluginName( PLUGIN_NAME );
         rt.setResourceTypeKey( DocumentMassAction.RESOURCE_TYPE );
         rt.setResourceTypeLabelKey( PROPERTY_LABEL_RESOURCE_TYPE );
 
-        Permission p = new Permission( );
+        Permission p = new Permission(  );
         p.setPermissionKey( PERMISSION_MASS_ARCHIVE );
         p.setPermissionTitleKey( PROPERTY_LABEL_MASS_ARCHIVE );
         rt.registerPermission( p );
@@ -92,7 +92,7 @@ public class DocumentMassActionResourceService extends ResourceIdService
     {
         DocumentType type = DocumentTypeHome.findByPrimaryKey( strId );
 
-        return type.getName( );
+        return type.getName(  );
     }
 
     @Override

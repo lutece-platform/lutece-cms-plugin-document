@@ -68,7 +68,15 @@ import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.xml.XmlUtil;
 
+import net.sf.ehcache.CacheException;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+import net.sf.ehcache.event.CacheEventListener;
+
+import org.apache.commons.lang.StringUtils;
+
 import java.io.FileInputStream;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -80,15 +88,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.http.HttpServletRequest;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.event.CacheEventListener;
-
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -140,15 +142,14 @@ public final class DocumentContentService extends ContentService implements Cach
     private static final String PROPERTY_RESOURCE_TYPE = "document";
 
     // Performance patch
-    private static ConcurrentMap<String, String> _keyMemory = new ConcurrentHashMap<String, String>( );
-
+    private static ConcurrentMap<String, String> _keyMemory = new ConcurrentHashMap<String, String>(  );
     private boolean _bInit;
 
     /**
      * Returns the document page for a given document and a given portlet. The
      * page is built from XML data or retrieved
      * from the cache if it's enable and the document in it.
-     * 
+     *
      * @param request The HTTP request.
      * @param nMode The current mode.
      * @return The HTML code of the page as a String.
@@ -156,11 +157,12 @@ public final class DocumentContentService extends ContentService implements Cach
      * @throws SiteMessageException occurs when a site message need to be
      *             displayed
      */
-    public String getPage( HttpServletRequest request, int nMode ) throws UserNotSignedException, SiteMessageException
+    public String getPage( HttpServletRequest request, int nMode )
+        throws UserNotSignedException, SiteMessageException
     {
         if ( !_bInit )
         {
-            init( );
+            init(  );
         }
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
@@ -187,8 +189,8 @@ public final class DocumentContentService extends ContentService implements Cach
                 // blocked on synchronized
                 if ( strPage == null )
                 {
-                    AppLogService.debug( " -- Page generation " + strKey + " : doc=" + strDocumentId + " portletid="
-                            + strPortletId + "site_locale=" + strSiteLocale + "nMode=" + nMode );
+                    AppLogService.debug( " -- Page generation " + strKey + " : doc=" + strDocumentId + " portletid=" +
+                        strPortletId + "site_locale=" + strSiteLocale + "nMode=" + nMode );
                     strPage = buildPage( request, strDocumentId, strPortletId, strSiteLocale, nMode );
 
                     if ( IntegerUtils.isNumeric( strDocumentId ) )
@@ -219,7 +221,7 @@ public final class DocumentContentService extends ContentService implements Cach
     /**
      * Initializes the service
      */
-    private void init( )
+    private void init(  )
     {
         // Initialize the cache according property value. 
         // If the property isn't found the default is true
@@ -227,7 +229,7 @@ public final class DocumentContentService extends ContentService implements Cach
 
         if ( strCache.equalsIgnoreCase( "true" ) )
         {
-            initCache( getName( ) );
+            initCache( getName(  ) );
         }
 
         _bInit = true;
@@ -245,12 +247,12 @@ public final class DocumentContentService extends ContentService implements Cach
      * @throws fr.paris.lutece.portal.service.message.SiteMessageException
      */
     private String buildPage( HttpServletRequest request, String strDocumentId, String strPortletId,
-            String strSiteLocale, int nMode ) throws UserNotSignedException, SiteMessageException
+        String strSiteLocale, int nMode ) throws UserNotSignedException, SiteMessageException
     {
         int nPortletId;
         int nDocumentId;
         boolean bPortletExist = false;
-        Map<String, String> mapXslParams = new HashMap<String, String>( );
+        Map<String, String> mapXslParams = new HashMap<String, String>(  );
 
         try
         {
@@ -264,103 +266,103 @@ public final class DocumentContentService extends ContentService implements Cach
 
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-        if ( ( document == null ) || ( !document.isValid( ) ) )
+        if ( ( document == null ) || ( !document.isValid(  ) ) )
         {
             return PortalService.getDefaultPage( request, nMode );
         }
 
-        DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType( ) );
-        DocumentPublication documentPublication = PublishingService.getInstance( ).getDocumentPublication( nPortletId,
-                nDocumentId );
+        DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
+        DocumentPublication documentPublication = PublishingService.getInstance(  )
+                                                                   .getDocumentPublication( nPortletId, nDocumentId );
 
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
 
         if ( documentPublication != null )
         {
             // Check if portlet is an alias portlet
-            boolean bIsAlias = DocumentListPortletHome.checkIsAliasPortlet( documentPublication.getPortletId( ) );
+            boolean bIsAlias = DocumentListPortletHome.checkIsAliasPortlet( documentPublication.getPortletId(  ) );
 
-            if ( bIsAlias && ( documentPublication.getPortletId( ) != nPortletId ) )
+            if ( bIsAlias && ( documentPublication.getPortletId(  ) != nPortletId ) )
             {
                 AliasPortlet alias = (AliasPortlet) AliasPortletHome.findByPrimaryKey( nPortletId );
-                nPortletId = alias.getAliasId( );
+                nPortletId = alias.getAliasId(  );
                 strPortletId = Integer.toString( nPortletId );
             }
 
-            if ( ( documentPublication.getPortletId( ) == nPortletId )
-                    && ( documentPublication.getStatus( ) == DocumentPublication.STATUS_PUBLISHED ) )
+            if ( ( documentPublication.getPortletId(  ) == nPortletId ) &&
+                    ( documentPublication.getStatus(  ) == DocumentPublication.STATUS_PUBLISHED ) )
             {
                 bPortletExist = true;
             }
 
             // The publication informations are available in Xsl (only publication date) and in template (full DocumentPublication object)
             mapXslParams.put( PARAMETER_PUBLICATION_DATE,
-                    DateUtil.getDateString( documentPublication.getDatePublishing( ), request.getLocale( ) ) );
+                DateUtil.getDateString( documentPublication.getDatePublishing(  ), request.getLocale(  ) ) );
             model.put( MARK_PUBLICATION, documentPublication );
         }
 
         if ( bPortletExist )
         {
             // Fill a PageData structure for those elements
-            PageData data = new PageData( );
-            data.setName( document.getTitle( ) );
-            data.setPagePath( PortalService.getXPagePathContent( document.getTitle( ), 0, request ) );
+            PageData data = new PageData(  );
+            data.setName( document.getTitle(  ) );
+            data.setPagePath( PortalService.getXPagePathContent( document.getTitle(  ), 0, request ) );
 
             Portlet portlet = PortletHome.findByPrimaryKey( nPortletId );
-            Page page = PageHome.getPage( portlet.getPageId( ) );
-            String strRole = page.getRole( );
+            Page page = PageHome.getPage( portlet.getPageId(  ) );
+            String strRole = page.getRole(  );
 
-            if ( !strRole.equals( Page.ROLE_NONE ) && SecurityService.isAuthenticationEnable( ) )
+            if ( !strRole.equals( Page.ROLE_NONE ) && SecurityService.isAuthenticationEnable(  ) )
             {
-                LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
+                LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
 
-                if ( ( user == null ) && ( !SecurityService.getInstance( ).isExternalAuthentication( ) ) )
+                if ( ( user == null ) && ( !SecurityService.getInstance(  ).isExternalAuthentication(  ) ) )
                 {
                     // The user is not registered and identify itself with the Portal authentication
-                    String strAccessControledTemplate = SecurityService.getInstance( ).getAccessControledTemplate( );
-                    HashMap<String, Object> modelAccessControledTemplate = new HashMap<String, Object>( );
-                    String strLoginUrl = SecurityService.getInstance( ).getLoginPageUrl( );
+                    String strAccessControledTemplate = SecurityService.getInstance(  ).getAccessControledTemplate(  );
+                    HashMap<String, Object> modelAccessControledTemplate = new HashMap<String, Object>(  );
+                    String strLoginUrl = SecurityService.getInstance(  ).getLoginPageUrl(  );
                     modelAccessControledTemplate.put( MARK_URL_LOGIN, strLoginUrl );
 
                     HtmlTemplate tAccessControled = AppTemplateService.getTemplate( strAccessControledTemplate,
-                            request.getLocale( ), modelAccessControledTemplate );
-                    data.setContent( tAccessControled.getHtml( ) );
+                            request.getLocale(  ), modelAccessControledTemplate );
+                    data.setContent( tAccessControled.getHtml(  ) );
 
                     return PortalService.buildPageContent( data, nMode, request );
                 }
 
-                if ( !SecurityService.getInstance( ).isUserInRole( request, strRole ) )
+                if ( !SecurityService.getInstance(  ).isUserInRole( request, strRole ) )
                 {
                     // The user doesn't have the correct role
-                    String strAccessDeniedTemplate = SecurityService.getInstance( ).getAccessDeniedTemplate( );
+                    String strAccessDeniedTemplate = SecurityService.getInstance(  ).getAccessDeniedTemplate(  );
                     HtmlTemplate tAccessDenied = AppTemplateService.getTemplate( strAccessDeniedTemplate,
-                            request.getLocale( ) );
-                    data.setContent( tAccessDenied.getHtml( ) );
+                            request.getLocale(  ) );
+                    data.setContent( tAccessDenied.getHtml(  ) );
 
                     return PortalService.buildPageContent( data, nMode, request );
                 }
             }
 
             // Get request paramaters and store them in a hashtable
-            Enumeration<?> enumParam = request.getParameterNames( );
-            Hashtable<String, String> htParamRequest = new Hashtable<String, String>( );
+            Enumeration<?> enumParam = request.getParameterNames(  );
+            Hashtable<String, String> htParamRequest = new Hashtable<String, String>(  );
             String paramName = "";
 
-            while ( enumParam.hasMoreElements( ) )
+            while ( enumParam.hasMoreElements(  ) )
             {
-                paramName = (String) enumParam.nextElement( );
+                paramName = (String) enumParam.nextElement(  );
                 htParamRequest.put( paramName, request.getParameter( paramName ) );
             }
 
-            XmlTransformerService xmlTransformerService = new XmlTransformerService( );
-            StringBuffer strXml = new StringBuffer( );
+            XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
+            StringBuffer strXml = new StringBuffer(  );
             XmlUtil.beginElement( strXml, XML_TAG_CONTENT );
             XmlUtil.addElement( strXml, XML_TAG_SITE_LOCALE, strSiteLocale );
-            strXml.append( document.getXmlValidatedContent( ) );
+            strXml.append( document.getXmlValidatedContent(  ) );
             XmlUtil.endElement( strXml, XML_TAG_CONTENT );
 
-            String strDocument = xmlTransformerService.transformBySourceWithXslCache( strXml.toString( ),
-                    type.getContentServiceXslSource( ), DOCUMENT_STYLE_PREFIX_ID + type.getStyleSheetId( nMode ),
+            String strDocument = xmlTransformerService.transformBySourceWithXslCache( strXml.toString(  ),
+                    type.getContentServiceXslSource(  ), DOCUMENT_STYLE_PREFIX_ID + type.getStyleSheetId( nMode ),
                     htParamRequest, null );
 
             model.put( MARK_DOCUMENT, strDocument );
@@ -368,18 +370,19 @@ public final class DocumentContentService extends ContentService implements Cach
             model.put( MARK_CATEGORY, getRelatedDocumentsPortlet( request, document, nPortletId, nMode ) );
             model.put( MARK_DOCUMENT_ID, strDocumentId );
             model.put( MARK_PORTLET_ID, strPortletId );
-            model.put( MARK_IS_EXTEND_INSTALLED, PortalService.isExtendActivated( ) );
+            model.put( MARK_IS_EXTEND_INSTALLED, PortalService.isExtendActivated(  ) );
 
             // Additional page info
             ResourceEnhancer.buildPageAddOn( model, PROPERTY_RESOURCE_TYPE, nDocumentId, strPortletId, request );
 
-            HtmlTemplate template = AppTemplateService.getTemplate( getTemplatePage( document ), request.getLocale( ),
+            HtmlTemplate template = AppTemplateService.getTemplate( getTemplatePage( document ), request.getLocale(  ),
                     model );
 
-            data.setContent( template.getHtml( ) );
+            data.setContent( template.getHtml(  ) );
 
             return PortalService.buildPageContent( data, nMode, request );
         }
+
         //portlet does not exists
         return PortalService.getDefaultPage( request, nMode );
     }
@@ -387,7 +390,7 @@ public final class DocumentContentService extends ContentService implements Cach
     /**
      * Analyzes request parameters to see if the request should be handled by
      * the current Content Service
-     * 
+     *
      * @param request The HTTP request
      * @return true if this ContentService should handle this request
      */
@@ -396,8 +399,8 @@ public final class DocumentContentService extends ContentService implements Cach
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         String strIdPortlet = request.getParameter( Parameters.PORTLET_ID );
 
-        if ( ( strDocumentId != null ) && ( strDocumentId.length( ) > 0 ) && ( strIdPortlet != null )
-                && ( strIdPortlet.length( ) > 0 ) )
+        if ( ( strDocumentId != null ) && ( strDocumentId.length(  ) > 0 ) && ( strIdPortlet != null ) &&
+                ( strIdPortlet.length(  ) > 0 ) )
         {
             return true;
         }
@@ -407,10 +410,10 @@ public final class DocumentContentService extends ContentService implements Cach
 
     /**
      * Returns the Content Service name
-     * 
+     *
      * @return The name as a String
      */
-    public String getName( )
+    public String getName(  )
     {
         return CONTENT_SERVICE_NAME;
     }
@@ -422,10 +425,9 @@ public final class DocumentContentService extends ContentService implements Cach
      */
     private String getTemplatePage( Document document )
     {
-        if ( document.getPageTemplateDocumentId( ) != 0 )
+        if ( document.getPageTemplateDocumentId(  ) != 0 )
         {
-            String strPageTemplateDocument = DocumentHome.getPageTemplateDocumentPath( document
-                    .getPageTemplateDocumentId( ) );
+            String strPageTemplateDocument = DocumentHome.getPageTemplateDocumentPath( document.getPageTemplateDocumentId(  ) );
 
             return strPageTemplateDocument;
         }
@@ -439,7 +441,7 @@ public final class DocumentContentService extends ContentService implements Cach
     // Comments implementation
     /**
      * Gets the documents list portlet containing the document
-     * 
+     *
      * @param strPortletId The ID of the documents list portlet where the
      *            document has been published.
      * @param nMode The current mode.
@@ -447,7 +449,8 @@ public final class DocumentContentService extends ContentService implements Cach
      * @return The HTML code of the documents list portlet as a String
      * @throws SiteMessageException IF a message need to be displayed
      */
-    private String getPortlet( HttpServletRequest request, String strPortletId, int nMode ) throws SiteMessageException
+    private String getPortlet( HttpServletRequest request, String strPortletId, int nMode )
+        throws SiteMessageException
     {
         try
         {
@@ -480,13 +483,13 @@ public final class DocumentContentService extends ContentService implements Cach
             Source xslSource = new StreamSource( fis );
 
             // Get request paramaters and store them in a hashtable
-            Enumeration<?> enumParam = request.getParameterNames( );
-            Hashtable<String, String> htParamRequest = new Hashtable<String, String>( );
+            Enumeration<?> enumParam = request.getParameterNames(  );
+            Hashtable<String, String> htParamRequest = new Hashtable<String, String>(  );
             String paramName = "";
 
-            while ( enumParam.hasMoreElements( ) )
+            while ( enumParam.hasMoreElements(  ) )
             {
-                paramName = (String) enumParam.nextElement( );
+                paramName = (String) enumParam.nextElement(  );
                 htParamRequest.put( paramName, request.getParameter( paramName ) );
             }
 
@@ -495,19 +498,19 @@ public final class DocumentContentService extends ContentService implements Cach
             // Add a path param for choose url to use in admin or normal mode
             if ( nMode != MODE_ADMIN )
             {
-                htParamRequest.put( PARAMETER_SITE_PATH, AppPathService.getPortalUrl( ) );
+                htParamRequest.put( PARAMETER_SITE_PATH, AppPathService.getPortalUrl(  ) );
             }
             else
             {
-                htParamRequest.put( PARAMETER_SITE_PATH, AppPathService.getAdminPortalUrl( ) );
+                htParamRequest.put( PARAMETER_SITE_PATH, AppPathService.getAdminPortalUrl(  ) );
                 htParamRequest.put( MARKER_TARGET, TARGET_TOP );
             }
 
-            XmlTransformerService xmlTransformerService = new XmlTransformerService( );
+            XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
             String strXslUniquePrefix = DOCUMENT_STYLE_PREFIX_ID + strFilePath + strFileName;
 
             return xmlTransformerService.transformBySourceWithXslCache( strXml, xslSource, strXslUniquePrefix,
-                    htParamRequest, outputProperties );
+                htParamRequest, outputProperties );
         }
         catch ( NumberFormatException e )
         {
@@ -517,7 +520,7 @@ public final class DocumentContentService extends ContentService implements Cach
 
     /**
      * Gets the category list portlet linked with the document
-     * 
+     *
      * @param request The Http request
      * @param document The document
      * @param nPortletId The ID of the documents list portlet where the document
@@ -527,29 +530,30 @@ public final class DocumentContentService extends ContentService implements Cach
      */
     private String getRelatedDocumentsPortlet( HttpServletRequest request, Document document, int nPortletId, int nMode )
     {
-        if ( ( nMode != MODE_ADMIN ) && ( document.getCategories( ) != null )
-                && ( document.getCategories( ).size( ) > 0 ) )
+        if ( ( nMode != MODE_ADMIN ) && ( document.getCategories(  ) != null ) &&
+                ( document.getCategories(  ).size(  ) > 0 ) )
         {
-            HashMap<String, Object> model = new HashMap<String, Object>( );
-            List<Document> listRelatedDocument = DocumentHome.findByRelatedCategories( document, request.getLocale( ) );
+            HashMap<String, Object> model = new HashMap<String, Object>(  );
+            List<Document> listRelatedDocument = DocumentHome.findByRelatedCategories( document, request.getLocale(  ) );
 
-            List<Document> listDocument = new ArrayList<Document>( );
-            ReferenceList listDocumentPortlet = new ReferenceList( );
+            List<Document> listDocument = new ArrayList<Document>(  );
+            ReferenceList listDocumentPortlet = new ReferenceList(  );
 
             // Create list of related documents from the specified categories of input document 
             for ( Document relatedDocument : listRelatedDocument )
             {
                 // Get list of portlets for each document
-                for ( Portlet portlet : PublishingService.getInstance( ).getPortletsByDocumentId(
-                        Integer.toString( relatedDocument.getId( ) ) ) )
+                for ( Portlet portlet : PublishingService.getInstance(  )
+                                                         .getPortletsByDocumentId( Integer.toString( 
+                            relatedDocument.getId(  ) ) ) )
                 {
                     // Check if document and portlet are published and document is not the input document 
-                    if ( ( PublishingService.getInstance( ).isPublished( relatedDocument.getId( ), portlet.getId( ) ) )
-                            && ( portlet.getStatus( ) == Portlet.STATUS_PUBLISHED ) && ( relatedDocument.isValid( ) )
-                            && ( relatedDocument.getId( ) != document.getId( ) ) )
+                    if ( ( PublishingService.getInstance(  ).isPublished( relatedDocument.getId(  ), portlet.getId(  ) ) ) &&
+                            ( portlet.getStatus(  ) == Portlet.STATUS_PUBLISHED ) && ( relatedDocument.isValid(  ) ) &&
+                            ( relatedDocument.getId(  ) != document.getId(  ) ) )
                     {
-                        listDocumentPortlet.addItem( Integer.toString( relatedDocument.getId( ) ),
-                                Integer.toString( portlet.getId( ) ) );
+                        listDocumentPortlet.addItem( Integer.toString( relatedDocument.getId(  ) ),
+                            Integer.toString( portlet.getId(  ) ) );
                         listDocument.add( relatedDocument );
 
                         break;
@@ -560,10 +564,10 @@ public final class DocumentContentService extends ContentService implements Cach
             model.put( MARK_DOCUMENT_CATEGORIES_LIST, listDocument );
             model.put( MARK_PORTLET_ID_LIST, listDocumentPortlet );
 
-            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_CATEGORIES, request.getLocale( ),
-                    model );
+            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_CATEGORIES,
+                    request.getLocale(  ), model );
 
-            return template.getHtml( );
+            return template.getHtml(  );
         }
         else
         {
@@ -574,7 +578,7 @@ public final class DocumentContentService extends ContentService implements Cach
     /**
      * @see net.sf.ehcache.event.CacheEventListener#dispose()
      */
-    public void dispose( )
+    public void dispose(  )
     {
     }
 
@@ -584,7 +588,7 @@ public final class DocumentContentService extends ContentService implements Cach
      */
     public void notifyElementEvicted( Ehcache cache, Element element )
     {
-        _keyMemory.remove( element.getKey( ) );
+        _keyMemory.remove( element.getKey(  ) );
     }
 
     /**
@@ -593,14 +597,15 @@ public final class DocumentContentService extends ContentService implements Cach
      */
     public void notifyElementExpired( Ehcache cache, Element element )
     {
-        _keyMemory.remove( element.getKey( ) );
+        _keyMemory.remove( element.getKey(  ) );
     }
 
     /**
      * @see net.sf.ehcache.event.CacheEventListener#notifyElementPut(net.sf.ehcache.Ehcache,
      *      net.sf.ehcache.Element)
      */
-    public void notifyElementPut( Ehcache cache, Element element ) throws CacheException
+    public void notifyElementPut( Ehcache cache, Element element )
+        throws CacheException
     {
     }
 
@@ -608,16 +613,18 @@ public final class DocumentContentService extends ContentService implements Cach
      * @see net.sf.ehcache.event.CacheEventListener#notifyElementRemoved(net.sf.ehcache.Ehcache,
      *      net.sf.ehcache.Element)
      */
-    public void notifyElementRemoved( Ehcache cache, Element element ) throws CacheException
+    public void notifyElementRemoved( Ehcache cache, Element element )
+        throws CacheException
     {
-        _keyMemory.remove( element.getKey( ) );
+        _keyMemory.remove( element.getKey(  ) );
     }
 
     /**
      * @see net.sf.ehcache.event.CacheEventListener#notifyElementUpdated(net.sf.ehcache.Ehcache,
      *      net.sf.ehcache.Element)
      */
-    public void notifyElementUpdated( Ehcache cache, Element element ) throws CacheException
+    public void notifyElementUpdated( Ehcache cache, Element element )
+        throws CacheException
     {
     }
 
@@ -626,7 +633,7 @@ public final class DocumentContentService extends ContentService implements Cach
      */
     public void notifyRemoveAll( Ehcache cache )
     {
-        _keyMemory.clear( );
+        _keyMemory.clear(  );
     }
 
     /**
@@ -634,7 +641,7 @@ public final class DocumentContentService extends ContentService implements Cach
      * synchronized on the key but a synchronize only work with strict
      * reference. So we manage an hashmap of string reference for cache keys to
      * be able to get them back.
-     * 
+     *
      * @param strDocumentId The id of the document
      * @param strPortletId The id of the portlet of the document
      * @param strSiteLocale The site locale
@@ -658,9 +665,9 @@ public final class DocumentContentService extends ContentService implements Cach
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone( )
+    public Object clone(  )
     {
-        return new DocumentContentService( );
+        return new DocumentContentService(  );
     }
 
     /**
@@ -670,15 +677,15 @@ public final class DocumentContentService extends ContentService implements Cach
      */
     public void removeFromCache( String strDocumentId, String strPortletId )
     {
-        if ( getCache( ) != null )
+        if ( getCache(  ) != null )
         {
             String strKey = getKey( strDocumentId, strPortletId, LOCALE_FR, PortalJspBean.MODE_HTML );
 
-            getCache( ).remove( strKey );
+            getCache(  ).remove( strKey );
 
             strKey = getKey( strDocumentId, strPortletId, LOCALE_EN, PortalJspBean.MODE_HTML );
 
-            getCache( ).remove( strKey );
+            getCache(  ).remove( strKey );
         }
     }
 }

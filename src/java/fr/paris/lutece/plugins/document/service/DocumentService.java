@@ -33,20 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.service;
 
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
@@ -82,6 +68,22 @@ import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.xml.XmlUtil;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+
+import java.io.IOException;
+
+import java.sql.Timestamp;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 
 /**
  * This Service manages document actions (create, move, delete, validate ...)
@@ -111,8 +113,7 @@ public class DocumentService
     private static final String MESSAGE_ATTRIBUTE_WIDTH_ERROR = "document.message.widthError";
     private static final String MESSAGE_ATTRIBUTE_RESIZE_ERROR = "document.message.resizeError";
     private static final String MESSAGE_EXTENSION_ERROR = "document.message.extensionError";
-
-    private static DocumentService _singleton = new DocumentService( );
+    private static DocumentService _singleton = new DocumentService(  );
     private static final String TAG_DOCUMENT_ID = "document-id";
     private static final String TAG_DOCUMENT_TITLE = "document-title";
     private static final String TAG_DOCUMENT_SUMMARY = "document-summary";
@@ -125,59 +126,59 @@ public class DocumentService
     private static DocumentEventListernersManager _managerEventListeners;
 
     /** Creates a new instance of DocumentService */
-    private DocumentService( )
+    private DocumentService(  )
     {
         _managerEventListeners = SpringContextService.getBean( "document.documentEventListernersManager" );
     }
 
     /**
      * Get the unique instance of the service
-     * 
+     *
      * @return The unique instance
      */
-    public static DocumentService getInstance( )
+    public static DocumentService getInstance(  )
     {
         return _singleton;
     }
 
     /**
      * Build an XML document that contains document's data.
-     * 
+     *
      * @param document The document
      * @return An XML fragment containing document's data
      */
     String buildXmlContent( Document document )
     {
-        StringBuffer sbXml = new StringBuffer( );
-        XmlUtil.beginElement( sbXml, document.getCodeDocumentType( ) );
+        StringBuffer sbXml = new StringBuffer(  );
+        XmlUtil.beginElement( sbXml, document.getCodeDocumentType(  ) );
 
-        XmlUtil.addElement( sbXml, TAG_DOCUMENT_ID, document.getId( ) );
-        XmlUtil.addElement( sbXml, TAG_DOCUMENT_TITLE, TAG_CDATA_BEGIN + document.getTitle( ) + TAG_CDATA_END );
-        XmlUtil.addElement( sbXml, TAG_DOCUMENT_SUMMARY, TAG_CDATA_BEGIN + document.getSummary( ) + TAG_CDATA_END );
+        XmlUtil.addElement( sbXml, TAG_DOCUMENT_ID, document.getId(  ) );
+        XmlUtil.addElement( sbXml, TAG_DOCUMENT_TITLE, TAG_CDATA_BEGIN + document.getTitle(  ) + TAG_CDATA_END );
+        XmlUtil.addElement( sbXml, TAG_DOCUMENT_SUMMARY, TAG_CDATA_BEGIN + document.getSummary(  ) + TAG_CDATA_END );
         XmlUtil.addElement( sbXml, TAG_DOCUMENT_DATE_BEGIN,
-                DateUtil.getDateString( document.getDateValidityBegin( ), I18nService.getDefaultLocale( ) ) );
+            DateUtil.getDateString( document.getDateValidityBegin(  ), I18nService.getDefaultLocale(  ) ) );
         XmlUtil.addElement( sbXml, TAG_DOCUMENT_DATE_END,
-                DateUtil.getDateString( document.getDateValidityEnd( ), I18nService.getDefaultLocale( ) ) );
+            DateUtil.getDateString( document.getDateValidityEnd(  ), I18nService.getDefaultLocale(  ) ) );
         XmlUtil.addElement( sbXml, TAG_DOCUMENT_CATEGORIES, buildXmlCategories( document ) );
 
-        DocumentType documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType( ) );
+        DocumentType documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
 
-        for ( DocumentAttribute attribute : documentType.getAttributes( ) )
+        for ( DocumentAttribute attribute : documentType.getAttributes(  ) )
         {
-            DocumentAttribute attributeDocument = getDocumentAttribute( document, attribute.getId( ) );
+            DocumentAttribute attributeDocument = getDocumentAttribute( document, attribute.getId(  ) );
 
             if ( attributeDocument != null )
             {
-                AttributeManager manager = AttributeService.getInstance( ).getManager(
-                        attributeDocument.getCodeAttributeType( ) );
-                XmlUtil.addElement( sbXml, document.getCodeDocumentType( ) + "-" + attribute.getCode( ),
-                        manager.getAttributeXmlValue( document, attributeDocument ) );
+                AttributeManager manager = AttributeService.getInstance(  )
+                                                           .getManager( attributeDocument.getCodeAttributeType(  ) );
+                XmlUtil.addElement( sbXml, document.getCodeDocumentType(  ) + "-" + attribute.getCode(  ),
+                    manager.getAttributeXmlValue( document, attributeDocument ) );
             }
         }
 
-        XmlUtil.endElement( sbXml, document.getCodeDocumentType( ) );
+        XmlUtil.endElement( sbXml, document.getCodeDocumentType(  ) );
 
-        return sbXml.toString( );
+        return sbXml.toString(  );
     }
 
     /**
@@ -187,69 +188,72 @@ public class DocumentService
      */
     private String buildXmlCategories( Document document )
     {
-        StringBuffer strListCategories = new StringBuffer( );
+        StringBuffer strListCategories = new StringBuffer(  );
 
-        if ( ( document != null ) && ( document.getCategories( ) != null ) && !document.getCategories( ).isEmpty( ) )
+        if ( ( document != null ) && ( document.getCategories(  ) != null ) && !document.getCategories(  ).isEmpty(  ) )
         {
-            for ( Category category : document.getCategories( ) )
+            for ( Category category : document.getCategories(  ) )
             {
-                XmlUtil.addElement( strListCategories, TAG_DOCUMENT_CATEGORY, TAG_CDATA_BEGIN + category.getName( )
-                        + TAG_CDATA_END );
+                XmlUtil.addElement( strListCategories, TAG_DOCUMENT_CATEGORY,
+                    TAG_CDATA_BEGIN + category.getName(  ) + TAG_CDATA_END );
             }
         }
 
-        return strListCategories.toString( );
+        return strListCategories.toString(  );
     }
 
     /**
      * Change the state of the document
-     * 
+     *
      * @param document The document
      * @param user The user doing the action
      * @param nStateId The new state Id
      * @throws DocumentException raise when error occurs in event or rule
      */
-    public void changeDocumentState( Document document, AdminUser user, int nStateId ) throws DocumentException
+    public void changeDocumentState( Document document, AdminUser user, int nStateId )
+        throws DocumentException
     {
         document.setStateId( nStateId );
         DocumentHome.update( document, false );
 
-        notify( document.getId( ), user, DocumentEvent.DOCUMENT_STATE_CHANGED );
+        notify( document.getId(  ), user, DocumentEvent.DOCUMENT_STATE_CHANGED );
     }
 
     /**
      * Create a new document
-     * 
+     *
      * @param document The document
      * @param user The user doing the action
      * @throws DocumentException raise when error occurs in event or rule
      */
-    public void createDocument( Document document, AdminUser user ) throws DocumentException
+    public void createDocument( Document document, AdminUser user )
+        throws DocumentException
     {
-        document.setId( DocumentHome.newPrimaryKey( ) );
-        document.setDateCreation( new Timestamp( new java.util.Date( ).getTime( ) ) );
-        document.setDateModification( new Timestamp( new java.util.Date( ).getTime( ) ) );
+        document.setId( DocumentHome.newPrimaryKey(  ) );
+        document.setDateCreation( new Timestamp( new java.util.Date(  ).getTime(  ) ) );
+        document.setDateModification( new Timestamp( new java.util.Date(  ).getTime(  ) ) );
         document.setXmlWorkingContent( buildXmlContent( document ) );
 
         DocumentHome.create( document );
 
-        notify( document.getId( ), user, DocumentEvent.DOCUMENT_CREATED );
+        notify( document.getId(  ), user, DocumentEvent.DOCUMENT_CREATED );
     }
 
     /**
      * Modify a the content of a document
-     * 
+     *
      * @param document The document
      * @param user The user doing the action
      * @throws DocumentException raise when error occurs in event or rule
      */
-    public void modifyDocument( Document document, AdminUser user ) throws DocumentException
+    public void modifyDocument( Document document, AdminUser user )
+        throws DocumentException
     {
-        document.setDateModification( new Timestamp( new java.util.Date( ).getTime( ) ) );
+        document.setDateModification( new Timestamp( new java.util.Date(  ).getTime(  ) ) );
         document.setXmlWorkingContent( buildXmlContent( document ) );
         DocumentHome.update( document, true );
 
-        notify( document.getId( ), user, DocumentEvent.DOCUMENT_CONTENT_MODIFIED );
+        notify( document.getId(  ), user, DocumentEvent.DOCUMENT_CONTENT_MODIFIED );
     }
 
     /**
@@ -259,34 +263,35 @@ public class DocumentService
      * @param user The user doing the action
      * @throws DocumentException raise when error occurs in event or rule
      */
-    public void validateDocument( Document document, AdminUser user, int nStateId ) throws DocumentException
+    public void validateDocument( Document document, AdminUser user, int nStateId )
+        throws DocumentException
     {
         document.setStateId( nStateId );
         // Copy the working content into the validated content
-        document.setXmlValidatedContent( document.getXmlWorkingContent( ) );
+        document.setXmlValidatedContent( document.getXmlWorkingContent(  ) );
         DocumentHome.update( document, false );
-        DocumentHome.validateAttributes( document.getId( ) );
+        DocumentHome.validateAttributes( document.getId(  ) );
 
-        List<DocumentAttribute> listAttributes = document.getAttributes( );
+        List<DocumentAttribute> listAttributes = document.getAttributes(  );
 
         for ( DocumentAttribute attribute : listAttributes )
         {
-            DocumentResourceServlet.putInCache( document.getId( ), attribute.getId( ) );
+            DocumentResourceServlet.putInCache( document.getId(  ), attribute.getId(  ) );
         }
 
-        for ( CacheableService cs : PortalService.getCacheableServicesList( ) )
+        for ( CacheableService cs : PortalService.getCacheableServicesList(  ) )
         {
-            if ( cs.getClass( ).equals( DocumentContentService.class ) )
+            if ( cs.getClass(  ).equals( DocumentContentService.class ) )
             {
-                for ( int nIdPortlet : DocumentPortletHome.findPortletForDocument( document.getId( ) ) )
+                for ( int nIdPortlet : DocumentPortletHome.findPortletForDocument( document.getId(  ) ) )
                 {
-                    ( (DocumentContentService) cs ).removeFromCache( Integer.toString( document.getId( ) ),
-                            Integer.toString( nIdPortlet ) );
+                    ( (DocumentContentService) cs ).removeFromCache( Integer.toString( document.getId(  ) ),
+                        Integer.toString( nIdPortlet ) );
                 }
             }
         }
 
-        notify( document.getId( ), user, DocumentEvent.DOCUMENT_STATE_CHANGED );
+        notify( document.getId(  ), user, DocumentEvent.DOCUMENT_STATE_CHANGED );
     }
 
     /**
@@ -296,55 +301,59 @@ public class DocumentService
      * @param user The user doing the action
      * @throws DocumentException raise when error occurs in event or rule
      */
-    public void archiveDocument( Document document, AdminUser user, int nStateId ) throws DocumentException
+    public void archiveDocument( Document document, AdminUser user, int nStateId )
+        throws DocumentException
     {
         // Get the list of portlets linked with document 
-        Collection<Portlet> listPortlet = PublishingService.getInstance( ).getPortletsByDocumentId(
-                Integer.toString( document.getId( ) ) );
+        Collection<Portlet> listPortlet = PublishingService.getInstance(  )
+                                                           .getPortletsByDocumentId( Integer.toString( 
+                    document.getId(  ) ) );
 
         for ( Portlet portlet : listPortlet )
         {
             //If document is published, unpublish it
-            if ( PublishingService.getInstance( ).isPublished( document.getId( ), portlet.getId( ) ) )
+            if ( PublishingService.getInstance(  ).isPublished( document.getId(  ), portlet.getId(  ) ) )
             {
-                PublishingService.getInstance( ).unPublish( document.getId( ), portlet.getId( ) );
+                PublishingService.getInstance(  ).unPublish( document.getId(  ), portlet.getId(  ) );
             }
 
             //Unassign Document to portlet
-            PublishingService.getInstance( ).unAssign( document.getId( ), portlet.getId( ) );
+            PublishingService.getInstance(  ).unAssign( document.getId(  ), portlet.getId(  ) );
         }
 
         document.setStateId( nStateId );
         DocumentHome.update( document, false );
 
-        notify( document.getId( ), user, DocumentEvent.DOCUMENT_STATE_CHANGED );
+        notify( document.getId(  ), user, DocumentEvent.DOCUMENT_STATE_CHANGED );
     }
 
     /**
      * Move a document from a space to another
-     * 
+     *
      * @param document The document
      * @param user The user doing the action
      * @param nNewSpace The Id of the destination space
      * @throws DocumentException raise when error occurs in event or rule
      */
-    public void moveDocument( Document document, AdminUser user, int nNewSpace ) throws DocumentException
+    public void moveDocument( Document document, AdminUser user, int nNewSpace )
+        throws DocumentException
     {
         document.setSpaceId( nNewSpace );
         DocumentHome.update( document, false );
 
-        notify( document.getId( ), user, DocumentEvent.DOCUMENT_MOVED );
+        notify( document.getId(  ), user, DocumentEvent.DOCUMENT_MOVED );
     }
 
     /**
      * Notify an event to all listeners
-     * 
+     *
      * @param nDocumentId The document Id
      * @param user The user doing the action
      * @param nEventType The type of event
      * @throws DocumentException raise when error occurs in event or rule
      */
-    private void notify( int nDocumentId, AdminUser user, int nEventType ) throws DocumentException
+    private void notify( int nDocumentId, AdminUser user, int nEventType )
+        throws DocumentException
     {
         // Reload document to have all data (ie : state_key !)
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
@@ -364,13 +373,11 @@ public class DocumentService
     public void getActions( Document document, Locale locale, AdminUser user )
     {
         List<DocumentAction> listActions = DocumentActionHome.getActionsList( document, locale );
-        RBACResource documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType( ) );
-        listActions = (List<DocumentAction>) RBACService.getAuthorizedActionsCollection( listActions, documentType,
-                user );
+        RBACResource documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
+        listActions = (List<DocumentAction>) RBACService.getAuthorizedActionsCollection( listActions, documentType, user );
 
         // Get all beans from the global ApplicationContext
-        List<IDocumentActionsService> listActionServices = SpringContextService
-                .getBeansOfType( IDocumentActionsService.class );
+        List<IDocumentActionsService> listActionServices = SpringContextService.getBeansOfType( IDocumentActionsService.class );
 
         // Process all services
         for ( IDocumentActionsService actionService : listActionServices )
@@ -387,7 +394,7 @@ public class DocumentService
      */
     public void getPublishedStatus( Document document )
     {
-        boolean isPublished = PublishingService.getInstance( ).isPublished( document.getId( ) );
+        boolean isPublished = PublishingService.getInstance(  ).isPublished( document.getId(  ) );
         int nPublishedStatus = 0;
 
         if ( !isPublished )
@@ -400,35 +407,35 @@ public class DocumentService
 
     /**
      * Build an HTML form for the document creation for a given document type
-     * 
+     *
      * @param strDocumentTypeCode The Document type code
      * @param locale The Locale
      * @param strBaseUrl The base Url
-     * 
+     *
      * @return The HTML form
      */
     public String getCreateForm( String strDocumentTypeCode, Locale locale, String strBaseUrl )
     {
-        StringBuilder sbForm = new StringBuilder( );
+        StringBuilder sbForm = new StringBuilder(  );
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strDocumentTypeCode );
 
-        for ( DocumentAttribute attribute : documentType.getAttributes( ) )
+        for ( DocumentAttribute attribute : documentType.getAttributes(  ) )
         {
-            AttributeManager manager = AttributeService.getInstance( ).getManager( attribute.getCodeAttributeType( ) );
+            AttributeManager manager = AttributeService.getInstance(  ).getManager( attribute.getCodeAttributeType(  ) );
             sbForm.append( manager.getCreateFormHtml( attribute, locale, strBaseUrl ) );
         }
 
-        return sbForm.toString( );
+        return sbForm.toString(  );
     }
 
     /**
      * Build an HTML form for the document modification for a given document ID.
      * <b>Warning</b> : This method loads the binaries of the document.
-     * 
+     *
      * @param strDocumentId The Id of the document to modify
      * @param locale The Locale
      * @param strBaseUrl The base url
-     * 
+     *
      * @return The HTML form
      */
     public String getModifyForm( String strDocumentId, Locale locale, String strBaseUrl )
@@ -446,7 +453,7 @@ public class DocumentService
 
     /**
      * Build an HTML form for the document modification for a given document
-     * 
+     *
      * @param document The document
      * @param locale The Locale
      * @param strBaseUrl The base url
@@ -454,28 +461,28 @@ public class DocumentService
      */
     public String getModifyForm( Document document, Locale locale, String strBaseUrl )
     {
-        StringBuilder sbForm = new StringBuilder( );
-        DocumentType documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType( ) );
+        StringBuilder sbForm = new StringBuilder(  );
+        DocumentType documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
 
-        for ( DocumentAttribute attribute : documentType.getAttributes( ) )
+        for ( DocumentAttribute attribute : documentType.getAttributes(  ) )
         {
-            DocumentAttribute attributeDocument = getDocumentAttribute( document, attribute.getId( ) );
+            DocumentAttribute attributeDocument = getDocumentAttribute( document, attribute.getId(  ) );
 
             if ( attributeDocument != null )
             {
-                AttributeManager manager = AttributeService.getInstance( ).getManager(
-                        attributeDocument.getCodeAttributeType( ) );
+                AttributeManager manager = AttributeService.getInstance(  )
+                                                           .getManager( attributeDocument.getCodeAttributeType(  ) );
                 sbForm.append( manager.getModifyFormHtml( attributeDocument, document, locale, strBaseUrl ) );
             }
             else
             {
-                AttributeManager manager = AttributeService.getInstance( )
-                        .getManager( attribute.getCodeAttributeType( ) );
+                AttributeManager manager = AttributeService.getInstance(  )
+                                                           .getManager( attribute.getCodeAttributeType(  ) );
                 sbForm.append( manager.getCreateFormHtml( attribute, locale, strBaseUrl ) );
             }
         }
 
-        return sbForm.toString( );
+        return sbForm.toString(  );
     }
 
     /**
@@ -486,9 +493,9 @@ public class DocumentService
      */
     private DocumentAttribute getDocumentAttribute( Document document, int nAttributeId )
     {
-        for ( DocumentAttribute attribute : document.getAttributes( ) )
+        for ( DocumentAttribute attribute : document.getAttributes(  ) )
         {
-            if ( attribute.getId( ) == nAttributeId )
+            if ( attribute.getId(  ) == nAttributeId )
             {
                 return attribute;
             }
@@ -510,16 +517,16 @@ public class DocumentService
      *         permission, false otherwise
      */
     public boolean isAuthorizedAdminDocument( int nIdSpace, String strDocumentTypeId, String strPermission,
-            AdminUser user )
+        AdminUser user )
     {
         DocumentSpace documentSpace = DocumentSpaceHome.findByPrimaryKey( nIdSpace );
-        boolean bPermissionCreate = strPermission.equals( DocumentTypeResourceIdService.PERMISSION_CREATE ) ? documentSpace
-                .isDocumentCreationAllowed( ) : true;
+        boolean bPermissionCreate = strPermission.equals( DocumentTypeResourceIdService.PERMISSION_CREATE )
+            ? documentSpace.isDocumentCreationAllowed(  ) : true;
 
-        return DocumentSpacesService.getInstance( ).isAuthorizedViewByWorkgroup( documentSpace.getId( ), user )
-                && DocumentSpacesService.getInstance( ).isAuthorizedViewByRole( documentSpace.getId( ), user )
-                && RBACService.isAuthorized( DocumentType.RESOURCE_TYPE, strDocumentTypeId, strPermission, user )
-                && bPermissionCreate;
+        return DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( documentSpace.getId(  ), user ) &&
+        DocumentSpacesService.getInstance(  ).isAuthorizedViewByRole( documentSpace.getId(  ), user ) &&
+        RBACService.isAuthorized( DocumentType.RESOURCE_TYPE, strDocumentTypeId, strPermission, user ) &&
+        bPermissionCreate;
     }
 
     /**
@@ -549,15 +556,15 @@ public class DocumentService
         }
 
         // Check for illegal character character
-        if ( StringUtil.containsHtmlSpecialCharacters( strDocumentTitle )
-                || StringUtil.containsHtmlSpecialCharacters( strDocumentSummary ) )
+        if ( StringUtil.containsHtmlSpecialCharacters( strDocumentTitle ) ||
+                StringUtil.containsHtmlSpecialCharacters( strDocumentSummary ) )
         {
             return AdminMessageService.getMessageUrl( mRequest, Messages.MESSAGE_ILLEGAL_CHARACTER,
-                    AdminMessage.TYPE_STOP );
+                AdminMessage.TYPE_STOP );
         }
 
-        DocumentType documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType( ) );
-        List<DocumentAttribute> listAttributes = documentType.getAttributes( );
+        DocumentType documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
+        List<DocumentAttribute> listAttributes = documentType.getAttributes(  );
 
         for ( DocumentAttribute attribute : listAttributes )
         {
@@ -581,12 +588,12 @@ public class DocumentService
                 return AdminMessageService.getMessageUrl( mRequest, MESSAGE_INVALID_DATEBEGIN, AdminMessage.TYPE_STOP );
             }
 
-            dateValidityBegin = new Timestamp( dateBegin.getTime( ) );
+            dateValidityBegin = new Timestamp( dateBegin.getTime(  ) );
 
             if ( dateValidityBegin.before( new Timestamp( 0 ) ) )
             {
                 return AdminMessageService.getMessageUrl( mRequest, MESSAGE_INVALID_DATE_BEFORE_70,
-                        AdminMessage.TYPE_STOP );
+                    AdminMessage.TYPE_STOP );
             }
         }
 
@@ -599,12 +606,12 @@ public class DocumentService
                 return AdminMessageService.getMessageUrl( mRequest, MESSAGE_INVALID_DATEEND, AdminMessage.TYPE_STOP );
             }
 
-            dateValidityEnd = new Timestamp( dateEnd.getTime( ) );
+            dateValidityEnd = new Timestamp( dateEnd.getTime(  ) );
 
             if ( dateValidityEnd.before( new Timestamp( 0 ) ) )
             {
                 return AdminMessageService.getMessageUrl( mRequest, MESSAGE_INVALID_DATE_BEFORE_70,
-                        AdminMessage.TYPE_STOP );
+                    AdminMessage.TYPE_STOP );
             }
         }
 
@@ -614,7 +621,7 @@ public class DocumentService
             if ( dateValidityEnd.before( dateValidityBegin ) )
             {
                 return AdminMessageService.getMessageUrl( mRequest, MESSAGE_ERROR_DATEEND_BEFORE_DATEBEGIN,
-                        AdminMessage.TYPE_STOP );
+                    AdminMessage.TYPE_STOP );
             }
         }
 
@@ -626,17 +633,17 @@ public class DocumentService
         document.setMailingListId( nMailingListId );
         document.setPageTemplateDocumentId( nPageTemplateDocumentId );
 
-        MetadataHandler hMetadata = documentType.metadataHandler( );
+        MetadataHandler hMetadata = documentType.metadataHandler(  );
 
         if ( hMetadata != null )
         {
-            document.setXmlMetadata( hMetadata.getXmlMetadata( mRequest.getParameterMap( ) ) );
+            document.setXmlMetadata( hMetadata.getXmlMetadata( mRequest.getParameterMap(  ) ) );
         }
 
         document.setAttributes( listAttributes );
 
         //Categories
-        List<Category> listCategories = new ArrayList<Category>( );
+        List<Category> listCategories = new ArrayList<Category>(  );
 
         if ( arrayCategory != null )
         {
@@ -653,7 +660,7 @@ public class DocumentService
 
     /**
      * Update the specify attribute with the mRequest parameters
-     * 
+     *
      * @param attribute The {@link DocumentAttribute} to update
      * @param document The {@link Document}
      * @param mRequest The multipart http request
@@ -661,34 +668,34 @@ public class DocumentService
      * @return an admin message if error or null else
      */
     private String setAttribute( DocumentAttribute attribute, Document document, MultipartHttpServletRequest mRequest,
-            Locale locale )
+        Locale locale )
     {
-        String strParameterStringValue = mRequest.getParameter( attribute.getCode( ) );
-        FileItem fileParameterBinaryValue = mRequest.getFile( attribute.getCode( ) );
-        String strIsUpdatable = mRequest.getParameter( PARAMETER_ATTRIBUTE_UPDATE + attribute.getCode( ) );
-        String strToResize = mRequest.getParameter( attribute.getCode( ) + PARAMETER_CROPPABLE );
+        String strParameterStringValue = mRequest.getParameter( attribute.getCode(  ) );
+        FileItem fileParameterBinaryValue = mRequest.getFile( attribute.getCode(  ) );
+        String strIsUpdatable = mRequest.getParameter( PARAMETER_ATTRIBUTE_UPDATE + attribute.getCode(  ) );
+        String strToResize = mRequest.getParameter( attribute.getCode(  ) + PARAMETER_CROPPABLE );
         boolean bIsUpdatable = ( ( strIsUpdatable == null ) || strIsUpdatable.equals( "" ) ) ? false : true;
         boolean bToResize = ( ( strToResize == null ) || strToResize.equals( "" ) ) ? false : true;
 
         if ( strParameterStringValue != null ) // If the field is a string
         {
             // Check for mandatory value
-            if ( attribute.isRequired( ) && strParameterStringValue.trim( ).equals( "" ) )
+            if ( attribute.isRequired(  ) && strParameterStringValue.trim(  ).equals( "" ) )
             {
                 return AdminMessageService.getMessageUrl( mRequest, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
             }
 
             // Check for specific attribute validation
-            AttributeManager manager = AttributeService.getInstance( ).getManager( attribute.getCodeAttributeType( ) );
-            String strValidationErrorMessage = manager.validateValue( attribute.getId( ), strParameterStringValue,
+            AttributeManager manager = AttributeService.getInstance(  ).getManager( attribute.getCodeAttributeType(  ) );
+            String strValidationErrorMessage = manager.validateValue( attribute.getId(  ), strParameterStringValue,
                     locale );
 
             if ( strValidationErrorMessage != null )
             {
-                String[] listArguments = { attribute.getName( ), strValidationErrorMessage };
+                String[] listArguments = { attribute.getName(  ), strValidationErrorMessage };
 
                 return AdminMessageService.getMessageUrl( mRequest, MESSAGE_ATTRIBUTE_VALIDATION_ERROR, listArguments,
-                        AdminMessage.TYPE_STOP );
+                    AdminMessage.TYPE_STOP );
             }
 
             attribute.setTextValue( strParameterStringValue );
@@ -696,74 +703,80 @@ public class DocumentService
         else if ( fileParameterBinaryValue != null ) // If the field is a file
         {
             attribute.setBinary( true );
-            String strContentType = fileParameterBinaryValue.getContentType( );
-            byte[] bytes = fileParameterBinaryValue.get( );
-            String strFileName = fileParameterBinaryValue.getName( );
+
+            String strContentType = fileParameterBinaryValue.getContentType(  );
+            byte[] bytes = fileParameterBinaryValue.get(  );
+            String strFileName = fileParameterBinaryValue.getName(  );
             String strExtension = FilenameUtils.getExtension( strFileName );
 
-            AttributeManager manager = AttributeService.getInstance( ).getManager( attribute.getCodeAttributeType( ) );
+            AttributeManager manager = AttributeService.getInstance(  ).getManager( attribute.getCodeAttributeType(  ) );
 
             if ( !bIsUpdatable )
             {
                 // there is no new value then take the old file value
-                DocumentAttribute oldAttribute = document.getAttribute( attribute.getCode( ) );
+                DocumentAttribute oldAttribute = document.getAttribute( attribute.getCode(  ) );
 
-                if ( ( oldAttribute != null ) && ( oldAttribute.getBinaryValue( ) != null )
-                        && ( oldAttribute.getBinaryValue( ).length > 0 ) )
+                if ( ( oldAttribute != null ) && ( oldAttribute.getBinaryValue(  ) != null ) &&
+                        ( oldAttribute.getBinaryValue(  ).length > 0 ) )
                 {
-                    bytes = oldAttribute.getBinaryValue( );
-                    strContentType = oldAttribute.getValueContentType( );
-                    strFileName = oldAttribute.getTextValue( );
+                    bytes = oldAttribute.getBinaryValue(  );
+                    strContentType = oldAttribute.getValueContentType(  );
+                    strFileName = oldAttribute.getTextValue(  );
                     strExtension = FilenameUtils.getExtension( strFileName );
                 }
             }
 
-            List<AttributeTypeParameter> parameters = manager.getExtraParametersValues( locale, attribute.getId( ) );
+            List<AttributeTypeParameter> parameters = manager.getExtraParametersValues( locale, attribute.getId(  ) );
 
             String extensionList = StringUtils.EMPTY;
 
-            if ( CollectionUtils.isNotEmpty( parameters )
-                    && CollectionUtils.isNotEmpty( parameters.get( 0 ).getValueList( ) ) )
+            if ( CollectionUtils.isNotEmpty( parameters ) &&
+                    CollectionUtils.isNotEmpty( parameters.get( 0 ).getValueList(  ) ) )
             {
-                extensionList = parameters.get( 0 ).getValueList( ).get( 0 );
+                extensionList = parameters.get( 0 ).getValueList(  ).get( 0 );
             }
 
             // Check for mandatory value
-            if ( attribute.isRequired( ) && ( ( bytes == null ) || ( bytes.length == 0 ) ) )
+            if ( attribute.isRequired(  ) && ( ( bytes == null ) || ( bytes.length == 0 ) ) )
             {
                 return AdminMessageService.getMessageUrl( mRequest, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
             }
             else if ( StringUtils.isNotBlank( extensionList ) && !extensionList.contains( strExtension ) )
             {
                 Object[] params = new Object[2];
-                params[0] = attribute.getName( );
+                params[0] = attribute.getName(  );
                 params[1] = extensionList;
+
                 return AdminMessageService.getMessageUrl( mRequest, MESSAGE_EXTENSION_ERROR, params,
-                        AdminMessage.TYPE_STOP );
+                    AdminMessage.TYPE_STOP );
             }
 
             // Check for specific attribute validation
-            String strValidationErrorMessage = manager.validateValue( attribute.getId( ), strFileName, locale );
+            String strValidationErrorMessage = manager.validateValue( attribute.getId(  ), strFileName, locale );
 
             if ( strValidationErrorMessage != null )
             {
-                String[] listArguments = { attribute.getName( ), strValidationErrorMessage };
+                String[] listArguments = { attribute.getName(  ), strValidationErrorMessage };
 
                 return AdminMessageService.getMessageUrl( mRequest, MESSAGE_ATTRIBUTE_VALIDATION_ERROR, listArguments,
-                        AdminMessage.TYPE_STOP );
+                    AdminMessage.TYPE_STOP );
             }
 
             if ( bToResize && !ArrayUtils.isEmpty( bytes ) )
             {
                 // Resize image
-                String strWidth = mRequest.getParameter( attribute.getCode( ) + PARAMETER_WIDTH );
+                String strWidth = mRequest.getParameter( attribute.getCode(  ) + PARAMETER_WIDTH );
 
                 if ( StringUtils.isBlank( strWidth ) || !StringUtils.isNumeric( strWidth ) )
                 {
-                    String[] listArguments = { attribute.getName( ),
-                            I18nService.getLocalizedString( MESSAGE_ATTRIBUTE_WIDTH_ERROR, mRequest.getLocale( ) ) };
+                    String[] listArguments = 
+                        {
+                            attribute.getName(  ),
+                            I18nService.getLocalizedString( MESSAGE_ATTRIBUTE_WIDTH_ERROR, mRequest.getLocale(  ) )
+                        };
+
                     return AdminMessageService.getMessageUrl( mRequest, MESSAGE_ATTRIBUTE_VALIDATION_ERROR,
-                            listArguments, AdminMessage.TYPE_STOP );
+                        listArguments, AdminMessage.TYPE_STOP );
                 }
 
                 try
@@ -773,7 +786,7 @@ public class DocumentService
                 catch ( IOException e )
                 {
                     return AdminMessageService.getMessageUrl( mRequest, MESSAGE_ATTRIBUTE_RESIZE_ERROR,
-                            AdminMessage.TYPE_STOP );
+                        AdminMessage.TYPE_STOP );
                 }
             }
 

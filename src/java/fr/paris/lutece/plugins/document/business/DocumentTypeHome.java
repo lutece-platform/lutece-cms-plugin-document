@@ -82,7 +82,7 @@ public final class DocumentTypeHome
 
     /**
      * Remove the DocumentType whose identifier is specified in parameter
-     * 
+     *
      * @param strCode The document type code
      */
     public static void remove( String strCode )
@@ -96,7 +96,7 @@ public final class DocumentTypeHome
     /**
      * Returns an instance of a documentType whose identifier is specified in
      * parameter
-     * 
+     *
      * @return An instance of documentType
      * @param strCode The document type code
      */
@@ -126,7 +126,7 @@ public final class DocumentTypeHome
 
     /**
      * Reorder Attributes
-     * 
+     *
      * @param nIdAttribute1 The id of the first attribute
      * @param nOrderAttribute1 The order of the first attribute
      * @param nIdAttribute2 The id of the second attribute

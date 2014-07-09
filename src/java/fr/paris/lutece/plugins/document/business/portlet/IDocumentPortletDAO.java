@@ -55,11 +55,11 @@ public interface IDocumentPortletDAO extends IPortletInterfaceDAO
      * @return A collection of referenceItem
      */
     Collection<ReferenceItem> selectByDocumentOdAndDocumentType( int nDocumentId, String strCodeDocumentType,
-            PortletOrder pOrder, PortletFilter pFilter );
+        PortletOrder pOrder, PortletFilter pFilter );
 
     /**
      * Tests if is a portlet is portlet type alias
-     * 
+     *
      * @param nPortletId The identifier of the document
      * @return true if the portlet is alias, false otherwise
      */

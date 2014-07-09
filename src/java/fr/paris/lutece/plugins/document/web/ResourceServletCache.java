@@ -86,14 +86,15 @@ public class ResourceServletCache extends AbstractCacheableService
      * Remove keys from a key pattern
      * @param strKeyPattern The key pattern
      */
-    void removeFromKeyPattern(String strKeyPattern)
+    void removeFromKeyPattern( String strKeyPattern )
     {
-        Cache cache = getCache();
-        for( String strKey : getKeys() )
+        Cache cache = getCache(  );
+
+        for ( String strKey : getKeys(  ) )
         {
-            if( strKey.contains(strKeyPattern ))
+            if ( strKey.contains( strKeyPattern ) )
             {
-                cache.remove(strKey);
+                cache.remove( strKey );
             }
         }
     }

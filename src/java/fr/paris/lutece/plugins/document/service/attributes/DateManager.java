@@ -40,6 +40,7 @@ import fr.paris.lutece.util.date.DateUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -64,7 +65,7 @@ public class DateManager extends DefaultManager
      * Gets the template to enter the attribute value
      * @return The template to enter the attribute value
      */
-    String getCreateTemplate( )
+    String getCreateTemplate(  )
     {
         return TEMPLATE_CREATE_ATTRIBUTE;
     }
@@ -73,7 +74,7 @@ public class DateManager extends DefaultManager
      * Gets the template to modify the attribute value
      * @return The template to modify the attribute value
      */
-    String getModifyTemplate( )
+    String getModifyTemplate(  )
     {
         return TEMPLATE_MODIFY_ATTRIBUTE;
     }
@@ -82,7 +83,7 @@ public class DateManager extends DefaultManager
      * Gets the template to enter the parameters of the attribute value
      * @return The template to enter the parameters of the attribute value
      */
-    String getCreateParametersTemplate( )
+    String getCreateParametersTemplate(  )
     {
         return TEMPLATE_CREATE_PARAMETERS_ATTRIBUTE;
     }
@@ -91,7 +92,7 @@ public class DateManager extends DefaultManager
      * Gets the template to modify the parameters of the attribute value
      * @return The template to modify the parameters of the attribute value
      */
-    String getModifyParametersTemplate( )
+    String getModifyParametersTemplate(  )
     {
         return TEMPLATE_MODIFY_PARAMETERS_ATTRIBUTE;
     }
@@ -111,6 +112,7 @@ public class DateManager extends DefaultManager
         {
             return strValidateValue;
         }
+
         String strValidateDate = validateDate( strValue, locale );
 
         if ( strValidateDate != null )
@@ -134,8 +136,8 @@ public class DateManager extends DefaultManager
 
         for ( AttributeTypeParameter parameter : listParameters )
         {
-            strValue = parameter.getValueList( ).iterator( ).hasNext( ) ? parameter.getValueList( ).iterator( ).next( )
-                    : "";
+            strValue = parameter.getValueList(  ).iterator(  ).hasNext(  )
+                ? parameter.getValueList(  ).iterator(  ).next(  ) : "";
 
             // if current date is checked, return null
             if ( strValue.equals( CHECK_ON ) )
@@ -169,13 +171,13 @@ public class DateManager extends DefaultManager
 
         for ( AttributeTypeParameter parameter : listParameters )
         {
-            if ( parameter.getValueList( ).iterator( ).hasNext( )
-                    && parameter.getValueList( ).iterator( ).next( ).equals( CHECK_ON ) )
+            if ( parameter.getValueList(  ).iterator(  ).hasNext(  ) &&
+                    parameter.getValueList(  ).iterator(  ).next(  ).equals( CHECK_ON ) )
             {
                 //replace CHECK_ON by current date
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat( DATE_FORMAT[3] );
-                Date date = new Date( );
-                ArrayList<String> listValues = new ArrayList<String>( );
+                Date date = new Date(  );
+                ArrayList<String> listValues = new ArrayList<String>(  );
                 listValues.add( simpleDateFormat.format( date ) );
                 parameter.setValueList( listValues );
             }
@@ -193,7 +195,7 @@ public class DateManager extends DefaultManager
     private String validateDate( String strDate, Locale locale )
     {
         Date date = null;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat( );
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(  );
         int i = 0;
 
         if ( ( strDate == null ) || strDate.equals( "" ) )
@@ -205,7 +207,7 @@ public class DateManager extends DefaultManager
         {
             simpleDateFormat.applyPattern( DATE_FORMAT[i] );
 
-            if ( strDate.length( ) == DATE_FORMAT[i].length( ) )
+            if ( strDate.length(  ) == DATE_FORMAT[i].length(  ) )
             {
                 try
                 {

@@ -33,14 +33,15 @@
  */
 package fr.paris.lutece.plugins.document.utils;
 
+import org.imgscalr.Scalr;
+
 import java.awt.image.BufferedImage;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-
-import org.imgscalr.Scalr;
 
 
 /**
@@ -54,7 +55,7 @@ public final class ImageUtils
     /**
      * Private constructor
      */
-    private ImageUtils( )
+    private ImageUtils(  )
     {
     }
 
@@ -65,16 +66,17 @@ public final class ImageUtils
      * @return the resize byte array
      * @throws IOException occurs during treatment
      */
-    public static byte[] resizeImage( byte[] byteArray, int width ) throws IOException
+    public static byte[] resizeImage( byte[] byteArray, int width )
+        throws IOException
     {
         // Crop image if needed
         ByteArrayInputStream in = new ByteArrayInputStream( byteArray );
-        ByteArrayOutputStream out = new ByteArrayOutputStream( );
+        ByteArrayOutputStream out = new ByteArrayOutputStream(  );
         BufferedImage image = ImageIO.read( in );
         BufferedImage resizedImage;
         resizedImage = Scalr.resize( image, Scalr.Mode.FIT_TO_WIDTH, width );
         ImageIO.write( resizedImage, PARAMETER_JPG, out );
 
-        return out.toByteArray( );
+        return out.toByteArray(  );
     }
 }

@@ -43,10 +43,11 @@ import fr.paris.lutece.portal.service.resource.IExtendableResourceService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Collection;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -56,38 +57,39 @@ import org.apache.commons.lang.StringUtils;
 public class DocumentExtendableResourceService implements IExtendableResourceService
 {
     private static final String MESSAGE_DOCUMENT_RESOURCE_TYPE_DESCRIPTION = "document.resource.resourceTypeDescription";
-
     private static final String PARAMETER_DOCUMENT_ID = "document_id";
     private static final String PARAMETER_PORTLET_ID = "portlet_id";
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isInvoked( String strResourceType )
-	{
-		return Document.PROPERTY_RESOURCE_TYPE.equals( strResourceType );
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public IExtendableResource getResource( String strIdResource, String strResourceType )
-	{
-		if ( StringUtils.isNotBlank( strIdResource ) && StringUtils.isNumeric( strIdResource ) )
-		{
-			int nIdDocument = Integer.parseInt( strIdResource );
-			return DocumentHome.findByPrimaryKey( nIdDocument );
-		}
-		return null;
-	}
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getResourceType( )
+    public boolean isInvoked( String strResourceType )
+    {
+        return Document.PROPERTY_RESOURCE_TYPE.equals( strResourceType );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IExtendableResource getResource( String strIdResource, String strResourceType )
+    {
+        if ( StringUtils.isNotBlank( strIdResource ) && StringUtils.isNumeric( strIdResource ) )
+        {
+            int nIdDocument = Integer.parseInt( strIdResource );
+
+            return DocumentHome.findByPrimaryKey( nIdDocument );
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getResourceType(  )
     {
         return Document.PROPERTY_RESOURCE_TYPE;
     }
@@ -109,18 +111,22 @@ public class DocumentExtendableResourceService implements IExtendableResourceSer
     {
         if ( StringUtils.isNotBlank( strIdResource ) && StringUtils.isNumeric( strIdResource ) )
         {
-            Collection<Portlet> listPortlets = PublishingService.getInstance( ).getPortletsByDocumentId( strIdResource );
-            if ( listPortlets != null && listPortlets.size( ) > 0 )
+            Collection<Portlet> listPortlets = PublishingService.getInstance(  ).getPortletsByDocumentId( strIdResource );
+
+            if ( ( listPortlets != null ) && ( listPortlets.size(  ) > 0 ) )
             {
-                UrlItem urlItem = new UrlItem( AppPathService.getPortalUrl( ) );
+                UrlItem urlItem = new UrlItem( AppPathService.getPortalUrl(  ) );
                 urlItem.addParameter( PARAMETER_DOCUMENT_ID, strIdResource );
+
                 for ( Portlet portlet : listPortlets )
                 {
-                    urlItem.addParameter( PARAMETER_PORTLET_ID, portlet.getId( ) );
+                    urlItem.addParameter( PARAMETER_PORTLET_ID, portlet.getId(  ) );
                 }
-                return urlItem.getUrl( );
+
+                return urlItem.getUrl(  );
             }
         }
+
         return null;
     }
 }

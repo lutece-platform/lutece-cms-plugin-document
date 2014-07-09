@@ -75,6 +75,8 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -84,8 +86,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
-
 
 /**
  * DocumentPublishingJspBean
@@ -94,16 +94,14 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 {
     public static final String RIGHT_DOCUMENT_MANAGEMENT = "DOCUMENT_MANAGEMENT";
     public static final String RIGHT_MANAGE_ADMIN_SITE = "CORE_ADMIN_SITE";
+
     /**
      * Generated serial version UID
      */
     private static final long serialVersionUID = -7693499948082725314L;
-
     private static final String REGEX_ID = "^[\\d]+$";
-
     private static final int MODE_PUBLICATION_STANDARD = 0;
     private static final int MODE_PUBLICATION_AUTO_PUBLICATION = 1;
-
     private static final String PARAMETER_DOCUMENT_ID = "id_document";
     private static final String PARAMETER_PORTLET_ID = "id_portlet";
     private static final String PARAMETER_SPACE_ID = "id_space";
@@ -117,7 +115,6 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_ORDER_PORTLET_ASC = "order_portlet_asc";
     private static final String PARAMETER_PORTLET_FILTER_TYPE = "portlet_filter_type";
     private static final String PARAMETER_PORTLET_FILTER_VALUE = "portlet_filter_value";
-
     private static final String MARK_DOCUMENT = "document";
     private static final String MARK_DOCUMENT_PUBLISHED = "document_published";
     private static final String MARK_DOCUMENT_PUBLISHED_STATUS = "status";
@@ -151,12 +148,10 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     private static final String MARK_PORTLET_FILTER_ERROR = "portlet_filter_error";
     private static final String MARK_PORTLET_FILTER = "portlet_filter";
     private static final String MARK_LABEL_DISPLAY_LATEST_PORTLETS = "label_display_latest_portlets";
-
     private static final String PROPERTY_PUBLISHING_SPACE_PAGE_TITLE = "document.assign.pageTitle";
     private static final String PROPERTY_MANAGE_PUBLISHING = "document.portlet.publishing.pageTitle";
     private static final String PROPERTY_CREATE_AUTO_PUBLICATION = "document.portlet.publishing.pageTitle";
     private static final String PROPERTY_DISPLAY_LATEST_PORTLETS = "document.manage_document_publishing.labelDisplayLatestPortlets";
-
     private static final String TEMPLATE_DOCUMENT_PUBLISHING = "/admin/plugins/document/publishing/manage_document_publishing.html";
     private static final String TEMPLATE_PORTLET_PAGE_PATH = "/admin/plugins/document/publishing/portlet_page_path.html";
     private static final String TEMPLATE_PORTLET_PUBLISHING = "/admin/plugins/document/publishing/manage_portlet_publishing.html";
@@ -165,12 +160,10 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     private static final String TEMPLATE_PUBLISHED_DOCUMENT_LIST_CONTAINER = "/admin/plugins/document/publishing/published_document_list_container.html";
     private static final String TEMPLATE_ASSIGNED_DOCUMENT_LIST = "/admin/plugins/document/publishing/assigned_document_list.html";
     private static final String TEMPLATE_ASSIGNED_DOCUMENT_LIST_CONTAINER = "/admin/plugins/document/publishing/assigned_document_list_container.html";
-
     private static final String JSP_DOCUMENTS_ASSIGN = "ManageDocumentPublishing.jsp";
     private static final String JSP_DOCUMENTS_PUBLISHING = "ManagePublishing.jsp";
     private static final String JSP_DELETE_AUTO_PUBLICATION = "jsp/admin/plugins/document/DoDeleteAutoPublication.jsp";
     private static final String JSP_CHANGE_MODE_PUBLICATION = "jsp/admin/plugins/document/DoChangeModePublication.jsp";
-
     private static final String MESSAGE_AUTO_PUBLICATION_ALREADY_EXISTS = "document.message.autoPublication.alreadyExists";
     private static final String MESSAGE_CONFIRM_DELETE_AUTO_PUBLICATION = "document.message.autoPublication.confirmDeleteAutoPublication";
     private static final String MESSAGE_CONFIRM_CHANGE_MODE_PUBLICATION_STANDARD = "document.message.modePublication.confirmChangeModePublication.standard";
@@ -305,7 +298,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
     /**
      * Get the list of authorized portlets.
-     * 
+     *
      * Check :
      * <ul>
      * <li>if user is authorized to manage DocumentListPortlet</li>
@@ -317,7 +310,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      * </ul>
      * </li>
      * </ul>
-     * 
+     *
      * @param nDocumentId
      *            The document id
      * @param strCodeDocumentType
@@ -347,7 +340,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
     /**
      * Get the list of authorized portlets.
-     * 
+     *
      * Check :
      * <ul>
      * <li>if user is authorized to manage DocumentListPortlet</li>
@@ -359,7 +352,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      * </ul>
      * </li>
      * </ul>
-     * 
+     *
      * @param nDocumentId
      *            The document id
      * @param strCodeDocumentType
@@ -388,7 +381,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
     /**
      * Filter the given portlets list by its workgroup
-     * 
+     *
      * @param listPortlets
      *            a collection of {@link ReferenceItem}
      * @param pFilter The portlet filter
@@ -893,7 +886,8 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         {
             DocumentAction docAction = (DocumentAction) action;
 
-            if ( (docAction != null ) && docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_PUBLISH ) )
+            if ( ( docAction != null ) &&
+                    docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_PUBLISH ) )
             {
                 model.put( MARK_PERMISSION_PUBLISH, 1 );
             }
@@ -997,7 +991,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
     /**
      * Return AdminSite Url
-     * 
+     *
      * @param nPortletId The portlet id
      * @param nDocumentId The document id
      * @return url
@@ -1047,12 +1041,14 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         {
             strPublishedDocumentsRow.append( getPublishedDocumentsList( document, nPortletId ) );
         }
-        Map<String, Object> publishedDocumentListModel = new HashMap<String, Object>( );
-        publishedDocumentListModel.put( MARK_PUBLISHED_DOCUMENT_LIST, strPublishedDocumentsRow );
-        HtmlTemplate publishedDocumentListTemplate = AppTemplateService.getTemplate(
-                TEMPLATE_PUBLISHED_DOCUMENT_LIST_CONTAINER, getLocale( ), publishedDocumentListModel );
 
-        model.put( MARK_PUBLISHED_DOCUMENT_LIST, publishedDocumentListTemplate.getHtml( ) );
+        Map<String, Object> publishedDocumentListModel = new HashMap<String, Object>(  );
+        publishedDocumentListModel.put( MARK_PUBLISHED_DOCUMENT_LIST, strPublishedDocumentsRow );
+
+        HtmlTemplate publishedDocumentListTemplate = AppTemplateService.getTemplate( TEMPLATE_PUBLISHED_DOCUMENT_LIST_CONTAINER,
+                getLocale(  ), publishedDocumentListModel );
+
+        model.put( MARK_PUBLISHED_DOCUMENT_LIST, publishedDocumentListTemplate.getHtml(  ) );
 
         StringBuffer strAssignedDocumentsRow = new StringBuffer(  );
 
@@ -1061,12 +1057,14 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         {
             strAssignedDocumentsRow.append( getAssignedDocumentsList( document, nPortletId ) );
         }
-        Map<String, Object> assignedDocumentListModel = new HashMap<String, Object>( );
+
+        Map<String, Object> assignedDocumentListModel = new HashMap<String, Object>(  );
         assignedDocumentListModel.put( MARK_ASSIGNED_DOCUMENT_LIST, strAssignedDocumentsRow );
-        HtmlTemplate assignedDocumentListTemplate = AppTemplateService.getTemplate(
-                TEMPLATE_ASSIGNED_DOCUMENT_LIST_CONTAINER, getLocale( ), assignedDocumentListModel );
-        
-        model.put( MARK_ASSIGNED_DOCUMENT_LIST, assignedDocumentListTemplate.getHtml( ) );
+
+        HtmlTemplate assignedDocumentListTemplate = AppTemplateService.getTemplate( TEMPLATE_ASSIGNED_DOCUMENT_LIST_CONTAINER,
+                getLocale(  ), assignedDocumentListModel );
+
+        model.put( MARK_ASSIGNED_DOCUMENT_LIST, assignedDocumentListTemplate.getHtml(  ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PORTLET_PUBLISHING, getLocale(  ), model );
 

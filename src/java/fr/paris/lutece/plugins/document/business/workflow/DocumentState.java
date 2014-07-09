@@ -58,17 +58,17 @@ public class DocumentState
 
     /**
      * Returns the IdState
-     * 
+     *
      * @return The IdState
      */
-    public int getId( )
+    public int getId(  )
     {
         return _nIdState;
     }
 
     /**
      * Sets the IdState
-     * 
+     *
      * @param nIdState The IdState
      */
     public void setId( int nIdState )
@@ -78,7 +78,7 @@ public class DocumentState
 
     /**
      * Sets the Locale
-     * 
+     *
      * @param locale the locale
      */
     public void setLocale( Locale locale )
@@ -88,17 +88,17 @@ public class DocumentState
 
     /**
      * Returns the NameKey
-     * 
+     *
      * @return The NameKey
      */
-    public String getNameKey( )
+    public String getNameKey(  )
     {
         return _strNameKey;
     }
 
     /**
      * Sets the NameKey
-     * 
+     *
      * @param strNameKey The NameKey
      */
     public void setNameKey( String strNameKey )
@@ -108,17 +108,17 @@ public class DocumentState
 
     /**
      * Returns the DescriptionKey
-     * 
+     *
      * @return The DescriptionKey
      */
-    public String getDescriptionKey( )
+    public String getDescriptionKey(  )
     {
         return _strDescriptionKey;
     }
 
     /**
      * Sets the DescriptionKey
-     * 
+     *
      * @param strDescriptionKey The DescriptionKey
      */
     public void setDescriptionKey( String strDescriptionKey )
@@ -128,10 +128,10 @@ public class DocumentState
 
     /**
      * Returns the Name
-     * 
+     *
      * @return The Name
      */
-    public String getName( )
+    public String getName(  )
     {
         return I18nService.getLocalizedString( _strNameKey, _locale );
     }

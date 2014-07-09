@@ -66,56 +66,56 @@ public class DocumentEvent
         _document = document;
         _user = user;
         _nType = nType;
-        _nSpaceId = _document.getSpaceId( );
-        _nStateId = _document.getStateId( );
+        _nSpaceId = _document.getSpaceId(  );
+        _nStateId = _document.getStateId(  );
     }
 
     /**
      * Returns the EventType
-     * 
+     *
      * @return The EventType
      */
-    public int getEventType( )
+    public int getEventType(  )
     {
         return _nType;
     }
 
     /**
      * Returns the Document
-     * 
+     *
      * @return The Document
      */
-    public Document getDocument( )
+    public Document getDocument(  )
     {
         return _document;
     }
 
     /**
      * Returns the User
-     * 
+     *
      * @return The User
      */
-    public AdminUser getUser( )
+    public AdminUser getUser(  )
     {
         return _user;
     }
 
     /**
      * Returns the space id of the document before any rule has been applied
-     * 
+     *
      * @return the space id
      */
-    public int getSpaceId( )
+    public int getSpaceId(  )
     {
         return _nSpaceId;
     }
 
     /**
      * Returns the state id of the document before any rule has been applied
-     * 
+     *
      * @return the state id
      */
-    public int getStateId( )
+    public int getStateId(  )
     {
         return _nStateId;
     }

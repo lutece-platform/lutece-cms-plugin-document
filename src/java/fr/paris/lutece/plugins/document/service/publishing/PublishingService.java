@@ -352,10 +352,12 @@ public class PublishingService
 
         Collection<DocumentPublication> listDocumentPublication = DocumentPublicationHome.findSinceDatePublishingAndStatus( datePublishing,
                 DocumentPublication.STATUS_PUBLISHED );
-        if ( listDocumentPublication == null || listDocumentPublication.size( ) == 0 )
+
+        if ( ( listDocumentPublication == null ) || ( listDocumentPublication.size(  ) == 0 ) )
         {
-            return new ArrayList<Document>( );
+            return new ArrayList<Document>(  );
         }
+
         int[] arrayIds = new int[listDocumentPublication.size(  )];
         int i = 0;
         DocumentFilter publishedDocumentFilter = documentFilter;

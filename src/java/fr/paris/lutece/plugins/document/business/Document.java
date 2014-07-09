@@ -45,6 +45,8 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.xml.XmlUtil;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -52,17 +54,15 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
-
 
 /**
  * A document of the CMS.
  */
 public class Document implements Localizable, IExtendableResource
 {
-	public static final String CODE_DOCUMENT_TYPE_DOWNLOAD = "download";
+    public static final String CODE_DOCUMENT_TYPE_DOWNLOAD = "download";
     public static final String CODE_DOCUMENT_TYPE_IMAGE = "image";
-	public static final String PROPERTY_RESOURCE_TYPE = "document";
+    public static final String PROPERTY_RESOURCE_TYPE = "document";
     private static final String SERVLET_DOCUMENT_PATH = "document";
     private static final String PROPERTY_DEFAULT_THUMBNAIL = "document.thumbnail.default";
     private static final String PROPERTY_RESOURCE_PROVIDER_URL = "document.resource.provider.url";
@@ -73,9 +73,7 @@ public class Document implements Localizable, IExtendableResource
     private static final String TAG_DOCUMENT_ID = "document-id";
     private static final String TAG_DATE_PUBLICATION = "document-date-publication";
     private static final String TAG_DOCUMENT_XML_CONTENT = "document-xml-content";
-
     private static final String MARK_ID = "id";
-
     private static final String EMPTY_STRING = "";
     private static final String CONSTANT_QUESTION_MARK = "?";
     private static final String CONSTANT_EQUALS = "=";
@@ -112,7 +110,7 @@ public class Document implements Localizable, IExtendableResource
      *
      * @return The IdDocument
      */
-	public int getId(  )
+    public int getId(  )
     {
         return _nIdDocument;
     }
@@ -143,7 +141,7 @@ public class Document implements Localizable, IExtendableResource
      * @param locale The Locale
      */
     @Override
-	public void setLocale( Locale locale )
+    public void setLocale( Locale locale )
     {
         _locale = locale;
     }
@@ -755,38 +753,38 @@ public class Document implements Localizable, IExtendableResource
         return !( getDateValidityEnd(  ).compareTo( new Date(  ) ) >= 0 );
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getIdExtendableResource( )
-	{
-		return Integer.toString( _nIdDocument );
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getExtendableResourceType( )
-	{
-		return PROPERTY_RESOURCE_TYPE;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getExtendableResourceName( )
-	{
-		return _strTitle;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getIdExtendableResource(  )
+    {
+        return Integer.toString( _nIdDocument );
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getExtendableResourceDescription( )
+    public String getExtendableResourceType(  )
+    {
+        return PROPERTY_RESOURCE_TYPE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getExtendableResourceName(  )
+    {
+        return _strTitle;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getExtendableResourceDescription(  )
     {
         return _strSummary;
     }
@@ -795,7 +793,7 @@ public class Document implements Localizable, IExtendableResource
      * {@inheritDoc}
      */
     @Override
-    public String getExtendableResourceImageUrl( )
+    public String getExtendableResourceImageUrl(  )
     {
         if ( StringUtils.equalsIgnoreCase( _strCodeDocumentType, CODE_DOCUMENT_TYPE_IMAGE ) )
         {
@@ -804,8 +802,10 @@ public class Document implements Localizable, IExtendableResource
             sbUrl.append( MARK_ID );
             sbUrl.append( CONSTANT_EQUALS );
             sbUrl.append( _nIdDocument );
-            return sbUrl.toString( );
+
+            return sbUrl.toString(  );
         }
+
         return null;
     }
 }

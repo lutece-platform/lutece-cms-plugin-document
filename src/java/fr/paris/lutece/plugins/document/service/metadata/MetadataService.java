@@ -57,18 +57,18 @@ public class MetadataService
      * Get the list of metadata handlers
      * @return The list fo metadata handlers
      */
-    public static ReferenceList getMetadataHandlersList( )
+    public static ReferenceList getMetadataHandlersList(  )
     {
-        ReferenceList listHandlers = new ReferenceList( );
+        ReferenceList listHandlers = new ReferenceList(  );
 
         listHandlers.addItem( NO_HANDLER, NO_HANDLER_LABEL );
 
         String strHandlersList = AppPropertiesService.getProperty( PROPERTY_HANDLERS_LIST );
         StringTokenizer st = new StringTokenizer( strHandlersList );
 
-        while ( st.hasMoreTokens( ) )
+        while ( st.hasMoreTokens(  ) )
         {
-            String strHandlerKey = st.nextToken( );
+            String strHandlerKey = st.nextToken(  );
             listHandlers.addItem( strHandlerKey, getDescription( strHandlerKey ) );
         }
 

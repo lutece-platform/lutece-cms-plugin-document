@@ -52,7 +52,7 @@ import java.util.Collection;
 
 
 /**
- * 
+ *
  * AutoPublication Service
  */
 public class AutoPublicationService
@@ -63,11 +63,11 @@ public class AutoPublicationService
      * Get the auto publication service instance
      * @return The instance of the auto publication service
      */
-    public static AutoPublicationService getInstance( )
+    public static AutoPublicationService getInstance(  )
     {
         if ( _singleton == null )
         {
-            _singleton = new AutoPublicationService( );
+            _singleton = new AutoPublicationService(  );
         }
 
         return _singleton;
@@ -75,42 +75,42 @@ public class AutoPublicationService
 
     /**
      * Initialize the {@link DocumentAutoPublication} service
-     * 
+     *
      */
-    public void init( )
+    public void init(  )
     {
-        DocumentAutoPublication.init( );
+        DocumentAutoPublication.init(  );
     }
 
     /**
      * Process auto publication
      * @return The log of the process
      */
-    public String processAutoPublishing( )
+    public String processAutoPublishing(  )
     {
-        StringBuffer sbLogs = new StringBuffer( );
+        StringBuffer sbLogs = new StringBuffer(  );
 
         sbLogs.append( "\r\n[Start] Starting Auto publication daemon...\r\n" );
 
-        long lDuration = System.currentTimeMillis( );
+        long lDuration = System.currentTimeMillis(  );
 
-        for ( DocumentAutoPublication documentAutoPublication : DocumentAutoPublicationHome.findAll( ) )
+        for ( DocumentAutoPublication documentAutoPublication : DocumentAutoPublicationHome.findAll(  ) )
         {
-            for ( Document document : findPublishableDocumentsList( documentAutoPublication.getIdPortlet( ),
-                    documentAutoPublication.getIdSpace( ) ) )
+            for ( Document document : findPublishableDocumentsList( documentAutoPublication.getIdPortlet(  ),
+                    documentAutoPublication.getIdSpace(  ) ) )
             {
-                sbLogs.append( "\r\nPublishing Document " + document.getId( ) + " : '" + document.getTitle( )
-                        + "'...\r\n" );
-                PublishingService.getInstance( ).assign( document.getId( ), documentAutoPublication.getIdPortlet( ) );
-                PublishingService.getInstance( ).publish( document.getId( ), documentAutoPublication.getIdPortlet( ) );
-                PublishingService.getInstance( ).changeDocumentOrder( document.getId( ),
-                        documentAutoPublication.getIdPortlet( ), 1 ); //Set new published document at the first place 
+                sbLogs.append( "\r\nPublishing Document " + document.getId(  ) + " : '" + document.getTitle(  ) +
+                    "'...\r\n" );
+                PublishingService.getInstance(  ).assign( document.getId(  ), documentAutoPublication.getIdPortlet(  ) );
+                PublishingService.getInstance(  ).publish( document.getId(  ), documentAutoPublication.getIdPortlet(  ) );
+                PublishingService.getInstance(  )
+                                 .changeDocumentOrder( document.getId(  ), documentAutoPublication.getIdPortlet(  ), 1 ); //Set new published document at the first place 
             }
         }
 
-        sbLogs.append( "\r\n[End] Duration : " + ( System.currentTimeMillis( ) - lDuration ) + " milliseconds\r\n" );
+        sbLogs.append( "\r\n[End] Duration : " + ( System.currentTimeMillis(  ) - lDuration ) + " milliseconds\r\n" );
 
-        return sbLogs.toString( );
+        return sbLogs.toString(  );
     }
 
     /**
@@ -123,30 +123,30 @@ public class AutoPublicationService
      * <li>by portlet categories</li>
      * <li>by validity period</li>
      * </ul>
-     * 
+     *
      * @param nPortletId The portlet Id
      * @param nSpaceId The space Id
      * @return A Collection of documents
      */
     private Collection<Document> findPublishableDocumentsList( int nPortletId, int nSpaceId )
     {
-        Collection<Document> listPublishableDocuments = new ArrayList<Document>( );
+        Collection<Document> listPublishableDocuments = new ArrayList<Document>(  );
         Portlet portlet = PortletHome.findByPrimaryKey( nPortletId );
         String documentTypeCode = null;
         int[] arrayCategories = null;
 
-        if ( DocumentListPortletHome.getInstance( ).getPortletTypeId( ).equals( portlet.getPortletTypeId( ) ) ) //equivalent to : if(portlet instanceof DocumentPortlet)
+        if ( DocumentListPortletHome.getInstance(  ).getPortletTypeId(  ).equals( portlet.getPortletTypeId(  ) ) ) //equivalent to : if(portlet instanceof DocumentPortlet)
         {
             DocumentListPortlet documentListPortlet = (DocumentListPortlet) portlet;
-            documentTypeCode = documentListPortlet.getDocumentTypeCode( );
-            arrayCategories = documentListPortlet.getIdCategory( );
+            documentTypeCode = documentListPortlet.getDocumentTypeCode(  );
+            arrayCategories = documentListPortlet.getIdCategory(  );
         }
 
-        if ( DocumentPortletHome.getInstance( ).getPortletTypeId( ).equals( portlet.getPortletTypeId( ) ) )
+        if ( DocumentPortletHome.getInstance(  ).getPortletTypeId(  ).equals( portlet.getPortletTypeId(  ) ) )
         {
             DocumentPortlet documentPortlet = (DocumentPortlet) portlet;
-            documentTypeCode = documentPortlet.getDocumentTypeCode( );
-            arrayCategories = documentPortlet.getIdCategory( );
+            documentTypeCode = documentPortlet.getDocumentTypeCode(  );
+            arrayCategories = documentPortlet.getIdCategory(  );
         }
 
         if ( ( documentTypeCode == null ) && ( arrayCategories == null ) ) //Error : auto publication mapped with a non document portlet !
@@ -154,7 +154,7 @@ public class AutoPublicationService
             return listPublishableDocuments;
         }
 
-        DocumentFilter documentFilter = new DocumentFilter( );
+        DocumentFilter documentFilter = new DocumentFilter(  );
         documentFilter.setIdSpace( nSpaceId ); //Filter by Space
         documentFilter.setIdState( DocumentState.STATE_VALIDATE ); // Filter by state
         documentFilter.setCodeDocumentType( documentTypeCode ); //Filter by document type code
@@ -162,7 +162,8 @@ public class AutoPublicationService
 
         for ( Document document : DocumentHome.findByFilter( documentFilter, null ) )
         {
-            if ( document.isValid( ) && !PublishingService.getInstance( ).isPublished( document.getId( ), nPortletId ) ) //isValid = Check the publication period
+            if ( document.isValid(  ) &&
+                    !PublishingService.getInstance(  ).isPublished( document.getId(  ), nPortletId ) ) //isValid = Check the publication period
             {
                 listPublishableDocuments.add( document );
             }
@@ -173,20 +174,20 @@ public class AutoPublicationService
 
     /**
      * Returns count of published documents of a portlet and space
-     * 
+     *
      * @param nPortletId the identifier of the portlet
      * @param nSpaceId the identifier of the space
      * @return number of documents
      */
     public static int findCountByPortletAndSpace( int nPortletId, int nSpaceId )
     {
-        Collection<Document> listDocuments = PublishingService.getInstance( ).getPublishedDocumentsByPortletId(
-                nPortletId );
+        Collection<Document> listDocuments = PublishingService.getInstance(  )
+                                                              .getPublishedDocumentsByPortletId( nPortletId );
         int nCount = 0;
 
         for ( Document document : listDocuments )
         {
-            if ( document.getSpaceId( ) == nSpaceId )
+            if ( document.getSpaceId(  ) == nSpaceId )
             {
                 nCount++;
             }

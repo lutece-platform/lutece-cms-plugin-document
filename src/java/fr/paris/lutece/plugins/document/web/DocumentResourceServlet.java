@@ -33,14 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentResource;
@@ -51,6 +43,14 @@ import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.service.resource.ExtendableResourceActionHit;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -69,7 +69,6 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
     private static final String KEY_DOC_BEGIN = "[doc:";
     private static final String KEY_ATTR_BEGIN = "[attr:";
     private static final String KEY_ITEM_CLOSE = "]";
-    
     private static final String STRING_DELAY_IN_SECOND = AppPropertiesService.getProperty( PROPERTY_EXPIRES_DELAY,
             DEFAULT_EXPIRES_DELAY );
     private static final Long LONG_DELAY_IN_MILLISECOND = Long.parseLong( STRING_DELAY_IN_SECOND ) * 1000;
@@ -184,8 +183,9 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
             }
         }
 
-        ExtendableResourceActionHit.getInstance( ).notifyActionOnResource( strDocumentId,
-                Document.PROPERTY_RESOURCE_TYPE, ExtendableResourceActionHit.ACTION_DOWNLOAD );
+        ExtendableResourceActionHit.getInstance(  )
+                                   .notifyActionOnResource( strDocumentId, Document.PROPERTY_RESOURCE_TYPE,
+            ExtendableResourceActionHit.ACTION_DOWNLOAD );
 
         ResourceEnhancer.doDownloadResourceAddOn( request, PROPERTY_RESOURCE_TYPE, nDocumentId );
 
@@ -199,7 +199,7 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
         }
 
         // Add Cache Control HTTP header
-        if( strNoCache != null )
+        if ( strNoCache != null )
         {
             response.setHeader( "Cache-Control", "no-cache" ); // HTTP 1.1
             response.setDateHeader( "Expires", 0 ); // HTTP 1.0
@@ -209,6 +209,7 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
             response.setHeader( "Cache-Control", "max-age=" + STRING_DELAY_IN_SECOND ); // HTTP 1.1
             response.setDateHeader( "Expires", System.currentTimeMillis(  ) + LONG_DELAY_IN_MILLISECOND ); // HTTP 1.0           
         }
+
         response.setContentLength( res.getContent(  ).length ); // Keep Alive connexion
 
         // Write the resource content
@@ -263,7 +264,8 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
     private static String getCacheKey( int nDocumentId, int nAttributeId )
     {
         StringBuilder sbKey = new StringBuilder(  );
-        sbKey.append( KEY_DOC_BEGIN ).append( nDocumentId ).append( KEY_ITEM_CLOSE ).append( KEY_ATTR_BEGIN ).append( nAttributeId ).append( KEY_ITEM_CLOSE );
+        sbKey.append( KEY_DOC_BEGIN ).append( nDocumentId ).append( KEY_ITEM_CLOSE ).append( KEY_ATTR_BEGIN )
+             .append( nAttributeId ).append( KEY_ITEM_CLOSE );
 
         return sbKey.toString(  );
     }
@@ -318,9 +320,10 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
      * {@inheritDoc }
      */
     @Override
-    public void processDocumentEvent(DocumentEvent event) throws DocumentException
+    public void processDocumentEvent( DocumentEvent event )
+        throws DocumentException
     {
-        String strKeyPattern = KEY_DOC_BEGIN + event.getDocument().getId() + KEY_ITEM_CLOSE;
+        String strKeyPattern = KEY_DOC_BEGIN + event.getDocument(  ).getId(  ) + KEY_ITEM_CLOSE;
         _cache.removeFromKeyPattern( strKeyPattern );
     }
 }

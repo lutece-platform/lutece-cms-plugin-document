@@ -55,13 +55,13 @@ public class DocumentAutoPublicationHome
     /**
      * Constructor
      */
-    private DocumentAutoPublicationHome( )
+    private DocumentAutoPublicationHome(  )
     {
     }
 
     /**
      * Insert a new document auto publication
-     * 
+     *
      * @param documentAutoPublication the instance of the
      *            DocumentAutoPublication object to insert
      */
@@ -116,7 +116,7 @@ public class DocumentAutoPublicationHome
 
     /**
      * Update the document auto publication
-     * 
+     *
      * @param documentAutoPublication The DocumentAutoPublication to update
      */
     public static void update( DocumentAutoPublication documentAutoPublication )
@@ -147,7 +147,7 @@ public class DocumentAutoPublicationHome
 
     /**
      * Check if the specified portlet is auto published
-     * 
+     *
      * @param nPortletId The portlet id
      * @return true if portlet is auto published, false else.
      */
@@ -163,7 +163,7 @@ public class DocumentAutoPublicationHome
 
     /**
      * Check if the specified Space is auto published
-     * 
+     *
      * @param nSpaceId The space id
      * @return true if Space is auto published, false else.
      */
