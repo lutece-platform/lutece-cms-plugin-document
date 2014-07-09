@@ -70,19 +70,13 @@ public class DocumentDashboardComponent extends DashboardComponent
     private static final String MARK_LAST_MODIFIED_DOCUMENT = "last_modified_document";
     private static final String MARK_LAST_PUBLISHED_DOCUMENT = "last_published_document";
 
-    // CONSTANTS
-    private static final int ZONE_1 = 1;
-
     // TEMPALTES
-    private static final String TEMPLATE_DASHBOARD_ZONE_1 = "/admin/plugins/document/dashboard/document_dashboard_zone_1.html";
-    private static final String TEMPLATE_DASHBOARD_OTHER_ZONE = "/admin/plugins/document/dashboard/document_dashboard_other_zone.html";
+    private static final String TEMPLATE_DASHBOARD = "/admin/plugins/document/dashboard/document_dashboard.html";
 
     /**
-     * The HTML code of the component
-     * @param user The Admin User
-         * @param request HttpServletRequest
-     * @return The dashboard component
+     * {@inheritDoc}
      */
+    @Override
     public String getDashboardData( AdminUser user, HttpServletRequest request )
     {
         Right right = RightHome.findByPrimaryKey( getRight(  ) );
@@ -124,22 +118,8 @@ public class DocumentDashboardComponent extends DashboardComponent
         model.put( MARK_URL, url.getUrl(  ) );
         model.put( MARK_ICON, plugin.getIconUrl(  ) );
 
-        HtmlTemplate t = AppTemplateService.getTemplate( getTemplateDashboard(  ), user.getLocale(  ), model );
+        HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD, user.getLocale( ), model );
 
         return t.getHtml(  );
-    }
-
-    /**
-     * Get the template
-     * @return the template
-     */
-    private String getTemplateDashboard(  )
-    {
-        if ( getZone(  ) == ZONE_1 )
-        {
-            return TEMPLATE_DASHBOARD_ZONE_1;
-        }
-
-        return TEMPLATE_DASHBOARD_OTHER_ZONE;
     }
 }
