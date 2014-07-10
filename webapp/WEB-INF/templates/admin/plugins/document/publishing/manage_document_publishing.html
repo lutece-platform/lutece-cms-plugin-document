@@ -1,202 +1,254 @@
+<#macro setBtnAction action_nb >
+	<#switch action_nb>
+		<#case 1>
+		<#case 6>
+		<#case 8>
+		<#case 11>
+			<#assign btnAction="btn-danger" />
+			<#break>
+		<#case 14>
+		<#case 15>
+			<#assign btnAction="btn-info" />
+			<#break>	
+		<#case 4>
+		<#case 12>
+		<#case 13>
+			<#assign btnAction="btn-success" />
+			<#break>
+		<#case 5>
+			<#assign btnAction="btn-warning" />
+			<#break>
+		<#default>
+		<#assign btnAction="btn-primary" />
+	</#switch>
+	${btnAction}
+</#macro>
+
 <#if document?exists>
 <div class="row">
-    <div class="col-xs-12 col-sm-3 col-md-3">
-        <div class="well">            
-            <fieldset>
-                <legend><span class="badge badge-info">${document.id}</span>&nbsp;${document.title}</legend>
-                <p><i class="glyphicon glyphicon-file"></i> #i18n{document.preview_document.columnTitleType}: ${document.type}</p>
-                <p><i class="glyphicon glyphicon-question-sign"></i> #i18n{document.preview_document.columnTitleState}:&nbsp;${document.state}</p>
-                <p><i class="glyphicon glyphicon-calendar"></i> #i18n{document.preview_document.columnTitleDateCreation} : <small>${document.dateCreation}</small></p> 
-                <p><i class="glyphicon glyphicon-calendar"></i> #i18n{document.preview_document.columnTitleDateModification} : <small>${document.dateModification}</small></p>
-            </fieldset>
-            <fieldset>
-                <legend>#i18n{document.preview_document.columnTitleDateValidity}</legend>
-                <#assign dateBegin="">
-                <#if document.dateValidityBegin?has_content>
-                <#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
-                </#if>    
-                <#assign dateEnd="">
-                <#if document.dateValidityEnd?has_content>
-                <#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
-                </#if>                        
-                <#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
-                <#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
-                <#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
-                <#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
-                <#if dateBegin?has_content && dateEnd?has_content>
-                <p><i class="glyphicon glyphicon-calendar"></i>${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
-                <#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
-                <p class="alert alert-danger">#i18n{document.preview_document.labelDateValidityNotDefined}</p>
-                <#elseif dateBegin?has_content && !( dateEnd?has_content )>
-                <p><i class="glyphicon glyphicon-calendar"></i>${labelBeginSince} ${dateBegin}</p>
-                <#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
-                <p><i class="glyphicon glyphicon-calendar"></i>${labelEndUntil} ${dateEnd}</p> 
-                </#if> 
-                </p>                    
-            </fieldset>
-            <fieldset>
-                <legend>#i18n{document.preview_document.columnTitleActions}</legend>
-                <#list document.actions  as action >
-                <#if action.url?has_content>
-                <a class="btn btn-primary btn-sm" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
-                    <i class="${action.iconUrl}"></i>
-                </a>
-                </#if>  
-                </#list>
-                <a class="btn btn-primary btn-sm" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="#i18n{document.manage_document_publishing.buttonGotoSpace}" >
-                    <i class="glyphicon glyphicon-folder-open"></i> 
-                </a>
-            </fieldset>
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-9 col-md-9">
-        <fieldset>
-            <legend>#i18n{document.manage_document_publishing.labelPublishTitle} ${document.title}</legend>
-           
-            <#if document_list_portlet_list?size &gt; 0 || document_portlet_list?size &gt; 0 >
-           <form class="form-search" method="post" action="jsp/admin/plugins/document/ManageDocumentPublishing.jsp">
-                    <input type="hidden" name="id_document" value="${document.id}" />
-                    <p>
-                        #i18n{document.manage_document_publishing.labelAvailablePortlet}
-                        <label class="radio inline">${label_display_latest_portlets}
-                            <input type="radio" id="is_display_latest_portlets_true" name="is_display_latest_portlets" value="true" <#if !portlet_filter?? ||portlet_filter.displayLatestPortlets>checked="checked"</#if>/>
-                        </label>
-                        <label class="radio inline"> #i18n{document.manage_document_publishing.labelAdvancedSearch}
-                            <input type="radio" id="is_display_latest_portlets_false" name="is_display_latest_portlets" value="false" <#if portlet_filter?? && !portlet_filter.displayLatestPortlets>checked="checked"</#if>/>
-                        </label>
-                    </p> 
-                    <div id="advanced-search">
-                        <label for="portlet_filter_type">#i18n{document.manage_document_publishing.labelSearchBy}</label>
-                            <select name="portlet_filter_type" id="portlet_filter_type" class="input-sm">
-                                <option value="page_name" <#if !portlet_filter?? ||portlet_filter.portletFilterType = "page_name">selected="selected"</#if>>#i18n{document.manage_document_publishing.labelSearchByPageName}</option>
-                                <option value="portlet_name"<#if portlet_filter??  && portlet_filter.portletFilterType  = "portlet_name">selected="selected"</#if>>#i18n{document.manage_document_publishing.labelSearchByPortletName}</option>
-                                <option value="page_id" <#if portlet_filter??  && portlet_filter.portletFilterType  = "page_id"> selected="selected" </#if>>#i18n{document.manage_document_publishing.labelSearchByIdPage}</option>
-                            </select>
-                            <#if portlet_filter??>
-                                <input type="text" name="portlet_filter_value" class="input-sm" value="${portlet_filter.searchValue}"/>
-                            <#else>
-                                <input type="text"  name="portlet_filter_value" class="input-sm" value=""/>
-                            </#if>		
-                        <#if portlet_filter_error??><p class="label label-important">${portlet_filter_error}</p></#if>
-                        <br />
-                            <label for="order_portlet">#i18n{document.manage_document_publishing.labelOrder}</label>
-                            <select name="order_portlet" class="input-sm">
-                                <option value="0" <#if !order_portlet?? || order_portlet?? && order_portlet = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelDateUpdatePortlet}</option>
-                                <option value="1" <#if order_portlet?? && order_portlet = 1> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPageName}</option>
-                                <option value="2" <#if order_portlet?? && order_portlet = 2> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPageId}</option>
-                                <option value="3" <#if order_portlet?? && order_portlet = 3> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPortletName}</option>
-                            </select>
-                            <select name="order_portlet_asc" class="input-sm">
-                                <option value="0" <#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelOrderDesc}</option>
-                                <option value="1" <#if order_portlet_asc?? && order_portlet_asc = 1> selected="selected" </#if>>#i18n{document.manage_document_publishing.labelOrderAsc}</option>
-                            </select>
-                        <div class="">
-                            <button class="btn btn-primary btn-sm" type="submit" >
-                                <i class="glyphicon glyphicon-search"></i> #i18n{document.manage_document_publishing.buttonValidate}
-                            </button>
-                        </div>
-            		</div>
-                </form>
-        	</fieldset>
-        <fieldset>
-            <legend>#i18n{document.manage_document_publishing.labelAvailableDocumentListPortlet} - #i18n{document.manage_document_publishing.labelAvailableDocumentListPortletComment}</legend>
-            <form class="form" name="assignDocument" method="post" action="jsp/admin/plugins/document/DoAssignedDocument.jsp">
-                <input type="hidden" name="id_document" value="${document.id}" />
-                <input type="hidden" name="status" id="status" value="${status_published}" />	
-                <#if document_list_portlet_list?size &gt; 0>
-                <@comboWithParamsAndLength name="document_list_portlet_ids" default_value="" additionalParameters="multiple='multiple'  size='10' class='col-xs-12 col-sm-12 col-md-12'" items=document_list_portlet_list max_length=175 />
-                </#if>
-                <#if document_portlet_list?size &gt; 0>
-                <p class="lead">#i18n{document.manage_document_publishing.labelAvailableDocumentPortlet} - #i18n{document.manage_document_publishing.labelAvailableDocumentPortletComment}</p>
-                <@comboWithParamsAndLength name="document_portlet_ids" default_value="" additionalParameters="multiple='multiple'  size='10' class='col-xs-12 col-sm-12 col-md-12'" items=document_portlet_list max_length=175 />
-                </#if>
-                <div class="">
-                    <#if permission_assign?exists>
-                    <button class="btn btn-primary btn-sm" id="btnAssign" type="submit">
-                        <i class="glyphicon glyphicon-move"></i>&nbsp;#i18n{document.manage_document_publishing.buttonAssignedOnPortlet}
-                    </button>
-                    </#if>	                                   		
-                    <#if permission_publish?exists>
-                    <button class="btn btn-primary btn-sm" type="submit">
-                        <i class="glyphicon glyphicon-globe"></i>&nbsp;#i18n{document.manage_document_publishing.buttonAssignedAndPublisheOnPortlet}
-                    </button>
-                    </#if>
-                </div>
-            </form>
-        </fieldset>
-        <#else>
-        <p class="alert alert-danger">#i18n{document.manage_document_publishing.messagePortletNotExist}</p>
-        </#if>
-        <fieldset>
-            <legend>#i18n{document.manage_document_publishing.labelPublishedPortletList} &#171; ${document.title} &#187; </legend>
-            <#list assigned_portlet_list as assigned_portlet_publication>
-            <div style="margin-bottom: 29px;">
-                <span class="badge badge-info">${assigned_portlet_publication.portlet.id} </span>&nbsp;<strong>${assigned_portlet_publication.portlet.name}</strong></span>
-                <div class="pull-right">
-                    <#if permission_publish?exists>
-                    <#if assigned_portlet_publication.publication.status == status_unpublished>
-                    <form class="form-inline pull-left" method="post" name="publishing" action="jsp/admin/plugins/document/DoAssignedDocument.jsp">
-                        <input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
-                        <input type="hidden" name="id_document" value="${document.id}" />
-                        <input type="hidden" name="status" value="${status_published}" />	
-                        <span class="label label-important">
-                            <i class="glyphicon glyphicon-remove-sign"></i>&nbsp;#i18n{portal.util.labelDisabled}&nbsp;
-                        </span>
-                        <button class="btn btn-primary btn-sm spaced" type="submit" title="#i18n{document.manage_document_publishing.buttonPublish}">
-                            <i class="glyphicon glyphicon-eye-open"></i>
-                        </button>
-                    </form>
-                    <#else>
-                    <form class="form-inline pull-left" method="post" name="unpublishing" action="jsp/admin/plugins/document/DoUnAssignedDocument.jsp">
-                        <input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
-                        <input type="hidden" name="status" value="${assigned_portlet_publication.publication.status}" />	
-                        <input type="hidden" name="id_document" value="${document.id}" />
-                        <span class="label label-success">
-                            <i class="glyphicon glyphicon-ok-sign"></i>&nbsp;#i18n{portal.util.labelEnabled}&nbsp;
-                        </span>
-                        <button class="btn btn-primary btn-sm spaced" type="submit" title="#i18n{document.manage_document_publishing.buttonUnPublish}">
-                            <i class="glyphicon glyphicon-eye-close"></i>&nbsp;
-                        </button>
-                    </form>
-                    </#if>
-                    </#if>
-                    <#if permission_assign?exists>
-                    <form class="form-inline pull-right" method="post" name="managePublishing" action="jsp/admin/plugins/document/ManagePublishing.jsp">
-                        <input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
-                        <button class="btn btn-primary btn-sm spaced" type="submit" alt="#i18n{document.manage_document_publishing.labelManagePortlet}" title="#i18n{document.manage_document_publishing.labelManagePortlet}" >
-                            <i class="glyphicon glyphicon-globe"></i>
-                        </button>
-                    </form>		                                                                    
-                    <form class="form-inline pull-right" method="post" name="unassignDocument" action="jsp/admin/plugins/document/DoUnAssignedDocument.jsp">
-                        <input type="hidden" name="id_document" value="${document.id}" />
-                        <input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
-                        <input type="hidden" name="status" value="${status_unpublished}" />	                                            
-                        <button type="submit" class="btn btn-danger btn-sm" alt="#i18n{document.manage_document_publishing.labelUnAssigned}" title="#i18n{document.manage_document_publishing.labelUnAssigned}">
-                            <i class="glyphicon glyphicon-remove"></i>
-                        </button>
-                    </form>
-                    </#if>
-                </div>
-            </div>
-            </#list>
-        </fieldset>
-    </div>
-    </#if>
-    <script type="text/javascript"> 
-        $(document).ready(function (){
-            $('#btnAssign').click(function() {
-                $('#status').val("${status_unpublished}");
-            });
-            $('#is_display_latest_portlets_true').click(function() {
-                $('#advanced-search').hide();	
-            });
-            $('#is_display_latest_portlets_false').click(function() {
-                $('#advanced-search').show();	
-            });
-                <#if portlet_filter?? && !portlet_filter.displayLatestPortlets>
-                $('#advanced-search').show();
-                <#else>
-                $('#advanced-search').hide();
-                </#if>
-            });
-    </script>
+	<div class="col-xs-12 col-sm-3 col-md-3">
+		<div class="well">            
+			<h4><span class="badge badge-info">${document.id}</span>&nbsp;${document.title}</h4>
+			<p>#i18n{document.preview_document.columnTitleType}: ${document.type}</p>
+			<p>#i18n{document.preview_document.columnTitleState}:&nbsp;${document.state}</p>
+			<p>#i18n{document.preview_document.columnTitleDateCreation} : <small>${document.dateCreation}</small></p> 
+			<p>#i18n{document.preview_document.columnTitleDateModification} : <small>${document.dateModification}</small></p>
+				<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
+				<#assign dateBegin="">
+					<#if document.dateValidityBegin?has_content>
+					<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
+					</#if>    
+					<#assign dateEnd="">
+					<#if document.dateValidityEnd?has_content>
+					<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
+					</#if>                        
+					<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
+					<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
+					<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
+					<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
+					<#if dateBegin?has_content && dateEnd?has_content>
+					<p><i class="glyphicon glyphicon-calendar"></i> ${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
+					<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
+					<p class="alert alert-danger">#i18n{document.preview_document.labelDateValidityNotDefined}</p>
+					<#elseif dateBegin?has_content && !( dateEnd?has_content )>
+					<p><i class="glyphicon glyphicon-calendar"></i> ${labelBeginSince} ${dateBegin}</p>
+					<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
+					<p><i class="glyphicon glyphicon-calendar"></i> ${labelEndUntil} ${dateEnd}</p> 
+					</#if> 
+					</p>                    
+					<h4>#i18n{document.preview_document.columnTitleActions}</h4>
+					<#list document.actions  as action >
+						<#if action.url?has_content>
+							<a class="btn <@setBtnAction action_nb=action.idAction /> btn-xs" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+								<i class="${action.iconUrl} icon-white"></i>
+							</a>
+						</#if>  
+					</#list>
+			<a class="btn btn-primary btn-xs" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="#i18n{document.manage_document_publishing.buttonGotoSpace}" >
+				<i class="glyphicon glyphicon-folder-open"></i> 
+			</a>
+		</div>
+		
+	</div>
+	<div class="col-xs-12 col-sm-9 col-md-9">
+		
+		<div class="well">   
+			<form class="form-inline" method="post" action="jsp/admin/plugins/document/ManageDocumentPublishing.jsp">
+			<input type="hidden" name="id_document" value="${document.id}" >
+			<div class="form-group">
+				<label for="portlet_filter_value" class="sr-only"></label>
+				<input type="text" name="portlet_filter_value" placeholder="#i18n{document.manage_document_publishing.labelSearchBy}" class="form-control" value="<#if portlet_filter??>${portlet_filter.searchValue}</#if>">
+				<label for="portlet_filter_type" class="sr-only">#i18n{document.manage_document_publishing.labelSearchBy}</label>
+				<select name="portlet_filter_type" id="portlet_filter_type" class="form-control input-xs">
+					<option value="page_id" <#if portlet_filter??  && portlet_filter.portletFilterType  = "page_id"> selected="selected" </#if>>#i18n{document.manage_document_publishing.labelSearchByIdPage}</option>
+					<option value="page_name" <#if !portlet_filter?? ||portlet_filter.portletFilterType = "page_name">selected="selected"</#if>>#i18n{document.manage_document_publishing.labelSearchByPageName}</option>
+					<option value="portlet_name"<#if portlet_filter??  && portlet_filter.portletFilterType  = "portlet_name">selected="selected"</#if>>#i18n{document.manage_document_publishing.labelSearchByPortletName}</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<#if portlet_filter_error??><p class="label label-important">${portlet_filter_error}</p></#if>
+				<label for="order_portlet" class="sr-only">#i18n{document.manage_document_publishing.labelOrder}</label>
+				<select name="order_portlet" class="form-control">
+					<option value="0" <#if !order_portlet?? || order_portlet?? && order_portlet = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelDateUpdatePortlet}</option>
+					<option value="1" <#if order_portlet?? && order_portlet = 1> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPageName}</option>
+					<option value="2" <#if order_portlet?? && order_portlet = 2> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPageId}</option>
+					<option value="3" <#if order_portlet?? && order_portlet = 3> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPortletName}</option>
+				</select>
+				
+			</div>	
+			<div class="form-group">	
+				<label for="order_portlet_asc" class="sr-only"></label>
+				<select name="order_portlet_asc" class="form-control">
+					<option value="0" <#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelOrderDesc}</option>
+					<option value="1" <#if order_portlet_asc?? && order_portlet_asc = 1> selected="selected" </#if>>#i18n{document.manage_document_publishing.labelOrderAsc}</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<button class="btn btn-primary btn-sm" type="submit" title="#i18n{document.manage_documents.buttonSearch}">
+					<i class="glyphicon glyphicon-search"></i> 
+				</button>
+				<#if !portlet_filter?? || portlet_filter.displayLatestPortlets>
+					<input type="hidden" name="is_display_latest_portlets" value="false" >
+				<#else>
+					<button type="submit" class="btn btn-danger btn-sm" title="Supprimer le filtre"> <i class="glyphicon glyphicon-remove"></i> </button>
+					<input type="hidden" name="is_display_latest_portlets" value="true" >
+				</#if>
+			</div>
+			</form>
+		</div>
+		<#if document_list_portlet_list?size &gt; 0 || document_portlet_list?size &gt; 0 >
+		<h3>#i18n{document.manage_document_publishing.labelAvailablePortlet} <#if !portlet_filter?? || portlet_filter.displayLatestPortlets>(${label_display_latest_portlets})</#if></h3>
+		<form class="form" name="assignDocument" method="post" action="jsp/admin/plugins/document/DoAssignedDocument.jsp">
+			<input type="hidden" name="id_document" value="${document.id}" />
+			<input type="hidden" name="status" id="status" value="${status_published}" />
+			<ul class="nav nav-tabs" role="tablist">
+					<li <#if !portlet_filter?? ||portlet_filter.displayLatestPortlets>class="active"</#if>>
+						<a href="#document_list_portlet" role="tab" data-toggle="tab">
+							#i18n{document.manage_document_publishing.labelAvailableDocumentListPortlet}
+						</a>
+					</li>
+					<li <#if portlet_filter?? && !portlet_filter.displayLatestPortlets>class="active"</#if>> 
+						<a href="#document_portlet" role="tab" data-toggle="tab">
+							#i18n{document.manage_document_publishing.labelAvailableDocumentPortlet}
+						</a>
+					</li>
+				</ul> 
+				<div class="tab-content">
+				<div class="tab-pane active" id="document_list_portlet">
+					<#if document_list_portlet_list?size &gt; 0>
+						<@comboWithParamsAndLength name="document_list_portlet_ids" default_value="" additionalParameters="multiple='multiple'  size='10' class='form-control'" items=document_list_portlet_list max_length=175 />
+					</#if>
+				</div>
+				<div class="tab-pane" id="document_portlet">
+				<#if document_portlet_list?size &gt; 0>
+					<p class="lead">#i18n{document.manage_document_publishing.labelAvailableDocumentPortlet} <small>#i18n{document.manage_document_publishing.labelAvailableDocumentPortletComment} </small></p>
+					<@comboWithParamsAndLength name="document_portlet_ids" default_value="" additionalParameters="multiple='multiple'  size='10' class='form-control'" items=document_portlet_list max_length=175 />
+				</#if>
+				</div>
+				<div class="form-group">
+					<#if permission_assign?exists>
+						<button class="btn btn-primary btn-sm" id="btnAssign" type="submit">
+							<i class="glyphicon glyphicon-move"></i>&nbsp;#i18n{document.manage_document_publishing.buttonAssignedOnPortlet}
+						</button>
+						</#if>	                                   		
+						<#if permission_publish?exists>
+						<button class="btn btn-primary btn-sm" type="submit">
+							<i class="glyphicon glyphicon-globe"></i>&nbsp;#i18n{document.manage_document_publishing.buttonAssignedAndPublisheOnPortlet}
+						</button>
+						</#if>
+				</div>
+		</form>
+<#else>
+	<p class="alert alert-danger">#i18n{document.manage_document_publishing.messagePortletNotExist}</p>
+</#if>
+	<#if assigned_portlet_list?size &gt; 0 >
+	<div class="panel panel-success">
+		<div class="panel-heading">#i18n{document.manage_document_publishing.labelPublishedPortletList} &#171; ${document.title} &#187;</div>
+		 <ul class="list-group">
+			<#list assigned_portlet_list as assigned_portlet_publication>
+				<li class="list-group-item">
+					<strong class="pull-left">&nbsp;<span class="badge badge-info">${assigned_portlet_publication.portlet.id}</span>&nbsp;${assigned_portlet_publication.portlet.name}</strong>
+					<span class="pull-right">
+					<#if permission_publish?exists>
+						<#if assigned_portlet_publication.publication.status == status_unpublished>
+							<form class="form-inline pull-left" method="post" name="publishing" action="jsp/admin/plugins/document/DoAssignedDocument.jsp">
+									<input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
+									<input type="hidden" name="id_document" value="${document.id}" />
+									<input type="hidden" name="status" value="${status_published}" />
+									<div class="form-group">
+									<span class="label label-important">
+										<i class="glyphicon glyphicon-remove-sign"></i>&nbsp;#i18n{portal.util.labelDisabled}&nbsp;
+									</span>
+									<button class="btn btn-primary btn-xs spaced" type="submit" title="#i18n{document.manage_document_publishing.buttonPublish}">
+										<i class="glyphicon glyphicon-eye-open"></i>
+									</button>
+									</div>
+								</form>
+							<#else>
+								<form class="form-inline pull-left" method="post" name="unpublishing" action="jsp/admin/plugins/document/DoUnAssignedDocument.jsp">
+									<input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
+									<input type="hidden" name="status" value="${assigned_portlet_publication.publication.status}" />	
+									<input type="hidden" name="id_document" value="${document.id}" />
+									<div class="form-group">
+										<span class="form-control-static">
+											<span class="label label-success">
+												<i class="glyphicon glyphicon-ok-sign"></i>&nbsp;#i18n{portal.util.labelEnabled}&nbsp;
+											</span>
+										</span>
+									</div>
+									<div class="form-group">
+										<button class="btn btn-primary btn-xs spaced" type="submit" title="#i18n{document.manage_document_publishing.buttonUnPublish}">
+											<i class="glyphicon glyphicon-eye-close"></i>&nbsp;
+										</button>
+									</div>
+								</form>
+							</#if>
+						</#if>
+						<#if permission_assign?exists>
+							<form class="form-inline pull-left" method="post" name="unassignDocument" action="jsp/admin/plugins/document/DoUnAssignedDocument.jsp">
+								<input type="hidden" name="id_document" value="${document.id}" />
+								<input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
+								<input type="hidden" name="status" value="${status_unpublished}" />	                                            
+								<div class="form-group">
+								<button type="submit" class="btn btn-danger btn-xs spaced" alt="#i18n{document.manage_document_publishing.labelUnAssigned}" title="#i18n{document.manage_document_publishing.labelUnAssigned}">
+									<i class="glyphicon glyphicon-remove"></i>
+								</button>
+								</div>
+							</form>
+							<form class="form-inline pull-left" method="post" name="managePublishing" action="jsp/admin/plugins/document/ManagePublishing.jsp">
+								<input type="hidden" name="id_portlet" value="${assigned_portlet_publication.portlet.id}" />
+								<div class="form-group">
+								<button class="btn btn-primary btn-xs spaced" type="submit" alt="#i18n{document.manage_document_publishing.labelManagePortlet}" title="#i18n{document.manage_document_publishing.labelManagePortlet}" >
+									<i class="glyphicon glyphicon-globe"></i>
+								</button>
+								</div>
+							</form>
+						</#if>
+						</span>
+						<hr class="clearfix">
+					</li>
+				</#list>
+			 </ul>
+		</div>
+	</#if>
+	</div>
+</div>
+</#if>
+<script type="text/javascript"> 
+$(document).ready(function (){
+$('#btnAssign').click(function() {
+	$('#status').val("${status_unpublished}");
+});
+$('#is_display_latest_portlets_true').click(function() {
+	$('#advanced-search').hide();	
+});
+$('#is_display_latest_portlets_false').click(function() {
+	$('#advanced-search').show();	
+});
+<#if portlet_filter?? && !portlet_filter.displayLatestPortlets>
+	$('#advanced-search').show();
+<#else>
+	$('#advanced-search').hide();
+</#if>
+});
+</script>

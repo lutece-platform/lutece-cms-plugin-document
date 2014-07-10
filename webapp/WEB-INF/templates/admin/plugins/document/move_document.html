@@ -1,65 +1,62 @@
-<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
-${extendableResourceActionsHtml!}
-</#if>
+<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>${extendableResourceActionsHtml!}</#if>
 <div class="row">
-    <div class="col-xs-12 col-sm-4 col-md-4">
-        <div class="well">            
-            <fieldset>
-                <legend><span class="badge badge-info">${document.id}</span>&nbsp;${document.title}</legend>
-                <i class="glyphicon glyphicon-eye-open"></i> #i18n{document.preview_document.columnTitleType}: ${document.type}</p>
-                <i class="glyphicon glyphicon-question"></i> #i18n{document.preview_document.columnTitleState}:&nbsp;${document.state}</p>
-                <i class="glyphicon glyphicon-calendar"></i> #i18n{document.preview_document.columnTitleDateCreation} : <small>${document.dateCreation}</small></p> 
-                <i class="glyphicon glyphicon-calendar"></i> #i18n{document.preview_document.columnTitleDateModification} : <small>${document.dateModification}</small></p>
-            </fieldset>
-            <fieldset>
-                <legend>#i18n{document.preview_document.columnTitleDateValidity}</legend>
-                <#assign dateBegin="">
-                <#if document.dateValidityBegin?has_content>
-                    <#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
-                </#if>    
-                <#assign dateEnd="">
-                <#if document.dateValidityEnd?has_content>
-                    <#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
-                </#if>                        
-                <#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
-                <#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
-                <#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
-                <#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
-                <#if dateBegin?has_content && dateEnd?has_content>
-                    <p><i class="fam-calendar-add"></i>${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
-                <#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
-                    <p class="label label-warning">#i18n{document.preview_document.labelDateValidityNotDefined}</p>
-                <#elseif dateBegin?has_content && !( dateEnd?has_content )>
-                    <p><i class="fam-date-previous"></i>${labelBeginSince} ${dateBegin}</p>
-                <#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
-                    <p><i class="fam-date"></i>${labelEndUntil} ${dateEnd}</p> 
-                </#if> 
-                   
-            </fieldset>
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-8 col-md-8">
-        <fieldset>   
-            <legend>#i18n{document.move_document.title}</legend>
-            <form class="form-horizontal" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveDocument.jsp" enctype="multipart/form-data" >
-                <input type="hidden" name="id_document" value="${document.id}" />
-                ${spaces_browser}
-                <div class="">
-                    <button class="btn btn-primary btn-sm" type="submit" <#if submit_button_disabled >disabled="disabled"</#if>>
-                            <i class="glyphicon glyphicon-arrow-right"></i>&nbsp;#i18n{document.move_document.buttonMove}
-                    </button>
-                      <a class="btn btn-sm" href="jsp/admin/plugins/document/ManageDocuments.jsp" >
-                          <i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
-                      </a>
-                    
-                </div>
-            </form>
-        </fieldset>
-    </div>
+	<div class="col-xs-12 col-sm-4 col-md-4">
+		<div class="well">            
+			<div class="page-header">
+				<h4><span class="badge badge-info">${document.id}</span>&nbsp;${document.title}</h4>
+				<p>#i18n{document.preview_document.columnTitleType}: ${document.type}</p>
+				<p>#i18n{document.preview_document.columnTitleState}:&nbsp;${document.state}</p>
+				<p>#i18n{document.preview_document.columnTitleDateCreation} : <small>${document.dateCreation}</small></p> 
+				<p>#i18n{document.preview_document.columnTitleDateModification} : <small>${document.dateModification}</small></p>
+				<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
+				<#assign dateBegin="">
+				<#if document.dateValidityBegin?has_content>
+					<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
+				</#if>    
+				<#assign dateEnd="">
+				<#if document.dateValidityEnd?has_content>
+					<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
+				</#if>                        
+				<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
+					<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
+					<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
+					<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
+					<#if dateBegin?has_content && dateEnd?has_content>
+						<p><i class="glyphicon glyphicon-calendar"></i> ${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
+					<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
+						<p class="label label-warning">#i18n{document.preview_document.labelDateValidityNotDefined}</p>
+					<#elseif dateBegin?has_content && !( dateEnd?has_content )>
+						<p><i class="glyphicon glyphicon-calendar"></i> ${labelBeginSince} ${dateBegin}</p>
+					<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
+						<p><i class="glyphicon glyphicon-calendar"></i> ${labelEndUntil} ${dateEnd}</p> 
+					</#if> 
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-8 col-md-8">
+		<div class="well well-small">
+			<form class="form" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveDocument.jsp" enctype="multipart/form-data" >
+				<fieldset>   
+				<legend>#i18n{document.move_document.title}</legend>
+					<input type="hidden" name="id_document" value="${document.id}" >
+					${spaces_browser}
+					<!-- USELESS - Submit on select button
+					<div class="input-group">
+						<button class="btn btn-primary btn-sm" type="submit" <#if submit_button_disabled >disabled="disabled"</#if>>
+							<i class="glyphicon glyphicon-arrow-right"></i>&nbsp;#i18n{document.move_document.buttonMove}
+						</button>
+						<a class="btn btn-default btn-sm" href="jsp/admin/plugins/document/ManageDocuments.jsp" >
+							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
+						</a>
+					</div>
+					-->
+				</fieldset>
+			</form>
+		</div>
+	</div>
 </div>
 <script>
-    /*
-     * onclick="this.form.action='jsp/admin/plugins/document/ManageDocuments.jsp';this.form.submit();"
-     */
-    
+	/*
+	 * onclick="this.form.action='jsp/admin/plugins/document/ManageDocuments.jsp';this.form.submit();"
+	 */
 </script>

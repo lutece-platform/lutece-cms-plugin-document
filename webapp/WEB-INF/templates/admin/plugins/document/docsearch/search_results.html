@@ -1,125 +1,133 @@
 <div class="row">
-    <div class="col-xs-12 col-sm-3 col-md-3">
-        <fieldset>
-            <legend>#i18n{document.search_results.labelSearch}</legend>
-            <form name="search" method="post" action="jsp/admin/plugins/document/DocumentSearch.jsp<#if advanced_search??>?advanced_search=true</#if>">
-                <input type="hidden" name="page" value="search" />
-                <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="query">&nbsp;</label>
-                    <div class="col-xs-12 col-sm-10 col-md-10">
-                        <input type="text" name="query" class="input-sm" value="<#if query??>${query}</#if>" />
-                    </div>
-                </div>
-                <#-- Number of documents per page selector -->
-                #i18n{document.search_results.labelNbDocsPerPage} 
-                <@NbItemsPerPageSelectorCombo nb_items_per_page />
-                <#if advanced_search??>
-                    <div class="form-group">
-                        <label class="control-label col-xs-12 col-sm-2 col-md-2" for="">#i18n{document.advanced_search.limit}:</label>
-                        <div class="col-xs-12 col-sm-10 col-md-10">
-                            <label class="checkbox inline" for="title">
-                                <input name="title" id="title" type="checkbox" <#if title??>checked</#if>/>#i18n{document.advanced_search.checkbox.title}
-                            </label>
-                            <label class="checkbox inline" for="summary">
-                                <input name="summary" id="summary" type="checkbox" <#if summary??>checked</#if>/>#i18n{document.advanced_search.checkbox.summary}
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-xs-12 col-sm-2 col-md-2" for="date">#i18n{document.advanced_search.checkbox.date}:</label>
-                        <div class="col-xs-12 col-sm-10 col-md-10">
-                            <div class="input-group">
-                                <span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span>
-                                <input type="text" class="input-sm"  name="date" id="date" value="<#if date_query??>${date_query}</#if>">
-                            </div>
-                        </div>
-                    </div>									
-                    <div class="form-group">
-                        <label class="control-label col-xs-12 col-sm-2 col-md-2" for="document_type">#i18n{document.advanced_search.list.type}:</label>
-                        <div class="col-xs-12 col-sm-10 col-md-10">
-                            <@comboWithParamsAndLength name="document_type" default_value=selected_type additionalParameters="class='col-xs-12 col-sm-9 col-md-9'" items=document_type_list max_length=175 />
-                      </div>
-                    </div>
-                <#else>
-                <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-2 col-md-2" for=""></label>
-                        <div class="col-xs-12 col-sm-10 col-md-10">
-                            <a class="btn btn-link" href=jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true<#if query??>&query=${query}</#if>>
-                                <i class="glyphicon glyphicon-chevron-down"></i>&nbsp;#i18n{document.manage_document_publishing.labelAdvancedSearch}
-                            </a>
-                        </div>
-                </div>
-                </#if>
-                <div class="">
-                    <button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-search"></i>&nbsp;#i18n{document.search_results.buttonSearch}</button>
-                </div>
-        </fieldset>
-        </form>
-    </div>  
-    <div class="col-xs-12 col-sm-9 col-md-9">
-        <fieldset>
-            <legend>#i18n{document.search_results.labelDocumentsList}</legend>
-            <div class="error"> ${error} </div>
-            <@paginationAdmin paginator=paginator />
-            <table class="table table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th>#i18n{document.search_results.labelDocument}</th>
-                        <th>#i18n{document.search_results.labelType}</th>
-                        <th>#i18n{document.search_results.labelDate}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <#list results_list as result>
-                    <tr>
-                        <td>
-
-                            <p><a href="jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${result.id}"  title="null" >${result.title}</a></p>
-                            <small>${result.summary}</small>
-                        </td>
-                        <td>${result.type}</td>
-                        <td width="10%">${result.date}</td>
-                    </tr>            
-                    </#list>
-                </tbody>
-            </table>
-            <@paginationAdmin paginator=paginator />
-    </div>
-</div>
+	<div class="col-xs-12 col-sm-3 col-md-3">
+		<div class="well well-small">
+		<form name="search" class="form-horizontal" method="post" action="jsp/admin/plugins/document/DocumentSearch.jsp<#if advanced_search??>?advanced_search=true</#if>">
+			<fieldset>
+				<legend>#i18n{document.search_results.labelSearch}</legend>
+					<input type="hidden" name="page" value="search" />
+					<div class="form-group">
+						<label class="control-label col-md-4" for="query">#i18n{document.search_results.labelSearch}</label>
+						<div class="col-md-8">
+							<input type="text" name="query" class="form-control" value="<#if query??>${query}</#if>">
+						</div>
+					</div>
+					<#-- Number of documents per page selector -->
+					<@NbItemsPerPageSelectorCombo nb_items_per_page />
+					<#if advanced_search??>
+						<div class="form-group">
+							<label class="control-label col-xs-12 col-sm-4 col-md-4" for="">#i18n{document.advanced_search.limit}</label>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="checkbox">
+									<label for="title">
+										<input name="title" id="title" type="checkbox" <#if title??>checked</#if>/>#i18n{document.advanced_search.checkbox.title}
+									</label>
+								</div>
+								<div class="checkbox">
+								<label class="checkbox" for="summary">
+									<input name="summary" id="summary" type="checkbox" <#if summary??>checked</#if>/>#i18n{document.advanced_search.checkbox.summary}
+								</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-xs-12 col-sm-4 col-md-4" for="date">#i18n{document.advanced_search.checkbox.date}</label>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="input-group">
+									<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
+									<input type="text" class="form-control"  name="date" id="date" value="<#if date_query??>${date_query}</#if>">
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-xs-12 col-sm-4 col-md-4" for="document_type">#i18n{document.advanced_search.list.type}</label>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<@comboWithParamsAndLength name="document_type" default_value=selected_type additionalParameters="class='form-control'" items=document_type_list max_length=175 />
+						  </div>
+						</div>
+					<#else>
+						<div class="form-group">
+							<label class="control-label sr-only" for=""></label>
+							<div class="col-md-12">
+								<a class="btn btn-default" href="jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true<#if query??>&query=${query}"</#if>>
+									<i class="glyphicon glyphicon-chevron-down"></i>&nbsp;#i18n{document.manage_document_publishing.labelAdvancedSearch}
+								</a>
+							</div>
+						</div>
+					</#if>
+					<div class="form-group">
+						<label class="control-label col-xs-12 col-sm-4 col-md-4" for=""></label>
+						<div class="col-xs-12 col-sm-8 col-md-8">
+							<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-search"></i>&nbsp;#i18n{document.search_results.buttonSearch}</button>
+						</div>
+					</div>
+			</fieldset>
+			</form>
+			</div>  
+		</div>  
+		<div class="col-xs-12 col-sm-9 col-md-9">
+				<h3>#i18n{document.search_results.labelDocumentsList}</h3>
+				<div class="error"> ${error} </div>
+				<table class="table table-striped table-condensed table-document">
+					<thead class="sr-only">
+						<tr >
+							<th>#i18n{document.search_results.labelDocument}</th>
+							<th>#i18n{document.search_results.labelAction}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list results_list as result>
+						<tr>
+							<td>
+								<p>
+									<a href="jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${result.id}"  title="${result.title}" >${result.title}</a>
+									<small>#i18n{document.search_results.labelSummary} ${result.summary} - #i18n{document.search_results.labelType}: ${result.type} - #i18n{document.search_results.labelDate}: ${result.date}</small>
+								</p>
+							</td>
+							<td>
+								<a class="btn btn-xs btn-primary" href="jsp/admin/plugins/document/ModifyDocument.jsp?id_document=${result.id}" title="${result.title}">
+									<i class="glyphicon glyphicon-edit"></i>
+								</a>
+								<a class="btn btn-xs btn-info" href="jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${result.id}" title="${result.title}" >
+									<i class="glyphicon glyphicon-eye-open"></i>
+								</a>
+							</td>
+						</tr>
+						</#list>
+					</tbody>
+				</table>
+				<@paginationAdmin paginator=paginator />
+		</div>
+	</div>
 
 <#-- Freemarker macros -->
 
 <#-- Number of items per page selector - Combo Box implementation -->
 <#macro NbItemsPerPageSelectorCombo nb_items_per_page>
-<select name="items_per_page" class="input-mini">
-    <#list [ "10" , "20" , "50" , "100" ] as nb>
-    <#if nb_items_per_page = nb >
-    <option selected="selected" value="${nb}">${nb}</option>
-    <#else>
-    <option value="${nb}">${nb}</option>
-    </#if>
-    </#list>
-</select>
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-8 col-md-8" for="items_per_page">#i18n{document.search_results.labelNbDocsPerPage} </label>
+	<div class="col-xs-12 col-sm-4 col-md-4">
+		<select name="items_per_page" class="form-control">
+		<#list [ "10" , "20" , "50" , "100" ] as nb>
+			<option <#if nb_items_per_page = nb >selected="selected"</#if> value="${nb}">${nb}</option>
+		</#list>
+		</select>
+	</div>
+</div>
 </#macro>
 
 <#-- Number of items per page selector - Radio List implementation -->
 <#macro NbItemsPerPageSelectorRadioList nb_items_per_page>
 <#list [ "5" , "10" , "20" , "50" ] as nb>
-    <#if nb = nb_items_per_page >
-        <div class="form-group">
-            <label class="control-label col-xs-12 col-sm-2 col-md-2" for="items_per_page${nb}">${nb}</label>
-            <div class="col-xs-12 col-sm-10 col-md-10">
-                <input value="${nb}" id="items_per_page${nb}" name="items_per_page" type="radio" class="radio" checked />
-            </div>
-        </div>
-    <#else>
-        <div class="form-group">
-            <label class="control-label col-xs-12 col-sm-2 col-md-2" for="items_per_page${nb}">${nb}</label>
-            <div class="col-xs-12 col-sm-10 col-md-10">
-                <input value="${nb}" id="items_per_page${nb}" name="items_per_page" type="radio" class="radio" />
-            </div>
-        </div>
-    </#if>
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-4 col-md-4" for="items_per_page${nb}">${nb}</label>
+	<div class="col-xs-12 col-sm-8 col-md-8">
+		<div class="radio">
+			<label>
+				<input value="${nb}" id="items_per_page${nb}" name="items_per_page" type="radio" class="radio" <#if nb = nb_items_per_page >checked</#if>>
+			</label>
+		</div>
+	</div>
+</div>
 </#list>
 </#macro>
 

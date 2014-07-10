@@ -1,57 +1,76 @@
-<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
-	${extendableResourceActionsHtml!}
-</#if>
+<#macro setBtnAction action_nb >
+	<#switch action_nb>
+		<#case 1>
+		<#case 6>
+		<#case 8>
+		<#case 11>
+			<#assign btnAction="btn-danger" />
+			<#break>
+		<#case 14>
+		<#case 15>
+			<#assign btnAction="btn-info" />
+			<#break>	
+		<#case 4>
+		<#case 12>
+		<#case 13>
+			<#assign btnAction="btn-success" />
+			<#break>
+		<#case 5>
+			<#assign btnAction="btn-warning" />
+			<#break>
+		<#default>
+		<#assign btnAction="btn-primary" />
+	</#switch>
+	${btnAction}
+</#macro>
 <div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12">
+	<div class="col-xs-12 col-sm-4 col-md-4">
 		<div class="well">            
-		<fieldset>
-		<legend><span class="badge badge-info">${document.id}</span>&nbsp;${document.title}</legend>
-			<i class="fam-page-white-coldfusion"></i> #i18n{document.preview_document.columnTitleType}: ${document.type}</p>
-			<i class="fam-help"></i> #i18n{document.preview_document.columnTitleState}:&nbsp;${document.state}</p>
-			<i class="fam-date-add"></i> #i18n{document.preview_document.columnTitleDateCreation} : <small>${document.dateCreation}</small></p> 
-			<i class="fam-date-add"></i> #i18n{document.preview_document.columnTitleDateModification} : <small>${document.dateModification}</small></p>
-		</fieldset>
-		<fieldset>
-		<legend>#i18n{document.preview_document.columnTitleDateValidity}</legend>
-			<#assign dateBegin="">
-			<#if document.dateValidityBegin?has_content>
-				<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
-			</#if>    
-			<#assign dateEnd="">
-			<#if document.dateValidityEnd?has_content>
-				<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
-			</#if>                        
-			<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
-			<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
-			<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
-			<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
-			<#if dateBegin?has_content && dateEnd?has_content>
-				<p><i class="fam-calendar-add"></i>${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
-			<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
-				<p class="label label-warning">#i18n{document.preview_document.labelDateValidityNotDefined}</p>
-			<#elseif dateBegin?has_content && !( dateEnd?has_content )>
-				<p><i class="fam-date-previous"></i>${labelBeginSince} ${dateBegin}</p>
-			<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
-				<p><i class="fam-date"></i>${labelEndUntil} ${dateEnd}</p> 
-			</#if> 
-			</p>                    
-		</fieldset>
-		<fieldset>
-		<legend>#i18n{document.preview_document.columnTitleActions}</legend>
-		<#list document.actions  as action >
-			<#if action.url?has_content>
-			<a class="btn btn-xs <#if action.idAction==1 || action.idAction==6>btn-danger<#elseif action.idAction==4 || action.idAction==12>btn-success<#else>btn-primary</#if>" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
-				<i class="${action.iconUrl}"></i>
-			</a>
-			</#if>  
-		</#list>
-			<a class="btn btn-xs btn-primary" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="#i18n{document.preview_document.space}" >
-				<i class="glyphicon glyphicon-folder-open"></i> 
-			</a>
-		</fieldset>
+			<div class="page-header">
+				<h4><span class="badge badge-info">${document.id}</span>&nbsp;${document.title}</h4>
+				<p>#i18n{document.preview_document.columnTitleType}: ${document.type}</p>
+				<p>#i18n{document.preview_document.columnTitleState}:&nbsp;${document.state}</p>
+				<p>#i18n{document.preview_document.columnTitleDateCreation} : <small>${document.dateCreation}</small></p> 
+				<p>#i18n{document.preview_document.columnTitleDateModification} : <small>${document.dateModification}</small></p>
+				<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
+				<#assign dateBegin="">
+				<#if document.dateValidityBegin?has_content>
+					<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
+				</#if>    
+				<#assign dateEnd="">
+				<#if document.dateValidityEnd?has_content>
+					<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
+				</#if>                        
+				<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
+				<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
+				<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
+				<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
+				<#if dateBegin?has_content && dateEnd?has_content>
+					<p><i class="glyphicon glyphicon-calendar"></i>${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
+				<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
+					<p class="label label-warning">#i18n{document.preview_document.labelDateValidityNotDefined}</p>
+				<#elseif dateBegin?has_content && !( dateEnd?has_content )>
+					<p><i class="glyphicon glyphicon-calendars"></i>${labelBeginSince} ${dateBegin}</p>
+				<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
+					<p><i class="glyphicon glyphicon-calendar"></i>${labelEndUntil} ${dateEnd}</p> 
+				</#if> 
+				</p>
+				<h4>#i18n{document.preview_document.columnTitleActions}</h4>
+			<#list document.actions  as action >
+				<#if action.url?has_content>
+				<a class="btn btn-xs <@setBtnAction action_nb=action.idAction />" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+					<i class="${action.iconUrl} icon-white"></i>
+				</a>
+				</#if>  
+			</#list>
+				<a class="btn btn-xs btn-primary" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="#i18n{document.preview_document.space}" >
+					<i class="glyphicon glyphicon-folder-open"></i> 
+				</a>
+			</fieldset>
+			</div>
 		</div>
 	</div>
-	<div class="col-xs-12 col-sm-12 col-md-12">
+	<div class="col-xs-12 col-sm-8 col-md-8">
 		${preview}
 	</div>
 </div>

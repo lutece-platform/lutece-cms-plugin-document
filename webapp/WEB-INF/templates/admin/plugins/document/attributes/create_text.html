@@ -1,7 +1,7 @@
 <div class="form-group">
-    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
-    <div class="col-xs-12 col-sm-9 col-md-9">
-        <input type="text" class="form-control" id="${attribute.code}" name="${attribute.code}" size="<#list parameters.size as size>${size}</#list>" maxlength="<#list parameters.maxlength as maxlength>${maxlength}</#list>" /> 
-        <span class="help-text">${attribute.description}</span>
-    </div>
+	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
+	<div class="col-xs-12 col-sm-10 col-md-10">
+		<input type="text" class="form-control" id="${attribute.code}" name="${attribute.code}" size="<#list parameters.size as size>${size}</#list>" maxlength="<#list parameters.maxlength as maxlength>${maxlength}</#list>" /> 
+		<p class="help-block">${attribute.description}</p>
+	</div>
 </div>

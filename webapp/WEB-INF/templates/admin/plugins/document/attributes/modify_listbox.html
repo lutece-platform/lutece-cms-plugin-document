@@ -1,14 +1,14 @@
 <div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
-	<div class="col-xs-12 col-sm-9 col-md-9">
-		<select id="${attribute.code}" name="${attribute.code}" >
+	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
+	<div class="col-xs-12 col-sm-10 col-md-10">
+		<select id="${attribute.code}" name="${attribute.code}" class="form-control">
 			<#list parameters.items as item>
 				<#if attribute.textValue="${item}">
 					<option selected="selected" value="${item}" >${item}</option>
 				<#else>
 					<option value="${item}" >${item}</option>
 				</#if>
-			</#list>		
+			</#list>
 		</select>
 		<p class="help-block">${attribute.description}</p>
 	</div>

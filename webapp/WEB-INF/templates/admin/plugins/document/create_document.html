@@ -1,7 +1,7 @@
 <#escape x as x?html>
+<form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoCreateDocument.jsp" enctype="multipart/form-data" >
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-3">
-		<form method="post" action="jsp/admin/plugins/document/DoCreateDocument.jsp" enctype="multipart/form-data" >
 		<input type="hidden" name="document_type_code" value="${document_type}" />    
 		<div class="well">            
 			<fieldset>
@@ -10,16 +10,16 @@
 				<p>#i18n{document.create_document.labelDocumentValidity}</p>
 				<label for="document_validity_begin">#i18n{document.create_document.labelDocumentValidityBegin}</label>
 					<div class="input-group">
-					<span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+						<span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span>
 						<input type="text" class="input-sm" name="document_validity_begin" id="document_validity_begin" value="${current_date!}" />
 					</div>
 					<label for="document_validity_begin">#i18n{document.create_document.labelDocumentValidityEnd}</label> 
 					<div class="input-group">
-						<span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span>
-						<input type="text" class="input-sm"  name="document_validity_end" id="document_validity_end" />
-					</div>
+					<span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+					<input type="text" class="input-sm"  name="document_validity_end" id="document_validity_end" />
+				</div>
 				<label for="document_page_template">#i18n{document.create_document.labelDocumentPageTemplate} : </label>
-					<ul class="unstyled"><#noescape>${page_template_list}</#noescape></ul>
+					<#noescape>${page_template_list}</#noescape>
 					<p class="help-block">#i18n{document.create_document.helpDocumentPageTemplate}</p>
 				<label for="document_comment">#i18n{document.create_document.labelDocumentComment} : </label>
 					<textarea type="text" name="document_comment" id="document_comment" cols="60" rows="2" ></textarea> 
@@ -29,12 +29,16 @@
 		</div>
 		<#noescape>${category}</#noescape>
 	</div>
-	<div class="col-xs-12 col-sm-12 col-md-9">
-		<div class="well">
+	<#if metadata?has_content >
+		<div class="col-xs-12 col-sm-12 col-md-6">
+	<#else>
+		<div class="col-xs-12 col-sm-12 col-md-9">
+	</#if>
+		<div class="well well-sm">
 			<fieldset>
-				<legend>${document_type?cap_first} <small class="pull-right">#i18n{document.create_document.title}</small></legend>
+				<legend><small>#i18n{document.create_document.title}</small> ${document_type?cap_first}</legend>
 				<div class="form-group">
-				<label class="control-label col-xs-12 col-sm-2 col-md-2" for="document_title">#i18n{document.create_document.labelDocumentTitle}* : </label>
+					<label class="control-label col-xs-12 col-sm-2 col-md-2" for="document_title">#i18n{document.create_document.labelDocumentTitle}* : </label>
 					<div class="col-xs-12 col-sm-10 col-md-10">
 						<input type="text" name="document_title" id="document_title" class="input-sm form-control" />
 						<span class="help-block">#i18n{document.create_document.helpDocumentTitle}</span>
@@ -49,22 +53,24 @@
 				</div>
 			</fieldset> 
 			<fieldset>
-			<legend>#i18n{document.create_document.attributTitle}</legend>    
-			<#noescape>${fields}</#noescape>
+				<legend>#i18n{document.create_document.attributTitle}</legend>    
+				<#noescape>${fields}</#noescape>
 				<div class="form-group">
 					<div class="col-xs-12 col-sm-offset-2 col-sm-10 col-md-offset-2 col-md-10">
-					<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{document.create_document.buttonCreate}</button>
-					<button class="btn btn-default btn-sm" type="button" onclick="javascript:history.go(-1)" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+						<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{document.create_document.buttonCreate}</button>
+						<button class="btn btn-default btn-sm" type="button" onclick="javascript:history.go(-1)" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
 					</div>
 				</div>
 			</fieldset>
 		</div>
 	</div>
-	<div class="col-xs-12 col-sm-3 col-md-3">
-		<#noescape>${metadata}</#noescape>
-	</div>
-	</form>
+		<#if metadata?has_content >
+			<div class="col-xs-12 col-sm-12 col-md-3">
+				<#noescape>${metadata}</#noescape>
+			</div>
+		</#if>
 </div>
+</form>
 </#escape>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <script src="js/jquery/plugins/ui/ui.datepicker-${locale}.js"></script>
@@ -75,7 +81,7 @@
 function doToggleId( idParent ){
 	$( idParent ).click( function(){ 
 		$(this).next().toggle();
-		$(this).children().toggleClass("icon-chevron-down icon-chevron-up");
+		$(this).children().toggleClass("glyphicon-chevron-down glyphicon-chevron-up");
 	});
 }
 $(document).ready( function () {

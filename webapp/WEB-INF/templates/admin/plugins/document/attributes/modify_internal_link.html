@@ -1,50 +1,43 @@
 <div class="form-group">
-    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
-    <div class="col-xs-12 col-sm-9 col-md-9">
-        <textarea id="${attribute.code}" name="${attribute.code}"  rows="5" cols="60" readonly="readonly" >${attribute.textValue}</textarea> 
-        <button type="button" class="btn btn-xs" onclick="javascript:linkservice${attribute.code}();return false;" >
-            <i class="glyphicon glyphicon-lutece-logo"></i>
-        </button>
-        <!-- DOCUMENT-97: enable clearing internal link field. -->
-        <button type="button" class="btn btn-xs" id="btnShowPreview_${attribute.code}" >
-            <i class="glyphicon glyphicon-eye-open"></i></button>
-        <button type="button" class="btn btn-xs btn-danger" onclick="javascript:linkservice_clear${attribute.code}();return false;" title="#i18n{document.attributeType.internallink.labelLinkServiceClear}" >
-            <i class="glyphicon glyphicon-trash"></i>
-        </button>
-        <p id="show_preview_section_${attribute.code}"></p>
-        <div id="show_preview_${attribute.code}" class="alert alert-info">&nbsp;</div>
-    </div>
+	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
+	<div class="col-xs-12 col-sm-10 col-md-10">
+		<textarea id="${attribute.code}" name="${attribute.code}"  rows="5" cols="60" readonly="readonly" >${attribute.textValue}</textarea> 
+		<button type="button" class="btn btn-default btn-xs" onclick="javascript:linkservice${attribute.code}();return false;" >
+			<i class="icon-lutece-logo"></i>
+		</button>
+		<!-- DOCUMENT-97: enable clearing internal link field. -->
+		<button type="button" class="btn btn-default btn-xs" id="btnShowPreview_${attribute.code}" >
+			<i class="glyphicon glyphicon-eye-open"></i></button>
+		<button type="button" class="btn btn-xs btn-danger" onclick="javascript:linkservice_clear${attribute.code}();return false;" title="#i18n{document.attributeType.internallink.labelLinkServiceClear}" >
+			<i class="glyphicon glyphicon-trash"></i>
+		</button>
+		<p id="show_preview_section_${attribute.code}">&nbsp;</p>
+		<div id="show_preview_${attribute.code}">&nbsp;</div>
+	</div>
 </div>
-
 <script>
-   // jQuery("img_linkservice_${attribute.code}").style.display = "inline";
-    // DOCUMENT-97: enable clearing internal link field.
-    //document.getElementById('img_linkservice_clear_${attribute.code}').style.display = "inline";
-    $("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}").hover(function() {
-        $(this).css("cursor", "pointer");
-    }, function() {
-        $(this).css("cursor", "auto");
-    });
-  
-    function linkservice${attribute.code}(){
-        $("#show_preview_${attribute.code}").html("&nbsp;");
-        var fen=window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=","#i18n{document.attributeType.internallink.labelLinkService}","toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
-        fen.focus();
-    }
-
-    // DOCUMENT-97: enable clearing internal link field.
-    function linkservice_clear${attribute.code}() {
-        $("#${attribute.code}").val("");
-        $("#show_preview_${attribute.code}").html("&nbsp;");
-    }
-    
-    $(document).ready( function () {
-        $('#show_preview_${attribute.code}').toggle();
-        $('#btnShowPreview_${attribute.code}').click( function(){
-            $('#show_preview_${attribute.code}').html( $('#${attribute.code}').val() + '&nbsp;');
-            $('#show_preview_${attribute.code}').toggle();
-        });
-    });
-    
-    
+// jQuery("img_linkservice_${attribute.code}").style.display = "inline";
+// DOCUMENT-97: enable clearing internal link field.
+// document.getElementById('img_linkservice_clear_${attribute.code}').style.display = "inline";
+$("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}").hover(function() {
+	$(this).css("cursor", "pointer");
+	}, function() { $(this).css("cursor", "auto");
+});
+function linkservice${attribute.code}(){
+$("#show_preview_${attribute.code}").html("&nbsp;");
+	var fen=window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=","#i18n{document.attributeType.internallink.labelLinkService}","toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
+	fen.focus();
+}
+// DOCUMENT-97: enable clearing internal link field.
+function linkservice_clear${attribute.code}() {
+$("#${attribute.code}").val("");
+	$("#show_preview_${attribute.code}").html("&nbsp;");
+}
+$(document).ready( function () {
+	$('#show_preview_${attribute.code}').toggle();
+	$('#btnShowPreview_${attribute.code}').click( function(){
+	$('#show_preview_${attribute.code}').html( $('#${attribute.code}').val() + '&nbsp;');
+	$('#show_preview_${attribute.code}').toggle();
+	});
+});
 </script>

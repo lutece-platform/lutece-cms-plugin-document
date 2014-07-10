@@ -1,9 +1,7 @@
 <div class="form-group">
-    <label class="control-label col-xs-12 col-sm-12 col-md-12" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <textarea id="${attribute.code}" class="richtext"  name="${attribute.code}" style="width:100%" rows="20">
-            ${attribute.textValue}
-        </textarea>
+    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
+    <div class="col-xs-12 col-sm-10 col-md-10">
+        <textarea id="${attribute.code}" class="richtext form-control" name="${attribute.code}" rows="5">${attribute.textValue}</textarea>
     </div>
 </div>
 

@@ -1,43 +1,52 @@
 <div class="form-group">
-    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
-    <div class="col-xs-12 col-sm-9 col-md-9">
-    <#if attribute.textValue?has_content>
-        <a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true">
-            <img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" width="40" height="40" />
-            &nbsp;${attribute.description}
-        </a>
-        <input type="file" name="${attribute.code}" id="${attribute.code}" >
-        <label class="checkbox" for="update_${attribute.code}">
-           <input type="checkbox" name="update_${attribute.code}" id="update_${attribute.code}" value="1" />
-           #i18n{document.attributeType.image.updateField}
-        </label>
-        <p class="help-block">#i18n{document.attributeType.image.deleteField}</p>
-    <#else>
-        <input type="file" class="form-control" name="${attribute.code}" id="${attribute.code}" />
-        <p class="help-block">${attribute.description}</p>
-    </#if>
-    </div>
-    <div class="col-xs-12 col-sm-9 col-sm-offset-3 col-md-9 col-md-offset-3">
-    <label for="crop" class="help-text">
-        <input type="checkbox" name="${attribute.code}_croppable" id="crop" onchange="displaySize();">
-         #i18n{document.attributeType.image.resize}</label>
-    </div>
-    <div class="col-xs-12 col-sm-9 col-sm-offset-3 col-md-9 col-md-offset-3">
-        <label for="size" class="help-text">
-        <input type="text" class="form-control" name="${attribute.code}_width" id="width" class="input-sm" disabled="disabled">
-        #i18n{document.attributeType.image.width}</label>
-    </div>
+	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
+	<div class="col-xs-12 col-md-10">
+		<input type="file" name="${attribute.code}" id="${attribute.code}" >
+		<#if attribute.textValue?has_content>
+		<div class="row">
+			<div class="col-xs-12 col-md-2">
+				<a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" title="${attribute.textValue}" class="">
+					<img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-medium">
+				</a>
+			</div>
+			<div class="col-xs-12 col-md-10">
+				<div class="checkbox">
+					<label for="update_${attribute.code}">
+						<input type="checkbox" name="update_${attribute.code}" id="update_${attribute.code}" value="1"> #i18n{document.attributeType.image.updateField} <small>#i18n{document.attributeType.image.deleteField}</small>
+					</label>
+				</div>
+			</div>
+		</div>
+	<#else>
+		<p class="help-block">${attribute.description}</p>
+	</#if>
+	</div>
 </div>
-
+<div class="form-group">
+	<div class="row">
+		<div class="col-md-offset-2 col-md-4">
+			<div class="input-group">
+				<span class="input-group-addon">
+					<input type="checkbox" name="${attribute.code}_croppable" id="crop"><label for="crop"  title="#i18n{document.attributeType.image.width}" >&nbsp;#i18n{document.attributeType.image.resize} </label>
+				</span>	
+				<input type="text" class="form-control" name="${attribute.code}_width" value="" placeholder="#i18n{document.attributeType.image.width}" id="${attribute.code}_width" disabled="disabled">
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
-function displaySize () {
-    var checked = $('#crop').attr('checked'); 
-    $("#width").val("");
-    if (checked == "checked") {
-        $("#width").prop("disabled", false);
-    } else {
-        $("#width").prop("disabled", true);
-    }
-}
-
+$(document).ready( function(){
+	$("#${attribute.code}_width").prop({disabled: true});
+	$("#${attribute.code}_width").addClass('disabled');
+	$('#crop').on('click', function(){
+		if ( $(this).is(':checked') ) {
+			$("#${attribute.code}_width").prop({disabled: false});
+			$("#${attribute.code}_width").toggleClass("disabled");
+		} else {
+			$("#${attribute.code}_width").val("");
+			$("#${attribute.code}_width").prop({disabled: true});
+			$("#${attribute.code}_width").toggleClass("disabled");
+		}
+	});
+});
 </script>

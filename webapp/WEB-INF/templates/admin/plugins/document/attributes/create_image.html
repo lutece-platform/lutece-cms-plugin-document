@@ -1,31 +1,37 @@
 <div class="form-group">
-    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
-    <div class="col-xs-12 col-sm-10 col-md-10">
-        <input type="file" name="${attribute.code}" id="${attribute.code}" >
-        <span class="help-text">${attribute.description}</span>
-    </div> 
-    <br />
-    <div class="col-xs-12 col-sm-10 col-md-10">
-    <label for="crop" class="help-text">
-        <input type="checkbox" name="${attribute.code}_croppable" id="crop" onchange="displaySize();">
-         #i18n{document.attributeType.image.resize}</label>
-    </div>
-    <div class="col-xs-12 col-sm-10 col-md-10">
-        <label for="size" class="help-text">
-        <input type="text" name="${attribute.code}_width" id="width" class="input-mini" disabled="disabled">
-        #i18n{document.attributeType.image.width}</label>
-    </div>
+	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
+	<div class="col-xs-12 col-sm-10 col-md-10">
+		<input type="file" name="${attribute.code}" id="${attribute.code}" >
+		<p class="help-block">${attribute.description}</p>
+	</div>
 </div>
-
+	</div>
+</div>
+<div class="form-group">
+	<div class="row">
+		<div class="col-md-offset-2 col-md-4">
+			<div class="input-group">
+				<span class="input-group-addon">
+					<input type="checkbox" name="${attribute.code}_croppable" id="crop"> #i18n{document.attributeType.image.resize}
+				</span>
+				<input type="text" class="form-control" name="${attribute.code}_width" value="" placeholder="#i18n{document.attributeType.image.width}" id="${attribute.code}_width" disabled="disabled">
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
-function displaySize () {
-    var checked = $('#crop').attr('checked'); 
-    $("#width").val("");
-    if (checked == "checked") {
-        $("#width").prop("disabled", false);
-    } else {
-        $("#width").prop("disabled", true);
-    }
-}
-
+$(document).ready( function(){
+	$("#${attribute.code}_width").prop({disabled: true});
+	$("#${attribute.code}_width").addClass('disabled');
+	$('#crop').on('click', function(){
+		if ( $(this).is(':checked') ) {
+			$("#${attribute.code}_width").prop({disabled: false});
+			$("#${attribute.code}_width").toggleClass("disabled");
+		} else {
+			$("#${attribute.code}_width").val("");
+			$("#${attribute.code}_width").prop({disabled: true});
+			$("#${attribute.code}_width").toggleClass("disabled");
+		}
+	});
+});
 </script>

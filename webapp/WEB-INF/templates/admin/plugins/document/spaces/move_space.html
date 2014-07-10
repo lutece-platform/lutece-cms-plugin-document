@@ -1,18 +1,19 @@
-<div class="row" >
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <fieldset>
-            <legend>#i18n{document.move_space.title} ${space.name}</legend>
-            <form class="form" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveSpace.jsp" enctype="multipart/form-data" >
-                <input type="hidden" name="id_space" value="${space.id}" />
-                <#if submit_button_disabled >#i18n{document.move_space.labelMove}</#if>
-                ${spaces_browser}
-                <!-- button class="btn btn-primary btn-sm" type="submit" <#if submit_button_disabled > disabled</#if> >
-                    <i class="glyphicon glyphicon-move"></i>&nbsp;#i18n{document.move_space.buttonMove}
-                </button -->
-                <a class="btn btn-sm" href="jsp/admin/plugins/document/ManageDocuments.jsp">
-                   <i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
-                </a>
-            </form>
-        </fieldset>
-    </div>
+<div class="row-fluid" >
+	<div class="col-xs-12 col-sm-12 col-md-12">
+		<form class="form" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveSpace.jsp" enctype="multipart/form-data" >
+			<fieldset>
+			<legend>#i18n{document.move_space.title} ${space.name}</legend>
+				<input type="hidden" name="id_space" value="${space.id}" />
+				<#if submit_button_disabled >#i18n{document.move_space.labelMove}</#if>
+					${spaces_browser}
+					<!-- button class="btn btn-primary btn-sm" type="submit" <#if submit_button_disabled > disabled</#if> >
+						<i class="glyphicon glyphicon-move"></i>&nbsp;#i18n{document.move_space.buttonMove}
+					</button>
+					<a class="btn btn-sm" href="jsp/admin/plugins/document/ManageDocuments.jsp">
+					   <i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
+					</a>
+					-->
+			</fieldset>
+		</form>
+	</div>
 </div>

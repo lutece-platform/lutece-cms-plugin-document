@@ -7,45 +7,44 @@
 	</#if>
 </#list>
 <div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${items.name}_value" >${items.label} :</label>
-	<div class="col-xs-12 col-sm-9 col-md-9">
-		<input type="text" id="${items.name}_value" name="${items.name}_value" tabindex="6" />
+	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${parameter.name}" >${parameter.label}</label>
+	<div class="col-xs-12 col-sm-10 col-md-10">
+		<input type="text" id="${items.name}_value" class="form-control" name="${items.name}_value" tabindex="6" />
 		<button class="btn btn-primary btn-sm" type="submit" name="add" value="add" >
 			#i18n{document.attributeType.listbox.btnAddItem}
 		</button>
-		<span class="help-block">${items.description}</span>
+		<p class="help-block">${items.description}</p>
 	</div>
 </div>
 <div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${items.name}_select" >&nbsp;</label>
-	<div class="col-xs-12 col-sm-9 col-md-9">
-		<select id="${items.name}_select" name="${items.name}_select" size="4" style='width:200px;' tabindex="8">
+	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${items.name}_select" >&nbsp;</label>
+	<div class="col-xs-12 col-sm-10 col-md-10">
+		<select id="${items.name}_select" name="${items.name}_select" size="4" class="form-control" tabindex="8">
 			<#list items.valueList as values >
 				<option value="${values}" >${values}</option>
 			</#list>
 		</select>
 		<div style="display:none;">
-			<select id="${items.name}" name="${items.name}" size="4" style='width:200px;' multiple="multiple" >
+			<select id="${items.name}" name="${items.name}" class="form-control" size="4" multiple="multiple" >
 				<#list items.valueList as values >
 					<option value="${values}" selected="selected">${values}</option>
 				</#list>		
 			</select>
-			</div>
-		<button class="btn btn-primary btn-sm" name="delete"  value="delete" type="submit">
-				#i18n{document.attributeType.listbox.btnDelItem}
+		</div>
+		<button class="btn btn-primary btn-xs" name="delete"  value="delete" type="submit">
+			#i18n{document.attributeType.listbox.btnDelItem}
 		</button>
-		<button class="btn btn-primary btn-sm"  value="bydefault" name="bydefault" type="submit">
+		<button class="btn btn-primary btn-xs"  value="bydefault" name="bydefault" type="submit">
 			#i18n{document.attributeType.listbox.btnDefItem}
 		</button>
 	</div>
 </div>
 <div class="form-group">
-	<label for="${defaultValue.name}" class="col-xs-12 col-sm-3 col-md-3">&nbsp;</label>
-	<div class="col-xs-12 col-sm-9 col-md-9">
-		<input type="text" id="${defaultValue.name}" name="${defaultValue.name}" value="<#list defaultValue.valueList as values >${values}</#list>" readonly="readonly" tabindex="11" >
+	<label for="${defaultValue.name}" class="col-xs-12 col-sm-2 col-md-2">&nbsp;</label>
+	<div class="col-xs-12 col-sm-10 col-md-10">
+		<input type="text" class="form-control" id="${defaultValue.name}" name="${defaultValue.name}" value="<#list defaultValue.valueList as values >${values}</#list>" readonly="readonly" tabindex="11" >
 	</div>
 </div>
-
 <script src="js/selectbox.js"></script>
 <script>
 function manageItems( actionItem ){

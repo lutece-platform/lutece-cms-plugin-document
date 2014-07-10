@@ -1,43 +1,45 @@
 <#if status == status_published>
-    <tr>
-        <td><img src="${page_template_picture}" alt="" title="" /></td>            
-        <td>${document_published.title}</td>
-        <#if permission_publish?exists>
-        <td>
-            <form class="form-inline" method="post" name="modifyOrderDocument"  action="jsp/admin/plugins/document/DoModifyDocumentOrder.jsp">
-                <input type="hidden" name="id_document" value="${document_published.id}" />
-                <input type="hidden" name="id_portlet" value="${portlet_id}" />
-                <div class="col-xs-12 col-sm-6 col-md-4">
-                    <@comboWithParams name="document_order" default_value="${document_order}" additionalParameters="class=\"input-mini\"" items=document_order_list />
-                    <button type="submit" class="btn btn-primary btn-sm"  alt="#i18n{document.published_document_list.labelChangeOrder}" title="#i18n{document.published_document_list.labelChangeOrder}">
-                        <i class="glyphicon glyphicon-move"></i>
-                    </button>
-                </div>
-            </form>
-        </td>
-        <#else>
-        <td></td>
-        </#if>
-        <td>
-            <form class="form-inline pull-right" method="post" name="unpublishDocument" action="jsp/admin/plugins/document/DoUnPublishingDocument.jsp">
-                <input type="hidden" name="id_document" value="${document_published.id}" />
-                <input type="hidden" name="id_portlet" value="${portlet_id}" />
-                <button class="btn btn-danger btn-sm" type="submit" title="#i18n{document.published_document_list.buttonUnPublish}">
-                    <i class="glyphicon glyphicon-remove"></i>
-                </button>
-            </form>
-            <form class="form-inline pull-right" method="post" name="previewDocument" action="jsp/admin/plugins/document/PreviewDocument.jsp">
-                <input type="hidden" name="id_document" value="${document_published.id}" />
-                <button type="submit" class="btn btn-primary btn-sm" alt="#i18n{document.published_document_list.labelPreview}" title="#i18n{document.published_document_list.labelPreview}">
-                    <i class="glyphicon glyphicon-eye-open"></i>
-                </button>
-            </form>
-            <form class="form-inline pull-right" method="post" name="manageDocument" action="jsp/admin/plugins/document/ManageDocuments.jsp">
-                <input type="hidden" name="id_space_filter" value="${document_published.spaceId}" />
-                <button type="submit" class="btn btn-primary btn-sm" alt="#i18n{document.published_document_list.labelManageDocument}" title="#i18n{document.published_document_list.labelManageDocument}">
-                    <i class="glyphicon glyphicon-folder-open"></i>
-                </button>
-            </form>
-        </td>
-    </tr>
+<tr>
+	<td><img src="${page_template_picture}" alt="" title="" /></td>            
+	<td>${document_published.title}</td>
+	<#if permission_publish?exists>
+		<td>
+			<form class="form-inline" method="post" name="modifyOrderDocument"  action="jsp/admin/plugins/document/DoModifyDocumentOrder.jsp">
+			<input type="hidden" name="id_document" value="${document_published.id}" />
+			<input type="hidden" name="id_portlet" value="${portlet_id}" />
+			<div class="form-group">
+				<@comboWithParams name="document_order" default_value="${document_order}" additionalParameters="class=\"form-control input-sm\"" items=document_order_list />
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary btn-xs spaced"  alt="#i18n{document.published_document_list.labelChangeOrder}" title="#i18n{document.published_document_list.labelChangeOrder}">
+					<i class="glyphicon glyphicon-move"></i>
+				</button>
+			</div>
+			</form>
+		</td>
+	<#else>
+		<td></td>
+	</#if>
+	<td>
+		<form class="form-inline pull-right" method="post" name="unpublishDocument" action="jsp/admin/plugins/document/DoUnPublishingDocument.jsp">
+		<input type="hidden" name="id_document" value="${document_published.id}" />
+		<input type="hidden" name="id_portlet" value="${portlet_id}" />
+		<button class="btn btn-danger btn-xs spaced" type="submit" title="#i18n{document.published_document_list.buttonUnPublish}">
+			<i class="glyphicon glyphicon-remove"></i>
+		</button>
+		</form>
+		<form class="form-inline pull-right" method="post" name="previewDocument" action="jsp/admin/plugins/document/PreviewDocument.jsp">
+			<input type="hidden" name="id_document" value="${document_published.id}" />
+			<button type="submit" class="btn btn-primary btn-xs spaced" alt="#i18n{document.published_document_list.labelPreview}" title="#i18n{document.published_document_list.labelPreview}">
+				<i class="glyphicon glyphicon-eye-open"></i>
+			</button>
+		</form>
+		<form class="form-inline pull-right" method="post" name="manageDocument" action="jsp/admin/plugins/document/ManageDocuments.jsp">
+		<input type="hidden" name="id_space_filter" value="${document_published.spaceId}" />
+		<button type="submit" class="btn btn-primary btn-xs spaced" alt="#i18n{document.published_document_list.labelManageDocument}" title="#i18n{document.published_document_list.labelManageDocument}">
+			<i class="glyphicon glyphicon-folder-open"></i>
+		</button>
+		</form>
+	</td>
+</tr>
 </#if>

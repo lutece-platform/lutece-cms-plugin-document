@@ -1,38 +1,38 @@
 <#include "/admin/util/calendar/calendar.html" />
 <#list parameters as parameter>
 <div class="form-group">
-<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${parameter.name}" >${parameter.label} :</label>
-	<div class="col-xs-12 col-sm-9 col-md-9">
+	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${parameter.name}" >${parameter.label}</label>
+	<div class="col-xs-12 col-sm-10 col-md-10">
 		<#if parameter_index = 0>
 			<input type="text" name="${parameter.name}" id="${parameter.name}" tabindex="${parameter_index + 5}" value="<#list parameter.valueList as values >${values}</#list>"/> 
-			<span class="help-block">${parameter.description}</span>
+			<p class="help-block">${parameter.description}</p>
 			<@getDatePicker idField=parameter.name language=locale.language />
 		</#if>
 		<#if parameter_index = 1>
-			<label class="checkbox">
-				<input type="checkbox" class="checkbox" name="${parameter.name}" id="${parameter.name}"<#if parameter.valueList?has_content>checked="checked" </#if> onclick="changeState('${parameter.name}', '${parameter.description}');">
-				<span>${parameter.description}</span>
-			</label>
+			<div class="checkbox">
+				<label for="${parameter.name}">
+					<input type="checkbox" class="checkbox" name="${parameter.name}" id="${parameter.name}"<#if parameter.valueList?has_content>checked="checked" </#if> onclick="changeState('${parameter.name}', '${parameter.description}');">
+					<span>${parameter.description}</span>
+				</label>
+			</div>
 		</#if>
 	 </div>
 </div>
 <#if parameter_index = 0>
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<@getDatePicker idField=parameter.name language=locale.language />
-<script>
-function changeState(paramName, paramDescription){
-    state=true;
-    dateValue='('+paramDescription+')';
-    if(document.getElementById(paramName).checked == false)
-    {
-		state=false;
-		dateValue='';
-    }
-    document.getElementById('${parameter.name}').value=dateValue;
-    document.getElementById('${parameter.name}').readOnly=state;
-}
-</script>
+	<@getDatePicker idField=parameter.name language=locale.language />
+	<script>
+	function changeState(paramName, paramDescription){
+		state=true;
+		dateValue='('+paramDescription+')';
+		if(document.getElementById(paramName).checked == false)
+		{
+			state=false;
+			dateValue='';
+		}
+		document.getElementById('${parameter.name}').value=dateValue;
+		document.getElementById('${parameter.name}').readOnly=state;
+	}
+	</script>
 </#if>
 <script>
 	var state=true;

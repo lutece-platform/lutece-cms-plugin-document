@@ -1,11 +1,8 @@
 <div class="form-group">
-<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if> : </label>
-    <div class="col-xs-12 col-sm-10 col-md-10">
-		<input type="text" id="${attribute.code}" name="${attribute.code}" size="10" value="<#if (parameters.currentdate)?has_content>
-		<#list parameters.currentdate as currentdate>${currentdate?if_exists}</#list><#else><#if (parameters.defaultvalue)?has_content><#list parameters.defaultvalue as defaultvalue>${defaultvalue?if_exists}</#list></#if></#if>"/> 
-		<span class="help-text">${attribute.description}</span>
+	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
+	<div class="col-xs-12 col-sm-10 col-md-10">
+		<input type="text" id="${attribute.code}" name="${attribute.code}" size="10" value="<#if (parameters.currentdate)?has_content><#list parameters.currentdate as currentdate>${currentdate?if_exists}</#list><#else><#if (parameters.defaultvalue)?has_content><#list parameters.defaultvalue as defaultvalue>${defaultvalue?if_exists}</#list></#if></#if>"> 
+		<p class="help-block">${attribute.description}</p>
+		<@getDatePicker idField=attribute.code language=locale.language />
 	</div>
 </div>
-<script src="js/jquery/plugins/ui/datepicker/ui.datepicker.js"></script>
-<script src="js/jquery/plugins/ui/datepicker/ui.datepicker-fr.js"></script>
-<@getDatePicker idField=attribute.code language=locale.language />

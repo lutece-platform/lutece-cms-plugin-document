@@ -1,11 +1,11 @@
-<li>
-   <label class="radio">
-		<img src="${document_page_template.picture}" class="thumblist" alt="${document_page_template.description}"/>
+<div class="radio">
+	<label for="page_template_id">
 		<!-- i class="${document_page_template.picture}"></i -->
-		<input class="radio" type="radio" name="page_template_id" value="${document_page_template.id}" ${checked}/>
+		<input class="radio" type="radio" name="page_template_id" value="${document_page_template.id}" ${checked}>
+		<img src="${document_page_template.picture}" class="thumblist" alt="${document_page_template.description}">
 		${document_page_template.description}
-   </label>
-</li>
+	</label>
+</div>
 
 
  

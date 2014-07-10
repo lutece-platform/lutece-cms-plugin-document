@@ -1,5 +1,5 @@
 <#if parent_space?exists>
-<div class="row">
+<div class="row" >
 <div class="col-xs-12 col-sm-12 col-md-12" >
 <form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoCreateSpace.jsp">
 <fieldset>
@@ -7,7 +7,7 @@
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="name">#i18n{document.create_space.labelName}* :</label>
 	<div class="col-xs-12 col-sm-6 col-md-6">
-	<input type="text" class="form-control" name="name" id="name" tabindex="1" />
+		<input type="text" class="form-control" name="name" id="name" tabindex="1" />
 	</div>
 </div>
 <div class="form-group">
@@ -18,14 +18,14 @@
 </div>
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="view_type">#i18n{document.create_space.labelView} :</label>
-	<div class="col-xs-12 col-sm-6 col-md-6">
-	<@combo name="view_type" default_value="${view_type}" items=view_types_list />
+	<div class="col-xs-12 col-sm-2 col-md-2">
+	<@comboWithParams name="view_type" default_value="${view_type}" additionalParameters="class=\"form-control \"" items=view_types_list />
 	</div>
 </div>
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="icon">#i18n{document.create_space.labelIcon} :</label>
-	<div class="col-xs-12 col-sm-6 col-md-6">
-	<@radioImageList name="icon" default_value="1" items=icons_list />
+	<div class="col-xs-12 col-sm-9 col-md-9">
+	<@radioImageList name="icon" default_value="1" items=icons_list inline=1 />
 	</div>
 </div>
 <div class="form-group">
@@ -35,18 +35,19 @@
 		</div>
 </div>
 <div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="workgroup_key">#i18n{document.create_space.labelWorkgroup} : </label>
-		<div class="col-xs-12 col-sm-6 col-md-6">
-		<@combo name="workgroup_key" items=user_workgroup_list default_value="${selected_workgroup}" />
+	<label class="control-label col-xs-12 col-sm-3 col-md-3 sr-only" for="workgroup_key">#i18n{document.create_space.labelWorkgroup}</label>
+	<div class="col-xs-12 col-sm-3 col-md-3">
+		<@comboWithParams name="workgroup_key"  default_value="${selected_workgroup}"  additionalParameters="class=\"form-control \"" items=user_workgroup_list/>
 		</div>
 	</div>
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="allow_creation">#i18n{document.create_space.labelAllowCreation} :</label>
-	<div class="col-xs-12 col-sm-6 col-md-6">
+	<div class="col-xs-12 col-sm-9 col-md-9">
 		<div class="checkbox">
 			<label for="allow_creation">
-			<input class="checkbox" type="checkbox" name="allow_creation" id="allow_creation" tabindex="5" />
-			#i18n{document.create_space.labelAllowCreation}</label>
+				<input class="checkbox" type="checkbox" name="allow_creation" id="allow_creation" tabindex="5">
+				#i18n{document.create_space.labelAllowCreation}
+			</label>
 		</div>
 #i18n{document.create_space.helpAllowCreation}
 	</div>
