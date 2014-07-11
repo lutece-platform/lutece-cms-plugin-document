@@ -81,7 +81,7 @@
 	</div>
 	<div class="col-xs-12 col-sm-12 col-md-9">
 	<#if space?has_content >
-		<!-- #i18n{document.manage_documents.listTitle}  -->
+		<!-- #i18n{document.manage_documents.listTitle} 
 		<#if space.documentCreationAllowed > 
 			<#if document_types_list?has_content>
 			<div class="row">
@@ -99,30 +99,39 @@
 			</div>
 			</#if> 
 		</#if>
-		<#if documents_list?size &gt; 0 >
-		<div class="row">
-			<div class="col-xs-12 col-sm-12 col-md-12">
-				<div class="well well-sm">
-				<#if document_types_filter_list?size &gt; 1 >
-					<form class="form-inline" method="post" name="FilterDocumentsForm" action="jsp/admin/plugins/document/ManageDocuments.jsp">
-						<label for="document_type_code_filter">#i18n{document.manage_documents.labelType}</label>
-						<@comboWithParams name="document_type_code_filter" default_value="${default_document_type}" additionalParameters="class=\"form-control\"" items=document_types_filter_list 				/> <label>#i18n{document.manage_documents.labelState} :</label>
-						<@comboWithParams name="id_state_filter" default_value="${default_state}" additionalParameters="class=\"form-control \"" items=states_filter_list />
-						<button class="btn btn-primary btn-xs" type="submit" title="#i18n{document.manage_documents.buttonFilter}">
-							<i class="glyphicon glyphicon-filter"></i>
-						</button>
-					
-				<label for="view_type">#i18n{document.manage_documents.labelViewType}</label>
-				<@comboWithParams name="view_type" default_value="${view_type}" additionalParameters="class=\"form-control\"" items=view_types_list />
-				<button class="btn btn-primary btn-xs" type="submit">
-					<i class="glyphicon glyphicon-ok"></i>
-				</button>
+		-->
+		<div class="row management-toolbar">
+			<div class="col-xs-12 col-sm-9 col-md-9">
+			<#if document_types_filter_list?size &gt; 1 >
+				<form class="form-inline" method="post" name="FilterDocumentsForm" action="jsp/admin/plugins/document/ManageDocuments.jsp">
+					<label for="document_type_code_filter">#i18n{document.manage_documents.labelType}</label>
+					<@comboWithParams name="document_type_code_filter" default_value="${default_document_type}" additionalParameters="class=\"form-control\"" items=document_types_filter_list 				/> <label>#i18n{document.manage_documents.labelState} :</label>
+					<@comboWithParams name="id_state_filter" default_value="${default_state}" additionalParameters="class=\"form-control \"" items=states_filter_list />
+					<button class="btn btn-primary btn-xs" type="submit" title="#i18n{document.manage_documents.buttonFilter}">
+						<i class="glyphicon glyphicon-filter"></i>
+					</button>
+					<label for="view_type" class="sr-only">#i18n{document.manage_documents.labelViewType}</label>
+					<@comboWithParams name="view_type" default_value="${view_type}" additionalParameters="class=\"form-control\"" items=view_types_list />
+					<button class="btn btn-primary btn-xs" type="submit">
+						<i class="glyphicon glyphicon-ok"></i>
+					</button>
 				</form>
-				</#if> 
-				</div>
+			</#if> 
 			</div>
-		</div>
+			<#if space.documentCreationAllowed > 
+				<#if document_types_list?has_content>
+				<div class="col-xs-12 col-sm-3 col-md-3">
+					<form class="form-inline" method="post" name="CreateDocument" action="jsp/admin/plugins/document/CreateDocument.jsp">
+					<label for="document_type_code" class="sr-only">#i18n{document.manage_documents.labelCreate}</label>
+					<@comboWithParams name="document_type_code" default_value="" additionalParameters="class=\"form-control\"" items=document_types_list/>
+					<button class="btn btn-primary btn-sm" type="submit" title="#i18n{document.manage_documents.buttonCreate}"	>
+						<i class="glyphicon glyphicon-plus"></i> #i18n{document.manage_documents.buttonCreate}
+					</button>
+					</form>
+				</div>
+			</#if> 
 		</#if>
+		</div>
 		<#if documents_list?size = 0 >
 			<p class="alert alert-error">#i18n{document.manage_documents.noDocument}</p>
 		<#else> 
@@ -149,8 +158,7 @@
 									<button class="btn btn-primary btn-xs" type="submit" title="#i18n{document.manage_documents.applyToSelection}">
 										<i class="glyphicon glyphicon-ok"></i>
 									</button>
-							</span>
-							
+								</span>
 							</th>
 							<th>#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url="jsp/admin/plugins/document/ManageDocuments.jsp" attribute="publishedStatus" /></th>
 							<th>#i18n{document.manage_documents.labelActions}</th>
@@ -207,26 +215,26 @@
 				<div class="col-xs-12 col-sm-12 col-md-12">
 					<#list documents_list as document >
 					<div class="col-xs-12 col-sm-6 col-md-4">
-					<div class="thumbnail">
-						<img src="${document.thumbnail}&nocache" class="thumbnail" alt="${document.title}" title="${document.title} - ${document.type}" />
-						<div class="caption">
-							<p>
-								<span class="badge">${document.id}</span>
-								<strong title="${document.title}">
-									<#if document.title?length &gt; 18>${document.title?substring(0,18)}...<#else>${document.title}</#if>
-								</strong>
-							</p>
-							<p>
-								<#list document.actions?sort_by("idAction") as action > 
-									<#if action.url?has_content> 
-										<a class="btn btn-primary btn-xs <@setBtnAction action_nb=action.idAction />" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}"> 
-										<i class="${action.iconUrl} icon-white"></i>
-										</a> 
-									</#if>
-								</#list>
-							</p>
+						<div class="thumbnail">
+							<img src="${document.thumbnail}&nocache" class="thumbnail" alt="${document.title}" title="${document.title} - ${document.type}" />
+							<div class="caption">
+								<p>
+									<span class="badge">${document.id}</span>
+									<strong title="${document.title}">
+										<#if document.title?length &gt; 18>${document.title?substring(0,18)}...<#else>${document.title}</#if>
+									</strong>
+								</p>
+								<p>
+									<#list document.actions?sort_by("idAction") as action > 
+										<#if action.url?has_content> 
+											<a class="btn btn-primary btn-xs <@setBtnAction action_nb=action.idAction />" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}"> 
+											<i class="${action.iconUrl} icon-white"></i>
+											</a> 
+										</#if>
+									</#list>
+								</p>
+							</div>
 						</div>
-					</div>
 					</div>
 					</#list>
 				</div>
@@ -272,12 +280,7 @@ jQuery(function($) {
 	}
 
 // Check length of tree names
-$(' div#tree ul li a').each( function() {
-	var strLeaf = $(this).text();
-	if ( strLeaf.length > 20 )
-		{ $(this).text( strLeaf.substring(0, 18) + '...' ); }
-});
-	
+
 	
 // Set the cookie of jstree
 $.cookie("jstree_select", "#node-" + spaceid );
