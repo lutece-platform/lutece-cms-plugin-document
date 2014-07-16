@@ -10,12 +10,12 @@
 				<p>#i18n{document.create_document.labelDocumentValidity}</p>
 				<label for="document_validity_begin">#i18n{document.create_document.labelDocumentValidityBegin}</label>
 					<div class="input-group">
-						<span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+						<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 						<input type="text" class="input-sm" name="document_validity_begin" id="document_validity_begin" value="${current_date!}" />
 					</div>
 					<label for="document_validity_begin">#i18n{document.create_document.labelDocumentValidityEnd}</label> 
 					<div class="input-group">
-					<span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 					<input type="text" class="input-sm"  name="document_validity_end" id="document_validity_end" />
 				</div>
 				<label for="document_page_template">#i18n{document.create_document.labelDocumentPageTemplate} : </label>
@@ -47,7 +47,7 @@
 				<div class="form-group">
 					<label class="control-label col-xs-12 col-sm-2 col-md-2" for="document_summary">#i18n{document.create_document.labelDocumentSummary}* : </label>
 					<div class="col-xs-12 col-sm-10 col-md-10">
-						<textarea name="document_summary" id="document_summary" class="form-control" rows="2" ></textarea> 
+						<textarea name="document_summary" id="document_summary" class="form-control input-sm" rows="2" ></textarea> 
 						<span class="help-block">#i18n{document.create_document.helpDocumentSummary}</span>
 					</div>
 				</div>

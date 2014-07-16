@@ -1,5 +1,5 @@
-<div class="row-fluid append-bottom">
-    <div class="span12">
+<div class="row append-bottom">
+    <div class="col-xs-12 col-sm-12 col-md-12">
     	<form id="massArchivalForm" action="jsp/admin/plugins/document/MassArchivalDocument.jsp">
         <fieldset>
             <legend>#i18n{document.manage_document.mass_archival_labelBtn}</legend>
@@ -7,18 +7,18 @@
             <div class="well well-small">
 				<input type="radio" name="archival_criteria" value="date" <#if selected_criteria == 'date'>checked</#if> onclick='$("#criteria_date").show();$("#criteria_space").hide();$("#criteria_type").hide();'>&nbsp;#i18n{document.manage_document.mass_archival.criteriaDate}<br>
 				<div id="criteria_date">
-                    <div class="control-group">
+                    <div class="form-group">
                         <div class="controls">
                         	Du
                             <div class="input-group">
-                                <span class="add-on"><i class="icon-calendar"></i></span>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                 <input type="text" class="input-small"  name="date_min" id="dateMin" value="${date_min!}" />
                             </div>
                         </div>
                         <div class="controls">
                         	au
                             <div class="input-group">
-                                <span class="add-on"><i class="icon-calendar"></i></span>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                 <input type="text" class="input-small"  name="date_max" id="dateMax" value="${date_max!}"/>
                             </div>
                         </div>
@@ -54,8 +54,8 @@
 				    </div>
 			   </div>
 			</div>
-			<button class="btn btn-primary btn-small" type="submit" name="action" value="apply" title="#i18n{document.manage_documents.buttonSearch}" >
-				<i class="icon-search icon-white"></i>&nbsp;#i18n{document.manage_document.mass_archival.archiveLbl}
+			<button class="btn btn-primary btn-sm" type="submit" name="action" value="apply" title="#i18n{document.manage_documents.buttonSearch}" >
+				<i class="glyphicon glyphicon-search"></i>&nbsp;#i18n{document.manage_document.mass_archival.archiveLbl}
 			</button>
         </fieldset>
        </form>

@@ -7,19 +7,19 @@
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{document.modify_space.labelName}* :</label>
 	<div class="col-xs-12 col-sm-6 col-md-6">
-	<input type="text" class="form-control" name="name" id="name" tabindex="1" value="${space.name}" />
+	<input type="text" class="form-control input-sm" name="name" id="name" tabindex="1" value="${space.name}" />
 </div>
 </div>
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="description" >#i18n{document.modify_space.labelDescription}* :</label>
 	<div class="col-xs-12 col-sm-6 col-md-6">
-		<input type="text" class="form-control" name="description" id="description" value="${space.description}" tabindex="2" />
+		<input type="text" class="form-control input-sm" name="description" id="description" value="${space.description}" tabindex="2" />
 	</div>
 </div>
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="view_type" >#i18n{document.modify_space.labelView} :</label>
-	<div class="col-xs-12 col-sm-2 col-md-2">
-		<@comboWithParams name="view_type" default_value="${view_type}" additionalParameters="class=\"form-control \"" items=view_types_list />
+	<div class="col-xs-12 col-sm-6 col-md-6">
+		<@comboWithParams name="view_type" default_value="${view_type}" additionalParameters="class=\"form-control input-sm\"" items=view_types_list />
 	</div>
 </div>
 <div class="form-group">
@@ -30,17 +30,17 @@
 </div>
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="document_type">#i18n{document.modify_space.labelDocumentTypes} :</label>
-	<div class="col-xs-12 col-sm-9 col-md-9">
+	<div class="col-xs-12 col-sm-6 col-md-6">
 		<@checkboxList name="document_type" default_values="" items=document_types_list />
 	</div>
 </div>
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3 sr-only" for="workgroup_key">#i18n{document.modify_space.labelWorkgroup}</label>
-	<div class="col-xs-12 col-sm-3 col-md-3">
+	<div class="col-xs-12 col-sm-6 col-md-6">
 	<#if space.workgroup?exists>
-		<@comboWithParams name="workgroup_key"  default_value=space.workgroup additionalParameters="class=\"form-control \""  items=user_workgroup_list/>
+		<@comboWithParams name="workgroup_key"  default_value=space.workgroup additionalParameters="class=\"form-control input-sm\""  items=user_workgroup_list/>
 	<#else>
-		<@comboWithParams name="workgroup_key"  default_value="all"  additionalParameters="class=\"form-control \"" items=user_workgroup_list/>
+		<@comboWithParams name="workgroup_key"  default_value="all"  additionalParameters="class=\"form-control input-sm\"" items=user_workgroup_list/>
 	</#if>
 	</div>
 </div>

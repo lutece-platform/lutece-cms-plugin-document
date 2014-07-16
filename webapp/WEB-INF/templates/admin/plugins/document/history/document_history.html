@@ -1,5 +1,5 @@
 <#if document?exists>
-<div class="row-fluid">
+<div class="row">
 	<div class="col-xs-12 col-sm-4 col-md-4">
 		<div class="well">            
 			<div class="page-header">            
@@ -45,7 +45,7 @@
 		<h4>#i18n{document.document_history.title} ${document.id} - ${document.title}</h4>
 		<ul class="list-unstyled">
 			<#list events_list as event >
-				<li><i class="icon-asterisk"></i>&nbsp;<em>${event.date}</em>&nbsp;-&nbsp;${event.description}</li>
+				<li><i class="glyphicon glyphicon-asterisk"></i>&nbsp;<em>${event.date}</em>&nbsp;-&nbsp;${event.description}</li>
 			</#list>
 		</ul>   
 	</div>

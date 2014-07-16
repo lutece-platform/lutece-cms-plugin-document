@@ -8,7 +8,7 @@
 			<#assign defaultValue = "">
 		</#if>
 	</#list>
-	<select id="${attribute.code}" name="${attribute.code}" class="form-control">
+	<select id="${attribute.code}" name="${attribute.code}" class="form-control input-sm">
 		<#if parameters.items?size != 0>
 			<#list parameters.items as item>
 				<#if defaultValue="${item}">

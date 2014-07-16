@@ -9,7 +9,7 @@
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${parameter.name}" >${parameter.label}</label>
 	<div class="col-xs-12 col-sm-10 col-md-10">
-		<input type="text" id="${items.name}_value" class="form-control" name="${items.name}_value" tabindex="6" />
+		<input type="text" id="${items.name}_value" class="form-control input-sm" name="${items.name}_value" tabindex="6" />
 		<button class="btn btn-primary btn-sm" type="submit" name="add" value="add" >
 			#i18n{document.attributeType.listbox.btnAddItem}
 		</button>
@@ -19,13 +19,13 @@
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${items.name}_select" >&nbsp;</label>
 	<div class="col-xs-12 col-sm-10 col-md-10">
-		<select id="${items.name}_select" name="${items.name}_select" size="4" class="form-control" tabindex="8">
+		<select id="${items.name}_select" name="${items.name}_select" size="4" class="form-control input-sm" tabindex="8">
 			<#list items.valueList as values >
 				<option value="${values}" >${values}</option>
 			</#list>
 		</select>
 		<div style="display:none;">
-			<select id="${items.name}" name="${items.name}" class="form-control" size="4" multiple="multiple" >
+			<select id="${items.name}" name="${items.name}" class="form-control input-sm" size="4" multiple="multiple" >
 				<#list items.valueList as values >
 					<option value="${values}" selected="selected">${values}</option>
 				</#list>		
@@ -42,7 +42,7 @@
 <div class="form-group">
 	<label for="${defaultValue.name}" class="col-xs-12 col-sm-2 col-md-2">&nbsp;</label>
 	<div class="col-xs-12 col-sm-10 col-md-10">
-		<input type="text" class="form-control" id="${defaultValue.name}" name="${defaultValue.name}" value="<#list defaultValue.valueList as values >${values}</#list>" readonly="readonly" tabindex="11" >
+		<input type="text" class="form-control input-sm" id="${defaultValue.name}" name="${defaultValue.name}" value="<#list defaultValue.valueList as values >${values}</#list>" readonly="readonly" tabindex="11" >
 	</div>
 </div>
 <script src="js/selectbox.js"></script>

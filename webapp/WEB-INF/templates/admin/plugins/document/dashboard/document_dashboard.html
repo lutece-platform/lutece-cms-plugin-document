@@ -42,7 +42,7 @@
 				<#if last_published_document.publishedStatus = 0> 
 					<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class="glyphicon glyphicon-ok-sign"></i>	</span>	
 				<#else>
-					<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign icon-white"></i></span>	
+					<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>	
 				</#if> 
 					&nbsp;<img src="${last_published_document.thumbnail}" alt="Image ${last_published_document.title}" class="thumblist-small" />
 					<span title="${last_published_document.type}">${last_published_document.id} - ${last_published_document.title}</span>

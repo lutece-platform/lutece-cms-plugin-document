@@ -6,28 +6,28 @@
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="code" >#i18n{document.create_document_type.labelCode}*</label>
                     <div class="col-xs-12 col-sm-8 col-md-6">
-                        <input class="form-control" type="text" name="code" id="code" tabindex="1" maxlength="30"/>
+                        <input class="form-control input-sm" type="text" name="code" id="code" tabindex="1" maxlength="30"/>
                         <span class="help-text">#i18n{document.create_document_type.helpCode}</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{document.create_document_type.labelName}* :</label>
                     <div class="col-xs-12 col-sm-8 col-md-6">
-                        <input class="form-control" type="text" name="name" id="name" tabindex="2" maxlength="100"/>
+                        <input class="form-control input-sm" type="text" name="name" id="name" tabindex="2" maxlength="100"/>
                         <span class="help-text">#i18n{document.create_document_type.helpName}</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{document.create_document_type.labelDescription}* :</label>
                     <div class="col-xs-12 col-sm-8 col-md-6">
-                        <input type="text" class="form-control" name="description" id="description" tabindex="3" />
+                        <input type="text" class="form-control input-sm" name="description" id="description" tabindex="3" />
                         <span class="help-text">#i18n{document.create_document_type.helpDescription}</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{document.create_document_type.labelMetadata}* :</label>
                     <div class="col-xs-12 col-sm-8 col-md-6">
-                        <@combo name="metadata" items=metadata_handlers_list default_value="" />
+                        <@comboWithParams name="metadata" additionalParameters="class=\"form-control input-sm\"" items=metadata_handlers_list default_value="" />
                         <span class="help-text">#i18n{document.create_document_type.helpMetadata}</span>
                     </div>
                 </div>
