@@ -1,61 +1,104 @@
-<div class="lutece-widget">
-	<div class="panel panel-primary">
-		<div class="panel-header">
-			<i class="fa fa-file-text-o"></i>
-			<span> #i18n{document.plugin.description}</span>
-			<a class="pull-right" href="${url}" title="#i18n{document.plugin.description}">
-				<i class="fa fa-file-text-o"></i>
+<div class="well lutece-dashboard-content">
+	<fieldset>
+		<legend>
+			<img src="${icon}"/>
+			<a href="${url}" title="#i18n{document.plugin.description}" >
+				#i18n{document.plugin.description}
 			</a>
-		</div>
-		<div class="panel-content">
-			<!-- LAST MODIFIED DOCUMENT -->
-			<#if last_modified_document??>
-			<h4>#i18n{document.dashboard.columnLastModifiedDocument}</h4>
-			<p>
-			<#if last_modified_document.publishedStatus = 0> 
-				<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}">
-					<i class="glyphicon glyphicon-ok-sign"></i>
-				</span>
-			<#else>
-				<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}">
-					<i class="glyphicon glyphicon-remove-sign"></i>
-				</span>
-			</#if>
-			&nbsp;<img src="${last_modified_document.thumbnail}" alt="Image ${last_modified_document.title}" class="thumblist-small" >&nbsp;<span title="${last_modified_document.type}">${last_modified_document.id} - ${last_modified_document.title}</span>
-			<#list last_modified_document.actions as action>
-				<#if action.url?exists>
-					<a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="pull-right spaced-xs">
-						<i class="${action.iconUrl}"></i>
-					</a>
-				</#if>
-			</#list>
-			</p>
-			<p>
-				<small><strong>#i18n{document.dashboard.labelState} : </strong>${last_modified_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_modified_document.dateModification}</small>
-			</p>
-			<#if last_modified_document.comment!= ""><p class="alert alert-warning"><small>${last_modified_document.comment}</small></p></#if>
-			</#if>
-			<!-- LAST PUBLISHED DOCUMENT -->
-			<#if last_published_document??>
-			<h4>#i18n{document.dashboard.columnLastPublishedDocument}</h4>
-				<p>
-				<#if last_published_document.publishedStatus = 0> 
-					<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class="glyphicon glyphicon-ok-sign"></i>	</span>	
-				<#else>
-					<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>	
-				</#if> 
-					&nbsp;<img src="${last_published_document.thumbnail}" alt="Image ${last_published_document.title}" class="thumblist-small" />
-					<span title="${last_published_document.type}">${last_published_document.id} - ${last_published_document.title}</span>
-					<#list last_published_document.actions as action>
-					<#if action.url?exists>
-						<a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="pull-right spaced-xs">
-							<i class="${action.iconUrl}"></i>
-						</a>
-					</#if>
-				</#list>
-				</p>
-				<p><small><strong>#i18n{document.dashboard.labelState} : </strong>${last_published_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_published_document.dateModification}</small></p>
-			</#if>
+			<div class="pull-right">
+				<a class="btn btn-primary btn-small" href="${url}" title="#i18n{document.plugin.description}">
+					<i class="fa fa-file-text-o"></i>
+				</a>
+				<a href="jsp/admin/AdminMenu.jsp#top" title="#i18n{document.dashboard.top}">
+					<i class="icon-arrow-up"></i>
+				</a>
 			</div>
-	</div>
+		</legend>
+		<!-- LAST MODIFIED DOCUMENT -->
+		<table class="table table-striped">
+			<thead>
+			   	<tr>
+			   		<th>#i18n{document.dashboard.columnLastModifiedDocument}</th>
+			   		<th>#i18n{document.dashboard.columnStatus}</th>
+			   		<th>#i18n{document.dashboard.columnActions}</th>
+			   	</tr>
+			</thead>
+			<tbody>
+			  	<#if last_modified_document??>
+				    <tr>
+						<td>
+							<p><img src="${last_modified_document.thumbnail}" alt="${last_modified_document.title}" class="thumblist" />&nbsp;${last_modified_document.id} - ${last_modified_document.title}</p>
+							<p><small>${last_modified_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_modified_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_modified_document.dateModification}</small></p>
+						</td>
+						<td>
+							<#if last_modified_document.publishedStatus = 0> 
+								<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class="glyphicon glyphicon-ok-sign"></i>	</span>	
+							<#else>
+								<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>	
+							</#if>
+						</td>
+				        <td>
+							<p>
+							<#list last_modified_document.actions as action>
+							<#if action.url?exists>
+								<a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
+									<i class="${action.iconUrl}"></i>
+								</a>
+							</#if>
+							</#list>
+							</p>
+							<#if last_modified_document.comment!= ""> <div class="alert alert-danger col-xs-12 col-sm-9 col-md-9">${last_modified_document.comment}</div></#if>
+				        </td>
+			    	</tr>
+			    <#else>
+			    	<tr>
+			    		<td colspan="3">
+			    			#i18n{document.manage_documents.noDocument}
+			    		</td>
+			    	</tr>
+			    </#if>
+			</tbody>
+		</table>
+		<!-- LAST PUBLISHED DOCUMENT -->
+		<table class="table table-striped">
+			<thead>
+			   	<tr>
+			   		<th>#i18n{document.dashboard.columnLastPublishedDocument}</th>
+			   		<th>#i18n{document.dashboard.columnStatus}</th>
+			   		<th>#i18n{document.dashboard.columnActions}</th>
+			   	</tr>
+		   	</thead>
+		   	<#if last_published_document??>
+		    	<tr>
+					<td>
+						<img src="${last_published_document.thumbnail}" alt="${last_published_document.title}" class="thumblist" />
+						${last_published_document.id} - ${last_published_document.title}<br />
+						<p><small>${last_published_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_published_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_published_document.dateModification}</small></p>
+					</td>
+					<td>
+						<#if last_published_document.publishedStatus = 0> 
+						<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class=" icon-ok-sign"></i>	</span>	
+					<#else>
+						<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>	
+					</#if>	     
+					</td>
+		            <td>
+						<#list last_published_document.actions as action>
+							<#if action.url?exists>
+								<a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
+									<i class="${action.iconUrl}"></i>
+								</a>
+							</#if>
+						</#list>
+		            </td>
+		    	</tr>
+	    	<#else>
+		    	<tr>
+		    		<td colspan="3">
+		    			#i18n{document.manage_documents.noDocument}
+		    		</td>
+		    	</tr>
+		    </#if>
+		</table>
+	</fieldset>
 </div>
