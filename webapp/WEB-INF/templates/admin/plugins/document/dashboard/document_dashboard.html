@@ -1,16 +1,15 @@
 <div class="well lutece-dashboard-content">
 	<fieldset>
 		<legend>
-			<img src="${icon}"/>
 			<a href="${url}" title="#i18n{document.plugin.description}" >
 				#i18n{document.plugin.description}
 			</a>
 			<div class="pull-right">
-				<a class="btn btn-primary btn-small" href="${url}" title="#i18n{document.plugin.description}">
+				<a href="${url}" title="#i18n{document.plugin.description}">
 					<i class="fa fa-file-text-o"></i>
 				</a>
 				<a href="jsp/admin/AdminMenu.jsp#top" title="#i18n{document.dashboard.top}">
-					<i class="icon-arrow-up"></i>
+					<i class="glyphicon glyphicon-arrow-up"></i>
 				</a>
 			</div>
 		</legend>
@@ -27,7 +26,7 @@
 			  	<#if last_modified_document??>
 				    <tr>
 						<td>
-							<p><img src="${last_modified_document.thumbnail}" alt="${last_modified_document.title}" class="thumblist" />&nbsp;${last_modified_document.id} - ${last_modified_document.title}</p>
+							<p><i class="glyphicon glyphicon-file"></i>&nbsp;${last_modified_document.id} - ${last_modified_document.title}</p>
 							<p><small>${last_modified_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_modified_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_modified_document.dateModification}</small></p>
 						</td>
 						<td>
@@ -71,13 +70,13 @@
 		   	<#if last_published_document??>
 		    	<tr>
 					<td>
-						<img src="${last_published_document.thumbnail}" alt="${last_published_document.title}" class="thumblist" />
+						<i class="glyphicon glyphicon-file"></i>
 						${last_published_document.id} - ${last_published_document.title}<br />
 						<p><small>${last_published_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_published_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_published_document.dateModification}</small></p>
 					</td>
 					<td>
 						<#if last_published_document.publishedStatus = 0> 
-						<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class=" icon-ok-sign"></i>	</span>	
+						<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class="glyphicon glyphicon-ok-sign"></i>	</span>	
 					<#else>
 						<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>	
 					</#if>	     
