@@ -26,7 +26,7 @@
 			  	<#if last_modified_document??>
 				    <tr>
 						<td>
-							<p><i class="glyphicon glyphicon-file"></i>&nbsp;${last_modified_document.id} - ${last_modified_document.title}</p>
+							<p><i class="fa fa-file-text-o"></i>&nbsp;${last_modified_document.id} - ${last_modified_document.title}</p>
 							<p><small>${last_modified_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_modified_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_modified_document.dateModification}</small></p>
 						</td>
 						<td>
@@ -70,7 +70,7 @@
 		   	<#if last_published_document??>
 		    	<tr>
 					<td>
-						<i class="glyphicon glyphicon-file"></i>
+						<i class="fa fa-file-text-o"></i>
 						${last_published_document.id} - ${last_published_document.title}<br />
 						<p><small>${last_published_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_published_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_published_document.dateModification}</small></p>
 					</td>
