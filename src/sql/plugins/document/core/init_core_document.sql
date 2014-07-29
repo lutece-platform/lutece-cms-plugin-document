@@ -171,4 +171,4 @@ INSERT INTO core_user_role (role_key,id_user) VALUES ('view_spaces_all',2);
 --
 -- Init  table core_dashboard
 --
-INSERT INTO core_dashboard(dashboard_name, dashboard_column, dashboard_order) VALUES('DOCUMENT', 3, 1);
+INSERT INTO core_dashboard(dashboard_name, dashboard_column, dashboard_order) VALUES('DOCUMENT', 2, 1);
