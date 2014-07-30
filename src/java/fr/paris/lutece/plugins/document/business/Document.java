@@ -43,6 +43,7 @@ import fr.paris.lutece.portal.service.i18n.Localizable;
 import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.date.DateUtil;
+import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.util.xml.XmlUtil;
 
 import org.apache.commons.lang.StringUtils;
@@ -74,6 +75,7 @@ public class Document implements Localizable, IExtendableResource
     private static final String TAG_DATE_PUBLICATION = "document-date-publication";
     private static final String TAG_DOCUMENT_XML_CONTENT = "document-xml-content";
     private static final String MARK_ID = "id";
+    private static final String MARK_ID_ATTRIBUTE = "id_attribute";
     private static final String EMPTY_STRING = "";
     private static final String CONSTANT_QUESTION_MARK = "?";
     private static final String CONSTANT_EQUALS = "=";
@@ -249,7 +251,7 @@ public class Document implements Localizable, IExtendableResource
     /**
      * Returns the Date of the last Modification
      *
-     * @return The Date  of the last Modification
+     * @return The Date of the last Modification
      */
     public java.sql.Timestamp getDateModification(  )
     {
@@ -257,9 +259,9 @@ public class Document implements Localizable, IExtendableResource
     }
 
     /**
-     * Sets the Date  of the last Modification
+     * Sets the Date of the last Modification
      *
-     * @param dateModification The Date  of the last Modification
+     * @param dateModification The Date of the last Modification
      */
     public void setDateModification( java.sql.Timestamp dateModification )
     {
@@ -279,7 +281,8 @@ public class Document implements Localizable, IExtendableResource
     /**
      * Sets the begining Date of the validity period of the document
      *
-     * @param dateValidityBegin The begining Date of the validity period of the document
+     * @param dateValidityBegin The begining Date of the validity period of the
+     *            document
      */
     public void setDateValidityBegin( java.sql.Timestamp dateValidityBegin )
     {
@@ -299,7 +302,8 @@ public class Document implements Localizable, IExtendableResource
     /**
      * Sets the end Date of the validity period of the document
      *
-     * @param dateValidityEnd The end Date of the validity period of the document
+     * @param dateValidityEnd The end Date of the validity period of the
+     *            document
      */
     public void setDateValidityEnd( java.sql.Timestamp dateValidityEnd )
     {
@@ -698,11 +702,14 @@ public class Document implements Localizable, IExtendableResource
     }
 
     /**
-     * Control that an document is valid, i.e. that its period of validity defined
+     * Control that an document is valid, i.e. that its period of validity
+     * defined
      * by its dateValidityBegin and its dateValidityEnd is valid :
-     * an document is valid if the current date > = dateValidityBegin and if current date < = dateValidityEnd
+     * an document is valid if the current date > = dateValidityBegin and if
+     * current date < = dateValidityEnd
      * If the two dates are null, the test of validity will return true
-     * if one of the dates is null, the result of the test will be that carried out
+     * if one of the dates is null, the result of the test will be that carried
+     * out
      * on the non null date
      * @return true if the document is valid, false otherwise
      */
@@ -739,7 +746,8 @@ public class Document implements Localizable, IExtendableResource
     }
 
     /**
-     * Control that an document is out of date, i.e. dateValidityEnd has expired :
+     * Control that an document is out of date, i.e. dateValidityEnd has expired
+     * :
      * @return true if the document is out of date, false otherwise
      */
     public boolean isOutOfDate(  )
@@ -797,13 +805,25 @@ public class Document implements Localizable, IExtendableResource
     {
         if ( StringUtils.equalsIgnoreCase( _strCodeDocumentType, CODE_DOCUMENT_TYPE_IMAGE ) )
         {
-            StringBuilder sbUrl = new StringBuilder( SERVLET_DOCUMENT_PATH );
-            sbUrl.append( CONSTANT_QUESTION_MARK );
-            sbUrl.append( MARK_ID );
-            sbUrl.append( CONSTANT_EQUALS );
-            sbUrl.append( _nIdDocument );
+            UrlItem urlItem = new UrlItem( SERVLET_DOCUMENT_PATH );
+            urlItem.addParameter( MARK_ID, _nIdDocument );
 
-            return sbUrl.toString(  );
+            return urlItem.getUrl(  );
+        }
+
+        if ( _listAttributes != null )
+        {
+            for ( DocumentAttribute attribute : _listAttributes )
+            {
+                if ( StringUtils.equals( attribute.getCodeAttributeType(  ), "image" ) )
+                {
+                    UrlItem urlItem = new UrlItem( SERVLET_DOCUMENT_PATH );
+                    urlItem.addParameter( MARK_ID, _nIdDocument );
+                    urlItem.addParameter( MARK_ID_ATTRIBUTE, attribute.getId(  ) );
+
+                    return urlItem.getUrl(  );
+                }
+            }
         }
 
         return null;

@@ -19,7 +19,7 @@
 	<div class="col-xs-12 col-sm-12 col-md-3">
 			<input type="hidden" name="id_document" value="${document.id}">
 			<input type="hidden" name="id_state" value="${id_state}">
-			<div class="well well-sm">
+			<div class="well">
 				<fieldset>
 					<legend id="properties">
 						<i class="glyphicon glyphicon-chevron-down"></i>&nbsp; #i18n{document.modify_document.advancedPropertiesTitle}
@@ -58,13 +58,12 @@
 				</fieldset>
 			</div>
 		<#noescape>${category}</#noescape>
+		<#if metadata?has_content >
+			<#noescape>${metadata}</#noescape>
+		</#if>
 	</div>
-	<#if metadata?has_content >
-		<div class="col-xs-12 col-sm-12 col-md-6">
-	<#else>
 		<div class="col-xs-12 col-sm-12 col-md-9">
-	</#if>
-		<div class="well well-sm">
+		<div class="well">
 			<div class="row">
 				<div class="col-xs-12 col-sm-12 col-md-12">
 				<fieldset>
@@ -102,11 +101,6 @@
 			</div>
 		</div>
 	</div>
-	<#if metadata?has_content >
-		<div class="col-xs-12 col-sm-12 col-md-3">
-			  <#noescape>${metadata}</#noescape>
-		</div>
-	</#if>
 </div>
 </form>
 </#escape>
@@ -117,15 +111,20 @@
 <@getDatePickerRange idFieldFrom="document_validity_begin" idFieldTo="document_validity_end" language=locale />
 <script>
 function doToggleId( idParent ){
-	$( idParent ).click( function(){ 
-		$(this).next().toggle();
-		$(this).children().toggleClass("glyphicon-chevron-down glyphicon-chevron-up");
-	});
+	if ( $( idParent ) != null )
+	{
+		$( idParent ).click( function(){ 
+			$(this).next().toggle();
+			$(this).children().toggleClass("glyphicon-chevron-down glyphicon-chevron-up");
+		});
+	}
 }
 
 $(document).ready( function () {
-	doToggleId( "#category" );
 	doToggleId( "#dublin_core_meta" );
 	doToggleId( "#properties" );
+	$( "#dublin_core_meta" ).next().toggle();
+	$( "#dublin_core_meta" ).children().toggleClass("glyphicon-chevron-down glyphicon-chevron-up");
+	doToggleId( "#category" );
 });
 </script>

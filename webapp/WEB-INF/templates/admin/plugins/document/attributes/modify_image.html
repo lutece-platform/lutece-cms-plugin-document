@@ -1,39 +1,37 @@
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
-	<div class="col-xs-12 col-md-10">
+	<div class="col-xs-12 col-sm-10">
 		<input type="file" name="${attribute.code}" id="${attribute.code}" >
-		<#if attribute.textValue?has_content>
-		<div class="row">
-			<div class="col-xs-12 col-md-2">
-				<a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" title="${attribute.textValue}" class="">
-					<img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-medium">
-				</a>
-			</div>
-			<div class="col-xs-12 col-md-10">
-				<div class="checkbox">
-					<label for="update_${attribute.code}">
-						<input type="checkbox" name="update_${attribute.code}" id="update_${attribute.code}" value="1"> #i18n{document.attributeType.image.updateField} <small>#i18n{document.attributeType.image.deleteField}</small>
-					</label>
-				</div>
+	</div>
+	<#if attribute.textValue?has_content>
+		<div class="col-xs-12 col-sm-10 col-sm-offset-2">
+			<a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" title="${attribute.textValue}" class="">
+				<img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-medium">
+			</a>
+		</div>
+		<div class="col-xs-12 col-sm-10 col-sm-offset-2">
+			<div class="checkbox">
+				<label for="update_${attribute.code}">
+					<input type="checkbox" name="update_${attribute.code}" id="update_${attribute.code}" value="1"> #i18n{document.attributeType.image.updateField}
+					<span class="help-block">#i18n{document.attributeType.image.deleteField}</span>
+				</label>
 			</div>
 		</div>
 	<#else>
-		<p class="help-block">${attribute.description}</p>
+		<span class="help-block">${attribute.description}</span>
 	</#if>
-	</div>
 </div>
 <div class="form-group">
-	<div class="row">
-		<div class="col-md-offset-2 col-md-4">
-			<div class="input-group">
-				<span class="input-group-addon">
-					<input type="checkbox" name="${attribute.code}_croppable" id="crop"><label for="crop"  title="#i18n{document.attributeType.image.width}" >&nbsp;#i18n{document.attributeType.image.resize} </label>
-				</span>	
-				<input type="text" class="form-control input-sm" name="${attribute.code}_width" value="" placeholder="#i18n{document.attributeType.image.width}" id="${attribute.code}_width" disabled="disabled">
-			</div>
+		<div class="col-xs-12 col-sm-10 col-sm-offset-2">
+			<input type="checkbox" name="${attribute.code}_croppable" id="crop">
+			#i18n{document.attributeType.image.resize}
 		</div>
-	</div>
+		<label class="control-label col-xs-12 col-sm-2">#i18n{document.attributeType.image.width}</label>
+		<div class="col-xs-12 col-sm-10">
+			<input type="text" class="form-control input-sm" name="${attribute.code}_width" value="" placeholder="#i18n{document.attributeType.image.width}" id="${attribute.code}_width">
+		</div>
 </div>
+
 <script type="text/javascript">
 $(document).ready( function(){
 	$("#${attribute.code}_width").prop({disabled: true});
