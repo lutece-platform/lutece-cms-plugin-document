@@ -1,24 +1,12 @@
-<div class="well lutece-dashboard-content">
-	<fieldset>
-		<legend>
-			<a href="${url}" title="#i18n{document.plugin.description}" >
-				#i18n{document.plugin.description}
-			</a>
-			<div class="pull-right">
-				<a href="${url}" title="#i18n{document.plugin.description}">
-					<i class="fa fa-file-text-o"></i>
-				</a>
-				<a href="jsp/admin/AdminMenu.jsp#top" title="#i18n{document.dashboard.top}">
-					<i class="glyphicon glyphicon-arrow-up"></i>
-				</a>
-			</div>
-		</legend>
-		<!-- LAST MODIFIED DOCUMENT -->
-		<table class="table table-striped">
+<div class="box box-solid box-primary">
+	<div class="box-header">
+		<h3 class="box-title">#i18n{document.dashboard.columnLastModifiedDocument}</h3>
+    </div>
+   <div class="box-body table-responsive no-padding">
+		<table class="table table-hover table-condensed">
 			<thead>
 			   	<tr>
 			   		<th>#i18n{document.dashboard.columnLastModifiedDocument}</th>
-			   		<th>#i18n{document.dashboard.columnStatus}</th>
 			   		<th>#i18n{document.dashboard.columnActions}</th>
 			   	</tr>
 			</thead>
@@ -26,21 +14,21 @@
 			  	<#if last_modified_document??>
 				    <tr>
 						<td>
-							<p><i class="fa fa-file-text-o"></i>&nbsp;${last_modified_document.id} - ${last_modified_document.title}</p>
-							<p><small>${last_modified_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_modified_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_modified_document.dateModification}</small></p>
-						</td>
-						<td>
+							<strong>
 							<#if last_modified_document.publishedStatus = 0> 
 								<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class="glyphicon glyphicon-ok-sign"></i>	</span>	
 							<#else>
 								<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>	
-							</#if>
+							</#if>&nbsp;${last_modified_document.id} - ${last_modified_document.title}
+							</strong>
+							<p><small>${last_modified_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_modified_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_modified_document.dateModification}</small></p>
+							
 						</td>
 				        <td>
 							<p>
 							<#list last_modified_document.actions as action>
 							<#if action.url?exists>
-								<a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
+								<a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-flat btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
 									<i class="${action.iconUrl}"></i>
 								</a>
 							</#if>
@@ -58,33 +46,43 @@
 			    </#if>
 			</tbody>
 		</table>
+		</div><!-- /.box-body -->
+    <div class="box-footer text-center">
+		<a href="${url}" title="#i18n{document.plugin.description}">
+			#i18n{document.plugin.description} <i class="fa fa-arrow-circle-right"></i>
+		</a>	
+	</div><!-- /.box-footer-->
+</div>
+<div class="box box-solid box-primary">
+	<div class="box-header">
+		<h3 class="box-title">#i18n{document.dashboard.columnLastPublishedDocument}</h3>
+	</div>
+    <div class="box-body table-responsive no-padding">		
 		<!-- LAST PUBLISHED DOCUMENT -->
 		<table class="table table-striped">
 			<thead>
 			   	<tr>
 			   		<th>#i18n{document.dashboard.columnLastPublishedDocument}</th>
-			   		<th>#i18n{document.dashboard.columnStatus}</th>
 			   		<th>#i18n{document.dashboard.columnActions}</th>
 			   	</tr>
 		   	</thead>
 		   	<#if last_published_document??>
 		    	<tr>
 					<td>
-						<i class="fa fa-file-text-o"></i>
-						${last_published_document.id} - ${last_published_document.title}<br />
+						<strong>
+						<#if last_published_document.publishedStatus = 0> 
+							<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class="glyphicon glyphicon-ok-sign"></i>	</span>	
+						<#else>
+							<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>	
+						</#if>	     
+							&nbsp;${last_published_document.id} - ${last_published_document.title}<br />
+						</strong>
 						<p><small>${last_published_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_published_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_published_document.dateModification}</small></p>
 					</td>
 					<td>
-						<#if last_published_document.publishedStatus = 0> 
-						<span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class="glyphicon glyphicon-ok-sign"></i>	</span>	
-					<#else>
-						<span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>	
-					</#if>	     
-					</td>
-		            <td>
 						<#list last_published_document.actions as action>
 							<#if action.url?exists>
-								<a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
+								<a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-flat btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
 									<i class="${action.iconUrl}"></i>
 								</a>
 							</#if>
@@ -99,5 +97,10 @@
 		    	</tr>
 		    </#if>
 		</table>
-	</fieldset>
+	</div><!-- /.box-body -->
+    <div class="box-footer text-center">
+		<a href="${url}" title="#i18n{document.plugin.description}">
+			#i18n{document.plugin.description} <i class="fa fa-arrow-circle-right"></i>
+		</a>	
+	</div><!-- /.box-footer-->
 </div>
