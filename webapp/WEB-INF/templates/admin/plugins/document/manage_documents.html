@@ -58,7 +58,7 @@
 					<span class="pull-right btn-group">
 						<#list space_actions_list as space_action>
 							<a href="${space_action.url}?id_space=${space.id}" alt="${space_action.description}" title="${space_action.description}" class="btn btn-xs <#if space_action.permission="DELETE">btn-danger<#else>btn-primary</#if>">
-								<i class="${space_action.iconUrl}"></i>
+								<i class="${space_action.iconUrl} icon-white"></i>
 							</a>
 						</#list>
 					</span>
@@ -229,7 +229,7 @@
 									<#list document.actions?sort_by("idAction") as action > 
 										<#if action.url?has_content> 
 											<a class="btn btn-primary btn-xs <@setBtnAction action_nb=action.idAction />" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}"> 
-											<i class="${action.iconUrl}"></i>
+												<i class="${action.iconUrl}"></i>
 											</a> 
 										</#if>
 									</#list>
@@ -263,8 +263,6 @@
 	</#if>
 	</div>
 </div>
-
-
 <script src="js/jquery/plugins/ui/jstree/jquery.jstree.js"></script>
 <script src="js/jquery/plugins/ui/jstree/jquery.cookie.js"></script>
 <script type="text/javascript"> 
@@ -289,7 +287,7 @@ $.cookie("jstree_select", "#node-" + spaceid );
 		"ui" : {
 		"select_limit" : 1,
 	},"themes" : {
-			"theme" : "apple",
+			"theme" : "classic",
 			"icons" : false
 	},"cookies" : {
 		"save_opened" : true,

@@ -9,21 +9,27 @@
 	</div>	
 <#else>
 	<input type="hidden" name="browser_id_space" value="${space.id}">
-	<#if space.id != -1 && go_up >
-		<div class="form-group">
-		<a href="javascript:goUp();" class="btn btn-default btn-sm">
+	<div class="form-group">
+	<#if space.id &gt; 0 && go_up >
+		<a href="javascript:goUp();" class="btn btn-default btn-xs">
 			<i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
 		</a>
-		</div>
 	</#if>
+		<button class="btn btn-primary btn-xs" type="submit">
+			<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
+		</button>
+		<a class="btn btn-default btn-xs" href="jsp/admin/plugins/document/ManageDocuments.jsp" >
+			<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
+		</a>
+	</div>
 	<div class="form-group">
 	<#list spaces_list as item_space >
 		<div class="radio">
 			<label for="browser_selected_space_id">
-				<input type="radio" class="radio" name="browser_selected_space_id" value="${item_space.id}"/>
-				<img src="${item_space.iconUrl}" alt="${item_space.name}" >
+				<input type="radio" class="radio" name="browser_selected_space_id" value="${item_space.id}">
+				<img src="${item_space.iconUrl}" alt="${item_space.name}" title="">
 				<#if has_childs?seq_contains(item_space.id)>
-					<a href="javascript:openSpace(${item_space.id});">${item_space.name}</a>
+					<a href="javascript:openSpace(${item_space.id});" title="${item_space.name}" >${item_space.name}</a>
 				<#else>
 					${item_space.name}
 				</#if>
@@ -32,10 +38,15 @@
 	</#list>
 	</div>
 	<div class="form-group">
-		<button class="btn btn-primary btn-sm" type="submit">
+		<#if space.id &gt; 0 && go_up >
+		<a href="javascript:goUp();" class="btn btn-default btn-xs">
+			<i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
+		</a>
+	</#if>
+		<button class="btn btn-primary btn-xs" type="submit">
 			<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
 		</button>
-		<a class="btn btn-default btn-sm" href="jsp/admin/plugins/document/ManageDocuments.jsp" >
+		<a class="btn btn-default btn-xs" href="jsp/admin/plugins/document/ManageDocuments.jsp" >
 			<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
 		</a>
 	</div>
