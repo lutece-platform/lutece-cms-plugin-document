@@ -8,7 +8,7 @@
                 <input type="hidden" name="id_document" value="${document_published.id}" />
                 <input type="hidden" name="id_portlet" value="${portlet_id}" />
                 <button class="btn btn-success btn-xs spaced" type="submit" title="#i18n{document.manage_document_publishing.buttonPublish}">
-                    <i class="glyphicon glyphicon-ok"></i>
+                    <i class="fa fa-toggle-on"></i>
                 </button>
             </form>
             </#if>
@@ -18,7 +18,7 @@
                 <input type="hidden" name="id_portlet" value="${portlet_id}" />
                 <input type="hidden" name="status" value="${status_unpublished}" />	                                            
                 <button type="submit" class="btn btn-xs btn-danger spaced" alt="#i18n{document.manage_document_publishing.labelUnAssigned}" title="#i18n{document.manage_document_publishing.labelUnAssigned}">
-                    <i class="glyphicon glyphicon-remove"></i>
+                    <i class="fa fa-chain-broken"></i>
                 </button>
             </form>
             </#if>        

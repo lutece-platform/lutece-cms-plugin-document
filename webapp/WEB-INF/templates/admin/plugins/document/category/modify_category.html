@@ -1,53 +1,67 @@
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <fieldset>
-            <legend>#i18n{document.modify_category.boxTitle}</legend>
-            <form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoModifyCategory.jsp" enctype="multipart/form-data" >
-                <input type="hidden" name="category_id" value="${categoryDisplay.category.id}" >
-                <div class="form-group">
-                    <label class="control-label" for="category_name">#i18n{document.modify_category.labelName} *</label>
-                    <div class="controls">
-                        <input type="text" id="category_name" name="category_name" maxlength="100" value="${categoryDisplay.category.name}" >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label" for="category_description">#i18n{document.modify_category.labelDescription} *</label>
-                    <div class="controls">
-                        <input type="text" id="category_description" name="category_description" value="${categoryDisplay.category.description!}"  class="input-xlarge" maxlength="255" >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label" for="workgroup_key">#i18n{document.modify_category.labelWorkgroup}</label>		     
-                    <div class="controls">
-                        <#if categoryDisplay.category.workgroup?has_content > 
-                            <@combo name="workgroup_key"  items=user_workgroup_list default_value=categoryDisplay.category.workgroup />
-                        <#else>
-                            <@combo name="workgroup_key"  items=user_workgroup_list default_value=0 />
-                        </#if>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label" for="category_icon">
-                        #i18n{document.modify_category.labelIcon}
-                        <img src=${categoryDisplay.iconUrl} alt="#i18n{document.modify_category.altIcon}" class="media-object" /></label>
-                    <div class="controls">
-                        <input type="file" id="category_icon" name="category_icon" class="input-large" >
-                        <label class="chexkbox">
-                            <strong>#i18n{document.modify_category.labelUpdateIcon} </strong>
-                            <input class="checkbox" type="checkbox" name="update_icon" />
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-primary btn-sm" type="submit">
-                        <i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{document.modify_category.buttonLabelModify}
-                    </button>
-                    <a class="btn btn-sm" href="jsp/admin/plugins/document/ManageCategory.jsp?plugin_name=document">
-                       <i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
-                    </a>
-                </div>
-            </form>
-        </fieldset>
-    </div>
+	<div class="col-xs-12 col-sm-12 col-md-12">
+		<div class="box box-solid box-primary">
+			<div class="box-header">
+				<h3 class="box-title">#i18n{document.modify_category.boxTitle}</h3>
+			</div>
+            <div class="box-body">
+				<form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoModifyCategory.jsp" enctype="multipart/form-data" >
+					<input type="hidden" name="category_id" value="${categoryDisplay.category.id}" >
+					<div class="form-group">
+						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="category_name">#i18n{document.modify_category.labelName} *</label>
+						<div class="col-xs-12 col-sm-10 col-md-10">
+							<input type="text" class="form-control" id="category_name" name="category_name" maxlength="100" value="${categoryDisplay.category.name}" >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="category_description">#i18n{document.modify_category.labelDescription} *</label>
+						<div class="col-xs-12 col-sm-10 col-md-10">
+							<input type="text" id="category_description" name="category_description" value="${categoryDisplay.category.description!}" class="form-control" maxlength="255" >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="workgroup_key">#i18n{document.modify_category.labelWorkgroup}</label>		     
+						<div class="col-xs-12 col-sm-10 col-md-10">
+							<#if categoryDisplay.category.workgroup?has_content > 
+								<@combo name="workgroup_key"  items=user_workgroup_list default_value=categoryDisplay.category.workgroup />
+							<#else>
+								<@combo name="workgroup_key"  items=user_workgroup_list default_value=0 />
+							</#if>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="category_icon">#i18n{document.modify_category.labelIcon}</label>
+						<div class="col-xs-12 col-sm-10 col-md-10">
+							<p class="form-control-static">
+								<img src=${categoryDisplay.iconUrl} alt="#i18n{document.modify_category.altIcon}" class="img-thumbnail" /></label>
+							</p>
+							<input type="file" id="category_icon" name="category_icon" >
+						</div>	
+					</div>	
+					<div class="form-group">
+						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="update_icon"></label>
+						<div class="col-xs-12 col-sm-10 col-md-10">
+							<div class="checkbox">
+								<label>
+									<input class="checkbox" type="checkbox" name="update_icon" >
+									#i18n{document.modify_category.labelUpdateIcon}
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button class="btn btn-primary btn-flat" type="submit">
+								<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{document.modify_category.buttonLabelModify}
+							</button>
+							<a class="btn btn-flat btn-default" href="jsp/admin/plugins/document/ManageCategory.jsp?plugin_name=document">
+							   <i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
+							</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 

@@ -1,54 +1,65 @@
 <#if selected_space?has_content>
 	<input type="hidden" name="browser_selected_space_id" value="${selected_space.id}" >
 	<div class="form-group">
-		<a href="javascript:modifyChoice();" class="btn btn-default btn-sm">
-			<i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
-		</a>
-		<br>
-		<img src="${selected_space.iconUrl}" alt="${selected_space.name}">${selected_space.name}
+		<label class="col-xs-12 col-sm-2 col-md-2"></label>
+		<div class="control-label col-xs-12 col-sm-10 col-md-10">
+			<a href="javascript:modifyChoice();" class="btn btn-default btn-sm">
+				<i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
+			</a>
+			<p class="form-control-static"><img src="${selected_space.iconUrl}" alt="${selected_space.name}">${selected_space.name}</p>
+		</div>	
 	</div>	
 <#else>
 	<input type="hidden" name="browser_id_space" value="${space.id}">
 	<div class="form-group">
-	<#if space.id &gt; 0 && go_up >
-		<a href="javascript:goUp();" class="btn btn-default btn-xs">
-			<i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
-		</a>
-	</#if>
-		<button class="btn btn-primary btn-xs" type="submit">
-			<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
-		</button>
-		<a class="btn btn-default btn-xs" href="jsp/admin/plugins/document/ManageDocuments.jsp" >
-			<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
-		</a>
-	</div>
-	<div class="form-group">
-	<#list spaces_list as item_space >
-		<div class="radio">
-			<label for="browser_selected_space_id">
-				<input type="radio" class="radio" name="browser_selected_space_id" value="${item_space.id}">
-				<img src="${item_space.iconUrl}" alt="${item_space.name}" title="">
-				<#if has_childs?seq_contains(item_space.id)>
-					<a href="javascript:openSpace(${item_space.id});" title="${item_space.name}" >${item_space.name}</a>
-				<#else>
-					${item_space.name}
-				</#if>
-			</label>
+		<label class="control-label col-xs-12 col-sm-2 col-md-2"></label>
+		<div class="col-xs-12 col-sm-10 col-md-10">
+			<#if space.id &gt; 0 && go_up >
+				<a href="javascript:goUp();" class="btn btn-default btn-xs">
+					<i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
+				</a>
+			</#if>
+			<button class="btn btn-primary btn-xs btn-flat" type="submit">
+				<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
+			</button>
+			<a class="btn btn-default btn-xs" href="jsp/admin/plugins/document/ManageDocuments.jsp" >
+				<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
+			</a>
 		</div>
-	</#list>
 	</div>
 	<div class="form-group">
-		<#if space.id &gt; 0 && go_up >
-		<a href="javascript:goUp();" class="btn btn-default btn-xs">
-			<i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
-		</a>
-	</#if>
-		<button class="btn btn-primary btn-xs" type="submit">
-			<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
-		</button>
-		<a class="btn btn-default btn-xs" href="jsp/admin/plugins/document/ManageDocuments.jsp" >
-			<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
-		</a>
+		<label class="control-label col-xs-12 col-sm-2 col-md-2"></label>
+		<div class="col-xs-12 col-sm-10 col-md-10">
+			<#list spaces_list as item_space >
+				<div class="radio">
+					<label for="browser_selected_space_id">
+						<input type="radio" class="radio" name="browser_selected_space_id" value="${item_space.id}">
+						<img src="${item_space.iconUrl}" alt="${item_space.name}" title="">
+						<#if has_childs?seq_contains(item_space.id)>
+							<a href="javascript:openSpace(${item_space.id});" title="${item_space.name}" >${item_space.name}</a>
+						<#else>
+							${item_space.name}
+						</#if>
+					</label>
+				</div>
+			</#list>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-xs-12 col-sm-2 col-md-2"></label>
+		<div class="col-xs-12 col-sm-10 col-md-10">
+			<#if space.id &gt; 0 && go_up >
+			<a href="javascript:goUp();" class="btn btn-default btn-xs btn-flat">
+				<i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
+			</a>
+			</#if>
+			<button class="btn btn-primary btn-xs btn-flat" type="submit">
+				<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
+			</button>
+			<a class="btn btn-default btn-xs btn-flat" href="jsp/admin/plugins/document/ManageDocuments.jsp" >
+				<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
+			</a>
+		</div>
 	</div>
 </#if>
 <script>

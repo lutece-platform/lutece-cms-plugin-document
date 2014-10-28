@@ -1,19 +1,23 @@
-<div class="row" >
+<div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12">
-		<form class="form" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveSpace.jsp" enctype="multipart/form-data" >
-			<fieldset>
-			<legend>#i18n{document.move_space.title} ${space.name}</legend>
-				<input type="hidden" name="id_space" value="${space.id}" />
-				<#if submit_button_disabled >#i18n{document.move_space.labelMove}</#if>
+		<div class="box box-solid box-primary">
+			<div class="box-header">
+				<h3 class="box-title">#i18n{document.move_space.title} ${space.name}</h3>
+			</div>
+            <div class="box-body">
+				<form class="form-horizontal" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveSpace.jsp" enctype="multipart/form-data" >
+					<input type="hidden" name="id_space" value="${space.id}">
+					<#if submit_button_disabled >
+						<div class="form-group">
+							<label class="control-label col-xs-12 col-sm-2 col-md-2" ></label>
+							<div class="col-xs-12 col-sm-10 col-md-10">
+								<p class="form-control-static">#i18n{document.move_space.labelMove}</p>
+							</div>
+						</div>
+					</#if>
 					${spaces_browser}
-					<!-- button class="btn btn-primary btn-sm" type="submit" <#if submit_button_disabled > disabled</#if> >
-						<i class="glyphicon glyphicon-move"></i>&nbsp;#i18n{document.move_space.buttonMove}
-					</button>
-					<a class="btn btn-sm" href="jsp/admin/plugins/document/ManageDocuments.jsp">
-					   <i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
-					</a>
-					-->
-			</fieldset>
-		</form>
+				</form>
+			</div>
+		</div>
 	</div>
 </div>

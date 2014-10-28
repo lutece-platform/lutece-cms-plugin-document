@@ -25,13 +25,39 @@
 </#macro>
 <div class="row">
 	<div class="col-xs-12 col-sm-4 col-md-4">
-		<div class="well">            
-			<div class="page-header">
-				<h4><span class="badge badge-info">${document.id}</span>&nbsp;${document.title}</h4>
-				<p>#i18n{document.preview_document.columnTitleType}: ${document.type}</p>
-				<p>#i18n{document.preview_document.columnTitleState}:&nbsp;${document.state}</p>
-				<p>#i18n{document.preview_document.columnTitleDateCreation} : <small>${document.dateCreation}</small></p> 
-				<p>#i18n{document.preview_document.columnTitleDateModification} : <small>${document.dateModification}</small></p>
+		<div class="box box-solid box-primary">
+			<div class="box-header">
+				<h3 class="box-title">#i18n{document.preview_document.title} </h3>
+				<div class="box-tools pull-right">
+					<#list document.actions  as action >
+						<#if action.url?has_content>
+						<a class="btn btn-xs btn-flat <@setBtnAction action_nb=action.idAction />" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
+							<i class="${action.iconUrl}"></i>
+						</a>
+						</#if>  
+					</#list>
+					<a class="btn btn-xs btn-flat btn-info " href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="#i18n{document.preview_document.space}" >
+						<i class="glyphicon glyphicon-folder-open"></i> 
+					</a>
+					<button  type="button" class="btn btn-default  btn-flat btn-xs" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+			<div class="box-body">
+				<blockquote>
+					<p class="lead">${document.id}</span>&nbsp;${document.title}</p>
+				</blockquote>
+				<dl>
+					<dt>#i18n{document.preview_document.columnTitleType}</dt>
+					<dd>${document.type}</dd>
+					<#if document.state?has_content>
+						<dt>#i18n{document.preview_document.columnTitleState}</dt>
+						<dd>${document.state}</dd>
+					</#if> 
+					<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
+					<dd>${document.dateCreation}</dd> 
+					<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
+					<dd>${document.dateModification}</dd>
+				</dl>
 				<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
 				<#assign dateBegin="">
 				<#if document.dateValidityBegin?has_content>
@@ -50,27 +76,21 @@
 				<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
 					<p class="label label-warning">#i18n{document.preview_document.labelDateValidityNotDefined}</p>
 				<#elseif dateBegin?has_content && !( dateEnd?has_content )>
-					<p><i class="glyphicon glyphicon-calendars"></i>${labelBeginSince} ${dateBegin}</p>
+					<p><i class="glyphicon glyphicon-calendar"></i>${labelBeginSince} ${dateBegin}</p>
 				<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
 					<p><i class="glyphicon glyphicon-calendar"></i>${labelEndUntil} ${dateEnd}</p> 
 				</#if> 
-				</p>
-				<h4>#i18n{document.preview_document.columnTitleActions}</h4>
-			<#list document.actions  as action >
-				<#if action.url?has_content>
-				<a class="btn btn-xs <@setBtnAction action_nb=action.idAction />" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}" >
-					<i class="${action.iconUrl}"></i>
-				</a>
-				</#if>  
-			</#list>
-				<a class="btn btn-xs btn-primary" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="#i18n{document.preview_document.space}" >
-					<i class="glyphicon glyphicon-folder-open"></i> 
-				</a>
-			</fieldset>
 			</div>
 		</div>
 	</div>
 	<div class="col-xs-12 col-sm-8 col-md-8">
-		${preview}
+		<div class="box box-primary">
+			<div class="box-header">
+				<h3 class="box-title"></h3>
+			 </div>
+			<div class="box-body">	
+				${preview}
+			</div>
+		</div>
 	</div>
 </div>

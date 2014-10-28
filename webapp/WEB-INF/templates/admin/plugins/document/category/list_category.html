@@ -1,23 +1,14 @@
 <#if category_list?has_content >
-<div class="well well-sm">
-	<fieldset>
-	<legend id="category">
-		<i class="glyphicon glyphicon-chevron-down"></i>&nbsp;#i18n{document.list_category.boxTitle}
-	</legend>
-	<div id="category-content" >
-		<ul class="list-unstyled">
-			<#list category_list as categoryDisplay >
-			<li>
-				<div class="checkbox">
-					<label>
-						<input class="checkbox" type="checkbox" name="category_id" <#if categoryDisplay.assigned = true>checked="checked"</#if> value="${categoryDisplay.category.id}" />
-						<img src=${categoryDisplay.iconUrl!} class="thumblist-small" alt="${categoryDisplay.category.name}" /> ${categoryDisplay.category.name}&nbsp;
-					</label>	
-				</div>
-			</li>
-			</#list>
-		</ul>
-	</div>
-	</fieldset>
-</div>
+<ul class="list-unstyled">
+	<#list category_list as categoryDisplay >
+	<li>
+		<div class="checkbox">
+			<label>
+				<input class="checkbox" type="checkbox" name="category_id" <#if categoryDisplay.assigned = true>checked="checked"</#if> value="${categoryDisplay.category.id}" />
+				<img src=${categoryDisplay.iconUrl!} class="thumblist-small" alt="${categoryDisplay.category.name}" /> ${categoryDisplay.category.name}&nbsp;
+			</label>	
+		</div>
+	</li>
+	</#list>
+</ul>
 </#if>

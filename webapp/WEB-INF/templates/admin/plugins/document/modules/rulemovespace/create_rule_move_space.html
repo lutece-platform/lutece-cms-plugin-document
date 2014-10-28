@@ -1,41 +1,41 @@
-<input type="hidden" name="rule_attribute_selected" value="">
-<div class="col-xs-12 col-sm-6 col-md-4">
-<p class="help-block">#i18n{module.document.rulemovespace.create_rule_move_space.ruleText1} 
-<#if id_space_source?exists> 
-	<span class="label label-info">${path_space_source}</span>
-	<input type="hidden" name="id_space_source" value="${id_space_source}">
-<#else>
- 	<span class="label label-inverse">#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</span>
-</#if>
-<button class="btn btn-sm" onclick="selectSpace('id_space_source')" > #i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}</button>
-</p>
+
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="id_space_source" >#i18n{module.document.rulemovespace.create_rule_move_space.ruleText1} </label>
+		<div class="col-xs-12 col-sm-9 col-md-9">
+			<p class="form-control-static">
+			<#if id_space_source?exists> 
+				<input type="hidden" name="id_space_source" value="${id_space_source}">
+				<span class="label">${path_space_source}</span>
+			<#else>
+				<span class="label">#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</span> 
+			</#if>
+				<button class="btn btn-xs btn-flat btn-select" type="submit" data-space="id_space_source" > #i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}</button>
+			</p>
+		</div>
 </div>
-<div class="col-xs-12 col-sm-6 col-md-4">
-<p class="help-block">#i18n{module.document.rulemovespace.create_rule_move_space.ruleText2}
-<#if id_state?exists >
-	<@combo name="id_state" default_value="${id_state}" items=states_list />
-	
-<#else>
-	<@combo name="id_state" default_value="" items=states_list />
-    </#if>
-</p> 
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="id_state" >#i18n{module.document.rulemovespace.create_rule_move_space.ruleText2}</label>
+	<div class="col-xs-12 col-sm-9 col-md-9">
+		<p class="form-control-static">
+		<#if id_state?exists >
+			<@comboWithParams name="id_state" default_value="${id_state}" additionalParameters="class=\"form-control input-xs\"" items=states_list />
+		<#else>
+			<@comboWithParams name="id_state" default_value="" additionalParameters="class=\"form-control input-xs\"" items=states_list />
+		</#if>
+		</p>
+	</div>
 </div>
-<div class="col-xs-12 col-sm-6 col-md-4">
-<p class="help-block">#i18n{module.document.rulemovespace.create_rule_move_space.ruleText3}
-    <#if id_space_destination?exists> 
-    	<span class="label label-success">${path_space_destination}</span>  
-    	<input type="hidden" name="id_space_destination" value="${id_space_destination}">
-   	<#else>
-    	 <span class="label label-inverse">#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</span>
-  	</#if>
-<button class="btn " onclick="selectSpace('id_space_destination')" > #i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}</button>
-<p class="help-block">#i18n{module.document.rulemovespace.create_rule_move_space.ruleText4}</p>
-</p>
+<div class="form-group">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="id_space_destination" >#i18n{module.document.rulemovespace.create_rule_move_space.ruleText3} #i18n{module.document.rulemovespace.create_rule_move_space.ruleText4}</label>
+	<div class="col-xs-12 col-sm-9 col-md-9">
+		<p class="form-control-static">
+			<#if id_space_destination?exists> 
+				<input type="hidden" name="id_space_destination" value="${id_space_destination}">
+				<span class="label">${path_space_destination}</span> 
+			<#else>
+				<span class="label">#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</span> 
+			</#if>
+			<button class="btn btn-xs btn-flat btn-select" type="submit" data-space="id_space_destination" > #i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}</button>
+		</p>
+	</div>
 </div>
-<script language="javascript">
-function selectSpace(select){
-	document.forms['createRule'].action='jsp/admin/plugins/document/SelectSpaceRule.jsp';
- 	document.forms['createRule'].rule_attribute_selected.value=select;
- 	document.forms['createRule'].submit();
-}
-</script>

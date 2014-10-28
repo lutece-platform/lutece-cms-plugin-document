@@ -1,41 +1,13 @@
 <#escape x as x?html>
 <form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoCreateDocument.jsp" enctype="multipart/form-data" >
+	<input type="hidden" name="document_type_code" value="${document_type}" />    
 	<div class="row">
-		<div class="col-xs-12 col-sm-12 col-md-3">
-			<input type="hidden" name="document_type_code" value="${document_type}" />    
-			<div class="well">            
-				<fieldset>
-					<legend id="properties"><i class="glyphicon glyphicon-chevron-down"></i>&nbsp; #i18n{document.create_document.advancedPropertiesTitle} </legend>
-					<div id="properties-content"> 
-					<p>#i18n{document.create_document.labelDocumentValidity}</p>
-					<label for="document_validity_begin">#i18n{document.create_document.labelDocumentValidityBegin}</label>
-						<div class="input-group">
-							<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-							<input type="text" class="input-sm" name="document_validity_begin" id="document_validity_begin" value="${current_date!}" />
-						</div>
-						<label for="document_validity_begin">#i18n{document.create_document.labelDocumentValidityEnd}</label> 
-						<div class="input-group">
-						<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-						<input type="text" class="input-sm"  name="document_validity_end" id="document_validity_end" />
-					</div>
-					<label for="document_page_template">#i18n{document.create_document.labelDocumentPageTemplate} : </label>
-						<#noescape>${page_template_list}</#noescape>
-						<p class="help-block">#i18n{document.create_document.helpDocumentPageTemplate}</p>
-					<label for="document_comment">#i18n{document.create_document.labelDocumentComment} : </label>
-						<textarea type="text" name="document_comment" id="document_comment" cols="60" rows="2" ></textarea> 
-						<p class="help-block">#i18n{document.create_document.helpDocumentComment}</p>
-					</div>
-				</fieldset>
-			</div>
-			<#noescape>${category}</#noescape>
-			<#if metadata?has_content >
-				<#noescape>${metadata}</#noescape>
-			</#if>
-		</div>
 		<div class="col-xs-12 col-sm-12 col-md-9">
-			<div class="well">
-				<fieldset>
-					<legend><small>#i18n{document.create_document.title}</small> ${document_type?cap_first}</legend>
+			<div class="box box-primary">
+				<div class="box-header">
+					<h3 class="box-title">#i18n{document.create_document.title} <em>${document_type?cap_first}</em></h3>
+                </div>
+                <div class="box-body"> 
 					<div class="form-group">
 						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="document_title">#i18n{document.create_document.labelDocumentTitle}* : </label>
 						<div class="col-xs-12 col-sm-10 col-md-10">
@@ -50,42 +22,80 @@
 							<span class="help-block">#i18n{document.create_document.helpDocumentSummary}</span>
 						</div>
 					</div>
-				</fieldset> 
-				<fieldset>
-					<legend>#i18n{document.create_document.attributTitle}</legend>    
-					<#noescape>${fields}</#noescape>
-					<div class="form-group">
-						<div class="col-xs-12 col-sm-offset-2 col-sm-10 col-md-offset-2 col-md-10">
-							<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{document.create_document.buttonCreate}</button>
-							<button class="btn btn-default btn-sm" type="button" onclick="javascript:history.go(-1)" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+					<fieldset>
+						<legend>#i18n{document.create_document.attributTitle}</legend>    
+						<#noescape>${fields}</#noescape>
+						<div class="form-group">
+							<div class="col-xs-12 col-sm-offset-2 col-sm-10 col-md-offset-2 col-md-10">
+								<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{document.create_document.buttonCreate}</button>
+								<button class="btn btn-default btn-sm" type="button" onclick="javascript:history.go(-1)" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-12 col-md-3" id="col-prop">
+			<!-- Default box -->
+            <div class="box box-solid box-primary">
+				<div class="box-header">
+					<h3 class="box-title">#i18n{document.create_document.advancedPropertiesTitle}</h3>
+                    <div class="box-tools pull-right">
+						<button  type="button" class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body"> 
+					<p>#i18n{document.create_document.labelDocumentValidity}</p>
+						<label for="document_validity_begin">#i18n{document.create_document.labelDocumentValidityBegin}</label>
+						<div class="input-daterange">
+							<div class="input-group">
+								<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+								<input type="text" class="input-sm" name="document_validity_begin" id="document_validity_begin" value="${current_date!}" />
+							</div>
+							<span class="add-on"><strong>#i18n{document.create_document.labelDocumentValidityEnd}</strong></span>
+							<label for="document_validity_end" class="sr-only">#i18n{document.create_document.labelDocumentValidityEnd}</label> 
+							<div class="input-group">
+								<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+								<input type="text" class="input-sm"  name="document_validity_end" id="document_validity_end" />
+							</div>
+						</div>
+						<label for="document_page_template">#i18n{document.create_document.labelDocumentPageTemplate} : </label>
+						<#noescape>${page_template_list}</#noescape>
+						<p class="help-block">#i18n{document.create_document.helpDocumentPageTemplate}</p>
+						<label for="document_comment">#i18n{document.create_document.labelDocumentComment} : </label>
+						<textarea type="text" name="document_comment" id="document_comment" class="form-control" rows="2" ></textarea> 
+						<p class="help-block">#i18n{document.create_document.helpDocumentComment}</p>
+				</div>
+			</div>
+			<!-- Default box -->
+            <div class="box box-solid box-primary">
+				<div class="box-header">
+					<h3 class="box-title">#i18n{document.list_category.boxTitle}</h3>
+                    <div class="box-tools pull-right">
+						<button  type="button" class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body"> 
+					<#noescape>${category}</#noescape>
+				</div>
+			</div>
+			<#if metadata?has_content >
+				<div class="box box-solid box-primary">
+					<div class="box-header">
+						<h3 class="box-title">#i18n{document.modify_document_type.labelMetadata}</h3>
+						<div class="box-tools pull-right">
+							<button  type="button" class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
 						</div>
 					</div>
-				</fieldset>
-			</div>
+					<div class="box-body"> 
+						<#noescape>${metadata}</#noescape>
+					</div>
+				</div>
+			</#if>
 		</div>
 	</div>
 </form>
 </#escape>
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="js/jquery/plugins/ui/ui.datepicker-${locale}.js"></script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />
-<@getDatePickerRange idFieldFrom="document_validity_begin" idFieldTo="document_validity_end" language=locale />
-<script>
-function doToggleId( idParent ){
-	if ( $( idParent ) != null )
-	{
-		$( idParent ).click( function(){ 
-			$(this).next().toggle();
-			$(this).children().toggleClass("glyphicon-chevron-down glyphicon-chevron-up");
-		});
-	}
-}
-$(document).ready( function () {
-	doToggleId( "#dublin_core_meta" );
-	doToggleId( "#properties" );
-	$( "#dublin_core_meta" ).next().toggle();
-	$( "#dublin_core_meta" ).children().toggleClass("glyphicon-chevron-down glyphicon-chevron-up");
-	doToggleId( "#category" );
-});
-</script>
+<@getDatePickerRangeBootstrap language=locale />
