@@ -4,7 +4,7 @@
     </div>
    <div class="box-body table-responsive no-padding">
 		<table class="table table-hover table-condensed">
-			<thead>
+			<thead class="sr-only">
 			   	<tr>
 			   		<th>#i18n{document.dashboard.columnLastModifiedDocument}</th>
 			   		<th>#i18n{document.dashboard.columnActions}</th>
@@ -34,7 +34,7 @@
 							</#if>
 							</#list>
 							</p>
-							<#if last_modified_document.comment!= ""> <div class="alert alert-danger col-xs-12 col-sm-9 col-md-9">${last_modified_document.comment}</div></#if>
+							<#if last_modified_document.comment!= ""> <div class="callout callout-danger col-xs-12 col-sm-9 col-md-9">${last_modified_document.comment}</div></#if>
 				        </td>
 			    	</tr>
 			    <#else>
@@ -60,7 +60,7 @@
     <div class="box-body table-responsive no-padding">		
 		<!-- LAST PUBLISHED DOCUMENT -->
 		<table class="table table-striped">
-			<thead>
+			<thead class="sr-only">
 			   	<tr>
 			   		<th>#i18n{document.dashboard.columnLastPublishedDocument}</th>
 			   		<th>#i18n{document.dashboard.columnActions}</th>
