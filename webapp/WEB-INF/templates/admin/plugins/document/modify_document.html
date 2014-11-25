@@ -25,15 +25,15 @@
 							<p class="help-block">#i18n{document.modify_document.helpDocumentTitle}</p>
 						</div>
 					</div>
-							<div class="form-group">
-								<label class="control-label col-xs-12 col-sm-2 col-md-2" for="document_summary">#i18n{document.modify_document.labelDocumentSummary}*</label>
-									<div class="col-xs-12 col-sm-10 col-md-10">
-										<textarea name="document_summary" class="form-control input-sm" id="document_summary" class="input-lg" rows="5">${document.summary}</textarea> 
-										<p class="help-block">#i18n{document.modify_document.helpDocumentSummary}</p>
-									</div>
+					<div class="form-group">
+						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="document_summary">#i18n{document.modify_document.labelDocumentSummary}*</label>
+							<div class="col-xs-12 col-sm-10 col-md-10">
+								<textarea name="document_summary" class="form-control input-sm" id="document_summary" class="input-lg" rows="5">${document.summary}</textarea> 
+								<p class="help-block">#i18n{document.modify_document.helpDocumentSummary}</p>
 							</div>
-						<fieldset>
-							<legend>#i18n{document.modify_document.attributTitle}</legend>    
+					</div>
+					<fieldset>
+						<legend>#i18n{document.modify_document.attributTitle}</legend>    
 							<#noescape>${fields}</#noescape>
 							<div class="form-group" >
 								<div class="col-xs-12 col-sm-offset-2 col-sm-10 col-md-offset-2 col-md-10">
@@ -69,7 +69,7 @@
 							<label for="document_validity_begin" class="control-label col-xs-12 col-sm-3 col-md-3">#i18n{document.create_document.labelDocumentValidityBegin}</label>
 							<div class="col-md-9">
 								<div class="input-group">
-									<span class="input-group-addon">
+									<span class="input-group-addon input-sm">
 										<i class="glyphicon glyphicon-calendar"></i>
 									</span>
 									<input type="text" class="form-control" name="document_validity_begin" id="document_validity_begin" value="${date_validity_begin}">
@@ -80,7 +80,7 @@
 							<label for="document_validity_end" class="control-label col-xs-12 col-sm-3 col-md-3">#i18n{document.create_document.labelDocumentValidityEnd}</label> 
 							<div class="col-md-9">
 								<div class="input-group">
-									<span class="input-group-addon">
+									<span class="input-group-addon input-sm">
 										<i class="glyphicon glyphicon-calendar"></i>
 									</span>
 									<input type="text" class="form-control" name="document_validity_end" id="document_validity_end" value="${date_validity_end}">
@@ -89,14 +89,14 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="document_page_template">#i18n{document.create_document.labelDocumentPageTemplate} : </label>
+						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="document_page_template">#i18n{document.create_document.labelDocumentPageTemplate}</label>
 						<div class="col-md-9">
 						<#noescape>${page_template_list}</#noescape>
 						<p class="help-block">#i18n{document.create_document.helpDocumentPageTemplate}</p>
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="document_comment">#i18n{document.create_document.labelDocumentComment} : </label>
+						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="document_comment">#i18n{document.create_document.labelDocumentComment} </label>
 						<div class="col-md-9">
 							<textarea type="text" name="document_comment" id="document_comment" class="form-control" rows="2" >${document.comment}</textarea> 
 							<p class="help-block">#i18n{document.create_document.helpDocumentComment}</p>

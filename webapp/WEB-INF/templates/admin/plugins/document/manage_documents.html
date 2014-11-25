@@ -26,7 +26,7 @@
 
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-3">
-		<div class="box box-solid box-primary">
+		<div class="box box-solid box-primary ">
 			<div class="box-header">
 				<h3 class="box-title">#i18n{document.manage_documents.labelSpaces}</h3>
 				<div class="box-tools pull-right">
@@ -37,6 +37,7 @@
 							</a>
 						</#list>
 					</#if>	
+					<button data-widget="collapse" class="btn btn-default btn-sm" type="button"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
             <div class="box-body">
@@ -45,7 +46,7 @@
 			</div>
 		</div>
 		<#if mass_action?has_content && mass_action>
-			<div class="box box-solid box-primary">
+			<div class="box box-solid box-primary hidden-xs">
 				<div class="box-header">
 					<h3 class="box-title">#i18n{document.manage_documents.labelMoreActions}</h3>
 				</div>
@@ -69,6 +70,19 @@
 			<div class="box-header"></div>
 			<div class="box-body">
 				<div class="row">
+					<#if space.documentCreationAllowed > 
+						<#if document_types_list?has_content>
+							<div class="col-xs-12 col-sm-3 col-md-3">
+								<form class="form-inline" method="post" name="CreateDocument" action="jsp/admin/plugins/document/CreateDocument.jsp">
+									<label for="document_type_code" class="sr-only">#i18n{document.manage_documents.labelCreate}</label>
+									<@comboWithParams name="document_type_code" default_value="" additionalParameters="class=\"form-control input-xs\"" items=document_types_list/>
+									<button class="btn btn-primary btn-xs btn-flat" type="submit" title="#i18n{document.manage_documents.buttonCreate}">
+										<i class="glyphicon glyphicon-plus"></i> <span class="hidden-xs">#i18n{document.manage_documents.buttonCreate}</span>
+									</button>
+								</form>
+							</div>
+						</#if> 
+					</#if>
 					<div class="col-xs-12 col-sm-9 col-md-3">
 						<form class="form-inline" method="post" id="SearchDocumentById" name="SearchDocumentById" action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
 							 <div class="input-group">
@@ -82,6 +96,7 @@
 							</div>
 							<p class="help-block">#i18n{document.manage_documents.labelSearchById}</p>
 						</form>
+						
 						<form class="form-inline" method="post" id="FullTextSearchDocument" name="FullTextSearchDocument" action="jsp/admin/plugins/document/DocumentSearch.jsp">
 							<input type="hidden" id="id_document" name="id_document">
 							<label for="query">#i18n{document.manage_documents.buttonSearch}</label>	
@@ -96,7 +111,7 @@
 							<p class="help-block">#i18n{document.manage_documents.labelFullTextSearch}</p>
 						</form>
 					</div>
-					<div class="col-xs-12 col-sm-9 col-md-6">
+					<div class="col-xs-12 col-sm-9 col-md-6 hidden-xs">
 						<#if document_types_filter_list?size &gt; 1 >
 							<form class="form-inline" method="post" name="FilterDocumentsForm" action="jsp/admin/plugins/document/ManageDocuments.jsp">
 								<label for="document_type_code_filter">#i18n{document.manage_documents.labelType}</label>
@@ -114,19 +129,7 @@
 							</form>
 						</#if> 
 					</div>
-					<#if space.documentCreationAllowed > 
-						<#if document_types_list?has_content>
-							<div class="col-xs-12 col-sm-3 col-md-3">
-								<form class="form-inline" method="post" name="CreateDocument" action="jsp/admin/plugins/document/CreateDocument.jsp">
-									<label for="document_type_code" class="sr-only">#i18n{document.manage_documents.labelCreate}</label>
-									<@comboWithParams name="document_type_code" default_value="" additionalParameters="class=\"form-control input-xs\"" items=document_types_list/>
-									<button class="btn btn-primary btn-xs btn-flat" type="submit" title="#i18n{document.manage_documents.buttonCreate}">
-										<i class="glyphicon glyphicon-plus"></i> #i18n{document.manage_documents.buttonCreate}
-									</button>
-								</form>
-							</div>
-						</#if> 
-					</#if>
+					
 				</div>
 			</div>
 		</div>
@@ -165,13 +168,13 @@
 										</button>
 									</span>
 								</th>
-								<th>#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url="jsp/admin/plugins/document/ManageDocuments.jsp" attribute="publishedStatus" /></th>
-								<th>#i18n{document.manage_documents.labelActions}</th>
+								<th class="hidden-xs">#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url="jsp/admin/plugins/document/ManageDocuments.jsp" attribute="publishedStatus" /></th>
+								<th  class="hidden-xs">#i18n{document.manage_documents.labelActions}</th>
 							</tr>
 							<#list documents_list as document >
 							<tr class="document-row" data-document="${document.id} ${document.title}">
 								<td>
-									<input id="document_selection" name="document_selection" type="checkbox" value="${document.id}" /></td>
+									<input id="document_selection" name="document_selection" type="checkbox" value="${document.id}"></td>
 								<td>
 									<p>
 										${document.id} - <strong title="${document.title}"><#if document.title?length &gt; 60>${document.title?substring(0,60)}...<#else>${document.title}</#if></strong>
@@ -182,10 +185,11 @@
 										<#if document.stateId = 3>
 										&nbsp;
 										<span class="label label-success" title="#i18n{document.manage_documents.labelState}">
-											<i class="glyphicon glyphicon-ok-sign"></i>&nbsp;&nbsp;${document.state}&nbsp;&nbsp;&nbsp;</span>
+											<i class="glyphicon glyphicon-ok-sign"></i> <span class="hidden-xs">${document.state}</span>
+										</span>
 										<#else>
 											<span class="label label-info" title="#i18n{document.manage_documents.labelState}">
-												<i class="glyphicon glyphicon-remove-sign"></i>&nbsp;${document.state}
+												<i class="glyphicon glyphicon-remove-sign"></i> <span class="hidden-xs">${document.state}</span>
 											</span>
 										</#if>
 									</p>
@@ -195,17 +199,26 @@
 												${document.comment}
 										</div>
 									</#if>
+									<#list document.actions?sort_by("idAction") as action >
+										<span class="visible-xs">
+										<#if action.url?has_content>
+											<a class="btn <@setBtnAction action_nb=action.idAction /> btn-xs btn-flat pull-left" href="${action.url}id_document=${document.id}&id_action=${action.idAction}&browser_id_space=${space.id}" title="${action.description}">
+												<i class="${action.iconUrl} icon-white"></i>
+											</a>
+										</#if>
+										</span>
+									</#list>
 								</td>
-								<td>
+								<td  class="hidden-xs">
 									<#if document.publishedStatus = 0> 
 										<span class="label label-success"><i class="glyphicon glyphicon-ok-sign"></i> #i18n{document.manage_documents.PublishedStatus}</span>
 									<#else>
 										<span class="label label-important"><i class="glyphicon glyphicon-remove-sign"></i> #i18n{document.manage_documents.UnPublishedStatus}</span>
 									</#if>
 								</td>
-								<td><#list document.actions?sort_by("idAction") as action >
+								<td  class="hidden-xs"><#list document.actions?sort_by("idAction") as action >
 										<#if action.url?has_content>
-											<a class="btn <@setBtnAction action_nb=action.idAction /> btn-xs btn-flat" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}">
+											<a class="btn <@setBtnAction action_nb=action.idAction /> btn-xs btn-flat" href="${action.url}id_document=${document.id}&id_action=${action.idAction}&browser_id_space=${space.id}" title="${action.description}">
 												<i class="${action.iconUrl} icon-white"></i>
 											</a>
 										</#if>
