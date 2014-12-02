@@ -43,9 +43,9 @@
                         <label class="control-label col-xs-12 col-sm-3 col-md-3 sr-only" for="workgroup_key">#i18n{document.modify_space.labelWorkgroup}</label>
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <#if space.workgroup?exists>
-                            <@comboWithParams name="workgroup_key"  default_value=space.workgroup additionalParameters="class=\"form-control input-xs\""  items=user_workgroup_list/>
+                                <@comboWithParams name="workgroup_key"  default_value=space.workgroup additionalParameters="class=\"form-control input-xs\""  items=user_workgroup_list/>
                             <#else>
-                            <@comboWithParams name="workgroup_key"  default_value="all"  additionalParameters="class=\"form-control input-xs\"" items=user_workgroup_list/>
+                                <@comboWithParams name="workgroup_key"  default_value="all"  additionalParameters="class=\"form-control input-xs\"" items=user_workgroup_list/>
                             </#if>
                         </div>
                     </div>
