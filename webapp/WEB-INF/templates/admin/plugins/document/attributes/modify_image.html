@@ -1,83 +1,64 @@
 <div class="form-group">
-	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
-	<div class="col-xs-12 col-sm-10">
-		<div class="row">
-			<div class="col-xs-12 col-sm-8">
-				<input type="file" name="${attribute.code}" id="${attribute.code}" >
-			</div>
-			<div class="col-xs-12 col-sm-12">
-				<#if attribute.textValue?has_content>
-					<div class="row">
-						<div class="col-xs-12 col-sm-8">
-							<div class="checkbox">
-								<label for="update_${attribute.code}">
-									<input type="checkbox" name="update_${attribute.code}" id="update_${attribute.code}" value="1"> 
-									#i18n{document.attributeType.image.updateField} <small>#i18n{document.attributeType.image.deleteField}</small>
-								</label>
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-4">
-							<a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" title="${attribute.textValue}" <#if attribute.valueContentType?contains('image')>data-toggle="modal" data-target="#myModal"</#if>>
-								<img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-medium pull-right clearfix">
-							</a>
-						</div>
-					</div>
-				<#else>
-					<span class="help-block">${attribute.description}</span>
-				</#if>
-				<div class="row">
-					<div class="col-xs-12 col-sm-3">
-						<div class="checkbox">
-							<label for="${attribute.code}_crop">
-								<input type="checkbox" name="${attribute.code}_croppable" id="${attribute.code}_crop">
-								#i18n{document.attributeType.image.resize}
-							</label>
-						</div>
-					</div>
-					<div class="col-xs-12 col-sm-2">
-						<label class="control-label sr-only">#i18n{document.attributeType.image.resize}</label>
-						<div class="input-group">
-							<input type="text" class="form-control input-sm" name="${attribute.code}_width" value="" placeholder="#i18n{document.attributeType.image.width}" id="${attribute.code}_width">
-							<span class="input-group-addon">px</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<#if attribute.valueContentType?contains('image')>
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Fermer</span></button>
-        <h4 class="modal-title" id="myModalLabel"></h4>
-      </div>
-      <div class="modal-body">
-		<img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-medium">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
+    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
+    <div class="col-xs-12 col-sm-10">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8">
+                <input type="file" name="${attribute.code}" id="${attribute.code}" >
+            </div>
+            <div class="col-xs-12 col-sm-12">
+                <#if attribute.textValue?has_content>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-8">
+                            <div class="checkbox">
+                                <label for="update_${attribute.code}">
+                                    <input type="checkbox" name="update_${attribute.code}" id="update_${attribute.code}" value="1"> 
+                                    #i18n{document.attributeType.image.updateField} <small>#i18n{document.attributeType.image.deleteField}</small>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" data-title="${attribute.textValue}" <#if attribute.valueContentType?contains('image')>data-lightbox="image-document"</#if>>
+                               <img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-medium pull-right clearfix">
+                            </a>
+                        </div>
+                    </div>
+                <#else>
+                    <span class="help-block">${attribute.description}</span>
+                </#if>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="checkbox">
+                            <label for="${attribute.code}_crop">
+                                <input type="checkbox" name="${attribute.code}_croppable" id="${attribute.code}_crop">
+                                #i18n{document.attributeType.image.resize}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <label class="control-label sr-only">#i18n{document.attributeType.image.resize}</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control input-sm" name="${attribute.code}_width" value="" placeholder="#i18n{document.attributeType.image.width}" id="${attribute.code}_width">
+                            <span class="input-group-addon">px</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
-</#if>
 <script type="text/javascript">
-$(document).ready( function(){
-	$("#${attribute.code}_width").prop({disabled: true});
-	$("#${attribute.code}_width").addClass('disabled');
-	$('#${attribute.code}_crop').on('click', function(){
-		if ( $(this).is(':checked') ) {
-			$("#${attribute.code}_width").prop({disabled: false});
-			$("#${attribute.code}_width").toggleClass("disabled");
-		} else {
-			$("#${attribute.code}_width").val("");
-			$("#${attribute.code}_width").prop({disabled: true});
-			$("#${attribute.code}_width").toggleClass("disabled");
-		}
-	});
-});
+    $(document).ready(function () {
+        $("#${attribute.code}_width").prop({disabled: true});
+        $("#${attribute.code}_width").addClass('disabled');
+        $('#${attribute.code}_crop').on('click', function () {
+            if ($(this).is(':checked')) {
+                $("#${attribute.code}_width").prop({disabled: false});
+                $("#${attribute.code}_width").toggleClass("disabled");
+            } else {
+                $("#${attribute.code}_width").val("");
+                $("#${attribute.code}_width").prop({disabled: true});
+                $("#${attribute.code}_width").toggleClass("disabled");
+            }
+        });
+    });
 </script>
