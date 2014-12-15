@@ -51,9 +51,9 @@
 	</properties>
 
     <scm>
-        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/cms/plugin-document</connection>
-        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/cms/plugin-document</developerConnection>
-        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/cms/plugin-document</url>
+        <connection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-document.git</connection>
+        <developerConnection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-document.git</developerConnection>
+        <url>https://github.com/lutece-platform/lutece-cms-plugin-document.git</url>
     </scm>
 
 </project>
