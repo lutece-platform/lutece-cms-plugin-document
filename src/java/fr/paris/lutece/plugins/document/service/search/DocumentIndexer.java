@@ -274,11 +274,11 @@ public class DocumentIndexer implements SearchIndexer
         }
         catch ( SAXException e )
         {
-            throw new AppException( "Error during document parsing." );
+            throw new AppException( "Error during document parsing." , e );
         }
         catch ( TikaException e )
         {
-            throw new AppException( "Error during document parsing." );
+            throw new AppException( "Error during document parsing." , e );
         }
 
         //the content of the article is recovered in the parser because this one
