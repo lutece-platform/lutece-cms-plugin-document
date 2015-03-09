@@ -1,37 +1,58 @@
-<div class="row" >
-	<div class="col-md-12" >
-		<h4>#i18n{document.insertService.name}</h4>
-		<#if pages_list?size = 0>
-			<p class="alert alert-danger">#i18n{document.selector.page.noPage}</p>
-			<button type="button" class="btn btn-sm" onclick="javascript:history.go(-1);"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}</button>
-		<#else>
-			<form method="post" name="fsubmit"	action="jsp/admin/plugins/document/DoSelectPage.jsp">
-			<input type="hidden" name="input" value="${input}" />
-			<input type="hidden" name="subcategory" value="${type_filter}" />
-			<h4>#i18n{document.selector.page.pageChoice}</h4>
-			<table class="table table-striped table-condensed">
-				<tr>
-					<th></th>
-					<th>#i18n{document.selector.page.colTitle}</th>
-					<th>#i18n{document.selector.page.colDescription}</th>
-				</tr>
-				<#list pages_list as page>
-				<tr>
-					<td>
-						<input class="radio" type="radio" id="page_id_${page.id}" name="page_id" value="${page.id}" />
-					</td>
-					<td><a href="jsp/admin/plugins/document/SelectPage.jsp?page_id=${page.id}&input=${input}&subcategory=${type_filter}">${page.name}</a></td>
-					<td>${page.description}</td>
-				</tr>
-				</#list>
-			</table>
-			<button type="submit" class="btn btn-primary btn-sm">
-				<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
-			</button>
-			<button type="button" class="btn btn-sm" onclick="javascript:history.go(-1);">
-				<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
-			</button>
-			</form>
-		</#if>
+<div class="insert-service" >
+	<div class="row" >
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+			  <li><a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input}&amp;selected_text="><i class="fa fa-home"></i></a></li>
+			  <li>#i18n{document.selector.page.pageChoice}</li>
+			</ol>
+			<#if pages_list?size = 0>
+				<div class="alert alert-danger text-center" role="alert">
+					<i class="fa fa-warning"></i> #i18n{document.selector.page.noPage}	<button type="button" class="btn btn-sm" onclick="javascript:history.go(-1);"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}</button>
+				</div>
+			<#else>
+				<form method="post" name="fsubmit" id="fsubmit" class="form" action="jsp/admin/plugins/document/DoSelectPage.jsp">
+				<input type="hidden" name="input" value="${input}">
+				<input type="hidden" name="name" value="">
+				<input type="hidden" name="subcategory" value="${type_filter}">
+				<ul class="list-group list-unstyled">
+					<#list pages_list as page>
+						<li class="list-group-item">
+							<input class="pull-left" type="radio" id="page_id_${page.id}" name="page_id" value="${page.id}">&nbsp;
+							<a href="jsp/admin/plugins/document/SelectPage.jsp?page_id=${page.id}&input=${input}&subcategory=${type_filter}">
+								${page.name} - ${page.description}
+							</a>
+						</li>
+					</#list>
+				</ul>
+				<nav>
+				  <ul class="pager">
+					<li>
+						<a href="javascript:history.go(-1);" title="#i18n{portal.util.labelPrevious}">
+							<i class="fa fa-chevron-left"></i>&nbsp;#i18n{portal.util.labelPrevious}
+						</a>
+					</li>
+					<li>
+						<a href="#" id="a-sub" class="sr-only" >
+							#i18n{portal.util.labelNext} <i class="fa fa-chevron-right"></i>
+						</a>
+						<button type="submit" id="btn-sub">
+							#i18n{portal.util.labelNext} <i class="fa fa-chevron-right"></i>
+						</button>
+					</li>
+				  </ul>
+				</nav>
+				</form>
+			</#if>
+		</div>
 	</div>
 </div>
+<script>
+$(document).ready( function(){
+  $("#btn-sub").remove();
+  $("#a-sub").removeClass("sr-only");
+  $("#a-sub").click( function( e ){
+	$("#fsubmit").submit();
+	return false;
+  });
+});
+</script>
