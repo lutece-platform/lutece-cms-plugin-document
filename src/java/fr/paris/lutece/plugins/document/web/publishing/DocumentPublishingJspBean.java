@@ -267,11 +267,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             {
                 DocumentAction docAction = (DocumentAction) action;
 
-                if ( DocumentTypeResourceIdService.PERMISSION_ASSIGN.equals( docAction.getPermission(  ) ) )
+                if ( docAction.getPermission(  ) != null && DocumentTypeResourceIdService.PERMISSION_ASSIGN.equals( docAction.getPermission(  ) ) )
                 {
                     model.put( MARK_PERMISSION_ASSIGN, 1 );
                 }
-                else if ( DocumentTypeResourceIdService.PERMISSION_PUBLISH.equals( docAction.getPermission(  ) ) )
+                else if ( docAction.getPermission(  ) != null && DocumentTypeResourceIdService.PERMISSION_PUBLISH.equals( docAction.getPermission(  ) ) )
                 {
                     model.put( MARK_PERMISSION_PUBLISH, 1 );
                 }
@@ -886,7 +886,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         {
             DocumentAction docAction = (DocumentAction) action;
 
-            if ( ( docAction != null ) &&
+            if ( ( docAction != null ) && docAction.getPermission(  ) != null &&
                     docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_PUBLISH ) )
             {
                 model.put( MARK_PERMISSION_PUBLISH, 1 );
@@ -931,11 +931,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         {
             DocumentAction docAction = (DocumentAction) action;
 
-            if ( docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_ASSIGN ) )
+            if (docAction.getPermission(  ) != null && docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_ASSIGN ) )
             {
                 model.put( MARK_PERMISSION_ASSIGN, 1 );
             }
-            else if ( docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_PUBLISH ) )
+            else if (docAction.getPermission(  ) != null && docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_PUBLISH ) )
             {
                 model.put( MARK_PERMISSION_PUBLISH, 1 );
             }
