@@ -9,65 +9,49 @@
 	
 	<xsl:variable name="device_class">
 	<xsl:choose>
-		<xsl:when test="string(display-on-small-device)='0'">hide-for-small</xsl:when>
+		<xsl:when test="string(display-on-small-device)='0'">hidden-xs</xsl:when>
+		<xsl:when test="string(display-on-normal-device)='0'">hidden-sm</xsl:when>
+		<xsl:when test="string(display-on-large-device)='0'">hidden-md</xsl:when>
+		<xsl:when test="string(display-on-xlarge-device)='0'">hidden-lg</xsl:when>
 		<xsl:otherwise></xsl:otherwise>
 	</xsl:choose>
 	</xsl:variable>
 
-		<div class="portlet-background-colored  {$device_class} append-bottom">
-			<xsl:if test="not(string(display-portlet-title)='1')">
-				<h3 class="portlet-background-colored-header -lutece-border-radius-top">
-					<xsl:value-of disable-output-escaping="yes"
-						select="portlet-name" />
-				</h3>
-			</xsl:if>
-
-			<xsl:apply-templates select="document-portlet/document" />
-			<xsl:if test="string(document-portlet/document)=''">
-				<xsl:text disable-output-escaping="yes">
-					&amp;nbsp;
-				</xsl:text>
-			</xsl:if>
+	<div class="{$device_class}">
+		<xsl:if test="not(string(display-portlet-title)='1')">
+			<h3><xsl:value-of disable-output-escaping="yes" select="portlet-name" /></h3>
+		</xsl:if>
+		<xsl:apply-templates select="document-portlet/document" />
+		<xsl:if test="string(document-portlet/document)=''">
+			<xsl:text disable-output-escaping="yes">
+				&amp;nbsp;
+			</xsl:text>
+		</xsl:if>
 
 		</div>
 	</xsl:template>
 
 	<xsl:template match="document">
-		<div class="portlet-background-content -lutece-border-radius-bottom">
 			<xsl:output method="html" indent="yes" />
 			<xsl:if test="not(string(document-xml-content)='null')">
-				<xsl:apply-templates
-					select="document-xml-content/video" />
+				<xsl:apply-templates select="document-xml-content/video" />
 			</xsl:if>
-		</div>
 	</xsl:template>
 
 	<xsl:template match="video">
+		<p><strong><xsl:value-of select="document-title" /></strong></p>
+		<p><xsl:value-of disable-output-escaping="yes" select="document-summary" /></p>
 		<p>
-			<strong>
-				<xsl:value-of select="document-title" />
-			</strong>
+		<xsl:choose>
+			<xsl:when test="video-file/file-resource!=''">
+				<a href="document?id={video-file/file-resource/resource-document-id}&amp;id_attribute={video-file/file-resource/resource-attribute-id}">
+					<img src="images/admin/skin/plugins/document/filetypes/video.png" />
+				</a>
+			</xsl:when>
+			<xsl:otherwise></xsl:otherwise>
+		</xsl:choose>
 		</p>
-		<p>
-			<xsl:value-of disable-output-escaping="yes"
-				select="document-summary" />
-		</p>
-		<p>
-			<xsl:choose>
-				<xsl:when test="video-file/file-resource!=''">
-					<a
-						href="document?id={video-file/file-resource/resource-document-id}&amp;id_attribute={video-file/file-resource/resource-attribute-id}">
-						<img
-							src="images/admin/skin/plugins/document/filetypes/video.png" />
-					</a>
-				</xsl:when>
-				<xsl:otherwise></xsl:otherwise>
-			</xsl:choose>
-		</p>
-		<p>
-			<xsl:value-of disable-output-escaping="yes"
-				select="video-comments" />
-		</p>
+		<p><xsl:value-of disable-output-escaping="yes" select="video-comments" /></p>
 	</xsl:template>
 </xsl:stylesheet>
 

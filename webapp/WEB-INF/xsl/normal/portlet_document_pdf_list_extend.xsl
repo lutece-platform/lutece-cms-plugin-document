@@ -8,20 +8,23 @@
 
 	<xsl:variable name="device_class">
 	<xsl:choose>
-		<xsl:when test="string(display-on-small-device)='0'">hide-for-small</xsl:when>
+		<xsl:when test="string(display-on-small-device)='0'">hidden-xs</xsl:when>
+		<xsl:when test="string(display-on-normal-device)='0'">hidden-sm</xsl:when>
+		<xsl:when test="string(display-on-large-device)='0'">hidden-md</xsl:when>
+		<xsl:when test="string(display-on-xlarge-device)='0'">hidden-lg</xsl:when>
 		<xsl:otherwise></xsl:otherwise>
 	</xsl:choose>
 	</xsl:variable>
 
-	<div class="portlet-background-colored {$device_class} append-bottom" >
+	<div class="{$device_class}" >
         <xsl:if test="not(string(display-portlet-title)='1')">
-			<h3 class="portlet-background-colored-header -lutece-border-radius-top">
+			<h3 class="">
 				<xsl:value-of disable-output-escaping="yes" select="portlet-name" />
 			</h3>
         </xsl:if>
-		<div class="portlet-background-content -lutece-border-radius-bottom" >
+		<div class="" >
 		     <ul>
-         	       <xsl:apply-templates select="document-list-portlet/document" />
+         	    <xsl:apply-templates select="document-list-portlet/document" />
              </ul>  
 		</div>
 	</div>

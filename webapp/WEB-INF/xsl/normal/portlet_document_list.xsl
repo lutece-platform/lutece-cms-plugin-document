@@ -8,23 +8,25 @@
 
 	<xsl:variable name="device_class">
 	<xsl:choose>
-		<xsl:when test="string(display-on-small-device)='0'">hide-for-small</xsl:when>
+		<xsl:when test="string(display-on-small-device)='0'">hidden-xs</xsl:when>
+		<xsl:when test="string(display-on-normal-device)='0'">hidden-sm</xsl:when>
+		<xsl:when test="string(display-on-large-device)='0'">hidden-md</xsl:when>
+		<xsl:when test="string(display-on-xlarge-device)='0'">hidden-lg</xsl:when>
 		<xsl:otherwise></xsl:otherwise>
 	</xsl:choose>
 	</xsl:variable>
 
-    <div class="portlet-background-colored  {$device_class} append-bottom" >
+    <div class="portlet {$device_class}">
         <xsl:if test="not(string(display-portlet-title)='1')">
-            <h3 class="portlet-background-colored-header -lutece-border-radius-top">
+            <h3>
                 <xsl:value-of disable-output-escaping="yes" select="portlet-name" />
             </h3>
         </xsl:if>
-		<div class="portlet-background-content -lutece-border-radius-bottom" >
+		<div>
             <xsl:apply-templates select="document-list-portlet" />
 		</div>
     </div>
 </xsl:template>
-
 
 <xsl:template match="document-list-portlet">
     <ul>
@@ -49,7 +51,10 @@
             <xsl:for-each select="descendant::*">
                 <xsl:value-of select="document-summary" />
             </xsl:for-each>
-            <br /> 
+            <br />
+            <xsl:if test="(string(document-is-commentable)='1')">
+                <img src="images/local/skin/plugins/document/nb_comments.png" alt="Nombre de commentaires" title="Nombre de commentaires" align="middle"/>&#160;<xsl:value-of select="document-comment-nb" />      
+            </xsl:if>   
     </li>
 </xsl:template>
 

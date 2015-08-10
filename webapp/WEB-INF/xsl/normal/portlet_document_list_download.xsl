@@ -7,25 +7,27 @@
 <xsl:template match="portlet">
 	<xsl:variable name="device_class">
 	<xsl:choose>
-		<xsl:when test="string(display-on-small-device)='0'">hide-for-small</xsl:when>
-		<xsl:otherwise></xsl:otherwise>
+		<xsl:when test="string(display-on-small-device)='0'">hidden-xs</xsl:when>
+		<xsl:when test="string(display-on-normal-device)='0'">hidden-sm</xsl:when>
+		<xsl:when test="string(display-on-large-device)='0'">hidden-md</xsl:when>
+		<xsl:when test="string(display-on-xlarge-device)='0'">hidden-lg</xsl:when>
+	<xsl:otherwise></xsl:otherwise>
 	</xsl:choose>
 	</xsl:variable>
 
-	<div class="portlet-background-colored  {$device_class} append-bottom" >
+	<div class="portlet {$device_class}">
         <xsl:if test="not(string(display-portlet-title)='1')">
-			<h3 class="portlet-background-colored-header -lutece-border-radius-top">
+			<h3>
 				<xsl:value-of disable-output-escaping="yes" select="portlet-name" />
 			</h3>
         </xsl:if>
-		<div class="portlet-background-content -lutece-border-radius-bottom" >
+		<div>
 		     <ul>
          	       <xsl:apply-templates select="document-list-portlet/document" />
              </ul>  
 		</div>
 	</div>
 </xsl:template>
-
 
 <xsl:template match="document">      
 <xsl:if test="not(string(document-xml-content)='null')">
@@ -57,16 +59,16 @@
 
 <xsl:template match="file-resource">
 	<xsl:choose>
-		<xsl:when test="(resource-content-type='image/jpeg' or resource-content-type='image/jpg' or resource-content-type='image/pjpeg' or resource-content-type='image/gif' or resource-content-type='image/png')" >
+		<xsl:when test="(resource-content-type='image/jpeg' or resource-content-type='image/jpg' or resource-content-type='image/pjpeg' or resource-content-type='image/gif' or resource-content-type='image/png')">
 			<img src="images/local/skin/plugins/document/filetypes/image.png" border="0" alt="" width="32" height="32"/>
 		</xsl:when>
-		<xsl:when test="(resource-content-type='application/pdf')" >
+		<xsl:when test="(resource-content-type='application/pdf')">
 			<img src="images/local/skin/plugins/document/filetypes/pdf.png" border="0" alt="" width="32" height="32" />
 		</xsl:when>
-		<xsl:when test="(resource-content-type='application/msword' or resource-content-type='application/vnd.oasis.opendocument.text')" >
+		<xsl:when test="(resource-content-type='application/msword' or resource-content-type='application/vnd.oasis.opendocument.text')">
 			<img src="images/local/skin/plugins/document/filetypes/text.png" border="0" alt="" width="32" height="32" />
 		</xsl:when>
-		<xsl:when test="(resource-content-type='application/excel' or resource-content-type='application/vnd.ms-excel' or resource-content-type='application/vnd.oasis.opendocument.spreadsheet')" >
+		<xsl:when test="(resource-content-type='application/excel' or resource-content-type='application/vnd.ms-excel' or resource-content-type='application/vnd.oasis.opendocument.spreadsheet')">
 			<img src="images/local/skin/plugins/document/filetypes/spreadsheet.png" border="0" alt="" width="32" height="32" />
 		</xsl:when>
 		<xsl:otherwise>
@@ -75,6 +77,4 @@
 	</xsl:choose>
 </xsl:template>              
 
-
 </xsl:stylesheet>
-

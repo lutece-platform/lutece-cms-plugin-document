@@ -10,16 +10,20 @@
 	
 	<xsl:variable name="device_class">
 	<xsl:choose>
-		<xsl:when test="string(display-on-small-device)='0'">hide-for-small</xsl:when>
+		<xsl:when test="string(display-on-small-device)='0'">hidden-xs</xsl:when>
+		<xsl:when test="string(display-on-normal-device)='0'">hidden-sm</xsl:when>
+		<xsl:when test="string(display-on-large-device)='0'">hidden-md</xsl:when>
+		<xsl:when test="string(display-on-xlarge-device)='0'">hidden-lg</xsl:when>
 		<xsl:otherwise></xsl:otherwise>
 	</xsl:choose>
 	</xsl:variable>
 	
-		<div class="portlet  {$device_class} -lutece-border-radius append-bottom">
+		<div class="portlet {$device_class}">
 			<xsl:if test="not(string(display-portlet-title)='1')">
 				<h3 id="article_{$portlet-id}">
 					<xsl:value-of disable-output-escaping="yes" select="portlet-name" />
-				</h3><br />
+				</h3>
+				<br />
 			</xsl:if>
 			<xsl:apply-templates select="document-list-portlet/document" />
 			<xsl:text disable-output-escaping="yes">
@@ -30,7 +34,7 @@
 
 	<xsl:template match="document">
 		<xsl:if test="not(string(document-xml-content)='null')">
-			<div class="span-6 portlet -lutece-border-radius append-bottom">
+			<div class="col-md-6">
 				<a
 					href="{$site-path}?document_id={document-id}&#38;portlet_id={$portlet-id}"
 					target="_top">
