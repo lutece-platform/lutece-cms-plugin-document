@@ -10,7 +10,7 @@
 	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${items.name}_select" >${items.label}</label>
 	<div class="col-xs-12 col-sm-10 col-md-10">
 		<input type="text" id="${items.name}_value" class="form-control input-sm" name="${items.name}_value" tabindex="6" />
-		<button class="btn btn-primary btn-sm" type="submit" name="add" value="add" >
+		<button class="btn btn-primary btn-sm" type="submit" name="add" value="add" onclick="manageItems(1);return false;">
 			#i18n{document.attributeType.listbox.btnAddItem}
 		</button>
 		<p class="help-block">${items.description}</p>
@@ -31,10 +31,10 @@
 				</#list>		
 			</select>
 		</div>
-		<button class="btn btn-primary btn-xs" name="delete"  value="delete" type="submit">
+		<button class="btn btn-primary btn-xs" name="delete"  value="delete" type="submit" onclick="manageItems(-1);return false;">
 			#i18n{document.attributeType.listbox.btnDelItem}
 		</button>
-		<button class="btn btn-primary btn-xs"  value="bydefault" name="bydefault" type="submit">
+		<button class="btn btn-primary btn-xs"  value="bydefault" name="bydefault" type="submit" onclick="setByDefault('${items.name}_select');return false;">
 			#i18n{document.attributeType.listbox.btnDefItem}
 		</button>
 	</div>
