@@ -26,16 +26,16 @@
 </#if>
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${items.name}_value" >${items.label} :</label>
-	<div class="col-xs-12 col-sm-9 col-md-9">
+	<div class="col-xs-12 col-sm-8 col-md-6">
 		<input type="text" class="form-control input-sm" id="${items.name}_value" name="${items.name}_value" tabindex="6" />
-		<button class="btn btn-primary btn-sm" value="add" name="add" type="submit" onclick="manageItems(1);return false;">#i18n{document.attributeType.listbox.btnAddItem}</button>
+		<button class="btn btn-primary btn-xs" value="add" name="add" type="submit" onclick="manageItems(1);return false;">#i18n{document.attributeType.listbox.btnAddItem}</button>
 		<p class="help-block">${items.description}</p>	
 	</div>
 </div>
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${items.name}_select" >&nbsp;</label>
-	<div class="col-xs-12 col-sm-9 col-md-9">
-		<select id="${items.name}_select" name="${items.name}_select" size="4" class="input-lg" tabindex="8">
+	<div class="col-xs-12 col-sm-8 col-md-6">
+		<select id="${items.name}_select" class="form-control" name="${items.name}_select" size="4" class="input-lg" tabindex="8">
 			<#list listValues as values >
 				<option value="${values}" >${values}</option>
 			</#list>
@@ -47,18 +47,18 @@
 				</#list>
 			</select>
 		</div>
-		<button class="btn btn-primary btn-sm" type="submit" name="delete" value="delete" onclick="manageItems(-1);return false;">
+		<button class="btn btn-primary btn-xs" type="submit" name="delete" value="delete" onclick="manageItems(-1);return false;">
 			#i18n{document.attributeType.listbox.btnDelItem}
 		</button>
-		<button  name="bydefault" value="bydefault" class="btn btn-primary btn-sm" type="submit" onclick="setByDefault('${items.name}_select');return false;">
+		<button  name="bydefault" value="bydefault" class="btn btn-primary btn-xs" type="submit" onclick="setByDefault('${items.name}_select');return false;">
 			#i18n{document.attributeType.listbox.btnDefItem}
 		</button>
 	</div>
 </div>
 <div class="form-group">
-	<label for="${defaultValue.name}">#i18n{document.attributeType.listbox.defaultValue}</label>
-	<div class="col-xs-12 col-sm-12 col-md-12">
-		<input type="text" id="${defaultValue.name}" name="${defaultValue.name}" value="${valueDefaultValue!}" readonly="readonly" tabindex="11" />
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${defaultValue.name}">#i18n{document.attributeType.listbox.defaultValue}</label>
+	<div class="col-xs-12 col-sm-8 col-md-6">
+		<input type="text" class="form-control input-sm" id="${defaultValue.name}" name="${defaultValue.name}" value="${valueDefaultValue!}" readonly="readonly" tabindex="11" />
 	</div>
 </div>
 <script src="js/selectbox.js"></script>
