@@ -1,9 +1,9 @@
 <#list parameters as parameter>
 <div class="form-group">
-	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${parameter.name}" >${parameter.label}</label>
-	<div class="col-xs-12 col-sm-10 col-md-10">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${parameter.name}" >${parameter.label}</label>
+	<div class="col-xs-12 col-sm-8 col-md-6">
 	<#if parameter_index = 0>
-		<input type="text" name="${parameter.name}" id="${parameter.name}" tabindex="${parameter_index + 5}" value="<#list parameter.defaultValue as values >${values?if_exists}</#list>"> 
+		<input type="text" class="form-control input-sm" name="${parameter.name}" id="${parameter.name}" tabindex="${parameter_index + 5}" value="<#list parameter.defaultValue as values >${values?if_exists}</#list>"> 
 		<span class="help-block">${parameter.description}</span>
 	</#if>
 	<#if parameter_index = 1>
