@@ -24,7 +24,7 @@
         </xsl:if>
 		<div>
 		     <ul>        
-                 <xsl:apply-templates select="document-list-portlet/document" />	
+                 <xsl:apply-templates select="document-portlet/document" />	
             </ul>  
 		</div>            	
 	</div>
