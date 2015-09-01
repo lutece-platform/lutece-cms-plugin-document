@@ -133,20 +133,7 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getCreateParametersFormHtml( Locale locale )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        String strUrlTemplate = getCreateParametersTemplate(  );
-
-        if ( strUrlTemplate == null )
-        {
-            return StringUtils.EMPTY;
-        }
-
-        model.put( MARK_ATTRIBUTE_PARAMETERS, getExtraParameters( locale ) );
-        model.put( MARK_LOCALE, locale );
-
-        HtmlTemplate template = AppTemplateService.getTemplate( getCreateParametersTemplate(  ), locale, model );
-
-        return template.getHtml(  );
+        return getCreateParametersFormHtml( null, locale );
     }
 
     /**
@@ -154,7 +141,15 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getCreateParametersFormHtml( List<AttributeTypeParameter> listParameters, Locale locale )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        return getCreateParametersFormHtml( listParameters, locale, null );
+    }
+
+    public String getCreateParametersFormHtml( List<AttributeTypeParameter> listParameters, Locale locale, Map<String, Object> model )
+    {
+        if ( model == null ) {
+            model = new HashMap<String, Object>(  );
+        }
+
         String strUrlTemplate = getCreateParametersTemplate(  );
 
         if ( strUrlTemplate == null )
@@ -183,7 +178,15 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getModifyParametersFormHtml( Locale locale, int nAttributeId )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        return getModifyParametersFormHtml( locale, nAttributeId, null );
+    }
+
+    public String getModifyParametersFormHtml( Locale locale, int nAttributeId, Map<String, Object> model )
+    {
+        if ( model == null ) {
+            model = new HashMap<String, Object>(  );
+        }
+
         String strUrlTemplate = getModifyParametersTemplate(  );
 
         if ( strUrlTemplate == null )
