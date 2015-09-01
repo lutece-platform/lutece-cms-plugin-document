@@ -49,7 +49,7 @@ public class UrlManager extends TextManager
      * Gets the template to enter the attribute value
      * @return The template to enter the attribute value
      */
-    String getCreateTemplate(  )
+    protected String getCreateTemplate(  )
     {
         return TEMPLATE_CREATE_ATTRIBUTE;
     }
@@ -58,7 +58,7 @@ public class UrlManager extends TextManager
      * Gets the template to modify the attribute value
      * @return The template to modify the attribute value
      */
-    String getModifyTemplate(  )
+    protected String getModifyTemplate(  )
     {
         return TEMPLATE_MODIFY_ATTRIBUTE;
     }

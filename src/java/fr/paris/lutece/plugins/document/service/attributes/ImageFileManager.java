@@ -48,7 +48,7 @@ public class ImageFileManager extends FileManager
      * Gets the template to enter the attribute value
      * @return The template to enter the attribute value
      */
-    String getCreateTemplate(  )
+    protected String getCreateTemplate(  )
     {
         return TEMPLATE_CREATE_ATTRIBUTE;
     }
@@ -57,7 +57,7 @@ public class ImageFileManager extends FileManager
      * Gets the template to modify the attribute value
      * @return The template to modify the attribute value
      */
-    String getModifyTemplate(  )
+    protected String getModifyTemplate(  )
     {
         return TEMPLATE_MODIFY_ATTRIBUTE;
     }
@@ -66,7 +66,7 @@ public class ImageFileManager extends FileManager
      * Gets the template to enter the parameters of the attribute value
      * @return The template to enter the parameters of the attribute value
      */
-    String getCreateParametersTemplate(  )
+    protected String getCreateParametersTemplate(  )
     {
         return TEMPLATE_CREATE_PARAMETERS_ATTRIBUTE;
     }
@@ -75,7 +75,7 @@ public class ImageFileManager extends FileManager
      * Gets the template to modify the parameters of the attribute value
      * @return The template to modify the parameters of the attribute value
      */
-    String getModifyParametersTemplate(  )
+    protected String getModifyParametersTemplate(  )
     {
         return TEMPLATE_MODIFY_PARAMETERS_ATTRIBUTE;
     }

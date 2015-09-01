@@ -71,13 +71,13 @@ public abstract class DefaultManager implements AttributeManager
      * Returns the Create HTML template corresponding to this attribute
      * @return The Create HTML template corresponding to this attribute
      */
-    abstract String getCreateTemplate(  );
+    abstract protected String getCreateTemplate(  );
 
     /**
      * Returns the Modify HTML template corresponding to this attribute
      * @return the Modify HTML template corresponding to this attribute
      */
-    abstract String getModifyTemplate(  );
+    abstract protected String getModifyTemplate(  );
 
     /**
      * Returns the Create HTML template for parameters corresponding to this
@@ -85,7 +85,7 @@ public abstract class DefaultManager implements AttributeManager
      * @return the Create HTML template for parameters corresponding to this
      *         attribute
      */
-    abstract String getCreateParametersTemplate(  );
+    abstract protected String getCreateParametersTemplate(  );
 
     /**
      * Returns the Modify HTML template for parameters corresponding to this
@@ -93,7 +93,7 @@ public abstract class DefaultManager implements AttributeManager
      * @return the Modify HTML template for parameters corresponding to this
      *         attribute
      */
-    abstract String getModifyParametersTemplate(  );
+    abstract protected String getModifyParametersTemplate(  );
 
     /**
      * {@inheritDoc}
