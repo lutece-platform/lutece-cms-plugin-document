@@ -49,14 +49,17 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.business.style.ModeHome;
+import fr.paris.lutece.portal.service.cache.ICacheKeyService;
 import fr.paris.lutece.portal.service.content.ContentService;
 import fr.paris.lutece.portal.service.content.PageData;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
+import fr.paris.lutece.portal.service.page.PortletCacheService;
 import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -143,7 +146,16 @@ public final class DocumentContentService extends ContentService implements Cach
 
     // Performance patch
     private static ConcurrentMap<String, String> _keyMemory = new ConcurrentHashMap<String, String>(  );
+
+    //Portlet cache
+    //Should be equal to PortletCacheService.CACHE_PORTLET_PREFIX without the final semicolon
+    private static final String PARAMETER_PORTLET = "portlet";
+    private static final String PORTLET_CACHE_KEY_SUFFIX = "[documentContentService]";
+
     private boolean _bInit;
+
+    private PortletCacheService _cachePortlets;
+    private ICacheKeyService _cksPortlet;
 
     /**
      * Returns the document page for a given document and a given portlet. The
@@ -231,6 +243,11 @@ public final class DocumentContentService extends ContentService implements Cach
         {
             initCache( getName(  ) );
         }
+
+        //initCache(  ) by the core in PageService
+        _cachePortlets = SpringContextService.getBean( "portletCacheService" );
+
+        _cksPortlet = SpringContextService.getBean( "portletCacheKeyService" );
 
         _bInit = true;
     }
@@ -457,7 +474,6 @@ public final class DocumentContentService extends ContentService implements Cach
             int nPortletId = Integer.parseInt( strPortletId );
 
             Portlet portlet = PortletHome.findByPrimaryKey( nPortletId );
-            String strXml = portlet.getXmlDocument( request );
 
             // Selection of the XSL stylesheet
             // byte[] baXslSource = portlet.getXslSource( nMode );
@@ -505,6 +521,62 @@ public final class DocumentContentService extends ContentService implements Cach
                 htParamRequest.put( PARAMETER_SITE_PATH, AppPathService.getAdminPortalUrl(  ) );
                 htParamRequest.put( MARKER_TARGET, TARGET_TOP );
             }
+
+            if ( _cachePortlets.isCacheEnable(  ) )
+            {
+                LuteceUser user = null;
+
+                if ( SecurityService.isAuthenticationEnable(  ) )
+                {
+                    user = SecurityService.getInstance(  ).getRegisteredUser( request );
+                }
+
+                boolean bCanBeCached = ( user != null ) ? ( portlet.canBeCachedForConnectedUsers(  ) )
+                                                        : ( portlet.canBeCachedForAnonymousUsers(  ) );
+
+                if ( bCanBeCached )
+                {
+                    //To delete keys when portlets are modified through _cachePortlets implementing PortletEventListener
+                    htParamRequest.put( PARAMETER_PORTLET, String.valueOf( portlet.getId(  ) ) );
+
+                    //Add [documentContentService] to not clash with PageService keys because we don't synchronize
+                    String strKey = getKey(_cksPortlet.getKey( htParamRequest, nMode, user ) + PORTLET_CACHE_KEY_SUFFIX);
+
+                    // get portlet from cache
+                    String strPortlet = (String) _cachePortlets.getFromCache( strKey );
+
+                    if ( strPortlet == null )
+                    {
+                        // only one thread can evaluate the page
+                        synchronized ( strKey )
+                        {
+                            // can be useful if an other thread had evaluate the
+                            // porlet
+                            strPortlet = (String) _cachePortlets.getFromCache( strKey );
+
+                            // ignore checkstyle, this double verification is useful
+                            // when page cache has been created when thread is
+                            // blocked on synchronized
+                            if ( strPortlet == null )
+                            {
+                                String strXml = portlet.getXmlDocument( request );
+
+                                XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
+                                String strXslUniquePrefix = DOCUMENT_STYLE_PREFIX_ID + strFilePath + strFileName;
+
+                                strPortlet = xmlTransformerService.transformBySourceWithXslCache( strXml, xslSource, strXslUniquePrefix,
+                htParamRequest, outputProperties );
+
+                                _cachePortlets.putInCache( strKey, strPortlet );
+                            }
+                        }
+                    }
+
+                    return strPortlet;
+                }
+            }
+
+            String strXml = portlet.getXmlDocument( request );
 
             XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
             String strXslUniquePrefix = DOCUMENT_STYLE_PREFIX_ID + strFilePath + strFileName;
@@ -659,6 +731,23 @@ public final class DocumentContentService extends ContentService implements Cach
         }
 
         return key;
+    }
+
+    /**
+     * Same as above, for portlet keys. Use the same hashmap because they don't collide
+     * @param strDocumentId The id of the document
+     * @return The HashMap key for portlet as a String.
+     */
+    private String getKey( String strPortletKey )
+    {
+        String keyInMemory = _keyMemory.putIfAbsent( strPortletKey, strPortletKey );
+
+        if ( keyInMemory != null )
+        {
+            return keyInMemory;
+        }
+
+        return strPortletKey;
     }
 
     /**
