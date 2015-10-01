@@ -1,110 +1,131 @@
 <div class="box box-solid box-primary">
-    <div class="box-header">
-        <h3 class="box-title">#i18n{document.dashboard.columnLastModifiedDocument}</h3>
+  <div class="box-header">
+    <h3 class="box-title">#i18n{document.dashboard.columnLastModifiedDocument}</h3>
+    <div class="box-tools">
+      <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+      <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
     </div>
-    <div class="box-body table-responsive no-padding">
-        <table class="table table-hover table-condensed">
-            <thead class="sr-only">
-                <tr>
-                    <th>#i18n{document.dashboard.columnLastModifiedDocument}</th>
-                    <th>#i18n{document.dashboard.columnActions}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <#if last_modified_document??>
-                <tr>
-                    <td>
-                        <strong>
-                            <#if last_modified_document.publishedStatus = 0> 
-                            <span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class="glyphicon glyphicon-ok-sign"></i>	</span>	
-                            <#else>
-                            <span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>	
-                            </#if>&nbsp;${last_modified_document.id} - ${last_modified_document.title}
-                        </strong>
-                        <p><small>${last_modified_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_modified_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_modified_document.dateModification}</small></p>
-                        <#if last_modified_document.comment!= ""> 
-                            <div class="callout callout-danger col-xs-12 col-sm-9 col-md-9">
-                                ${last_modified_document.comment}
-                            </div>
-                        </#if>    
-                    </td>
-                    <td>
-                        <p>
-                            <#list last_modified_document.actions as action>
-                            <#if action.url?exists>
-                            <a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-flat btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
-                                <i class="${action.iconUrl}"></i>
-                            </a>
-                            </#if>
-                            </#list>
-                        </p>
-                        
-                    </td>
-                </tr>
-                <#else>
-                <tr>
-                    <td colspan="3">
-                        #i18n{document.manage_documents.noDocument}
-                    </td>
-                </tr>
-                </#if>
-            </tbody>
-        </table>
-    </div><!-- /.box-body -->
-    <div class="box-footer text-center">
-        <a href="${url}" title="#i18n{document.plugin.description}">
-            #i18n{document.plugin.description} <i class="fa fa-arrow-circle-right"></i>
-        </a>	
-    </div><!-- /.box-footer-->
+  </div>
+  <div class="box-body table-responsive no-padding">
+    <table class="table table-hover table-condensed">
+      <thead class="sr-only">
+        <tr>
+          <th>#i18n{document.dashboard.columnLastModifiedDocument}</th>
+          <th>#i18n{document.dashboard.columnActions}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <#if last_modified_document??>
+          <tr>
+            <td>
+              <strong>
+                <#if last_modified_document.publishedStatus=0>
+                  <span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class="glyphicon glyphicon-ok-sign"></i> </span>
+                  <#else>
+                    <span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>
+                </#if>&nbsp;${last_modified_document.id} - ${last_modified_document.title}
+              </strong>
+              <p>
+                <small>${last_modified_document.type} -
+                  <strong>#i18n{document.dashboard.labelState} : </strong>${last_modified_document.state} -
+                  <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_modified_document.dateModification}</small>
+              </p>
+              <#if last_modified_document.comment!="">
+                <div class="callout callout-danger col-xs-12 col-sm-9 col-md-9">
+                  ${last_modified_document.comment}
+                </div>
+              </#if>
+            </td>
+            <td>
+              <p>
+                <#list last_modified_document.actions as action>
+                  <#if action.url?exists>
+                    <a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-flat btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==3>btn-warning<#elseif action.idAction==4 || action.idAction==12>btn-success<#else>btn-primary</#if>">
+                      <i class="${action.iconUrl}"></i>
+                    </a>
+                  </#if>
+                </#list>
+              </p>
+
+            </td>
+          </tr>
+          <#else>
+            <tr>
+              <td colspan="3">
+                #i18n{document.manage_documents.noDocument}
+              </td>
+            </tr>
+        </#if>
+      </tbody>
+    </table>
+  </div>
+  <!-- /.box-body -->
+  <div class="box-footer">
+    <a class="btn btn-app" href="js/contenttools/">
+      <i class="fa fa-plus"></i> Nouveau Contenu
+    </a>
+  </div>
+  <!-- /.box-footer-->
 </div>
 <div class="box box-solid box-primary">
-    <div class="box-header">
-        <h3 class="box-title">#i18n{document.dashboard.columnLastPublishedDocument}</h3>
+  <div class="box-header">
+    <h3 class="box-title">#i18n{document.dashboard.columnLastPublishedDocument}</h3>
+    <div class="box-tools">
+      <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+      <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
     </div>
-    <div class="box-body table-responsive no-padding">		
-        <!-- LAST PUBLISHED DOCUMENT -->
-        <table class="table table-striped">
-            <thead class="sr-only">
-                <tr>
-                    <th>#i18n{document.dashboard.columnLastPublishedDocument}</th>
-                    <th>#i18n{document.dashboard.columnActions}</th>
-                </tr>
-            </thead>
-            <#if last_published_document??>
-            <tr>
-                <td>
-                    <strong>
-                        <#if last_published_document.publishedStatus = 0> 
-                        <span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class="glyphicon glyphicon-ok-sign"></i>	</span>	
-                        <#else>
-                        <span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>	
-                        </#if>	     
-                        &nbsp;${last_published_document.id} - ${last_published_document.title}<br />
-                    </strong>
-                    <p><small>${last_published_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_published_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_published_document.dateModification}</small></p>
-                </td>
-                <td>
-                    <#list last_published_document.actions as action>
-                    <#if action.url?exists>
-                    <a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-flat btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==4 || action.idAction==3 || action.idAction==12>btn-success<#else>btn-primary</#if>">
-                        <i class="${action.iconUrl}"></i>
-                    </a>
-                    </#if>
-                    </#list>
-                </td>
-            </tr>
-            <#else>
-            <tr>
-                <td colspan="3">
-                    #i18n{document.manage_documents.noDocument}
-                </td>
-            </tr>
-            </#if>
-        </table>
-    </div><!-- /.box-body -->
-    <div class="box-footer text-center">
-        <a href="${url}" title="#i18n{document.plugin.description}">
-            #i18n{document.plugin.description} <i class="fa fa-arrow-circle-right"></i>
-        </a>	
-    </div><!-- /.box-footer-->
+  </div>
+  <div class="box-body table-responsive no-padding">
+    <!-- LAST PUBLISHED DOCUMENT -->
+    <table class="table table-striped">
+      <thead class="sr-only">
+        <tr>
+          <th>#i18n{document.dashboard.columnLastPublishedDocument}</th>
+          <th>#i18n{document.dashboard.columnActions}</th>
+        </tr>
+      </thead>
+      <#if last_published_document??>
+        <tr>
+          <td>
+            <strong>
+              <#if last_published_document.publishedStatus=0>
+                <span class="label label-success" title="#i18n{document.dashboard.PublishedStatus}"><i class="glyphicon glyphicon-ok-sign"></i> </span>
+                <#else>
+                  <span class="label label-important" title="#i18n{document.dashboard.UnPublishedStatus}"><i class="glyphicon glyphicon-remove-sign"></i></span>
+              </#if>
+              &nbsp;${last_published_document.id} - ${last_published_document.title}
+              <br />
+            </strong>
+            <p>
+              <small>${last_published_document.type} -
+                <strong>#i18n{document.dashboard.labelState} : </strong>${last_published_document.state} -
+                <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_published_document.dateModification}</small>
+            </p>
+          </td>
+          <td>
+            <#list last_published_document.actions as action>
+              <#if action.url?exists>
+                <a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-flat btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==3>btn-warning<#elseif action.idAction==4 || action.idAction==12>btn-success<#else>btn-primary</#if>">
+                  <i class="${action.iconUrl}"></i>
+                </a>
+              </#if>
+            </#list>
+          </td>
+        </tr>
+        <#else>
+          <tr>
+            <td colspan="3">
+              #i18n{document.manage_documents.noDocument}
+            </td>
+          </tr>
+      </#if>
+    </table>
+  </div>
+  <!-- /.box-body -->
+  <div class="box-footer text-center">
+    <a href="${url}" title="#i18n{document.plugin.description}">
+      #i18n{document.plugin.description} <i class="fa fa-arrow-circle-right"></i>
+    </a>
+  </div>
+  <!-- /.box-footer-->
 </div>

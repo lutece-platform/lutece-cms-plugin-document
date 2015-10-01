@@ -2,7 +2,7 @@
 	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
 	<div class="col-xs-12 col-sm-10 col-md-10">
 		<input type="text" id="${attribute.code}" name="${attribute.code}" size="10" value="<#if attribute.textValue?has_content>${attribute.textValue}</#if>" >
-		<p class="help-block">${attribute.description}</p>
-		<@getDatePicker idField=attribute.code language=locale.language />
+		<span class="help-block">${attribute.description}</span>
+		<@getDatePickerBootstrap idField=attribute.code language=locale.language />
 	</div>
 </div>

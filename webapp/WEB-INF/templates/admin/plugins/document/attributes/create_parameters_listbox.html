@@ -26,18 +26,25 @@
 </#if>
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${items.name}_value" >${items.label} :</label>
-	<div class="col-xs-12 col-sm-8 col-md-6">
-		<input type="text" class="form-control input-sm" id="${items.name}_value" name="${items.name}_value" tabindex="6" />
-		<button class="btn btn-primary btn-xs" value="add" name="add" type="submit" onclick="manageItems(1);return false;">#i18n{document.attributeType.listbox.btnAddItem}</button>
-		<p class="help-block">${items.description}</p>	
+	<div class="col-xs-12 col-sm-5 col-md-5">
+		<div class="input-group">
+    <input type="text" class="form-control input-sm" id="${items.name}_value" name="${items.name}_value" tabindex="6" placeholder="${items.description}">
+      <span class="input-group-btn">
+        	<button class="btn btn-primary btn-sm" value="add" name="add" type="submit" >
+						<i class="fa fa-plus-circle"></i> 	#i18n{document.attributeType.listbox.btnAddItem}
+					</button>
+      </span>
+    </div>
 	</div>
 </div>
 <div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${items.name}_select" >&nbsp;</label>
-	<div class="col-xs-12 col-sm-8 col-md-6">
-		<select id="${items.name}_select" class="form-control" name="${items.name}_select" size="4" class="input-lg" tabindex="8">
+	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${items.name}_select"></label>
+	<div class="col-xs-12 col-sm-5 col-md-5">
+		<select id="${items.name}_select" name="${items.name}_select" size="4" multiple="multiple" class="form-control" tabindex="8">
 			<#list listValues as values >
-				<option value="${values}" >${values}</option>
+				<option value="${values}"<#if values==valueDefaultValue> class="bg-primary"</#if>>
+						${values}
+				</option>
 			</#list>
 		</select>
 		<div style="display:none;">
@@ -47,18 +54,13 @@
 				</#list>
 			</select>
 		</div>
-		<button class="btn btn-primary btn-xs" type="submit" name="delete" value="delete" onclick="manageItems(-1);return false;">
-			#i18n{document.attributeType.listbox.btnDelItem}
+		<button class="btn btn-danger btn-xs" type="submit" name="delete" value="delete" >
+			<i class="fa fa-trash"></i> #i18n{document.attributeType.listbox.btnDelItem}
 		</button>
-		<button  name="bydefault" value="bydefault" class="btn btn-primary btn-xs" type="submit" onclick="setByDefault('${items.name}_select');return false;">
-			#i18n{document.attributeType.listbox.btnDefItem}
+		<button  name="bydefault" value="bydefault" class="btn btn-primary btn-xs" type="submit" >
+			<i class="fa fa-star-o"></i> #i18n{document.attributeType.listbox.btnDefItem}
 		</button>
-	</div>
-</div>
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${defaultValue.name}">#i18n{document.attributeType.listbox.defaultValue}</label>
-	<div class="col-xs-12 col-sm-8 col-md-6">
-		<input type="text" class="form-control input-sm" id="${defaultValue.name}" name="${defaultValue.name}" value="${valueDefaultValue!}" readonly="readonly" tabindex="11" />
+		<input type="hidden" id="${defaultValue.name}" name="${defaultValue.name}" value="${valueDefaultValue!}" >
 	</div>
 </div>
 <script src="js/selectbox.js"></script>
@@ -68,28 +70,30 @@ objVisible = document.getElementsByName('${items.name}_select')[0];
 objHidden = document.getElementsByName('${items.name}')[0];
 objValue = document.getElementsByName('${items.name}_value')[0];
 objDefaultValue = document.getElementsByName('${defaultValue.name}')[0];
-objHidden.selectedIndex = objVisible.selectedIndex;	
-	
+objHidden.selectedIndex = objVisible.selectedIndex;
+
 // add an option into list
 if( actionItem == 1){
 	addOption(objVisible, objValue.value, objValue.value, false);
 	addOption(objHidden, objValue.value, objValue.value, false);
 	objValue.value='';
 	objValue.focus();
-} else {
-	// delete an option from list
-	if( objDefaultValue.value == objVisible.options[objVisible.selectedIndex].value ){objDefaultValue.value = '';}
-	removeSelectedOptions(objVisible);
-	removeSelectedOptions(objHidden);
+	} else {
+	 // delete an option from list
+	if( objDefaultValue.value == objVisible.options[objVisible.selectedIndex].value ){
+		objDefaultValue.value = '';
+		}
+		removeSelectedOptions(objVisible);
+		removeSelectedOptions(objHidden);
 	}
-selectAllOptions(objHidden);
+	 selectAllOptions(objHidden);
 }
 
 function setByDefault(objName){
-	objSelect = document.getElementsByName(objName)[0];
-	choice = objSelect.selectedIndex;
-	if(choice > -1){
-		document.getElementsByName("${defaultValue.name}")[0].value = objSelect.options[choice].text;
-	}		
+objSelect = document.getElementsByName(objName)[0];
+choice = objSelect.selectedIndex;
+if(choice > -1){
+	document.getElementsByName("${defaultValue.name}")[0].value = objSelect.options[choice].text;
+	}
 }
 </script>

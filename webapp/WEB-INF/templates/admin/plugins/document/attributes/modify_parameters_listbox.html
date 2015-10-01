@@ -9,11 +9,14 @@
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${items.name}_select" >${items.label}</label>
 	<div class="col-xs-12 col-sm-8 col-md-6">
-		<input type="text" id="${items.name}_value" class="form-control input-sm" name="${items.name}_value" tabindex="6" />
-		<button class="btn btn-primary btn-xs" type="submit" name="add" value="add" onclick="manageItems(1);return false;">
-			#i18n{document.attributeType.listbox.btnAddItem}
-		</button>
-		<p class="help-block">${items.description}</p>
+		<div class="input-group">
+			<input type="text" id="${items.name}_value" class="form-control input-sm" name="${items.name}_value" tabindex="6" placeholder="${items.description}">
+			<span class="input-group-btn">
+				<button class="btn btn-primary btn-sm"  type="submit" name="add" value="add" onclick="manageItems(1);return false;">
+					<i class="fa fa-plus-circle"></i> 	#i18n{document.attributeType.listbox.btnAddItem}
+				</button>
+			</span>
+		</div>
 	</div>
 </div>
 <div class="form-group">
@@ -21,30 +24,34 @@
 	<div class="col-xs-12 col-sm-8 col-md-6">
 		<select id="${items.name}_select" name="${items.name}_select" size="4" class="form-control" tabindex="8">
 			<#list items.valueList as values >
-				<option value="${values}" >${values}</option>
+				<option value="${values}" <#list defaultValue.valueList as defaultvalue ><#if values==defaultvalue> class="bg-primary"</#if></#list>>${values}</option>
 			</#list>
 		</select>
 		<div style="display:none;">
 			<select id="${items.name}" name="${items.name}" class="form-control input-sm" size="4" multiple="multiple" >
 				<#list items.valueList as values >
 					<option value="${values}" selected="selected">${values}</option>
-				</#list>		
+				</#list>
 			</select>
 		</div>
-		<button class="btn btn-primary btn-xs" name="delete"  value="delete" type="submit" onclick="manageItems(-1);return false;">
-			#i18n{document.attributeType.listbox.btnDelItem}
+		<span class="help-block"></span>
+		<button class="btn btn-danger btn-xs" type="submit" name="delete" value="delete" onclick="manageItems(-1);return false;">
+			<i class="fa fa-trash"></i> #i18n{document.attributeType.listbox.btnDelItem}
 		</button>
-		<button class="btn btn-primary btn-xs"  value="bydefault" name="bydefault" type="submit" onclick="setByDefault('${items.name}_select');return false;">
-			#i18n{document.attributeType.listbox.btnDefItem}
+		<button  name="bydefault" value="bydefault" class="btn btn-primary btn-xs" type="submit"onclick="setByDefault('${items.name}_select');return false;" >
+			<i class="fa fa-star-o"></i> #i18n{document.attributeType.listbox.btnDefItem}
 		</button>
+		<input type="hidden" id="${defaultValue.name}" name="${defaultValue.name}" value="${valueDefaultValue!}" >
 	</div>
 </div>
+<!--
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${defaultValue.name}">#i18n{document.attributeType.listbox.defaultValue}</label>
 	<div class="col-xs-12 col-sm-8 col-md-6">
 		<input type="text" class="form-control input-sm" id="${defaultValue.name}" name="${defaultValue.name}" value="<#list defaultValue.valueList as values >${values}</#list>" readonly="readonly" tabindex="11" >
 	</div>
 </div>
+-->
 <script src="js/selectbox.js"></script>
 <script>
 function manageItems( actionItem ){
@@ -52,8 +59,8 @@ objVisible = document.getElementsByName('${items.name}_select')[0];
 objHidden = document.getElementsByName('${items.name}')[0];
 objValue = document.getElementsByName('${items.name}_value')[0];
 objDefaultValue = document.getElementsByName('${defaultValue.name}')[0];
-objHidden.selectedIndex = objVisible.selectedIndex;	
-	
+objHidden.selectedIndex = objVisible.selectedIndex;
+
 // add an option into list
 if( actionItem == 1){
 	addOption(objVisible, objValue.value, objValue.value, false);
@@ -76,6 +83,6 @@ objSelect = document.getElementsByName(objName)[0];
 choice = objSelect.selectedIndex;
 if(choice > -1){
 	document.getElementsByName("${defaultValue.name}")[0].value = objSelect.options[choice].text;
-	}		
+	}
 }
 </script>
