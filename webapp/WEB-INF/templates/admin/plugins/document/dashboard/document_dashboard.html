@@ -40,7 +40,7 @@
               <p>
                 <#list last_modified_document.actions as action>
                   <#if action.url?exists>
-                    <a href="${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-flat btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==3>btn-warning<#elseif action.idAction==4 || action.idAction==12>btn-success<#else>btn-primary</#if>">
+                    <a href="${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}" alt="${action.description}" title="${action.description}" class="btn btn-flat btn-xs <#if action.idAction==1 || action.idAction==6 || action.idAction==8>btn-danger<#elseif action.idAction==3>btn-warning<#elseif action.idAction==4 || action.idAction==12>btn-success<#else>btn-primary</#if>">
                       <i class="${action.iconUrl}"></i>
                     </a>
                   </#if>
