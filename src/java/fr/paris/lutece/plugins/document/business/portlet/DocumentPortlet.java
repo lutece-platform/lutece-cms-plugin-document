@@ -81,16 +81,11 @@ public class DocumentPortlet extends Portlet
         StringBuffer strXml = new StringBuffer(  );
         XmlUtil.beginElement( strXml, TAG_DOCUMENT_PORTLET );
 
-        Collection<Document> documentList = PublishingService.getInstance(  ).getPublishedDocumentsByPortletId( getId(  ) );
+        Document document = PublishingService.getInstance(  ).getFirstValidPublishedDocument( getId( ) );
 
-        if ( documentList.size(  ) > 0 )
+        if ( document != null ) 
         {
-            Document document = documentList.iterator(  ).next(  );
-
-            if ( document.isValid(  ) ) // to have only the valid document
-            {
-                strXml.append( document.getXml( request, getId(  ) ) );
-            }
+            strXml.append( document.getXml( request, getId(  ) ) );
         }
 
         XmlUtil.endElement( strXml, TAG_DOCUMENT_PORTLET );

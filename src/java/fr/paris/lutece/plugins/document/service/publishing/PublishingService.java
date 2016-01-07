@@ -334,6 +334,25 @@ public class PublishingService
     }
 
     /**
+     * Get the first valid document published in a portlet or null if there are none
+     * @param nPortletId the portlet  identifier
+     * @return The document
+     */
+    public Document getFirstValidPublishedDocument( int nPortletId )
+    {
+        Collection<DocumentPublication> listDocumentPublication = DocumentPublicationHome.findByPortletIdAndStatus( nPortletId,
+                DocumentPublication.STATUS_PUBLISHED );
+        for (DocumentPublication documentPublication: listDocumentPublication) {
+            Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( documentPublication.getDocumentId(  ) );
+            if ( document.isValid(  ) )
+            {
+                return document;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Loads the list of the documents whose filter and date publication is specified
      * Return published documents since the publication date. The is also filtered with the documentFilter
      *
