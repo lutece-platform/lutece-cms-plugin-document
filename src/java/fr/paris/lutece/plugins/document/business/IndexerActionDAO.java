@@ -56,7 +56,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
     private static final String SQL_QUERY_UPDATE = "UPDATE document_indexer_action SET id_action=?,id_record=?,id_task=? WHERE id_action = ? ";
     private static final String SQL_QUERY_SELECT = "SELECT id_action,id_record,id_task" +
         " FROM document_indexer_action  ";
-    private static final String SQL_QUERY_TRUNCATE = "TRUNCATE document_indexer_action  ";
+    private static final String SQL_QUERY_DELETE_ALL = "DELETE from document_indexer_action";
     private static final String SQL_FILTER_ID_TASK = " id_task = ? ";
 
     /* (non-Javadoc)
@@ -138,7 +138,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      */
     public void deleteAll(  )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_TRUNCATE );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ALL );
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
     }
