@@ -327,19 +327,19 @@ public class DocumentAttribute
         return _strValueContentType;
     }
 
-	/**
-	 * @return the _mapProvider
-	 */
-	public IMapProvider getMapProvider() {
-		return _mapProvider;
-	}
+    /**
+     * @return the _mapProvider
+     */
+    public IMapProvider getMapProvider(  )
+    {
+        return _mapProvider;
+    }
 
-	/**
-	 * @param _mapProvider the _mapProvider to set
-	 */
-	public void setMapProvider(IMapProvider mapProvider) {
-		this._mapProvider = mapProvider;
-	}
-    
-    
+    /**
+     * @param _mapProvider the _mapProvider to set
+     */
+    public void setMapProvider( IMapProvider mapProvider )
+    {
+        this._mapProvider = mapProvider;
+    }
 }

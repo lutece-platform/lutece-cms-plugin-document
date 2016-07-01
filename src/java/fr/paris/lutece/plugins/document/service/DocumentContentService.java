@@ -151,9 +151,7 @@ public final class DocumentContentService extends ContentService implements Cach
     //Should be equal to PortletCacheService.CACHE_PORTLET_PREFIX without the final semicolon
     private static final String PARAMETER_PORTLET = "portlet";
     private static final String PORTLET_CACHE_KEY_SUFFIX = "[documentContentService]";
-
     private boolean _bInit;
-
     private PortletCacheService _cachePortlets;
     private ICacheKeyService _cksPortlet;
 
@@ -540,7 +538,8 @@ public final class DocumentContentService extends ContentService implements Cach
                     htParamRequest.put( PARAMETER_PORTLET, String.valueOf( portlet.getId(  ) ) );
 
                     //Add [documentContentService] to not clash with PageService keys because we don't synchronize
-                    String strKey = getKey(_cksPortlet.getKey( htParamRequest, nMode, user ) + PORTLET_CACHE_KEY_SUFFIX);
+                    String strKey = getKey( _cksPortlet.getKey( htParamRequest, nMode, user ) +
+                            PORTLET_CACHE_KEY_SUFFIX );
 
                     // get portlet from cache
                     String strPortlet = (String) _cachePortlets.getFromCache( strKey );
@@ -564,8 +563,8 @@ public final class DocumentContentService extends ContentService implements Cach
                                 XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
                                 String strXslUniquePrefix = DOCUMENT_STYLE_PREFIX_ID + strFilePath + strFileName;
 
-                                strPortlet = xmlTransformerService.transformBySourceWithXslCache( strXml, xslSource, strXslUniquePrefix,
-                htParamRequest, outputProperties );
+                                strPortlet = xmlTransformerService.transformBySourceWithXslCache( strXml, xslSource,
+                                        strXslUniquePrefix, htParamRequest, outputProperties );
 
                                 _cachePortlets.putInCache( strKey, strPortlet );
                             }

@@ -81,9 +81,9 @@ public class DocumentPortlet extends Portlet
         StringBuffer strXml = new StringBuffer(  );
         XmlUtil.beginElement( strXml, TAG_DOCUMENT_PORTLET );
 
-        Document document = PublishingService.getInstance(  ).getFirstValidPublishedDocument( getId( ) );
+        Document document = PublishingService.getInstance(  ).getFirstValidPublishedDocument( getId(  ) );
 
-        if ( document != null ) 
+        if ( document != null )
         {
             strXml.append( document.getXml( request, getId(  ) ) );
         }

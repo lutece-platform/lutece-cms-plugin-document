@@ -342,13 +342,17 @@ public class PublishingService
     {
         Collection<DocumentPublication> listDocumentPublication = DocumentPublicationHome.findByPortletIdAndStatus( nPortletId,
                 DocumentPublication.STATUS_PUBLISHED );
-        for (DocumentPublication documentPublication: listDocumentPublication) {
+
+        for ( DocumentPublication documentPublication : listDocumentPublication )
+        {
             Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( documentPublication.getDocumentId(  ) );
+
             if ( document.isValid(  ) )
             {
                 return document;
             }
         }
+
         return null;
     }
 

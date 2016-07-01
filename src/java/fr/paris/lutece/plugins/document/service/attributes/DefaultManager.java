@@ -48,10 +48,12 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
 import org.apache.commons.lang.StringUtils;
+
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -111,11 +113,11 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getCreateFormHtml( DocumentAttribute attribute, Locale locale, String strBaseUrl )
     {
-    	if(attribute.getCodeAttributeType().equals("geoloc"))
-    	{
-    		attribute.setMapProvider(MapProviderManager.getMapProvider("gismap"));
-    	}
-    	
+        if ( attribute.getCodeAttributeType(  ).equals( "geoloc" ) )
+        {
+            attribute.setMapProvider( MapProviderManager.getMapProvider( "gismap" ) );
+        }
+
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_ATTRIBUTE, attribute );
         model.put( MARK_ATTRIBUTE_PARAMETERS, getParameters( attribute.getId(  ), locale ) );
@@ -132,13 +134,13 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getModifyFormHtml( DocumentAttribute attribute, Document document, Locale locale, String strBaseUrl )
     {
-    	if(attribute.getCodeAttributeType().equals("geoloc"))
-    	{
-    		attribute.setMapProvider(MapProviderManager.getMapProvider("gismap"));
-    	}
-    	
-    	String strValue = attribute.getTextValue(  );
-        
+        if ( attribute.getCodeAttributeType(  ).equals( "geoloc" ) )
+        {
+            attribute.setMapProvider( MapProviderManager.getMapProvider( "gismap" ) );
+        }
+
+        String strValue = attribute.getTextValue(  );
+
         JsonNode object = null;
 
         try
@@ -147,22 +149,27 @@ public abstract class DefaultManager implements AttributeManager
         }
         catch ( IOException e )
         {
-        	AppLogService.error( "Erreur ", e );
+            AppLogService.error( "Erreur ", e );
         }
 
-        JsonNode objGeometry = object.path(GEOLOC_JSON_PATH_FEATURESS).path(1);
-        JsonNode objAddress = object.path(GEOLOC_JSON_PATH_FEATURESS).path(0).
-        		path(GEOLOC_JSON_PATH_PROPERTIES).
-        		path(GEOLOC_JSON_PATH_ADDRESS);
-        
+        String strGeometry = "";
+        String strAddress = "";
+
+        if ( object != null )
+        {
+            strGeometry = object.path( GEOLOC_JSON_PATH_FEATURESS ).path( 1 ).toString(  );
+            strAddress = object.path( GEOLOC_JSON_PATH_FEATURESS ).path( 0 ).path( GEOLOC_JSON_PATH_PROPERTIES )
+                               .path( GEOLOC_JSON_PATH_ADDRESS ).toString(  );
+        }
+
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_ATTRIBUTE, attribute );
         model.put( MARK_ATTRIBUTE_PARAMETERS, getParameters( attribute.getId(  ), locale ) );
         model.put( MARK_DOCUMENT, document );
         model.put( MARK_LOCALE, locale );
         model.put( MARK_BASE_URL, strBaseUrl );
-        model.put( MARK_GISMAP_GEOMETRY , objGeometry.toString() );
-        model.put( MARK_GISMAP_ADDRESS , objAddress.toString() );
+        model.put( MARK_GISMAP_GEOMETRY, strGeometry );
+        model.put( MARK_GISMAP_ADDRESS, strAddress );
 
         HtmlTemplate template = AppTemplateService.getTemplate( getModifyTemplate(  ), locale, model );
 
@@ -185,9 +192,11 @@ public abstract class DefaultManager implements AttributeManager
         return getCreateParametersFormHtml( listParameters, locale, null );
     }
 
-    public String getCreateParametersFormHtml( List<AttributeTypeParameter> listParameters, Locale locale, Map<String, Object> model )
+    public String getCreateParametersFormHtml( List<AttributeTypeParameter> listParameters, Locale locale,
+        Map<String, Object> model )
     {
-        if ( model == null ) {
+        if ( model == null )
+        {
             model = new HashMap<String, Object>(  );
         }
 
@@ -224,7 +233,8 @@ public abstract class DefaultManager implements AttributeManager
 
     public String getModifyParametersFormHtml( Locale locale, int nAttributeId, Map<String, Object> model )
     {
-        if ( model == null ) {
+        if ( model == null )
+        {
             model = new HashMap<String, Object>(  );
         }
 

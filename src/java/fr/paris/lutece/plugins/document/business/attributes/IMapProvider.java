@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.business.attributes;
 
-
 import fr.paris.lutece.util.ReferenceItem;
 
 
@@ -91,10 +90,10 @@ public interface IMapProvider
      * @return <code>true</code> if a map can be generated (show on map button), <code>false</code> otherwise.
      */
     boolean isMapListSupported(  );
-    
+
     /**
      * returns the Parameter class contains all the parameters of the map
-     * @return the Parameter 
+     * @return the Parameter
      */
     Object getParameter( int nKey );
 }
