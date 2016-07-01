@@ -56,6 +56,7 @@ public class DocumentAttribute
     private byte[] _bytes;
     private boolean _bBinary;
     private String _strValueContentType;
+    private IMapProvider _mapProvider; // For attribute type Geolocation
 
     /**
      * Returns the IdDocumentAttribute
@@ -325,4 +326,20 @@ public class DocumentAttribute
     {
         return _strValueContentType;
     }
+
+	/**
+	 * @return the _mapProvider
+	 */
+	public IMapProvider getMapProvider() {
+		return _mapProvider;
+	}
+
+	/**
+	 * @param _mapProvider the _mapProvider to set
+	 */
+	public void setMapProvider(IMapProvider mapProvider) {
+		this._mapProvider = mapProvider;
+	}
+    
+    
 }

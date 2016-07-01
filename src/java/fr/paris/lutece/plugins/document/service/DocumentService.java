@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
+import fr.paris.lutece.plugins.document.business.attributes.MapProviderManager;
 import fr.paris.lutece.plugins.document.business.category.Category;
 import fr.paris.lutece.plugins.document.business.category.CategoryHome;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentPortletHome;
@@ -75,9 +76,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
-
 import java.sql.Timestamp;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;

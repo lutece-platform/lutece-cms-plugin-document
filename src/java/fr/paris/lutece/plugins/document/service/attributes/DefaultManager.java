@@ -38,14 +38,20 @@ import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeHome;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttributeHome;
+import fr.paris.lutece.plugins.document.business.attributes.IMapProvider;
+import fr.paris.lutece.plugins.document.business.attributes.MapProviderManager;
 import fr.paris.lutece.plugins.document.service.AttributeManager;
 import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
 import fr.paris.lutece.portal.service.regularexpression.RegularExpressionService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -65,6 +71,11 @@ public abstract class DefaultManager implements AttributeManager
     private static final String MARK_DOCUMENT = "document";
     private static final String MARK_LOCALE = "locale";
     private static final String MARK_BASE_URL = "base_url";
+    private static final String GEOLOC_JSON_PATH_FEATURESS = "features";
+    private static final String GEOLOC_JSON_PATH_PROPERTIES = "properties";
+    private static final String GEOLOC_JSON_PATH_ADDRESS = "address";
+    private static final String MARK_GISMAP_GEOMETRY = "gismap_geometry";
+    private static final String MARK_GISMAP_ADDRESS = "gismap_address";
     private String _strAttributeTypeCode;
 
     /**
@@ -100,6 +111,11 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getCreateFormHtml( DocumentAttribute attribute, Locale locale, String strBaseUrl )
     {
+    	if(attribute.getCodeAttributeType().equals("geoloc"))
+    	{
+    		attribute.setMapProvider(MapProviderManager.getMapProvider("gismap"));
+    	}
+    	
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_ATTRIBUTE, attribute );
         model.put( MARK_ATTRIBUTE_PARAMETERS, getParameters( attribute.getId(  ), locale ) );
@@ -116,12 +132,37 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getModifyFormHtml( DocumentAttribute attribute, Document document, Locale locale, String strBaseUrl )
     {
+    	if(attribute.getCodeAttributeType().equals("geoloc"))
+    	{
+    		attribute.setMapProvider(MapProviderManager.getMapProvider("gismap"));
+    	}
+    	
+    	String strValue = attribute.getTextValue(  );
+        
+        JsonNode object = null;
+
+        try
+        {
+            object = new ObjectMapper(  ).readTree( strValue );
+        }
+        catch ( IOException e )
+        {
+        	AppLogService.error( "Erreur ", e );
+        }
+
+        JsonNode objGeometry = object.path(GEOLOC_JSON_PATH_FEATURESS).path(1);
+        JsonNode objAddress = object.path(GEOLOC_JSON_PATH_FEATURESS).path(0).
+        		path(GEOLOC_JSON_PATH_PROPERTIES).
+        		path(GEOLOC_JSON_PATH_ADDRESS);
+        
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_ATTRIBUTE, attribute );
         model.put( MARK_ATTRIBUTE_PARAMETERS, getParameters( attribute.getId(  ), locale ) );
         model.put( MARK_DOCUMENT, document );
         model.put( MARK_LOCALE, locale );
         model.put( MARK_BASE_URL, strBaseUrl );
+        model.put( MARK_GISMAP_GEOMETRY , objGeometry.toString() );
+        model.put( MARK_GISMAP_ADDRESS , objAddress.toString() );
 
         HtmlTemplate template = AppTemplateService.getTemplate( getModifyTemplate(  ), locale, model );
 
