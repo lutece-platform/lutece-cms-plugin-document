@@ -75,8 +75,12 @@ public abstract class DefaultManager implements AttributeManager
     private static final String MARK_BASE_URL = "base_url";
     private static final String GEOLOC_JSON_PATH_FEATURESS = "features";
     private static final String GEOLOC_JSON_PATH_PROPERTIES = "properties";
+    private static final String GEOLOC_JSON_PATH_GEOMETRY = "geometry";
+    private static final String GEOLOC_JSON_PATH_COORDINATES = "coordinates";
     private static final String GEOLOC_JSON_PATH_ADDRESS = "address";
     private static final String MARK_GISMAP_GEOMETRY = "gismap_geometry";
+    private static final String MARK_GISMAP_X = "gismap_x";
+    private static final String MARK_GISMAP_Y = "gismap_y";
     private static final String MARK_GISMAP_ADDRESS = "gismap_address";
     private String _strAttributeTypeCode;
 
@@ -134,42 +138,53 @@ public abstract class DefaultManager implements AttributeManager
      */
     public String getModifyFormHtml( DocumentAttribute attribute, Document document, Locale locale, String strBaseUrl )
     {
-        if ( attribute.getCodeAttributeType(  ).equals( "geoloc" ) )
-        {
-            attribute.setMapProvider( MapProviderManager.getMapProvider( "gismap" ) );
-        }
-
-        String strValue = attribute.getTextValue(  );
-
-        JsonNode object = null;
-
-        try
-        {
-            object = new ObjectMapper(  ).readTree( strValue );
-        }
-        catch ( IOException e )
-        {
-            AppLogService.error( "Erreur ", e );
-        }
-
-        String strGeometry = "";
-        String strAddress = "";
-
-        if ( object != null )
-        {
-            strGeometry = object.path( GEOLOC_JSON_PATH_FEATURESS ).path( 1 ).toString(  );
-            strAddress = object.path( GEOLOC_JSON_PATH_FEATURESS ).path( 0 ).path( GEOLOC_JSON_PATH_PROPERTIES )
-                               .path( GEOLOC_JSON_PATH_ADDRESS ).toString(  );
-        }
-
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_ATTRIBUTE, attribute );
         model.put( MARK_ATTRIBUTE_PARAMETERS, getParameters( attribute.getId(  ), locale ) );
         model.put( MARK_DOCUMENT, document );
         model.put( MARK_LOCALE, locale );
         model.put( MARK_BASE_URL, strBaseUrl );
-        model.put( MARK_GISMAP_GEOMETRY, strGeometry );
-        model.put( MARK_GISMAP_ADDRESS, strAddress );
+        
+        if ( attribute.getCodeAttributeType(  ).equals( "geoloc" ) )
+        {
+            attribute.setMapProvider( MapProviderManager.getMapProvider( "gismap" ) );
+            if(attribute.getMapProvider()!=null)
+            {
+            	String strValue = attribute.getTextValue(  );
+
+                JsonNode object = null;
+
+                try
+                {
+                    object = new ObjectMapper(  ).readTree( strValue );
+                }
+                catch ( IOException e )
+                {
+                    AppLogService.error( "Erreur ", e );
+                }
+
+                String strGeometry = "";
+                String strAddress = "";
+                String strX = "";
+                String strY = "";
+
+                if ( object != null )
+                {
+                    strGeometry = object.path( GEOLOC_JSON_PATH_FEATURESS ).path( 1 ).toString(  );
+                    strAddress = object.path( GEOLOC_JSON_PATH_FEATURESS ).path( 0 ).path( GEOLOC_JSON_PATH_PROPERTIES )
+                                       .path( GEOLOC_JSON_PATH_ADDRESS ).toString(  );
+                    strX = object.path( GEOLOC_JSON_PATH_FEATURESS ).path( 0 ).path( GEOLOC_JSON_PATH_GEOMETRY )
+                            .path( GEOLOC_JSON_PATH_COORDINATES ).path(0).toString(  );
+                    strY = object.path( GEOLOC_JSON_PATH_FEATURESS ).path( 0 ).path( GEOLOC_JSON_PATH_GEOMETRY )
+                            .path( GEOLOC_JSON_PATH_COORDINATES ).path(1).toString(  );
+                }
+                model.put( MARK_GISMAP_GEOMETRY, strGeometry );
+                model.put( MARK_GISMAP_ADDRESS, strAddress );
+                model.put( MARK_GISMAP_X, strX );
+                model.put( MARK_GISMAP_Y, strY );
+            }
+        }
+        
 
         HtmlTemplate template = AppTemplateService.getTemplate( getModifyTemplate(  ), locale, model );
 
