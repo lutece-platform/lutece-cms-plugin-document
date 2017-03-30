@@ -59,15 +59,12 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queries.ChainedFilter;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.CachingWrapperFilter;
-import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
@@ -77,6 +74,7 @@ import org.apache.lucene.util.Version;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -167,7 +165,7 @@ public class DocSearchService
         {
             sbLogs.append( "\r\nIndexing all contents ...\r\n" );
 
-            Directory dir = NIOFSDirectory.open( new File( _strIndex ) );
+            Directory dir = NIOFSDirectory.open( Paths.get( _strIndex ) );
 
             if ( !DirectoryReader.indexExists( dir ) )
             { //init index
@@ -175,7 +173,7 @@ public class DocSearchService
             }
 
             Date start = new Date(  );
-            IndexWriterConfig conf = new IndexWriterConfig( Version.LUCENE_46, _analyzer );
+            IndexWriterConfig conf = new IndexWriterConfig( _analyzer );
 
             if ( bCreateIndex )
             {
@@ -362,27 +360,35 @@ public class DocSearchService
 
         try
         {
-            IndexReader ir = DirectoryReader.open( NIOFSDirectory.open( new File( _strIndex ) ) );
+            IndexReader ir = DirectoryReader.open( NIOFSDirectory.open( Paths.get( _strIndex ) ) );
             _searcher = new IndexSearcher( ir );
 
-            QueryParser parser = new QueryParser( IndexationService.LUCENE_INDEX_VERSION, DocSearchItem.FIELD_CONTENTS,
+            QueryParser parser = new QueryParser( DocSearchItem.FIELD_CONTENTS,
                     _analyzer );
             Query query = parser.parse( ( StringUtils.isNotBlank( strQuery ) ) ? strQuery : "*:*" );
 
             List<DocumentSpace> listSpaces = DocumentSpacesService.getInstance(  ).getUserAllowedSpaces( user );
-            Filter[] filters = new Filter[listSpaces.size(  )];
+            Query[] filters = new Query[listSpaces.size(  )];
             int nIndex = 0;
 
             for ( DocumentSpace space : listSpaces )
             {
                 Query querySpace = new TermQuery( new Term( DocSearchItem.FIELD_SPACE, "s" + space.getId(  ) ) );
-                filters[nIndex++] = new CachingWrapperFilter( new QueryWrapperFilter( querySpace ) );
+                filters[nIndex++] = querySpace;
             }
 
-            Filter filter = new ChainedFilter( filters, ChainedFilter.OR );
+            BooleanQuery.Builder booleanQueryBuilderFilters  = new BooleanQuery.Builder( );
+            for (Query filter: filters) {
+                booleanQueryBuilderFilters.add( filter , BooleanClause.Occur.SHOULD );
+            }
+            Query allFilters = booleanQueryBuilderFilters.build( );
+
+            BooleanQuery.Builder booleanQueryBuilder  = new BooleanQuery.Builder( );
+            booleanQueryBuilder.add( allFilters, BooleanClause.Occur.FILTER );
+            booleanQueryBuilder.add( query, BooleanClause.Occur.SHOULD );
 
             // Get results documents
-            TopDocs topDocs = _searcher.search( query, filter, MAX_RESPONSES );
+            TopDocs topDocs = _searcher.search( booleanQueryBuilder.build( ) , MAX_RESPONSES );
             ScoreDoc[] hits = topDocs.scoreDocs;
 
             for ( ScoreDoc hit : hits )
@@ -417,7 +423,7 @@ public class DocSearchService
 
         try
         {
-            IndexReader ir = DirectoryReader.open( NIOFSDirectory.open( new File( _strIndex ) ) );
+            IndexReader ir = DirectoryReader.open( NIOFSDirectory.open( Paths.get( _strIndex ) ) );
             _searcher = new IndexSearcher( ir );
 
             Collection<String> queries = new ArrayList<String>(  );
@@ -473,39 +479,46 @@ public class DocSearchService
 
                 KeywordAnalyzer analyzer = new KeywordAnalyzer(  );
 
-                queryMulti = MultiFieldQueryParser.parse( IndexationService.LUCENE_INDEX_VERSION,
+                queryMulti = MultiFieldQueryParser.parse(
                         queries.toArray( new String[queries.size(  )] ), fields.toArray( new String[fields.size(  )] ),
                         flags.toArray( new BooleanClause.Occur[flags.size(  )] ), analyzer );
             }
             else
             {
-                queryMulti = MultiFieldQueryParser.parse( IndexationService.LUCENE_INDEX_VERSION,
+                queryMulti = MultiFieldQueryParser.parse(
                         queries.toArray( new String[queries.size(  )] ), fields.toArray( new String[fields.size(  )] ),
                         flags.toArray( new BooleanClause.Occur[flags.size(  )] ), IndexationService.getAnalyser(  ) );
             }
 
-            List<Filter> filterList = new ArrayList<Filter>(  );
+            List<Query> filterList = new ArrayList<Query>(  );
 
             if ( documentType != null )
             {
                 Query queryType = new TermQuery( new Term( DocSearchItem.FIELD_TYPE, documentType.getName(  ) ) );
-                filterList.add( new CachingWrapperFilter( new QueryWrapperFilter( queryType ) ) );
+                filterList.add( queryType );
             }
 
             if ( ( date != null ) && ( !date.equals( StringUtils.EMPTY ) ) )
             {
                 String formatedDate = formatDate( date );
                 Query queryDate = new TermQuery( new Term( DocSearchItem.FIELD_DATE, formatedDate ) );
-                filterList.add( new CachingWrapperFilter( new QueryWrapperFilter( queryDate ) ) );
+                filterList.add( queryDate );
             }
 
             TopDocs topDocs = null;
 
             if ( filterList.size(  ) > 0 )
             {
-                ChainedFilter chainedFilter = new ChainedFilter( filterList.toArray( new Filter[filterList.size(  )] ),
-                        ChainedFilter.AND );
-                topDocs = _searcher.search( queryMulti, chainedFilter, MAX_RESPONSES );
+                BooleanQuery.Builder booleanQueryBuilderFilters  = new BooleanQuery.Builder( );
+                for (Query filter: filterList) {
+                    booleanQueryBuilderFilters.add( filter , BooleanClause.Occur.MUST );
+                }
+                Query allFilters = booleanQueryBuilderFilters.build( );
+
+                BooleanQuery.Builder booleanQueryBuilder  = new BooleanQuery.Builder( );
+                booleanQueryBuilder.add( allFilters , BooleanClause.Occur.FILTER );
+                booleanQueryBuilder.add( queryMulti , BooleanClause.Occur.SHOULD );
+                topDocs = _searcher.search( booleanQueryBuilder.build( ), MAX_RESPONSES );
             }
             else
             {
