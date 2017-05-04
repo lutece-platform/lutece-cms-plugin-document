@@ -6,7 +6,7 @@ CREATE TABLE document (
 	id_document int default 0 NOT NULL,
 	code_document_type varchar(30) default NULL,
 	date_creation timestamp default CURRENT_TIMESTAMP NOT NULL,
-	date_modification timestamp default '0000-00-00 00:00:00' NOT NULL,
+	date_modification timestamp default '1980-01-01 00:00:00' NOT NULL,
 	title varchar(255) default NULL,
 	id_space int default NULL,
 	id_state int default NULL,
@@ -117,7 +117,7 @@ CREATE INDEX index_history_event_user ON document_history (event_user);
 --
 DROP TABLE IF EXISTS document_list_portlet;
 CREATE TABLE document_list_portlet (
-	id_portlet int default NULL,
+	id_portlet int NOT NULL,
 	code_document_type varchar(30) default NULL,
 	PRIMARY KEY (id_portlet)
 );
@@ -127,7 +127,7 @@ CREATE TABLE document_list_portlet (
 --
 DROP TABLE IF EXISTS document_portlet;
 CREATE TABLE document_portlet (
-	id_portlet int default NULL,
+	id_portlet int NOT NULL,
 	code_document_type varchar(30) default NULL,
 	PRIMARY KEY (id_portlet)
 );
@@ -169,8 +169,8 @@ CREATE TABLE document_page_template (
 --
 DROP TABLE IF EXISTS document_published;
 CREATE TABLE document_published (
-	id_portlet int default NULL,
-	id_document int default NULL,
+	id_portlet int NOT NULL,
+	id_document int NOT NULL,
 	document_order int default NULL,
 	status smallint default 1 NOT NULL,
 	date_publishing timestamp default CURRENT_TIMESTAMP NOT NULL,
