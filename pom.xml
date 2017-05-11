@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>fr.paris.lutece</groupId>
 			<artifactId>lutece-core</artifactId>
-			<version>[4.9.9,)</version>
+			<version>[4.9.9,6.0.0-a0)</version>
 			<type>lutece-core</type>
 		</dependency>
 		<!-- Add to resize image -->
