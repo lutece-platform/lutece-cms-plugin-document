@@ -67,12 +67,12 @@
             <xsl:when
                 test="(resource-content-type='image/jpeg' or resource-content-type='image/jpg' or  resource-content-type='image/pjpeg' or resource-content-type='image/gif' or resource-content-type='image/png')">
                 <img
-                    src="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}"
+                    src="servlet/plugins/document/resource?id={resource-document-id}&amp;id_attribute={resource-attribute-id}"
                     align="right" />
             </xsl:when>
             <xsl:otherwise>
                 <a
-                    href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
+                    href="servlet/plugins/document/resource?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
                     <img
                         src="images/local/skin/plugins/document/filetypes/file.png"
                         border="0" />

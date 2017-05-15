@@ -17,8 +17,8 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-4">
-                            <a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" data-title="${attribute.textValue}" <#if attribute.valueContentType?contains('image')>data-lightbox="image-document"</#if>>
-                               <img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-lg pull-right clearfix">
+                            <a href="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" data-title="${attribute.textValue}" <#if attribute.valueContentType?contains('image')>data-lightbox="image-document"</#if>>
+                               <img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-lg pull-right clearfix">
                             </a>
                         </div>
                     </div>

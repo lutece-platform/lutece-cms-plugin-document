@@ -296,4 +296,12 @@
         <freemarker-macro-file>*/util/document/macro_document.html</freemarker-macro-file>
     </freemarker-macro-files>
 
+    <servlets>
+        <servlet>
+            <servlet-name>DocumentResourceServlet</servlet-name>
+            <servlet-class>fr.paris.lutece.plugins.document.web.DocumentResourceServlet</servlet-class>
+            <url-pattern>/servlet/plugins/document/resource</url-pattern>
+        </servlet>
+    </servlets>
+
 </plug-in>

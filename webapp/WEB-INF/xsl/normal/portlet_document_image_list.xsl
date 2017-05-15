@@ -58,10 +58,10 @@
 <xsl:template match="file-resource">
 	<xsl:choose>
 		<xsl:when test="(resource-content-type='image/jpeg' or resource-content-type='image/jpg' or  resource-content-type='image/pjpeg' or resource-content-type='image/gif' or resource-content-type='image/png')">
-			<img src="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}" alt="" class="img-rounded" width="120" height="120"/>
+			<img src="servlet/plugins/document/resource?id={resource-document-id}&amp;id_attribute={resource-attribute-id}" alt="" class="img-rounded" width="120" height="120"/>
 		</xsl:when>
 		<xsl:otherwise>
-             <a href="document?id={resource-document-id}&amp;id_attribute={resource-attribute-id}"> 
+             <a href="servlet/plugins/document/resource?id={resource-document-id}&amp;id_attribute={resource-attribute-id}"> 
 			   <img src="images/admin/skin/plugins/document/filetypes/file.png" class="img-rounded" alt="" width="120" height="120"/>
              </a>
 		</xsl:otherwise>        

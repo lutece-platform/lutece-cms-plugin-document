@@ -44,7 +44,7 @@
 		<p>
 		<xsl:choose>
 			<xsl:when test="video-file/file-resource!=''">
-				<a href="document?id={video-file/file-resource/resource-document-id}&amp;id_attribute={video-file/file-resource/resource-attribute-id}">
+				<a href="servlet/plugins/document/resource?id={video-file/file-resource/resource-document-id}&amp;id_attribute={video-file/file-resource/resource-attribute-id}">
 					<img src="images/admin/skin/plugins/document/filetypes/video.png" />
 				</a>
 			</xsl:when>

@@ -39,7 +39,7 @@
 	
     </li>-->
     <li>
-        <a href="document?id={document-id}&amp;id_attribute=48" target="_blank">      
+        <a href="servlet/plugins/document/resource?id={document-id}&amp;id_attribute=48" target="_blank">      
         	<xsl:for-each select="descendant::*">
                 <xsl:apply-templates select="file-resource" />
            </xsl:for-each>  

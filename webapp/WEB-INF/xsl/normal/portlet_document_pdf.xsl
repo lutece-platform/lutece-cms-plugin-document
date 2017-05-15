@@ -58,7 +58,7 @@
 			<xsl:choose>
 				<xsl:when test="pdf-file/file-resource!=''">
 					<a
-						href="document?id={pdf-file/file-resource/resource-document-id}&amp;id_attribute={pdf-file/file-resource/resource-attribute-id}">
+						href="servlet/plugins/document/resource?id={pdf-file/file-resource/resource-document-id}&amp;id_attribute={pdf-file/file-resource/resource-attribute-id}">
 						<img
 							src="images/local/skin/plugins/document/filetypes/pdf.png" />
 					</a>

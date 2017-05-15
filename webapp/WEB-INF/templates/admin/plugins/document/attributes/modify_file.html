@@ -4,8 +4,8 @@
 		<input type="file" name="${attribute.code}" id="${attribute.code}" >
 		<span class="help-block">
 			<#if attribute.textValue?has_content>
-				<a href="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" title="preview" >
-					<img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="document?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumblist-medium" >
+				<a href="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" title="preview" >
+					<img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumblist-medium" >
 				</a>
 			<#else>
 				${attribute.description}

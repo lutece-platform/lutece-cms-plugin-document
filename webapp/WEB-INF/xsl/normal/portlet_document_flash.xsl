@@ -51,7 +51,7 @@
 			<xsl:choose>
 				<xsl:when test="(flash-object/file-resource/resource-content-type='application/x-shockwave-flash')">
 					<object 
-						data="document?id={flash-object/file-resource/resource-document-id}&amp;id_attribute={flash-object/file-resource/resource-attribute-id}" 
+						data="servlet/plugins/document/resource?id={flash-object/file-resource/resource-document-id}&amp;id_attribute={flash-object/file-resource/resource-attribute-id}" 
 						type="application/x-shockwave-flash" 
 						width="{flash-width}" 
 						height="{flash-height}"
@@ -64,9 +64,9 @@
 						<param name="Loop" value="{flash-loop}" />
 						<param name="menu" value="{flash-menu}" />
 						<param name="allowScriptAccess" value="samedomain" />
-						<param name="movie" value="document?id={flash-object/file-resource/resource-document-id}&amp;id_attribute={flash-object/file-resource/resource-attribute-id}" />
+						<param name="movie" value="servlet/plugins/document/resource?id={flash-object/file-resource/resource-document-id}&amp;id_attribute={flash-object/file-resource/resource-attribute-id}" />
 						<EMBED 
-							src="document?id={flash-object/file-resource/resource-document-id}&amp;id_attribute={flash-object/file-resource/resource-attribute-id}" 
+							src="servlet/plugins/document/resource?id={flash-object/file-resource/resource-document-id}&amp;id_attribute={flash-object/file-resource/resource-attribute-id}" 
 							type="application/x-shockwave-flash"
 							width="{flash-width}" 
 							height="{flash-height}"
