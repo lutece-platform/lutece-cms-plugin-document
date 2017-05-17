@@ -304,4 +304,17 @@
         </servlet>
     </servlets>
 
+    <!--
+      A filter to redirect from the legacy document resource servlet urls to the
+      new ones (changed for lutece V6). By default, it will redirect like this:
+          document?id=XXX -> servlet/plugins/document/resource?id=xxx
+      May be removed in the future when compatibility is no longer needed.
+    -->
+    <filters>
+        <filter>
+            <filter-name>document_legacy_resource</filter-name>
+            <url-pattern>/document</url-pattern>
+            <filter-class>fr.paris.lutece.plugins.document.web.DocumentLegacyServletRedirectFilter</filter-class>
+        </filter>
+    </filters>
 </plug-in>
