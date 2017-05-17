@@ -47,7 +47,7 @@
 		<xsl:choose>
 			<xsl:when test="sound-file/file-resource!=''">
 				<a href="servlet/plugins/document/resource?id={sound-file/file-resource/resource-document-id}&amp;id_attribute={sound-file/file-resource/resource-attribute-id}">
-					<img src="images/admin/skin/plugins/document/filetypes/audio.png" />
+					<img src="images/local/skin/plugins/document/filetypes/audio.png" />
 				</a>
 			</xsl:when>
 			<xsl:otherwise></xsl:otherwise>

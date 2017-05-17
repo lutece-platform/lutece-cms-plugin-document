@@ -68,7 +68,7 @@
 		</xsl:when>
 		<xsl:otherwise>
              <a href="servlet/plugins/document/resource?id={resource-document-id}&amp;id_attribute={resource-attribute-id}"> 
-			   <img src="images/admin/skin/plugins/document/filetypes/file.png" border="0" alt="" align="right" width="40" height="40"/>
+			   <img src="images/local/skin/plugins/document/filetypes/file.png" border="0" alt="" align="right" width="40" height="40"/>
              </a>
 		</xsl:otherwise>        
 	</xsl:choose>
