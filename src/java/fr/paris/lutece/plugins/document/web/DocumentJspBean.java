@@ -202,6 +202,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String PROPERTY_PREVIEW_DOCUMENT_PAGE_TITLE = "document.preview_document.pageTitle";
     private static final String PROPERTY_MOVE_DOCUMENT_PAGE_TITLE = "document.move_document.pageTitle";
     private static final String PROPERTY_RESOURCE_TYPE = "document";
+    private static final String PROPERTY_WORKFLOW_AUTOVALIDATION = "document.workflow.auto_validation";
 
     // Jsp
     private static final String JSP_DELETE_DOCUMENT = "DoDeleteDocument.jsp";
@@ -568,6 +569,34 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         // process
         ResourceEnhancer.doCreateResourceAddOn( request, PROPERTY_RESOURCE_TYPE, document.getId(  ) );
 
+        //Here we simulate clicking on the validation buttons. This could should do the same
+        //as having request to doStateChange for submitting and doValidateDocument for validating
+        if ( AppPropertiesService.getPropertyBoolean( PROPERTY_WORKFLOW_AUTOVALIDATION, false ) )
+        {
+            String strDocumentId = Integer.toString( document.getId(  ) );
+
+            try
+            {
+                DocumentService.getInstance(  )
+                               .changeDocumentState( document, getUser(  ), DocumentState.STATE_WAITING_FOR_APPROVAL );
+
+                //Reload document in case listeners have modified it in the database
+                document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
+
+                DocumentService.getInstance(  )
+                               .validateDocument( document, getUser(  ), DocumentState.STATE_VALIDATE );
+            }
+            catch ( DocumentException e )
+            {
+                return getErrorMessageUrl( request, e.getI18nMessage(  ) );
+            }
+
+            IndexationService.addIndexerAction( strDocumentId, DocumentIndexer.INDEXER_NAME, IndexerAction.TASK_MODIFY,
+                IndexationService.ALL_DOCUMENT );
+
+            DocumentIndexerUtils.addIndexerAction( strDocumentId, IndexerAction.TASK_MODIFY, IndexationService.ALL_DOCUMENT );
+        }
+
         return getHomeUrl( request );
     }
 
@@ -696,6 +725,32 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         }
 
         ResourceEnhancer.doModifyResourceAddOn( request, PROPERTY_RESOURCE_TYPE, document.getId(  ) );
+
+        //Here we simulate clicking on the validation buttons. This could should do the same
+        //as having request to doStateChange for changesubmitting and doValidateDocument for revalidating
+        if ( AppPropertiesService.getPropertyBoolean( PROPERTY_WORKFLOW_AUTOVALIDATION, false ) )
+        {
+            try
+            {
+                DocumentService.getInstance(  )
+                               .changeDocumentState( document, getUser(  ), DocumentState.STATE_WAITING_FOR_APPROVAL );
+
+                //Reload document in case listeners have modified it in the database
+                document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
+
+                DocumentService.getInstance(  )
+                               .validateDocument( document, getUser(  ), DocumentState.STATE_VALIDATE );
+            }
+            catch ( DocumentException e )
+            {
+                return getErrorMessageUrl( request, e.getI18nMessage(  ) );
+            }
+
+            IndexationService.addIndexerAction( strDocumentId, DocumentIndexer.INDEXER_NAME, IndexerAction.TASK_MODIFY,
+                IndexationService.ALL_DOCUMENT );
+
+            DocumentIndexerUtils.addIndexerAction( strDocumentId, IndexerAction.TASK_MODIFY, IndexationService.ALL_DOCUMENT );
+        }
 
         return getHomeUrl( request );
     }
