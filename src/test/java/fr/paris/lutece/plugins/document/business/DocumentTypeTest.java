@@ -86,6 +86,7 @@ public class DocumentTypeTest extends LuteceTestCase
         assertEquals( documentTypeStored.getMetadataHandler(  ), documentType.getMetadataHandler(  ) );
 
         // Update test
+        documentType.setOldCode( documentType.getCode( ) );
         documentType.setName( NAME2 );
         documentType.setDescription( DESCRIPTION2 );
         documentType.setThumbnailAttributeId( THUMBNAILATTRIBUTEID2 );

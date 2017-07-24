@@ -80,9 +80,8 @@ public class DocumentJspBeanTest extends LuteceTestCase
         System.out.println( "getCreateDocument" );
 
         MokeHttpServletRequest request = new MokeHttpServletRequest(  );
-        AdminUser user = new AdminUser(  );
-        user.setRoles( new HashMap<String, AdminRole>(  ) );
-        user.setLocale( Locale.getDefault(  ) );
+        AdminUser user = AdminUserHome.findUserByLogin( "admin" );
+        user.setRoles( AdminUserHome.getRolesListForUser( user.getUserId(  ) ) );
         request.registerAdminUserWithRigth( user, DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT );
         request.addMokeParameters( PARAMETER_DOCUMENT_TYPE, "article" );
 
