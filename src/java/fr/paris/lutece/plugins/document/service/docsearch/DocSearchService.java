@@ -385,7 +385,7 @@ public class DocSearchService
 
             BooleanQuery.Builder booleanQueryBuilder  = new BooleanQuery.Builder( );
             booleanQueryBuilder.add( allFilters, BooleanClause.Occur.FILTER );
-            booleanQueryBuilder.add( query, BooleanClause.Occur.SHOULD );
+            booleanQueryBuilder.add( query, BooleanClause.Occur.MUST );
 
             // Get results documents
             TopDocs topDocs = _searcher.search( booleanQueryBuilder.build( ) , MAX_RESPONSES );
@@ -517,7 +517,7 @@ public class DocSearchService
 
                 BooleanQuery.Builder booleanQueryBuilder  = new BooleanQuery.Builder( );
                 booleanQueryBuilder.add( allFilters , BooleanClause.Occur.FILTER );
-                booleanQueryBuilder.add( queryMulti , BooleanClause.Occur.SHOULD );
+                booleanQueryBuilder.add( queryMulti , BooleanClause.Occur.MUST );
                 topDocs = _searcher.search( booleanQueryBuilder.build( ), MAX_RESPONSES );
             }
             else
