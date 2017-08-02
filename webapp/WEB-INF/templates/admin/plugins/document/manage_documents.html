@@ -359,21 +359,14 @@ jQuery(function($) {
 	$("#query").on("keyup", function(){
 		var addOrRemove;
 		var search = $("#query").val().toLowerCase();
-		var nAll = $(".document-row").length;
 		$(".document-row").each( function( index ) {
 			var doc = $(this).attr("data-document").toLowerCase();
 			if ( doc.match( search ) == null ){
 				$(this).slideUp(200).fadeOut(500);
-				nAll--;
 			} else {
 				$(this).slideDown(200).fadeIn(500);
-				nAll++;
 			}
 		});
-		/* If inline search is not valuable get full search */
-		if( nAll == 0 ){
-			$("#FullTextSearchDocument").submit();
-		}
 	});
 
 </script>
