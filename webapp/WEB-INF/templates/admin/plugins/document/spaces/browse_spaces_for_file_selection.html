@@ -1,0 +1,86 @@
+<!--  quick select mode for tinyMce file picker -->   
+        <input type="hidden" id=isDocumentCreationAllowed name=isDocumentCreationAllowed
+            value="<#if selected_space?has_content && selected_space.documentCreationAllowed >true<#else>false</#if>">
+
+	<#if selected_space?has_content && selected_space.documentCreationAllowed >
+		<input type="hidden" name="browser_selected_space_id" value="${selected_space.id}" >
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-2 col-md-2  sr-only"></label>
+			<div class="control-label col-xs-12 col-sm-10 col-md-10">
+				<a href="javascript:modifyChoice();" class="btn btn-default btn-sm">
+					<i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
+				</a>
+				<p class="form-control-static"><img src="${selected_space.iconUrl}" alt="${selected_space.name}">${selected_space.name}</p>
+			</div>	
+		</div>	
+	<#else>
+		<input type="hidden" name="browser_id_space" value="${space.id}">
+		<div class="form-group">
+			<label class="control-label col-xs-12 col-sm-2 col-md-2 sr-only"></label>
+			<div class="col-xs-12 col-sm-10 col-md-10">
+				<#if space.id &gt; 0 && go_up >
+					<a href="javascript:goUp();" class="btn btn-default btn-xs">
+						<i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
+					</a>
+				</#if>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-xs-12 col-sm-2 col-md-2  sr-only"></label>
+			<div class="col-xs-12 col-sm-10 col-md-10">
+				<#list spaces_list as item_space >
+
+					<div class="radio">
+						<label for="browser_selected_space_id">
+							<input type="radio" class="radio hidden" name="browser_selected_space_id" value="${item_space.id}">
+							<img src="${item_space.iconUrl}" alt="${item_space.name}" title="">
+							<a href="javascript:openSpace(${item_space.id});" title="${item_space.name}" >${item_space.name}</a>
+						</label>
+					</div>
+	
+				</#list>
+			</div>
+		</div>
+        </#if>
+
+
+
+<script>
+formId = 0;
+function goUp(){ 
+	document.forms[formId].action='${action}';
+	document.forms[formId].browser_id_space.value='${space.idParent}';
+	unselectRadioBtn( formId );
+	document.forms[formId].submit();
+}
+
+function openSpace(idSpace){
+	document.forms[formId].action='${action}';
+	document.forms[formId].browser_id_space.value=idSpace;
+	unselectRadioBtn( formId );
+
+        // selected space validation to display the files 
+        document.forms[formId].browser_selected_space_id.value=idSpace;  
+	document.forms[formId].submit();
+}
+
+function unselectRadioBtn( formId ){
+if(document.forms[formId].browser_selected_space_id != undefined){
+	if( document.forms[formId].browser_selected_space_id.length > 0 ){
+		for( var i=0; i<document.forms[formId].browser_selected_space_id.length; i++ ){
+			if (document.forms[formId].browser_selected_space_id[i].checked){
+				document.forms[formId].browser_selected_space_id[i].checked=false;
+			}
+		}
+	} else {
+		document.forms[formId].browser_selected_space_id.checked=false;
+		}
+	}
+}
+
+function modifyChoice(){
+	document.forms[formId].browser_selected_space_id.value=null;
+	document.forms[formId].action='${action}';
+	document.forms[formId].submit();
+}
+</script>
