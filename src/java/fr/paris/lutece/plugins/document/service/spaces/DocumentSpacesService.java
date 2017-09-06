@@ -425,12 +425,12 @@ public class DocumentSpacesService
      *
      * @param request The HTTP request
      * @param user The current user
+     * @param locale The Locale
      * @param bFilterViewRollUser true if the list of childs space must be
      *            filter by RBAC view permission
      * @param bFilterWorkspaceUser true if the list of childs space must be
      *            filter by workgroup
      * @param bSelectFilesMode true if the list spaces is used to select files only
-     * @param locale The Locale
      * @return The HTML form
      */
     public String getSpacesBrowser( HttpServletRequest request, AdminUser user, Locale locale,
