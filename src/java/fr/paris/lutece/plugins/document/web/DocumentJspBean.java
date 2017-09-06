@@ -73,6 +73,7 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.search.IndexationService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
@@ -147,6 +148,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MARK_DOCUMENT_TYPES_FILTER_LIST = "document_types_filter_list";
     private static final String MARK_STATES_FILTER_LIST = "states_filter_list";
     private static final String MARK_SPACES_TREE = "spaces_tree";
+    private static final String MARK_CURRENT_SPACE_ID = "current_space_id";
     private static final String MARK_SPACE_ACTIONS_LIST = "space_actions_list";
     private static final String MARK_SPACE = "space";
     private static final String MARK_STATE_ID = "id_state";
@@ -177,6 +179,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MARK_DOCUMENT_PAGE_TEMPLATE_CHECKED = "checked";
     private static final String MARK_SPACES_BROWSER = "spaces_browser";
     private static final String MARK_SELECTED_CRITERIA = "selected_criteria";
+    private static final String MARK_IS_FILES2DOCS_PLUGIN_ACTIVE = "is_files2docs_plugin_active";
 
     // Parameters
     private static final String PARAMETER_DOCUMENT_TYPE_CODE = "document_type_code";
@@ -239,7 +242,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String XSL_PARAMETER_CURRENT_SPACE = "current-space-id";
     private static final String FILTER_ALL = "-1";
     private static final String PAGE_INDEX_FIRST = "1";
-    private static final String CONSTANT_DATE_FORMAT = "dd/MM/yyyy";
+    private static final String CONSTANT_DATE_FORMAT = "dd/MM/yyyy";    
+    private static final String CONSTANT_FILES2DOC_PLUGIN_NAME = "files2docs" ;
+    
     private String _strCurrentDocumentTypeFilter;
     private String _strCurrentStateFilter;
     private String _strCurrentSpaceId;
@@ -379,10 +384,12 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         model.put( MARK_DEFAULT_STATE, _strCurrentStateFilter );
         model.put( MARK_CHILD_SPACES_LIST, listChildSpaces );
         model.put( MARK_DOCUMENT_TYPES_LIST, listCreateDocumentTypes );
-
+        model.put( MARK_CURRENT_SPACE_ID, _strCurrentSpaceId );
         model.put( MARK_MASS_ACTION,
             RBACService.isAuthorized( new DocumentMassAction(  ),
                 DocumentMassActionResourceService.PERMISSION_MASS_ARCHIVE, user ) );
+        
+        model.put( MARK_IS_FILES2DOCS_PLUGIN_ACTIVE , PluginService.isPluginEnable( CONSTANT_FILES2DOC_PLUGIN_NAME )  );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_DOCUMENTS, getLocale(  ), model );
 
