@@ -2,7 +2,7 @@
 	<div class="row" >
 		<div class="col-md-12">
 			<ol class="breadcrumb">
-			  <li><a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input}&amp;selected_text="><i class="fa fa-home"></i></a></li>
+			  <li><a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input}&amp;selected_text="><i class="fa fa-home"></i></a></li>
 			  <li>#i18n{document.selector.page.pageChoice}</li>
 			</ol>
 			<#if pages_list?size = 0>
@@ -11,14 +11,14 @@
 				</div>
 			<#else>
 				<form method="post" name="fsubmit" id="fsubmit" class="form" action="jsp/admin/plugins/document/DoSelectPage.jsp">
-				<input type="hidden" name="input" value="${input}">
+				<input type="hidden" name="input" value="${.data_model.input}">
 				<input type="hidden" name="name" value="">
 				<input type="hidden" name="subcategory" value="${type_filter}">
 				<ul class="list-group list-unstyled">
 					<#list pages_list as page>
 						<li class="list-group-item">
 							<input class="pull-left" type="radio" id="page_id_${page.id}" name="page_id" value="${page.id}">&nbsp;
-							<a href="jsp/admin/plugins/document/SelectPage.jsp?page_id=${page.id}&input=${input}&subcategory=${type_filter}">
+							<a href="jsp/admin/plugins/document/SelectPage.jsp?page_id=${page.id}&input=${.data_model.input}&subcategory=${type_filter}">
 								${page.name} - ${page.description}
 							</a>
 						</li>
