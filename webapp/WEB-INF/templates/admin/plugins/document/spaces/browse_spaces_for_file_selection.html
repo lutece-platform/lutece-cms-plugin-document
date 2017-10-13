@@ -1,0 +1,66 @@
+<!--  quick select mode for tinyMce file picker -->   
+        <input type="hidden" id=isDocumentCreationAllowed name=isDocumentCreationAllowed
+            value="<#if selected_space?has_content && selected_space.documentCreationAllowed >true<#else>false</#if>">
+
+        <input type="hidden" name="browser_id_space" value="${space.id}">
+        <input type="hidden" name="browser_selected_space_id" value="${space.id}">
+        
+	<#if space?has_content && space.documentCreationAllowed >
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-2 col-md-2  sr-only"></label>
+			<div class="control-label col-xs-12 col-sm-10 col-md-10">
+				<a href="javascript:goUp();" class="btn btn-default btn-sm">
+					<i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
+				</a>
+				<p class="form-control-static"><img src="${space.iconUrl}" alt="${space.name}"> ${space.name}</p>
+			</div>	
+		</div>	
+	<#else>
+                <div class="form-group">
+			<label class="control-label col-xs-12 col-sm-2 col-md-2 sr-only"></label>
+			<div class="col-xs-12 col-sm-10 col-md-10">
+				<#if space.id &gt; 0 && go_up >
+					<a href="javascript:goUp();" class="btn btn-default btn-xs">
+						<i class="glyphicon glyphicon-arrow-up"></i>&nbsp;#i18n{document.browse_spaces.go_up_link}
+					</a>
+				</#if>
+			</div>
+		</div>
+        </#if>
+		<div class="form-group">
+			<label class="control-label col-xs-12 col-sm-2 col-md-2  sr-only"></label>
+			<div class="col-xs-12 col-sm-10 col-md-10">
+                                <ul class="list-group">
+				<#list spaces_list as item_space >
+                                    <a href="javascript:openSpace(${item_space.id});" title="${item_space.name}" class="list-group-item">
+                                            <img src="${item_space.iconUrl}" alt="${item_space.name}" title=""> 
+                                        ${item_space.name}
+                                    </a>	
+                                    
+				</#list>
+                                </ul> 
+			</div>
+		</div>
+        
+
+
+
+<script>
+formId = 0;
+function goUp(){ 
+	document.forms[formId].action='${action}';
+	document.forms[formId].browser_id_space.value='${space.idParent}';
+	document.forms[formId].browser_selected_space_id='${space.idParent}';
+	document.forms[formId].submit();
+}
+
+function openSpace(idSpace){
+	document.forms[formId].action='${action}';
+	document.forms[formId].browser_id_space.value=idSpace;
+        document.forms[formId].browser_selected_space_id.value=idSpace;  
+	document.forms[formId].submit();
+}
+
+
+
+</script>

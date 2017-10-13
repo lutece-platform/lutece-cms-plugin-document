@@ -83,6 +83,7 @@ public class DocumentSpacesService
 
     //browser
     private static final String TEMPLATE_BROWSE_SPACES = "/admin/plugins/document/spaces/browse_spaces.html";
+    private static final String TEMPLATE_BROWSE_SPACES_FOR_FILE_SELECTION = "/admin/plugins/document/spaces/browse_spaces_for_file_selection.html";
     private static final String MARK_SPACE = "space";
     private static final String PARAMETER_BROWSER_SPACE_ID = "browser_id_space";
     private static final String MARK_ACTION = "action";
@@ -92,7 +93,7 @@ public class DocumentSpacesService
     private static final String MARK_GO_UP = "go_up";
     private static final String PATH_XSL = "/WEB-INF/plugins/document/xsl/";
     private static final String FILE_TREE_XSL = "document_spaces_tree.xsl";
-
+    
     //CONSTANTS
     private static final String CONSTANT_TRUE = "true";
     private static DocumentSpacesService _singleton = new DocumentSpacesService(  );
@@ -401,7 +402,7 @@ public class DocumentSpacesService
         return listSpacesAllowed;
     }
 
-    /**
+        /**
      * get the HTML code to display a space browser.
      *
      * @param request The HTTP request
@@ -415,6 +416,25 @@ public class DocumentSpacesService
      */
     public String getSpacesBrowser( HttpServletRequest request, AdminUser user, Locale locale,
         boolean bFilterViewRollUser, boolean bFilterWorkspaceUser )
+    {
+        return getSpacesBrowser( request, user, locale, bFilterViewRollUser, bFilterWorkspaceUser, false );
+    }
+    
+    /**
+     * get the HTML code to display a space browser.
+     *
+     * @param request The HTTP request
+     * @param user The current user
+     * @param locale The Locale
+     * @param bFilterViewRollUser true if the list of childs space must be
+     *            filter by RBAC view permission
+     * @param bFilterWorkspaceUser true if the list of childs space must be
+     *            filter by workgroup
+     * @param bSelectFilesMode true if the list spaces is used to select files only
+     * @return The HTML form
+     */
+    public String getSpacesBrowser( HttpServletRequest request, AdminUser user, Locale locale,
+        boolean bFilterViewRollUser, boolean bFilterWorkspaceUser, boolean bSelectFilesMode )
     {
         String strIdSpaceFilter = request.getParameter( PARAMETER_BROWSER_SELECTED_SPACE_ID );
         String strIdSpace = request.getParameter( PARAMETER_BROWSER_SPACE_ID );
@@ -494,15 +514,18 @@ public class DocumentSpacesService
             //display "go up" link
             bGoUp = false;
         }
-
+       
         model.put( MARK_GO_UP, bGoUp );
         model.put( MARK_SELECTED_SPACE, selectedSpace );
         model.put( MARK_SPACE, space );
         model.put( MARK_SPACES_LIST, spacesList );
         model.put( MARK_URLS_LIST, arrayHasChilds );
         model.put( MARK_ACTION, request.getRequestURI(  ) );
-
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_BROWSE_SPACES, locale, model );
+        
+        String _template = TEMPLATE_BROWSE_SPACES ;
+        if ( bSelectFilesMode ) _template = TEMPLATE_BROWSE_SPACES_FOR_FILE_SELECTION ;
+        
+        HtmlTemplate template = AppTemplateService.getTemplate( _template , locale, model );
 
         return template.getHtml(  );
     }
