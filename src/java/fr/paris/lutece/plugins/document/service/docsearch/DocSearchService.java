@@ -193,9 +193,9 @@ public class DocSearchService
                 //add all document which must be add
                 for ( IndexerAction action : getAllIndexerActionByTask( IndexerAction.TASK_CREATE ) )
                 {
+                    ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>(  );
                     try
                     {
-                        ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>(  );
                         luceneDocumentId.add( action.getIdDocument(  ) );
 
                         List<org.apache.lucene.document.Document> luceneDocument = _indexer.getDocuments( luceneDocumentId );
@@ -218,10 +218,14 @@ public class DocSearchService
                             }
                         }
                     }
-                    catch ( IOException e )
+                    catch ( Exception e )
                     {
-                        sbLogs.append( "Error durign document indexation parsing." );
-                        sbLogs.append( "\r\n" );
+                        sbLogs.append( "Indexing DocId " + luceneDocumentId + " Error durign document indexation parsing.\r\n" );
+                        sbLogs.append( "Caught a " );
+                        sbLogs.append( e.getClass(  ) );
+                        sbLogs.append( "\r\n with message: " );
+                        sbLogs.append( e.getMessage(  ) );
+                        AppLogService.error( "Indexing error : ", e );
                     }
 
                     removeIndexerAction( action.getIdAction(  ) );
@@ -230,9 +234,9 @@ public class DocSearchService
                 //Update all document which must be update
                 for ( IndexerAction action : getAllIndexerActionByTask( IndexerAction.TASK_MODIFY ) )
                 {
+                    ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>(  );
                     try
                     {
-                        ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>(  );
                         luceneDocumentId.add( action.getIdDocument(  ) );
 
                         List<org.apache.lucene.document.Document> luceneDocument = _indexer.getDocuments( luceneDocumentId );
@@ -256,10 +260,14 @@ public class DocSearchService
                             }
                         }
                     }
-                    catch ( IOException e )
+                    catch ( Exception e )
                     {
-                        sbLogs.append( "Error durign document indexation parsing." );
-                        sbLogs.append( "\r\n" );
+                        sbLogs.append( "Indexing DocId " + luceneDocumentId + " Error durign document indexation parsing.\r\n" );
+                        sbLogs.append( "Caught a " );
+                        sbLogs.append( e.getClass(  ) );
+                        sbLogs.append( "\r\n with message: " );
+                        sbLogs.append( e.getMessage(  ) );
+                        AppLogService.error( "Indexing error : ", e );
                     }
 
                     removeIndexerAction( action.getIdAction(  ) );
@@ -284,13 +292,13 @@ public class DocSearchService
                 removeAllIndexerAction(  );
 
                 Collection<Integer> listIdDocuments = DocumentHome.findAllPrimaryKeys(  );
-                ArrayList<Integer> luceneDocumentId;
 
                 for ( Integer nIdDocument : listIdDocuments )
                 {
+
+                    ArrayList<Integer> luceneDocumentId = new ArrayList<Integer>(  );
                     try
                     {
-                        luceneDocumentId = new ArrayList<Integer>(  );
                         luceneDocumentId.add( nIdDocument );
 
                         List<Document> listDocuments = _indexer.getDocuments( luceneDocumentId );
@@ -307,10 +315,14 @@ public class DocSearchService
                             sbLogs.append( "\r\n" );
                         }
                     }
-                    catch ( IOException e )
+                    catch ( Exception e )
                     {
-                        sbLogs.append( "Error durign document indexation parsing." );
-                        sbLogs.append( "\r\n" );
+                        sbLogs.append( "Indexing DocId " + luceneDocumentId + " Error durign document indexation parsing.\r\n" );
+                        sbLogs.append( "Caught a " );
+                        sbLogs.append( e.getClass(  ) );
+                        sbLogs.append( "\r\n with message: " );
+                        sbLogs.append( e.getMessage(  ) );
+                        AppLogService.error( "Indexing error : ", e );
                     }
                 }
             }
