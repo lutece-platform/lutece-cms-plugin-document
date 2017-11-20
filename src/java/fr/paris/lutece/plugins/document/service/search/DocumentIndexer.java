@@ -96,6 +96,9 @@ public class DocumentIndexer implements SearchIndexer
     private static final String PARAMETER_DOCUMENT_ID = "document_id";
     private static final String PARAMETER_PORTLET_ID = "portlet_id";
     private static final String JSP_PAGE_ADVANCED_SEARCH = "jsp/site/Portal.jsp?page=advanced_search";
+    private static final String PROPERTY_WRITER_MAX_FIELD_LENGTH = "search.lucene.writer.maxFieldLength"; // from the core
+    private static final int DEFAULT_WRITER_MAX_FIELD_LENGTH = 1000000;
+
 
     /**
      * index all lucene documents
@@ -264,7 +267,8 @@ public class DocumentIndexer implements SearchIndexer
         doc.add( new Field( SearchItem.FIELD_UID, strIdDocument + "_" + DocumentIndexer.SHORT_NAME, ft ) );
 
         String strContentToIndex = getContentToIndex( document );
-        ContentHandler handler = new BodyContentHandler(  );
+        int nWriteLimit = AppPropertiesService.getPropertyInt( PROPERTY_WRITER_MAX_FIELD_LENGTH, DEFAULT_WRITER_MAX_FIELD_LENGTH );
+        ContentHandler handler = new BodyContentHandler( nWriteLimit );
         Metadata metadata = new Metadata(  );
 
         try
