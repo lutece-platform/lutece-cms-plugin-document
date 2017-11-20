@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<ol class="breadcrumb">
-			  <li><a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input}&amp;selected_text="><i class="fa fa-home"></i></a></li>
+			  <li><a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input}&amp;selected_text="><i class="fa fa-home"></i></a></li>
 			  <li><a href="javascript:history.go(-1);"> Page </a></li>
 			  <li>#i18n{document.selector.portlet.portletChoice}</li>
 			</ol>
@@ -18,7 +18,7 @@
             <#else>
                 <form method="post" name="fsubmit" id="fsubmit" action="jsp/admin/plugins/document/DoSelectPortlet.jsp">
                     <input type="hidden" name="subcategory" value="${type_filter}">
-                    <input type="hidden" name="input" value="${input}">
+                    <input type="hidden" name="input" value="${.data_model.input}">
                     <ul class="list-group list-unstyled">
 					    <#list portlets_list as portlet>
 							<li class="list-group-item">

@@ -358,9 +358,8 @@ public class DocSearchService
     {
         ArrayList<DocSearchItem> listResults = new ArrayList<DocSearchItem>(  );
 
-        try
+        try( Directory directory = NIOFSDirectory.open( Paths.get( _strIndex ) ) ; IndexReader ir = DirectoryReader.open( directory ) ; )
         {
-            IndexReader ir = DirectoryReader.open( NIOFSDirectory.open( Paths.get( _strIndex ) ) );
             _searcher = new IndexSearcher( ir );
 
             QueryParser parser = new QueryParser( DocSearchItem.FIELD_CONTENTS,
@@ -421,9 +420,8 @@ public class DocSearchService
     {
         ArrayList<DocSearchItem> listResults = new ArrayList<DocSearchItem>(  );
 
-        try
+        try( Directory directory = NIOFSDirectory.open( Paths.get( _strIndex ) ) ; IndexReader ir = DirectoryReader.open( directory ) ; )
         {
-            IndexReader ir = DirectoryReader.open( NIOFSDirectory.open( Paths.get( _strIndex ) ) );
             _searcher = new IndexSearcher( ir );
 
             Collection<String> queries = new ArrayList<String>(  );
