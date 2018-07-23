@@ -106,6 +106,8 @@ public class Document implements Localizable, IExtendableResource
     private Locale _locale;
     private List _listActions;
     private List<Category> _listCategories;
+    private boolean _bSkipPortlet;    // Skips HTML code generation for documents list portlet   
+    private boolean _bSkipCategories; // Skips HTML code generation for category list portlet
 
     /**
      * Returns the IdDocument
@@ -608,6 +610,46 @@ public class Document implements Localizable, IExtendableResource
     public int getPublishedStatus(  )
     {
         return _nPublishedStatus;
+    }
+
+    /**
+     * Returns the SkipPortlet
+     *
+     * @return The SkipPortlet
+     */
+    public boolean isSkipPortlet(  )
+    {
+        return _bSkipPortlet;
+    }
+
+    /**
+     * Sets the SkipPortlet
+     *
+     * @param bSkipPortlet The SkipPortlet
+     */
+    public void setSkipPortlet( boolean bSkipPortlet )
+    {
+        _bSkipPortlet = bSkipPortlet;
+    }
+
+    /**
+     * Returns the SkipCategories
+     *
+     * @return The SkipCategories
+     */
+    public boolean isSkipCategories(  )
+    {
+        return _bSkipCategories;
+    }
+
+    /**
+     * Sets the SkipCategories
+     *
+     * @param bSkipCategories The SkipCategories
+     */
+    public void setSkipCategories( boolean bSkipCategories )
+    {
+        _bSkipCategories = bSkipCategories;
     }
 
     /**

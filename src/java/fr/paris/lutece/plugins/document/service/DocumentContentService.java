@@ -381,8 +381,17 @@ public final class DocumentContentService extends ContentService implements Cach
                     htParamRequest, null );
 
             model.put( MARK_DOCUMENT, strDocument );
-            model.put( MARK_PORTLET, getPortlet( request, strPortletId, nMode ) );
-            model.put( MARK_CATEGORY, getRelatedDocumentsPortlet( request, document, nPortletId, nMode ) );
+            
+            if ( !document.isSkipPortlet() )
+            {
+            	model.put( MARK_PORTLET, getPortlet( request, strPortletId, nMode ) );
+            }
+            
+            if ( !document.isSkipCategories() )
+            {
+            	model.put( MARK_CATEGORY, getRelatedDocumentsPortlet( request, document, nPortletId, nMode ) );
+            }
+            
             model.put( MARK_DOCUMENT_ID, strDocumentId );
             model.put( MARK_PORTLET_ID, strPortletId );
             model.put( MARK_IS_EXTEND_INSTALLED, PortalService.isExtendActivated(  ) );

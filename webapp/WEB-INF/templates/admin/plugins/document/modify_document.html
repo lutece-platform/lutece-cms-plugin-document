@@ -95,6 +95,23 @@
 						<p class="help-block">#i18n{document.create_document.helpDocumentPageTemplate}</p>
 						</div>
 					</div>
+
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="document_skip_portlet">#i18n{document.modify_document.labelSkipPortlet}</label>
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<input class="checkbox" type="checkbox" name="document_skip_portlet" id="document_skip_portlet" <#if document.skipPortlet >checked="checked"</#if> >
+							<p class="help-block">#i18n{document.modify_document.helpSkipPortlet}</p>
+						</div>
+					</div>
+						
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="document_skip_categories">#i18n{document.modify_document.labelSkipCategories}</label>
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<input class="checkbox" type="checkbox" name="document_skip_categories" id="document_skip_categories" <#if document.skipCategories >checked="checked"</#if> >
+							<p class="help-block">#i18n{document.modify_document.helpSkipCategories}</p>
+						</div>
+					</div>
+						
 					<div class="form-group">
 						<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="document_comment">#i18n{document.create_document.labelDocumentComment} : </label>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

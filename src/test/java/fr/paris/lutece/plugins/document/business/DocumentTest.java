@@ -71,6 +71,10 @@ public class DocumentTest extends LuteceTestCase
     private final static Timestamp DATEVALIDITYBEGIN2 = new Timestamp( new Date(  ).getTime(  ) );
     private final static Timestamp DATEVALIDITYEND1 = new Timestamp( new Date(  ).getTime(  ) );
     private final static Timestamp DATEVALIDITYEND2 = new Timestamp( new Date(  ).getTime(  ) );
+    private final static boolean SKIPPORTLET1 = true;
+    private final static boolean SKIPPORTLET2 = false;
+    private final static boolean SKIPCATEGORIES1 = false;
+    private final static boolean SKIPCATEGORIES2 = true;
     private final static String XMLMETADATA1 = "XmlMetadata1";
     private final static String XMLMETADATA2 = "XmlMetadata2";
     private final static int CreatorId1 = 1;
@@ -93,6 +97,8 @@ public class DocumentTest extends LuteceTestCase
         document.setComment( COMMENT1 );
         document.setDateValidityBegin( DATEVALIDITYBEGIN1 );
         document.setDateValidityEnd( DATEVALIDITYEND1 );
+        document.setSkipPortlet( SKIPPORTLET1 );
+        document.setSkipCategories( SKIPCATEGORIES1 );
         document.setXmlMetadata( XMLMETADATA1 );
         document.setCreatorId( CreatorId1 );
 
@@ -117,6 +123,8 @@ public class DocumentTest extends LuteceTestCase
         assertTrue( ( documentStored.getDateValidityBegin(  ).getTime(  ) -
             document.getDateValidityBegin(  ).getTime(  ) ) < 10 );
         assertTrue( ( documentStored.getDateValidityEnd(  ).getTime(  ) - document.getDateValidityEnd(  ).getTime(  ) ) < 10 );
+        assertEquals( documentStored.isSkipPortlet(  ), document.isSkipPortlet(  ) );
+        assertEquals( documentStored.isSkipCategories(  ), document.isSkipCategories(  ) );
         assertEquals( documentStored.getXmlMetadata(  ), document.getXmlMetadata(  ) );
         assertEquals( documentStored.getCreatorId(  ), document.getCreatorId(  ) );
 
@@ -132,6 +140,8 @@ public class DocumentTest extends LuteceTestCase
         document.setComment( COMMENT2 );
         document.setDateValidityBegin( DATEVALIDITYBEGIN2 );
         document.setDateValidityEnd( DATEVALIDITYEND2 );
+        document.setSkipPortlet( SKIPPORTLET2 );
+        document.setSkipCategories( SKIPCATEGORIES2 );
         document.setXmlMetadata( XMLMETADATA2 );
         document.setCreatorId( CreatorId2 );
         DocumentHome.update( document, false );
@@ -151,6 +161,8 @@ public class DocumentTest extends LuteceTestCase
         assertTrue( ( documentStored.getDateValidityBegin(  ).getTime(  ) -
             document.getDateValidityBegin(  ).getTime(  ) ) < 10 );
         assertTrue( ( documentStored.getDateValidityEnd(  ).getTime(  ) - document.getDateValidityEnd(  ).getTime(  ) ) < 10 );
+        assertEquals( documentStored.isSkipPortlet(  ), document.isSkipPortlet(  ) );
+        assertEquals( documentStored.isSkipCategories(  ), document.isSkipCategories(  ) );
         assertEquals( documentStored.getXmlMetadata(  ), document.getXmlMetadata(  ) );
         assertEquals( documentStored.getCreatorId(  ), document.getCreatorId(  ) );
 

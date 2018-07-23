@@ -20,6 +20,8 @@ CREATE TABLE document (
 	id_creator int default NULL,
 	id_mailinglist int default 0 NOT NULL,
 	id_page_template_document int default 0 NOT NULL,
+	skip_portlet    SMALLINT NOT NULL DEFAULT 0,
+	skip_categories SMALLINT NOT NULL DEFAULT 0,
 	PRIMARY KEY (id_document)
 );
 
