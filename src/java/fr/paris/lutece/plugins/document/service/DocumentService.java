@@ -73,6 +73,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
@@ -100,6 +101,8 @@ public class DocumentService
     private static final String PARAMETER_VALIDITY_END = "document_validity_end";
     private static final String PARAMETER_MAILING_LIST = "mailinglists";
     private static final String PARAMETER_PAGE_TEMPLATE_DOCUMENT_ID = "page_template_id";
+    private static final String PARAMETER_SKIP_PORTLET = "document_skip_portlet";
+    private static final String PARAMETER_SKIP_CATEGORIES = "document_skip_categories";
     private static final String PARAMETER_CATEGORY = "category_id";
     private static final String PARAMETER_ATTRIBUTE_UPDATE = "update_";
     private static final String PARAMETER_CROPPABLE = "_croppable";
@@ -120,6 +123,8 @@ public class DocumentService
     private static final String TAG_DOCUMENT_SUMMARY = "document-summary";
     private static final String TAG_DOCUMENT_DATE_BEGIN = "document-date-begin";
     private static final String TAG_DOCUMENT_DATE_END = "document-date-end";
+    private static final String TAG_DOCUMENT_SKIP_PORTLET = "document-skip-portlet";
+    private static final String TAG_DOCUMENT_SKIP_CATEGORIES = "document-skip-categories";
     private static final String TAG_DOCUMENT_CATEGORIES = "document-categories";
     private static final String TAG_DOCUMENT_CATEGORY = "category";
     private static final String TAG_CDATA_BEGIN = "<![CDATA[";
@@ -160,6 +165,8 @@ public class DocumentService
             DateUtil.getDateString( document.getDateValidityBegin(  ), I18nService.getDefaultLocale(  ) ) );
         XmlUtil.addElement( sbXml, TAG_DOCUMENT_DATE_END,
             DateUtil.getDateString( document.getDateValidityEnd(  ), I18nService.getDefaultLocale(  ) ) );
+        XmlUtil.addElement( sbXml, TAG_DOCUMENT_SKIP_PORTLET, BooleanUtils.toStringTrueFalse( document.isSkipPortlet( ) ) );
+        XmlUtil.addElement( sbXml, TAG_DOCUMENT_SKIP_CATEGORIES, BooleanUtils.toStringTrueFalse( document.isSkipCategories( ) ) );
         XmlUtil.addElement( sbXml, TAG_DOCUMENT_CATEGORIES, buildXmlCategories( document ) );
 
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
@@ -548,6 +555,10 @@ public class DocumentService
         int nMailingListId = IntegerUtils.convert( strMailingListId, 0 );
         String strPageTemplateDocumentId = mRequest.getParameter( PARAMETER_PAGE_TEMPLATE_DOCUMENT_ID );
         int nPageTemplateDocumentId = IntegerUtils.convert( strPageTemplateDocumentId, 0 );
+        String strSkipPortlet = mRequest.getParameter( PARAMETER_SKIP_PORTLET );
+        boolean bSkipPortlet = ( ( strSkipPortlet == null ) || "".equals( strSkipPortlet ) ) ? false : true;
+        String strSkipCategories = mRequest.getParameter( PARAMETER_SKIP_CATEGORIES );
+        boolean bSkipCategories = ( ( strSkipCategories == null ) || "".equals( strSkipCategories ) ) ? false : true;
         String[] arrayCategory = mRequest.getParameterValues( PARAMETER_CATEGORY );
 
         // Check for mandatory value
@@ -633,6 +644,8 @@ public class DocumentService
         document.setDateValidityEnd( dateValidityEnd );
         document.setMailingListId( nMailingListId );
         document.setPageTemplateDocumentId( nPageTemplateDocumentId );
+        document.setSkipPortlet( bSkipPortlet );
+        document.setSkipCategories( bSkipCategories );
 
         MetadataHandler hMetadata = documentType.metadataHandler(  );
 

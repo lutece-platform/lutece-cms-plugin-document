@@ -57,7 +57,7 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_SELECT = " SELECT a.id_document, a.code_document_type, a.title, a.date_creation, " +
         " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
         " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin," +
-        " a.date_validity_end , a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document FROM document a," +
+        " a.date_validity_end , a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document, a.skip_portlet, a.skip_categories FROM document a," +
         " document_space b, document_workflow_state c, document_type d WHERE a.id_space = b.id_space AND a.id_state = c.id_state" +
         " AND a.code_document_type = d.code_document_type AND a.id_document = ?  ";
     private static final String SQL_QUERY_SELECT_FROM_SPACE_ID = " SELECT a.id_document, a.title, a.document_summary" +
@@ -65,13 +65,13 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_INSERT = " INSERT INTO document ( id_document, code_document_type, title, date_creation, " +
         " date_modification, xml_working_content, xml_validated_content, id_space, id_state	, document_summary, document_comment , " +
         " date_validity_begin , date_validity_end , xml_metadata , id_creator, " +
-        " id_mailinglist, id_page_template_document ) " +
-        " VALUES ( ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ? ,?, ?, ?, ? ) ";
+        " id_mailinglist, id_page_template_document, skip_portlet, skip_categories ) " +
+        " VALUES ( ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = " DELETE FROM document WHERE id_document = ?  ";
     private static final String SQL_QUERY_UPDATE = " UPDATE document SET id_document = ?, " +
         " code_document_type = ?, title = ?, date_creation = ?, date_modification = ?, xml_working_content = ?, " +
         " xml_validated_content = ?, id_space = ?, id_state = ? , document_summary = ?, document_comment = ? , date_validity_begin = ? , date_validity_end = ? , " +
-        " xml_metadata = ? , id_creator = ?, id_mailinglist = ?, id_page_template_document = ? " +
+        " xml_metadata = ? , id_creator = ?, id_mailinglist = ?, id_page_template_document = ?, skip_portlet = ?, skip_categories = ? " +
         " WHERE id_document = ?  ";
     private static final String SQL_QUERY_SELECT_PRIMARY_KEY_BY_FILTER = " SELECT DISTINCT a.id_document, a.date_modification FROM document a " +
         " INNER JOIN document_space b ON a.id_space = b.id_space " +
@@ -81,7 +81,7 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_SELECT_BY_FILTER = " SELECT DISTINCT a.id_document, a.code_document_type, a.title, " +
         " a.date_creation, a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
         " a.id_state , c.name_key , d.document_type_name ,  a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
-        " a.xml_metadata , a.id_creator, a.id_mailinglist , a.id_page_template_document FROM document a " +
+        " a.xml_metadata , a.id_creator, a.id_mailinglist , a.id_page_template_document, a.skip_portlet, a.skip_categories FROM document a " +
         " INNER JOIN document_space b ON a.id_space = b.id_space " +
         " INNER JOIN document_workflow_state c ON a.id_state = c.id_state " +
         " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
@@ -89,7 +89,7 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_SELECT_LAST_MODIFIED_DOCUMENT_FROM_USER = " SELECT a.id_document, a.code_document_type, a.title, a.date_creation, " +
         " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
         " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
-        " a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document FROM document a" +
+        " a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document, a.skip_portlet, a.skip_categories FROM document a" +
         " INNER JOIN document_space b ON a.id_space = b.id_space" +
         " INNER JOIN document_workflow_state c ON a.id_state = c.id_state" +
         " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
@@ -98,7 +98,7 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_SELECT_LAST_PUBLISHED_DOCUMENT = " SELECT a.id_document, a.code_document_type, a.title, a.date_creation, " +
         " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
         " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
-        " a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document FROM document a" +
+        " a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document, a.skip_portlet, a.skip_categories FROM document a" +
         " INNER JOIN document_space b ON a.id_space = b.id_space" +
         " INNER JOIN document_workflow_state c ON a.id_state = c.id_state" +
         " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
@@ -153,7 +153,7 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_SELECT_RELATED_CATEGORY = "SELECT DISTINCT a.id_document, a.code_document_type, a.title, a.date_creation, " +
         " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , " +
         " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , " +
-        " a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document FROM document a " +
+        " a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document, a.skip_portlet, a.skip_categories FROM document a " +
         " INNER JOIN document_space b ON a.id_space = b.id_space " +
         " INNER JOIN document_workflow_state c ON a.id_state = c.id_state " +
         " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " +
@@ -208,6 +208,8 @@ public final class DocumentDAO implements IDocumentDAO
         daoUtil.setInt( 15, document.getCreatorId(  ) );
         daoUtil.setInt( 16, document.getMailingListId(  ) );
         daoUtil.setInt( 17, document.getPageTemplateDocumentId(  ) );
+        daoUtil.setBoolean( 18, document.isSkipPortlet(  ) );
+        daoUtil.setBoolean( 19, document.isSkipCategories(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -322,6 +324,8 @@ public final class DocumentDAO implements IDocumentDAO
             document.setCreatorId( daoUtil.getInt( 18 ) );
             document.setMailingListId( daoUtil.getInt( 19 ) );
             document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
+            document.setSkipPortlet( daoUtil.getBoolean( 21 ) );
+            document.setSkipCategories( daoUtil.getBoolean( 22 ) );
         }
 
         daoUtil.free(  );
@@ -591,7 +595,9 @@ public final class DocumentDAO implements IDocumentDAO
         daoUtil.setInt( 15, document.getCreatorId(  ) );
         daoUtil.setInt( 16, document.getMailingListId(  ) );
         daoUtil.setInt( 17, document.getPageTemplateDocumentId(  ) );
-        daoUtil.setInt( 18, document.getId(  ) );
+        daoUtil.setBoolean( 18, document.isSkipPortlet(  ) );
+        daoUtil.setBoolean( 19, document.isSkipCategories(  ) );
+        daoUtil.setInt( 20, document.getId(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -662,6 +668,8 @@ public final class DocumentDAO implements IDocumentDAO
             document.setCreatorId( daoUtil.getInt( 18 ) );
             document.setMailingListId( daoUtil.getInt( 19 ) );
             document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
+            document.setSkipPortlet( daoUtil.getBoolean( 21 ) );
+            document.setSkipCategories( daoUtil.getBoolean( 22 ) );
 
             if ( filter.getLoadBinaries(  ) )
             {
@@ -888,6 +896,8 @@ public final class DocumentDAO implements IDocumentDAO
             returnDocument.setCreatorId( daoUtil.getInt( 18 ) );
             returnDocument.setMailingListId( daoUtil.getInt( 19 ) );
             returnDocument.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
+            returnDocument.setSkipPortlet( daoUtil.getBoolean( 21 ) );
+            returnDocument.setSkipCategories( daoUtil.getBoolean( 22 ) );
 
             listDocument.add( returnDocument );
 
@@ -1018,6 +1028,8 @@ public final class DocumentDAO implements IDocumentDAO
             document.setCreatorId( daoUtil.getInt( 18 ) );
             document.setMailingListId( daoUtil.getInt( 19 ) );
             document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
+            document.setSkipPortlet( daoUtil.getBoolean( 21 ) );
+            document.setSkipCategories( daoUtil.getBoolean( 22 ) );
 
             loadAttributes( document );
             document.setCategories( selectCategories( document.getId(  ) ) );
@@ -1185,6 +1197,8 @@ public final class DocumentDAO implements IDocumentDAO
             document.setCreatorId( daoUtil.getInt( nIndex++ ) );
             document.setMailingListId( daoUtil.getInt( nIndex++ ) );
             document.setPageTemplateDocumentId( daoUtil.getInt( nIndex++ ) );
+            document.setSkipPortlet( daoUtil.getBoolean( nIndex++ ) );
+            document.setSkipCategories( daoUtil.getBoolean( nIndex++ ) );
         }
 
         daoUtil.free(  );
@@ -1228,6 +1242,8 @@ public final class DocumentDAO implements IDocumentDAO
             document.setCreatorId( daoUtil.getInt( nIndex++ ) );
             document.setMailingListId( daoUtil.getInt( nIndex++ ) );
             document.setPageTemplateDocumentId( daoUtil.getInt( nIndex++ ) );
+            document.setSkipPortlet( daoUtil.getBoolean( nIndex++ ) );
+            document.setSkipCategories( daoUtil.getBoolean( nIndex++ ) );
         }
 
         daoUtil.free(  );

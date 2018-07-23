@@ -42,6 +42,7 @@ import fr.paris.lutece.portal.service.search.SearchItem;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
@@ -72,6 +73,10 @@ import java.util.List;
  */
 public class DefaultDocSearchIndexer implements IDocSearchIndexer
 {
+
+    private static final String PROPERTY_WRITER_MAX_FIELD_LENGTH = "search.lucene.writer.maxFieldLength"; // from the core
+    private static final int DEFAULT_WRITER_MAX_FIELD_LENGTH = 1000000;
+
     /**
      * Build Lucene docs to index
      * @param listDocumentIds Documents to index
@@ -125,7 +130,8 @@ public class DefaultDocSearchIndexer implements IDocSearchIndexer
         doc.add( new Field( SearchItem.FIELD_UID, strIdDocument, ft ) );
 
         String strContentToIndex = getContentToIndex( document );
-        ContentHandler handler = new BodyContentHandler(  );
+        int nWriteLimit = AppPropertiesService.getPropertyInt( PROPERTY_WRITER_MAX_FIELD_LENGTH, DEFAULT_WRITER_MAX_FIELD_LENGTH );
+        ContentHandler handler = new BodyContentHandler( nWriteLimit );
         Metadata metadata = new Metadata(  );
 
         try
@@ -135,11 +141,11 @@ public class DefaultDocSearchIndexer implements IDocSearchIndexer
         }
         catch ( SAXException e )
         {
-            throw new AppException( "Error during document parsing." );
+            throw new AppException( "Error during document parsing.", e );
         }
         catch ( TikaException e )
         {
-            throw new AppException( "Error during document parsing." );
+            throw new AppException( "Error during document parsing.", e );
         }
 
         //the content of the article is recovered in the parser because this one
