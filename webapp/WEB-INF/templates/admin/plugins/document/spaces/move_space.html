@@ -5,7 +5,7 @@
 				<h3 class="box-title">#i18n{document.move_space.title} "${space.name}"</h3>
 			</div>
             <div class="box-body">
-				<form class="form-horizontal" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveSpace.jsp" enctype="multipart/form-data" >
+				<form id="selectFilesForm" class="form-horizontal" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveSpace.jsp" enctype="multipart/form-data" >
 					<input type="hidden" name="id_space" value="${space.id}">
 					<#if submit_button_disabled >
 						<div class="form-group">
