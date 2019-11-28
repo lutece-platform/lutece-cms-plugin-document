@@ -55,11 +55,11 @@ import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.plugins.document.web.DocumentResourceServlet;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.cache.CacheService;
 import fr.paris.lutece.portal.service.cache.CacheableService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
-import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -287,7 +287,7 @@ public class DocumentService
             DocumentResourceServlet.putInCache( document.getId(  ), attribute.getId(  ) );
         }
 
-        for ( CacheableService cs : PortalService.getCacheableServicesList(  ) )
+        for ( CacheableService cs : CacheService.getCacheableServicesList(  ) )
         {
             if ( cs.getClass(  ).equals( DocumentContentService.class ) )
             {

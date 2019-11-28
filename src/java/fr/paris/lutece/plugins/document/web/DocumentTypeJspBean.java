@@ -45,11 +45,11 @@ import fr.paris.lutece.plugins.document.service.AttributeService;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
+import fr.paris.lutece.portal.service.cache.CacheService;
 import fr.paris.lutece.portal.service.fileupload.FileUploadService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
-import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.regularexpression.RegularExpressionService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -865,7 +865,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
         }
 
         //clear the cache
-        PortalService.resetCache(  );
+        CacheService.resetCaches(  );
 
         return strErrorUrl;
     }

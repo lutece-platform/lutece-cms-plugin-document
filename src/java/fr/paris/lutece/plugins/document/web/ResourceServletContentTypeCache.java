@@ -34,7 +34,7 @@
 package fr.paris.lutece.plugins.document.web;
 
 import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
-import fr.paris.lutece.portal.service.portal.PortalService;
+import fr.paris.lutece.portal.service.cache.CacheService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 
@@ -57,7 +57,7 @@ public class ResourceServletContentTypeCache extends AbstractCacheableService
         if ( strCache.equalsIgnoreCase( "true" ) )
         {
             initCache( NAME );
-            PortalService.registerCacheableService( NAME, this );
+            CacheService.registerCacheableService( this );
         }
     }
 
