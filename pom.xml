@@ -1,61 +1,61 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
+    <parent>
         <artifactId>lutece-global-pom</artifactId>
         <groupId>fr.paris.lutece.tools</groupId>
-        <version>4.0.5</version>
-	</parent>
+        <version>5.1.0</version>
+    </parent>
 	
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.paris.lutece.plugins</groupId>
-	<artifactId>plugin-document</artifactId>
-	<packaging>lutece-plugin</packaging>
-	<version>4.0.11-SNAPSHOT</version>
-	<name>Lutece document plugin</name>
-	<repositories>
-		<repository>
-			<id>lutece</id>
-			<name>luteceRepository</name>
-			<url>http://dev.lutece.paris.fr/maven_repository</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>luteceSnapshot</id>
-			<name>luteceSnapshot</name>
-			<url>http://dev.lutece.paris.fr/snapshot_repository</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-	</repositories>
-	<dependencies>
-		<dependency>
-			<groupId>fr.paris.lutece</groupId>
-			<artifactId>lutece-core</artifactId>
-			<version>[6.0.0-SNAPSHOT,7.0.0-SNAPSHOT)</version>
-			<type>lutece-core</type>
-		</dependency>
-		<!-- Add to resize image -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>fr.paris.lutece.plugins</groupId>
+    <artifactId>plugin-document</artifactId>
+    <packaging>lutece-plugin</packaging>
+    <version>4.0.11-SNAPSHOT</version>
+    <name>Lutece document plugin</name>
+    <repositories>
+        <repository>
+            <id>lutece</id>
+            <name>luteceRepository</name>
+            <url>http://dev.lutece.paris.fr/maven_repository</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>luteceSnapshot</id>
+            <name>luteceSnapshot</name>
+            <url>http://dev.lutece.paris.fr/snapshot_repository</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>fr.paris.lutece</groupId>
+            <artifactId>lutece-core</artifactId>
+            <version>[6.0.0-SNAPSHOT,7.0.0-SNAPSHOT)</version>
+            <type>lutece-core</type>
+        </dependency>
+        <!-- Add to resize image -->
         <dependency>
             <groupId>org.imgscalr</groupId>
             <artifactId>imgscalr-lib</artifactId>
             <version>4.1</version>
             <type>jar</type>
         </dependency>
-	</dependencies>
-	<properties>
-		<componentName>document</componentName>
-		<jiraProjectName>DOCUMENT</jiraProjectName>
-		<jiraComponentId>10166</jiraComponentId>
-	</properties>
+    </dependencies>
+    <properties>
+        <componentName>document</componentName>
+        <jiraProjectName>DOCUMENT</jiraProjectName>
+        <jiraComponentId>10166</jiraComponentId>
+    </properties>
 
     <scm>
         <connection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-document.git</connection>
         <developerConnection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-document.git</developerConnection>
         <url>https://github.com/lutece-platform/lutece-cms-plugin-document.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
 </project>
