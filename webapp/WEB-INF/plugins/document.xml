@@ -2,7 +2,7 @@
     <!-- Plugin Informations -->
     <name>document</name>
     <class>fr.paris.lutece.plugins.document.service.DocumentPlugin</class>
-    <version>4.1.0</version>
+    <version>4.2.0-SNAPSHOT</version>
     <documentation/>
     <installation/>
     <changes/>
