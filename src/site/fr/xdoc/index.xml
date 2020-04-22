@@ -2,16 +2,16 @@
 <document>
     <properties>
         <title>
-              Lutèce : Introduction
+            Plugin Document 
         </title>
     </properties>
     <body>
         <section name="Plugin Document">
             <p>
-              Le plugin Document constitue l'application de gestion de conte­nu d'un portail Lutèce.
+                Le plugin Document constitue l'application de gestion de contenu d'un portail Lutece.
             </p>
             <p>
-            Ses principales fonctionnalités sont : 
+                Ses principales fonctionnalités sont : 
             </p>
             <p>
                 <ul>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>
+            Document plugin
+        </title>
+    </properties>
+    <body>
+        <section name="Document Plugin">
+            <p>
+                The Document plugin is the content management application of a Lutece portal.
+            </p>
+            <p>
+                Its main features are : 
+            </p>
+            <p>
+                <ul>
+                    <li>
+                        Dynamic creation of structured documents. A type of document is created by defining different attributes: 
+                        simple or enriched text fields, dates, multimedia objects, attachments, values to choose from a list, ...
+                    </li>
+                    <li>
+                        The life cycle of the documents (creation, validation, publication, archiving, ...) takes place 
+                        within filing spaces organized like directories. 
+                        The operations on the documents and spaces are subject to access rights 
+                        that can be fully parameterized and integrated in the security management of Lutece.
+                    </li>
+                    <li>
+                        A rules engine allows to dynamically create document management operations 
+                        such as moving spaces or notifications to mailing lists by email.
+                    </li>
+                    <li>
+                        The documents are also categorizable on the basis of a thesaurus and can benefit 
+                        from an extensible metadata system (Dublin Core or other).
+                    </li>
+                    <li>
+                        For publishing, the plugin also provides two portlets allowing to publish one or a list of documents. 
+                        It manages automatic upload and removal dates, as well as a manual scheduling or suspension of each document.
+                    </li>
+                    <li>
+                        The documents are accessible through the search engine. 
+                        The search engine indexes in full text the content areas defined as "to be indexed" in the document type. 
+                    </li>
+                </ul>
+            </p>
+        </section>
+    </body>
+</document>
+          
