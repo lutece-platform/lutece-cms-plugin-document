@@ -30,7 +30,7 @@
 					<div class="form-group">
 						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{document.create_document_type.labelMetadata}* </label>
 						<div class="col-xs-12 col-sm-8 col-md-6">
-							<@comboWithParams name="metadata" additionalParameters="class=\"form-control input-sm\"" items=metadata_handlers_list default_value="" />
+							<@select name='metadata' items=metadata_handlers_list default_value='' />
 							<span class="help-text">#i18n{document.create_document_type.helpMetadata}</span>
 						</div>
 					</div>

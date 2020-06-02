@@ -23,7 +23,7 @@
 					<div class="form-group">
 						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="view_type">#i18n{document.create_space.labelView} </label>
 						<div class="col-xs-12 col-sm-6 col-md-6">
-						<@comboWithParams name="view_type" default_value="${view_type}" additionalParameters="class=\"form-control input-sm\"" items=view_types_list />
+						<@select name='view_type' default_value='${view_type}' items=view_types_list />
 						</div>
 					</div>
 					<div class="form-group">
@@ -41,7 +41,7 @@
 					<div class="form-group">
 						<label class="control-label col-xs-12 col-sm-3 col-md-3 sr-only" for="workgroup_key">#i18n{document.create_space.labelWorkgroup}</label>
 						<div class="col-xs-12 col-sm-6 col-md-6">
-							<@comboWithParams name="workgroup_key"  default_value="${selected_workgroup}"  additionalParameters="class=\"form-control\"" items=user_workgroup_list/>
+							<@select name='workgroup_key'  default_value='${selected_workgroup}' items=user_workgroup_list/>
 							</div>
 						</div>
 					<div class="form-group">

@@ -100,14 +100,14 @@
 						<#if document_types_filter_list?size &gt; 1 >
 							<form class="form-inline" method="post" name="FilterDocumentsForm" action="jsp/admin/plugins/document/ManageDocuments.jsp">
 								<label for="document_type_code_filter">#i18n{document.manage_documents.labelType}</label>
-								<@comboWithParams name="document_type_code_filter" default_value="${default_document_type}" additionalParameters="class=\"form-control input-xs\"" items=document_types_filter_list />
+								<@select name='document_type_code_filter' default_value='${default_document_type}' items=document_types_filter_list />
 								<label>#i18n{document.manage_documents.labelState} :</label>
-								<@comboWithParams name="id_state_filter" default_value="${default_state}" additionalParameters="class=\"form-control input-xs\"" items=states_filter_list />
+								<@select name='id_state_filter' default_value='${default_state}' items=states_filter_list />
 								<button class="btn btn-primary btn-xs btn-flat" type="submit" title="#i18n{document.manage_documents.buttonFilter}">
 									<i class="fa fa-filter"></i>
 								</button>
 								<label for="view_type" class="sr-only">#i18n{document.manage_documents.labelViewType}</label>
-								<@comboWithParams name="view_type" default_value="${view_type}" additionalParameters="class=\"form-control input-xs\"" items=view_types_list />
+								<@select name='view_type' default_value='${view_type}' items=view_types_list />
 								<button class="btn btn-primary btn-xs btn-flat" type="submit">
 									<i class="fa fa-check"></i>
 								</button>
@@ -119,7 +119,7 @@
 							<div class="col-xs-12 col-sm-3 col-md-3">
 								<form class="form-inline" method="post" name="CreateDocument" action="jsp/admin/plugins/document/CreateDocument.jsp">
 									<label for="document_type_code" class="sr-only">#i18n{document.manage_documents.labelCreate}</label>
-									<@comboWithParams name="document_type_code" default_value="" additionalParameters="class=\"form-control input-xs\"" items=document_types_list/>
+									<@select name='document_type_code' default_value='' items=document_types_list/>
 									<button class="btn btn-primary btn-xs btn-flat" type="submit" title="#i18n{document.manage_documents.buttonCreate}">
 										<i class="fa fa-plus"></i> #i18n{document.manage_documents.buttonCreate}
 									</button>

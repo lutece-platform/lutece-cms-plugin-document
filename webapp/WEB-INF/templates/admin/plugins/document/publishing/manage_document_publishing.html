@@ -164,7 +164,7 @@
 								<div class="tab-content">
 									<div class="tab-pane active" id="document_list_portlet">
 										<#if document_list_portlet_list?size &gt; 0>
-											<@comboWithParamsAndLength name="document_list_portlet_ids" default_value="" additionalParameters="multiple='multiple'  size='10' class='form-control input-sm'" items=document_list_portlet_list max_length=175 />
+											<@select name='document_list_portlet_ids' default_value='' multiple=10  items=document_list_portlet_list />
 										<#else>
 											<p class="alert alert-danger">#i18n{document.manage_document_publishing.messagePortletNotExist}</p>
 										</#if>
@@ -172,7 +172,7 @@
 									<div class="tab-pane" id="document_portlet">
 										<#if document_portlet_list?size &gt; 0>
 											<p class="lead">#i18n{document.manage_document_publishing.labelAvailableDocumentPortlet} <small>#i18n{document.manage_document_publishing.labelAvailableDocumentPortletComment} </small></p>
-											<@comboWithParamsAndLength name="document_portlet_ids" default_value="" additionalParameters="multiple='multiple'  size='10' class='form-control input-sm'" items=document_portlet_list max_length=175 />
+											<@select name='document_portlet_ids' default_value='' multiple=10 items=document_portlet_list />
 										<#else>
 											<p class="alert alert-danger">#i18n{document.manage_document_publishing.messagePortletNotExist}</p>
 										</#if>

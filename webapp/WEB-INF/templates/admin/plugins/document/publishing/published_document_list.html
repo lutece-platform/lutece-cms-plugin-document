@@ -8,7 +8,7 @@
 			<input type="hidden" name="id_document" value="${document_published.id}">
 			<input type="hidden" name="id_portlet" value="${portlet_id}">
 			<div class="input-group">
-				<@comboWithParams name="document_order" default_value="${document_order}" additionalParameters="class=\"form-control input-xs\"" items=document_order_list />
+				<@select name='document_order' default_value='${document_order}' size='xs' items=document_order_list />
 				<span class="input-group-btn">
 					<button type="submit" class="btn btn-primary btn-xs spaced"  alt="#i18n{document.published_document_list.labelChangeOrder}" title="#i18n{document.published_document_list.labelChangeOrder}">
 						<i class="fa fa-sort"></i>

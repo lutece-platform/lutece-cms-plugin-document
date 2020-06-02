@@ -23,9 +23,9 @@
 						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="workgroup_key">#i18n{document.modify_category.labelWorkgroup}</label>		     
 						<div class="col-xs-12 col-sm-10 col-md-10">
 							<#if categoryDisplay.category.workgroup?has_content > 
-								<@combo name="workgroup_key"  items=user_workgroup_list default_value=categoryDisplay.category.workgroup />
+								<@select name='workgroup_key' items=user_workgroup_list default_value=categoryDisplay.category.workgroup />
 							<#else>
-								<@combo name="workgroup_key"  items=user_workgroup_list default_value=0 />
+								<@select name='workgroup_key' items=user_workgroup_list default_value=0 />
 							</#if>
 						</div>
 					</div>

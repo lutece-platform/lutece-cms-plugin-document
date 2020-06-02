@@ -37,13 +37,13 @@
 					<div class="form-group">
 						<label class="col-xs-12 col-sm-12 col-md-12" for="icon_url">#i18n{document.modify_document_type.labelThumbnailAttribute} :</label>
 						<div class="col-xs-12 col-sm-12 col-md-12">
-							<@comboWithParams name="thumbnail_attribute" additionalParameters="class=\"form-control input-sm\"" items=thumbnail_attributes_list default_value="${document_type.thumbnailAttributeId}" />
+							<@select name='thumbnail_attribute' items=thumbnail_attributes_list default_value='${document_type.thumbnailAttributeId}' />
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-xs-12 col-sm-12 col-md-12" for="name">#i18n{document.modify_document_type.labelMetadata}* :</label>
 						<div class="col-xs-12 col-sm-12 col-md-12">
-							<@comboWithParams name="metadata" additionalParameters="class=\"form-control input-sm\"" items=metadata_handlers_list default_value="" />
+							<@select name='metadata' items=metadata_handlers_list default_value='' />
 							<span class="help-text">#i18n{document.modify_document_type.helpMetadata}</span>
 						</div>
 					</div>
@@ -68,7 +68,7 @@
 				<form class="form-search" method="post" name="AddAttribute" action="jsp/admin/plugins/document/AddDocumentTypeAttribute.jsp">
 					<input type="hidden" name="document_type_code" value="${document_type.code}" />
 					<label for="attribute_type_code" >#i18n{document.modify_document_type.labelAddAttribute} </label> 
-					<@combo name="attribute_type_code" default_value="" items=attribute_types_list />
+					<@select name='attribute_type_code' default_value='' items=attribute_types_list />
 					<button class="btn btn-primary btn-xs" type="submit" ><i class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{document.modify_document_type.buttonAddAttribute}</button>
 				</form>
 				<table class="table table-hover table-condensed">
