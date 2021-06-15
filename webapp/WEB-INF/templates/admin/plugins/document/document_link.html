@@ -1,1 +1,1 @@
-<a href="${url}"<#if target?has_content> target="${target}"</#if><#if alt?has_content> title="${alt}"</#if>>${name}</a>
+<@link href='${url}' target='${target!}' title='${alt!}'>${name}</@link>

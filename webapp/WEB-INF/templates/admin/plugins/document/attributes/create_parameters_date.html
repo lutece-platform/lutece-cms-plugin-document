@@ -1,27 +1,17 @@
 <#list parameters as parameter>
 <#if parameter_index = 0>
-	<div class="form-group">
-		<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${parameter.name}" >${parameter.label}</label>
-		<div class="col-xs-12 col-sm-6 col-md-6">
-			<input type="text" name="${parameter.name}" class="form-control param" id="${parameter.name}" tabindex="${parameter_index + 5}" value="<#list parameter.defaultValue as values >${values?if_exists}</#list>">
-			<span class="help-block">${parameter.description}</span>
-		</div>
-	</div>
+	<@formGroup labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}'>
+		<#list parameter.defaultValue as values><#assign inputValue = values?if_exists /></#list>
+		<@input type='text' name='${parameter.name}' class='param' id='${parameter.name}' tabIndex='${parameter_index + 5}' value=inputValue />
+	</@formGroup>
 	<script>
 		<@getDatePickerBootstrap idField=parameter.name language=locale.language />
 	</script>
 </#if>
 <#if parameter_index = 1>
-	<div class="form-group">
-		<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${parameter.name}" >${parameter.label}</label>
-		<div class="col-xs-12 col-sm-6 col-md-6">
-			<div class="checkbox">
-				<label for="${parameter.name}">
-					<input type="checkbox" name="${parameter.name}" id="${parameter.name}" <#if parameter.defaultValue?has_content> checked="checked"</#if>>${parameter.description}
-				</label>
-			</div>
-		</div>
-	</div>
+	<@formGroup labelFor='${parameter.name}' labelKey='${parameter.label}'>
+		<@checkBox labelFor='${parameter.name}' labelKey='${parameter.description}' name='${parameter.name}' id='${parameter.name}' checked=parameter.defaultValue?has_content />
+	</@formGroup>
 	<script>
 		$(function() {
 			$('input[type="checkbox"]').on('click', function(){

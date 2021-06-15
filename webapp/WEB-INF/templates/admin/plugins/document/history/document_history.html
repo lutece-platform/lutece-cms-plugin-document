@@ -1,15 +1,10 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-4 col-md-4">
-		<div class="box box-solid box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.document_history.title}</h3>
-				<div class="box-tools pull-right"> 
-					<a class="btn btn-xs btn-flat btn-info" href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="#i18n{document.preview_document.space}" >
-						<i class="glyphicon glyphicon-folder-open"></i> 
-					</a>
-               </div>
-            </div>
-			<div class="box-body">
+<@row>
+	<@columns md=4>
+		<@box>
+			<@boxHeader title='#i18n{document.document_history.title}'>
+				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder-open' hideTitle=['xs'] size='sm' />
+			</@boxHeader>
+			<@boxBody>
 				<blockquote>
 					<p class="lead">${document.id}</span>&nbsp;${document.title}</p>
 				</blockquote>
@@ -39,31 +34,28 @@
 				<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
 				<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
 				<#if dateBegin?has_content && dateEnd?has_content>
-					<p><i class="glyphicon glyphicon-calendar"></i>${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
+					<p><@icon style='calendar' /> ${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
 				<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
-					<p class="label label-warning">#i18n{document.preview_document.labelDateValidityNotDefined}</p>
+					<@alert color='warning'>#i18n{document.preview_document.labelDateValidityNotDefined}</@alert>
 				<#elseif dateBegin?has_content && !( dateEnd?has_content )>
-					<p><i class="glyphicon glyphicon-calendar"></i>${labelBeginSince} ${dateBegin}</p>
+					<p><@icon style='calendar' /> ${labelBeginSince} ${dateBegin}</p>
 				<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
-					<p><i class="glyphicon glyphicon-calendar"></i>${labelEndUntil} ${dateEnd}</p> 
+					<p><@icon style='calendar' /> ${labelEndUntil} ${dateEnd}</p> 
 				</#if> 
-			</div>
-		</div>
-	</div>
-	<div class="col-xs-12 col-sm-8 col-md-8">
-		<div class="box box-primary">
-			<div class="box-header">
-				<h3 class="box-title"></h3>
-			 </div>
-			<div class="box-body">	
-				<ul class="list-group">
+			</@boxBody>
+		</@box>
+	</@columns>
+	<@columns md=8>
+		<@box>
+			<@boxBody>
+				<@listGroup>
 					<#list events_list?reverse as event >
-						<li class="list-group-item">
-							<i class="glyphicon glyphicon-asterisk"></i>&nbsp;<em>${event.date}</em>&nbsp;-&nbsp;${event.description}
-						</li>
+						<@listGroupItem>
+							<@icon style='asterisk' />&nbsp;<em>${event.date}</em>&nbsp;-&nbsp;${event.description}
+						</@listGroupItem>
 					</#list>
-				</ul>   
-			</div>
-		</div>
-	</div>
-</div>
+				</@listGroup>   
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>

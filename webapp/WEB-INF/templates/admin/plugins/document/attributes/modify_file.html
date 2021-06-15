@@ -1,28 +1,19 @@
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
-	<div class="col-xs-12 col-sm-10 col-md-10">
-		<input type="file" name="${attribute.code}" id="${attribute.code}" >
-		<span class="help-block">
-			<#if attribute.textValue?has_content>
-				<a href="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" title="preview" >
-					<img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumblist-medium" >
-				</a>
-			<#else>
-				${attribute.description}
-			</#if>
-		</span>
-	</div>
-</div>
 <#if attribute.textValue?has_content>
-<div class="form-group">
-	<div class="col-xs-12 col-sm-10 col-sm-offset-2 col-md-10 col-md-offset-2">
-		<div class="checkbox">
-			<label for="update_${attribute.code}">
-					<input type="checkbox" name="update_${attribute.code}" id="update_${attribute.code}" value="1">
-					#i18n{document.attributeType.file.updateField}
-				</label>
-				<span class="help-block">#i18n{document.attributeType.file.deleteField}</span>
-		</div>
-	</div>
-</div>
+	<#assign helpKey>
+		<@link href='servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true' title='preview'>
+			<img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumblist-medium" >
+		</@link>
+	</#assign>
+<#else>
+	<#assign helpKey = attribute.description />
+</#if>
+
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey mandatory=attribute.required>
+	<@input type='file' name='${attribute.code}' id='${attribute.code}' />
+</@formGroup>
+
+<#if attribute.textValue?has_content>
+	<@formGroup helpKey='#i18n{document.attributeType.file.deleteField}'>
+		<@checkBox labelFor='update_${attribute.code}' labelKey='#i18n{document.attributeType.file.updateField}' name='update_${attribute.code}' id='update_${attribute.code}' value='1' />
+	</@formGroup>
 </#if>

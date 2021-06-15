@@ -1,153 +1,104 @@
 <#escape x as x?html>
-<form method="post" class="form-horizontal" action="jsp/admin/plugins/document/DoModifyDocument.jsp" enctype="multipart/form-data" >
-	<input type="hidden" name="id_document" value="${document.id}">
-	<input type="hidden" name="id_state" value="${id_state}">
-	<div class="row">
-		<div class="col-xs-12 col-sm-12 col-md-9">
-			<div class="box box-primary">
-				<div class="box-header">
-					<h3 class="box-title">#i18n{document.modify_document.title}</h3>
-					<div class="box-tools pull-right">
-						<div class="btn-group">
+<@tform method='post' action='jsp/admin/plugins/document/DoModifyDocument.jsp' enctype='multipart/form-data'>
+	<@input type='hidden' name='id_document' value='${document.id}' />
+	<@input type='hidden' name='id_state' value='${id_state}' />
+	<@row>
+		<@columns md=9>
+			<@box>
+				<@boxHeader title='#i18n{document.modify_document.title}'>
+					<@btnGroup>
 						<#noescape>
 							<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
 								${extendableResourceActionsHtml!}
 							</#if>
 						</#noescape>
-						</div>
-					</div>
-                </div>
-                <div class="box-body">
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="document_title">#i18n{document.modify_document.labelDocumentTitle}* </label>
-						<div class="col-xs-12 col-sm-10 col-md-10">
-							<input type="text" class="form-control input-sm" name="document_title" id="document_title" value="${document.title}" class="input-lg" maxlength="255">
-							<p class="help-block">#i18n{document.modify_document.helpDocumentTitle}</p>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="document_summary">#i18n{document.modify_document.labelDocumentSummary}*</label>
-						<div class="col-xs-12 col-sm-10 col-md-10">
-							<textarea name="document_summary" class="form-control input-sm" id="document_summary" class="input-lg" rows="5">${document.summary}</textarea> 
-							<p class="help-block">#i18n{document.modify_document.helpDocumentSummary}</p>
-						</div>
-					</div>
-					<fieldset>
-						<legend>#i18n{document.modify_document.attributTitle}</legend>    
+					</@btnGroup>
+				</@boxHeader>
+                <@boxBody>
+					<@formGroup labelFor='document_title' labelKey='#i18n{document.modify_document.labelDocumentTitle}' helpKey='#i18n{document.modify_document.helpDocumentTitle}' mandatory=true>
+						<@input type='text' name='document_title' id='document_title' value='${document.title}' maxlength=255 />
+					</@formGroup>
+					<@formGroup labelFor='document_summary' labelKey='#i18n{document.modify_document.labelDocumentSummary}' helpKey='#i18n{document.modify_document.helpDocumentSummary}' mandatory=true>
+						<@input type='textarea' name='document_summary' id='document_summary' rows=5>${document.summary}</@input> 
+					</@formGroup>
+					<@fieldSet legend='#i18n{document.modify_document.attributTitle}'>
 						<#noescape>${fields}</#noescape>
-						<div class="form-group" >
-							<div class="col-xs-12 col-sm-offset-2 col-sm-10 col-md-offset-2 col-md-10">
-								<button class="btn btn-primary btn-sm" type="submit">
-									<i class="glyphicon glyphicon-edit"></i> #i18n{document.modify_document.buttonModify}
-								</button>
-								<button class="btn btn-default btn-sm" type="button" onclick="javascript:window.history.back()">
-									<i class="glyphicon glyphicon-remove-circle"></i> #i18n{portal.admin.message.buttonCancel}
-								</button>
-							</div>
+						<@formGroup>
+							<@button type='submit' title='#i18n{document.modify_document.buttonModify}' buttonIcon='edit' />
+							<@button type='button' params='onclick="javascript:window.history.back()"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
+						</@formGroup>
+					</@fieldSet>	
+				</@boxBody>
+			</@box>
+		</@columns>
+		<@columns md=3>
+			<@box>
+				<@boxHeader title='#i18n{document.create_document.advancedPropertiesTitle}'>
+					<@button type='button' style='card-control collapse' buttonTargetId='advPropertiesForm' buttonIcon='minus' />
+				</@boxHeader>
+                <@boxBody>
+					<@fieldSet id='advPropertiesForm'>
+						<@formGroup labelKey='#i18n{document.create_document.labelDocumentValidity}'>
+							<@staticText>#i18n{document.create_document.labelDocumentValidity}</@staticText>
+						</@formGroup>
+						<div class="input-daterange">
+							<@formGroup labelFor='document_validity_begin' labelKey='#i18n{document.create_document.labelDocumentValidityBegin}'>
+								<@inputGroup>
+									<@inputGroupItem type='text'>
+										<@icon style='calendar' />
+									</@inputGroupItem>
+									<@input type='text' name='document_validity_begin' id='document_validity_begin' value='${date_validity_begin}' />
+								</@inputGroup>
+							</@formGroup>
+							<@formGroup labelFor='document_validity_end' labelKey='#i18n{document.create_document.labelDocumentValidityEnd}'>
+								<@inputGroup>
+									<@inputGroupItem type='text'>
+										<@icon style='calendar' />
+									</@inputGroupItem>
+									<@input type='text' name='document_validity_end' id='document_validity_end' value='${date_validity_end}' />
+								</@inputGroup>
+							</@formGroup>
 						</div>
-					</fieldset>	
-				</div>
-			</div>
-		</div>
-		<div class="col-xs-12 col-sm-12 col-md-3">
-			<div class="box box-solid box-primary">
-				<div class="box-header">
-					<h3 class="box-title">#i18n{document.create_document.advancedPropertiesTitle}</h3>
-                    <div class="box-tools pull-right">
-						<button type="button" class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    </div>
-                </div>
-                <div class="box-body"> 
-					<div class="form-group">
-						<label class="sr-only" >#i18n{document.create_document.labelDocumentValidity}</label>
-						<div class="col-md-9">
-							<p class="form-control-static" >#i18n{document.create_document.labelDocumentValidity}</p>
-						</div>
-					</div>
-					<div class="input-daterange">
-						<div class="form-group">
-							<label for="document_validity_begin" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">#i18n{document.create_document.labelDocumentValidityBegin}</label>
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<div class="input-group">
-									<span class="input-group-addon">
-										<i class="glyphicon glyphicon-calendar"></i>
-									</span>
-									<input type="text" class="form-control" name="document_validity_begin" id="document_validity_begin" value="${date_validity_begin}">
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="document_validity_end" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">#i18n{document.create_document.labelDocumentValidityEnd}</label> 
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<div class="input-group">
-									<span class="input-group-addon">
-										<i class="glyphicon glyphicon-calendar"></i>
-									</span>
-									<input type="text" class="form-control" name="document_validity_end" id="document_validity_end" value="${date_validity_end}">
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="document_page_template">#i18n{document.create_document.labelDocumentPageTemplate} : </label>
-						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<#noescape>${page_template_list}</#noescape>
-						<p class="help-block">#i18n{document.create_document.helpDocumentPageTemplate}</p>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="document_skip_portlet">#i18n{document.modify_document.labelSkipPortlet}</label>
-						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<input class="checkbox" type="checkbox" name="document_skip_portlet" id="document_skip_portlet" <#if document.skipPortlet >checked="checked"</#if> >
-							<p class="help-block">#i18n{document.modify_document.helpSkipPortlet}</p>
-						</div>
-					</div>
-						
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="document_skip_categories">#i18n{document.modify_document.labelSkipCategories}</label>
-						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<input class="checkbox" type="checkbox" name="document_skip_categories" id="document_skip_categories" <#if document.skipCategories >checked="checked"</#if> >
-							<p class="help-block">#i18n{document.modify_document.helpSkipCategories}</p>
-						</div>
-					</div>
-						
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="document_comment">#i18n{document.create_document.labelDocumentComment} : </label>
-						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<textarea type="text" name="document_comment" id="document_comment" class="form-control" rows="2" >${document.comment}</textarea> 
-							<p class="help-block">#i18n{document.create_document.helpDocumentComment}</p>
-						</div>
-					</div>
-			</div>
-		</div>
-		<div class="box box-solid box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.list_category.boxTitle}</h3>
-                   <div class="box-tools pull-right">
-					<button  type="button" class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                   </div>
-                </div>
-                <div class="box-body"> 
-					<#noescape>${category}</#noescape>
-				</div>
-			</div>
-			<#if metadata?has_content >
-				<div class="box box-solid box-primary">
-					<div class="box-header">
-						<h3 class="box-title">#i18n{document.modify_document_type.labelMetadata}</h3>
-						<div class="box-tools pull-right">
-							<button  type="button" class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
-						</div>
-					</div>
-					<div class="box-body"> 
-						<#noescape>${metadata}</#noescape>
-					</div>
-				</div>
+						<@formGroup labelFor='document_page_template' labelKey='#i18n{document.create_document.labelDocumentPageTemplate}' helpKey='#i18n{document.create_document.helpDocumentPageTemplate}'>
+							<#noescape>${page_template_list}</#noescape>
+						</@formGroup>
+						<@formGroup helpKey='#i18n{document.modify_document.helpSkipPortlet}'>
+							<@checkBox labelFor='document_skip_portlet' labelKey='#i18n{document.modify_document.labelSkipPortlet}' name='document_skip_portlet' id='document_skip_portlet' checked=document.skipPortlet />
+						</@formGroup>
+						<@formGroup helpKey='#i18n{document.modify_document.helpSkipCategories}'>
+							<@checkBox labelFor='document_skip_categories' labelKey='#i18n{document.modify_document.labelSkipCategories}' name='document_skip_categories' id='document_skip_categories' checked=document.skipCategories />
+						</@formGroup>
+						<@formGroup labelFor='document_comment' labelKey='#i18n{document.create_document.labelDocumentComment}' helpKey='#i18n{document.create_document.helpDocumentComment}'>
+							<@input type='textarea' type='text' name='document_comment' id='document_comment' rows=2>${document.comment}</@input>
+						</@formGroup>
+					</@fieldSet>
+				</@boxBody>
+			</@box>
+			<@box>
+				<@boxHeaderTitle='#i18n{document.list_category.boxTitle}'>
+					<@button type='button' style='card-control collapse' buttonTargetId='category' buttonIcon='minus' />
+				</@boxHeader>
+				<@boxBody>
+					<@div id='category'>
+						<#noescape>${category}</#noescape>
+					</@div>
+				</@boxBody>
+			</@box>
+			<#if metadata?has_content>
+				<@box>
+					<@boxHeaderTitle='#i18n{document.modify_document_type.labelMetadata}'>
+						<@button type='button' style='card-control collapse' buttonTargetId='metadata' buttonIcon'minus' />
+					</@boxHeader>
+					<@boxBody>
+						<@div id='metadata'>
+							<#noescape>${metadata}</#noescape>
+						</@div>
+					</@boxBody>
+				</@box>
 			</#if>
-		</div>
-	</div>
-</form>
+		</@columns>
+	</@row>
+</@tform>
 </#escape>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />

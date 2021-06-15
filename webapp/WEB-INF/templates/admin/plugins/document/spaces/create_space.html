@@ -1,74 +1,42 @@
 <#if parent_space?exists>
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12">
-		<div class="box box-solid box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.create_space.title}</h3>
-			</div>
-            <div class="box-body">
-				<form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoCreateSpace.jsp">
-					<input type="hidden" name="id_parent_space" value="${parent_space.id}">
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="name">#i18n{document.create_space.labelName}* </label>
-						<div class="col-xs-12 col-sm-6 col-md-6">
-							<input type="text" class="form-control" name="name" id="name" tabindex="1" >
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="description">#i18n{document.create_space.labelDescription}* </label>
-						<div class="col-xs-12 col-sm-6 col-md-6">
-							<input type="text" class="form-control" name="description" id="description" tabindex="2" >
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="view_type">#i18n{document.create_space.labelView} </label>
-						<div class="col-xs-12 col-sm-6 col-md-6">
-						<@select name='view_type' default_value='${view_type}' items=view_types_list />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="icon">#i18n{document.create_space.labelIcon} </label>
-						<div class="col-xs-12 col-sm-9 col-md-9">
-							<@radioImageList name="icon" default_value="1" items=icons_list inline=1 />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="document_type">#i18n{document.create_space.labelDocumentTypes} </label>
-							<div class="col-xs-12 col-sm-9 col-md-9">
-								<@checkboxList name="document_type" default_values="" items=document_types_list />
-							</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3 sr-only" for="workgroup_key">#i18n{document.create_space.labelWorkgroup}</label>
-						<div class="col-xs-12 col-sm-6 col-md-6">
-							<@select name='workgroup_key'  default_value='${selected_workgroup}' items=user_workgroup_list/>
-							</div>
-						</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="allow_creation">#i18n{document.create_space.labelAllowCreation} :</label>
-						<div class="col-xs-12 col-sm-9 col-md-9">
-							<div class="checkbox">
-								<label for="allow_creation">
-									<input class="checkbox" type="checkbox" name="allow_creation" id="allow_creation" tabindex="5">
-									#i18n{document.create_space.labelAllowCreation}
-								</label>
-							</div>
-							#i18n{document.create_space.helpAllowCreation}
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-3 col-md-6">
-							<button class="btn btn-primary btn-flat" type="submit">
-								<i class="fa fa-plus"></i> #i18n{document.create_space.buttonCreate}
-							</button>
-							<button type="button" class="btn btn-default btn-flat" onclick="javascript:history.go(-1)">
-								<i class="glyphicon glyphicon-remove-sign"></i> #i18n{portal.admin.message.buttonCancel}
-							</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
-</#if>	
+	<@row>
+		<@columns>
+			<@box>
+				<@boxHeader title='#i18n{document.create_space.title}' />
+				<@boxBody>
+					<@tform method='post' action='jsp/admin/plugins/document/DoCreateSpace.jsp'>
+						<@input type='hidden' name='id_parent_space' value='${parent_space.id}' />
+						<@formGroup labelFor='name' labelKey='#i18n{document.create_space.labelName}' mandatory=true>							<@input type='text' name='name' id='name' />						</@formGroup>
+						<@formGroup labelFor='description' labelKey='#i18n{document.create_space.labelDescription}' mandatory=true>							<@input type='text' name='description' id='description' />						</@formGroup>
+						<@formGroup labelFor='view_type' labelKey='#i18n{document.create_space.labelView}'>							<@select name='view_type' default_value='${view_type}' items=view_types_list />						</@formGroup>
+						<@formGroup labelFor='icon' labelKey='#i18n{document.create_space.labelIcon}'>
+							<#list icons_list as item>
+								<#assign default_value = '1' />
+								<#if default_value='${item.code}'><#local checked=true /><#else><#local checked=false /></#if>
+								<#local radioLabelKey>
+									<img src="${item.name}" alt="${item.name}" title="${item.name}" />
+								</#local>
+								<@radioButton orientation='inline' labelFor='${name}' labelKey=radioLabelKey checked=checked name='icon' value='${item.code}' />
+							</#list>
+						</@formGroup>
+						<@formGroup labelFor='document_type' labelKey='#i18n{document.create_space.labelDocumentTypes}'>
+							<#list document_types_list as item>
+								<@checkBox labelFor='${item?index}' labelKey='${item.name}' name='document_type' id='${item?index}' value='${item.code}' checked=item.checked />
+							</#list>
+						</@formGroup>
+						<@formGroup labelFor='workgroup_key' labelKey='#i18n{document.create_space.labelWorkgroup}'>
+							<@select name='workgroup_key'  default_value='${selected_workgroup}' items=user_workgroup_list />
+						</@formGroup>
+						<@formGroup labelFor='allow_creation' labelKey='#i18n{document.create_space.labelAllowCreation}' helpKey='#i18n{document.create_space.helpAllowCreation}'>
+							<@checkBox labelFor='allow_creation' labelKey='#i18n{document.create_space.labelAllowCreation}' name='allow_creation' id='allow_creation' />
+						</@formGroup>
+						<@formGroup>
+							<@button type='submit' title='#i18n{document.create_space.buttonCreate}' buttonIcon='save' />
+							<@button type='button' params='onclick="javascript:history.go(-1)"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
+						</@formGroup>
+					</@tform>
+				</@boxBody>
+			</@box>
+		</@columns>
+	</@row>
+</#if>

@@ -1,13 +1,13 @@
 <#if category_list?has_content>
-    <select id="categories" name="categories" class="form-control" multiple="multiple" >			
+    <@select id='categories' name='categories' multiple=10>			
         <#list category_list as categoryDisplay>
             <#if categoryDisplay.assigned = true> 			
-                <option selected="selected" value="${categoryDisplay.category.id}" >${categoryDisplay.category.name}</option>    			    			
+                <option selected="selected" value="${categoryDisplay.category.id}" >${categoryDisplay.category.name}</option>
             <#else>
                 <option value="${categoryDisplay.category.id}" >${categoryDisplay.category.name}</option>
             </#if>
         </#list>		
-    </select>
+    </@select>
 <#else>
-    #i18n{document.portlet_document_type.labelNoCategory}
+    <@staticText>#i18n{document.portlet_document_type.labelNoCategory}</@staticText>
 </#if>

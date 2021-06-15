@@ -1,24 +1,20 @@
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
-	<div class="col-xs-12 col-sm-10 col-md-10">
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' checked=attribute.required>
 	<#list parameters.value as value>
 		<#if value?has_content >
-			<#assign defaultValue = "${value}">
+			<#assign defaultValue = '${value}'>
 		<#else>
-			<#assign defaultValue = "">
+			<#assign defaultValue = ''>
 		</#if>
 	</#list>
-	<select id="${attribute.code}" name="${attribute.code}" class="form-control input-sm">
+	<@select id='${attribute.code}' name='${attribute.code}'>
 		<#if parameters.items?size != 0>
 			<#list parameters.items as item>
-				<#if defaultValue="${item}">
+				<#if defaultValue='${item}'>
 					<option selected="selected" value="${item}" >${item}</option>
 				<#else>
 					<option value="${item}" >${item}</option>
 				</#if>
 			</#list>
 		</#if>
-	</select>
-	<p class="help-block">${attribute.description}</p>
-	</div>
-</div>
+	</@select>
+</@formGroup>

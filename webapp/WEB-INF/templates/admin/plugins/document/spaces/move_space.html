@@ -1,23 +1,18 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12">
-		<div class="box box-solid box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.move_space.title} "${space.name}"</h3>
-			</div>
-            <div class="box-body">
-				<form id="selectFilesForm" class="form-horizontal" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveSpace.jsp" enctype="multipart/form-data" >
-					<input type="hidden" name="id_space" value="${space.id}">
+<@row>
+	<@columns>
+		<@box>
+			<@boxHeader title='#i18n{document.move_space.title} "${space.name}"' />
+            <@boxBody>
+				<@tform id='selectFilesForm' name='formMove' method='get' action='jsp/admin/plugins/document/DoMoveSpace.jsp' enctype='multipart/form-data'>
+					<@input type='hidden' name='id_space' value='${space.id}' />
 					<#if submit_button_disabled >
-						<div class="form-group">
-							<label class="control-label col-xs-12 col-sm-2 col-md-2" ></label>
-							<div class="col-xs-12 col-sm-10 col-md-10">
-								<p class="form-control-static">#i18n{document.move_space.labelMove}</p>
-							</div>
-						</div>
+						<@formGroup>
+							<@staticText>#i18n{document.move_space.labelMove}</@staticText>
+						</@formGroup
 					</#if>
 					${spaces_browser}
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>

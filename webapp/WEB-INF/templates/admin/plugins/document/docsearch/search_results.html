@@ -1,139 +1,121 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-3 col-md-3">
-		<div class="box box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.search_results.labelSearch}</h3>
-			</div>
-			<div class="box-body">
-				<form name="search" class="form-horizontal" method="post" action="jsp/admin/plugins/document/DocumentSearch.jsp<#if advanced_search??>?advanced_search=true</#if>">
-					<input type="hidden" name="page" value="search">
-					<div class="form-group">
-						<label class="control-label col-md-4" for="query">#i18n{document.search_results.labelSearch}</label>
-						<div class="col-md-8">
-							<input type="text" name="query" class="form-control input-sm" value="<#if query??>${query}</#if>">
-						</div>
-					</div>
+<@row>
+	<@columns sm=3>
+		<@box>
+			<@boxHeader title='#i18n{document.search_results.labelSearch}' />
+			<@boxBody>
+				<#if advanced_search??>
+					<#assign formAction = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true' />
+				<#else>
+					<#assign formAction = 'jsp/admin/plugins/document/DocumentSearch.jsp' />
+				</#if>
+				<@tform name='search' method='post' action=formAction>
+					<@input type='hidden' name='page' value='search' />
+					
+					<@formGroup labelFor='query' labelKey='#i18n{document.search_results.labelSearch}'>
+						<#if query??>
+							<#assign value = query />
+						<#else>
+							<#assign value = '' />
+						</#if>
+						<@input type='text' name='query' value=value />
+					</@formGroup>
+					
 					<#-- Number of documents per page selector -->
 					<@NbItemsPerPageSelectorCombo nb_items_per_page />
 					<#if advanced_search??>
-						<div class="form-group">
-							<label class="control-label col-xs-12 col-sm-4 col-md-4" for="">#i18n{document.advanced_search.limit}</label>
-							<div class="col-xs-12 col-sm-8 col-md-8">
-								<div class="checkbox">
-									<label for="title">
-										<input name="title" id="title" type="checkbox" <#if title??>checked</#if>/>#i18n{document.advanced_search.checkbox.title}
-									</label>
-								</div>
-								<div class="checkbox">
-								<label class="checkbox" for="summary">
-									<input name="summary" id="summary" type="checkbox" <#if summary??>checked</#if>/>#i18n{document.advanced_search.checkbox.summary}
-								</label>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="control-label col-xs-12 col-sm-4 col-md-4" for="date">#i18n{document.advanced_search.checkbox.date}</label>
-							<div class="col-xs-12 col-sm-8 col-md-8">
-								<div class="input-group">
-									<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
-									<input type="text" class="form-control input-sm"  name="date" id="date" value="<#if date_query??>${date_query}</#if>">
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="control-label col-xs-12 col-sm-4 col-md-4" for="document_type">#i18n{document.advanced_search.list.type}</label>
-							<div class="col-xs-12 col-sm-8 col-md-8">
-								<@comboWithParamsAndLength name="document_type" default_value=selected_type additionalParameters="class='form-control'" items=document_type_list max_length=175 />
-						  </div>
-						</div>
+						<@formGroup labelKey='#i18n{document.advanced_search.limit}'>
+							<@checkBox labelFor='title' labelKey='#i18n{document.advanced_search.checkbox.title}' name='title' id='title' checked=title?? />
+							<@checkBox labelFor='summary' labelKey='#i18n{document.advanced_search.checkbox.summary}' name='summary' id='summary' checked=summary?? />
+						</@formGroup>
+						<@formGroup labelFor='date' labelKey='#i18n{document.advanced_search.checkbox.date}'>
+							<@inputGroup>
+								<#if date_query??>
+									<#assign value = date_query />
+								<#else>
+									<#assign value = '' />
+								</#if>
+								<@input type='date' name='date' id='date' value = value />
+								<@inputGroupItem type='text'>
+									<@icon style='calendar' />
+								</@inputGroupItem>
+							</@inputGroup>
+						</@formGroup>
+						<@formGroup labelFor='document_type' labelKey='#i18n{document.advanced_search.list.type}'>
+							<@select name='document_type' default_value=selected_type items=document_type_list maxLength=175 />
+						</@formGroup>
 					<#else>
-						<div class="form-group">
-							<label class="control-label sr-only" for=""></label>
-							<div class="col-md-12">
-								<a class="btn btn-default" href="jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true<#if query??>&query=${query}"</#if>>
-									<i class="glyphicon glyphicon-chevron-down"></i>&nbsp;#i18n{document.manage_document_publishing.labelAdvancedSearch}
-								</a>
-							</div>
-						</div>
+						<@formGroup>
+							<#if query??>
+								<#assign aButtonUrl = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true&query=${query}' />
+							<#else>
+								<#assign aButtonUrl = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true' />
+							</#if>
+							<@aButton href=aButtonUrl buttonIcon='chevron-down' title='#i18n{document.manage_document_publishing.labelAdvancedSearch}' />
+						</@formGroup^>
 					</#if>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-4 col-md-4" for=""></label>
-						<div class="col-xs-12 col-sm-8 col-md-8">
-							<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-search"></i>&nbsp;#i18n{document.search_results.buttonSearch}</button>
-						</div>
-					</div>
-				</form>
-			</div>  
-		</div>  
-	</div>  
-	<div class="col-xs-12 col-sm-9 col-md-9">
-		<div class="box box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.search_results.labelDocumentsList}</h3>
-			</div>
-			<div class="box-body">
-			<#if error?has_content>
-				<div class="alert alert-error">${error} </div>
-			</#if>
-			<#if results_list?has_content>
-				<ul class="list-group">
-					<#list results_list as result>
-					<li class="list-group-item">	
-						<blockquote>
-							<p class="lead clearfix">
-								<a class="pull-left" href="jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${result.id}" title="${result.title}" >${result.title}</a>
-								<a class="btn btn-xs btn-flat btn-primary pull-right" href="jsp/admin/plugins/document/ModifyDocument.jsp?id_document=${result.id}" title="${result.title}">
-									<i class="glyphicon glyphicon-edit"></i>
-								</a>
-							</p>
-							<p>#i18n{document.search_results.labelSummary} ${result.summary}</p>
-							<p><em>#i18n{document.search_results.labelType}: ${result.type} - #i18n{document.search_results.labelDate}: ${result.date}</em></p>
-							<p>
-								
-							</p>
-						</blockquote>
-					</li>
-					</#list>
-				</ul>
-				<@paginationAdmin paginator=paginator />
-			<#else>
-				<div class="callout callout-warning">
-					<i class="fa fa-warning"></i>
-					<b>#i18n{document.manage_documents.noDocument}</b>
-				</div>
-			</#if>
-		</div>
-	</div>
+					<@formGroup>
+						<@button type='submit' title='#i18n{document.search_results.buttonSearch}' buttonIcon='search' />
+					</@formGroup>
+				</@tform>
+			</@boxBody>  
+		</@box>  
+	</@columns>  
+	<@columns sm=9>
+		<@box>
+			<@boxHeader title='#i18n{document.search_results.labelDocumentsList}' />
+			<@boxBody>
+				<#if error?has_content>
+					<@alert color='danger'>${error} </@alert>
+				</#if>
+				<#if results_list?has_content>
+					<@listGroup>
+						<#list results_list as result>
+						<@listGroupItem>	
+							<blockquote>
+								<p class="lead clearfix">
+									<@link href='jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${result.id}' title='${result.title}'>${result.title}</@link>
+									<@aButton href='jsp/admin/plugins/document/ModifyDocument.jsp?id_document=${result.id}' title='${result.title}' buttonIcon='pencil' />
+								</p>
+								<p>#i18n{document.search_results.labelSummary} ${result.summary}</p>
+								<p><em>#i18n{document.search_results.labelType}: ${result.type} - #i18n{document.search_results.labelDate}: ${result.date}</em></p>
+								<p>
+									
+								</p>
+							</blockquote>
+						</@listGroupItem>
+						</#list>
+					</@listGroup>
+					<@paginationAdmin paginator=paginator />
+				<#else>
+					<@alert color='warning'>
+						<@icon style='exclamation-triangle' /> 
+						<b>#i18n{document.manage_documents.noDocument}</b>
+					</@alert>
+				</#if>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
 
 <#-- Freemarker macros -->
 
 <#-- Number of items per page selector - Combo Box implementation -->
 <#macro NbItemsPerPageSelectorCombo nb_items_per_page>
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-8 col-md-8" for="items_per_page">#i18n{document.search_results.labelNbDocsPerPage} </label>
-	<div class="col-xs-12 col-sm-4 col-md-4">
-		<select name="items_per_page" class="form-control input-sm">
+<@formGroup labelFor='items_per_page' labelKey='#i18n{document.search_results.labelNbDocsPerPage}'>
+	<@select name='items_per_page'>
 		<#list [ "10" , "20" , "50" , "100" ] as nb>
 			<option <#if nb_items_per_page = nb >selected="selected"</#if> value="${nb}">${nb}</option>
 		</#list>
-		</select>
-	</div>
-</div>
+	</@select>
+</@formGroup>
 </#macro>
 
 <#-- Number of items per page selector - Radio List implementation -->
 <#macro NbItemsPerPageSelectorRadioList nb_items_per_page>
 <#list [ "5" , "10" , "20" , "50" ] as nb>
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-4 col-md-4" for="items_per_page${nb}">${nb}</label>
-	<div class="col-xs-12 col-sm-8 col-md-8">
-		<div class="radio">
-			<label>
-				<input value="${nb}" id="items_per_page${nb}" name="items_per_page" type="radio" class="radio" <#if nb = nb_items_per_page >checked</#if>>
-			</label>
-		</div>
-	</div>
-</div>
+<@formGroup labelFor='items_per_page${nb}' labelKey='${nb}'>
+	<@radioButton value='${nb}' id='items_per_page${nb}' name='items_per_page' checked=(nb = nb_items_per_page) />
+</@formGroup>
 </#list>
 </#macro>
 

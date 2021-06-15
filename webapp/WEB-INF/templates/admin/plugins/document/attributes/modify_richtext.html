@@ -1,7 +1,4 @@
-<div class="form-group">
-    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
-    <div class="col-xs-12 col-sm-10 col-md-10">
-        <textarea id="${attribute.code}" class="richtext form-control" name="${attribute.code}" rows="5">${attribute.textValue}</textarea>
-    </div>
-</div>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required>
+	<@input type='textarea' id='${attribute.code}' name='${attribute.code}' rows=5 richtext=true>${attribute.textValue}</@input>
+</@formGroup>
 

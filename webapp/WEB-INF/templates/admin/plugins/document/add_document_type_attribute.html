@@ -1,6 +1,6 @@
-<#assign name = "">
-<#assign code = "">
-<#assign description = "">
+<#assign name = ''>
+<#assign code = ''>
+<#assign description = ''>
 <#assign required = false>
 <#assign searchable = false>
 <#if attribute??>
@@ -10,72 +10,40 @@
 	<#assign required = attribute.required>
 	<#assign searchable = attribute.searchable>
 </#if>
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12">
-		<div class="box box-solid box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.add_document_type_attribute.titleAddAttribute} </h3>
-			</div>
-			<div class="box-body">	
-				<form class="form-horizontal" method="post" name="docTypeAttr" action="jsp/admin/plugins/document/DoAddDocumentTypeAttribute.jsp">
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{document.add_document_type_attribute.labelName}* </label>
-						<div class="col-xs-12 col-sm-8 col-md-6">
-							<input type="text" class="form-control input-sm" name="name" id="name" tabindex="1" value="${name}" >
-							<span class="help-block">#i18n{document.add_document_type_attribute.helpName}</span>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="code" >#i18n{document.add_document_type_attribute.labelCode}* </label>
-						<div class="col-xs-12 col-sm-8 col-md-6">
-							<input type="text" class="form-control input-sm" name="code" id="code" tabindex="2" value="${code}" >
-							<span class="help-block">#i18n{document.add_document_type_attribute.helpCode}</span>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="description" >#i18n{document.add_document_type_attribute.labelDescription}* </label>
-						<div class="col-xs-12 col-sm-8 col-md-6">
-							<input type="text" class="form-control input-sm" name="description" id="description" tabindex="3" value="${description}" >
-							<span class="help-block">#i18n{document.add_document_type_attribute.helpDescription}</span>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="required" >#i18n{document.add_document_type_attribute.labelRequired} </label>
-						<div class="col-xs-12 col-sm-8 col-md-6">
-							<div class="checkbox">
-								<label for="required" >
-									<input class="checkbox" type="checkbox" name="required" id="required" tabindex="4" <#if required>checked="checked"</#if> >
-									#i18n{document.add_document_type_attribute.helpRequired}
-								</label>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-xs-12 col-sm-3 col-md-3" for="searchable" >#i18n{document.add_document_type_attribute.labelSearchable} </label>
-							<div class="col-xs-12 col-sm-8 col-md-6">
-							<div class="checkbox">
-								<label for="searchable" >
-								<input class="checkbox" type="checkbox" name="searchable" id="searchable" tabindex="5" <#if searchable>checked="checked"</#if> >
-								#i18n{document.add_document_type_attribute.helpSearchable}
-								</label>
-							</div>
-						</div>
-					</div>
+<@row>
+	<@columns>
+		<@box>
+			<@boxHeader title='#i18n{document.add_document_type_attribute.titleAddAttribute}' />
+			<@boxBody>	
+				<@tform method='post' name='docTypeAttr' action='jsp/admin/plugins/document/DoAddDocumentTypeAttribute.jsp'>
+					<@formGroup labelFor='name' labelKey='#i18n{document.add_document_type_attribute.labelName}' helpKey='#i18n{document.add_document_type_attribute.helpName}' mandatory=true>
+						<@input type='text' name='name' id='name' value='${name}' />
+					</@formGroup>
+					<@formGroup labelFor='code' labelKey='#i18n{document.add_document_type_attribute.labelCode}' helpKey='#i18n{document.add_document_type_attribute.helpCode}' mandatory=true>
+						<@input type='text' name='code' id='code' value='${code}' />
+					</@formGroup>
+					<@formGroup labelFor='description' labelKey='#i18n{document.add_document_type_attribute.labelDescription}' helpKey='#i18n{document.add_document_type_attribute.helpDescription}' mandatory=true>
+						<@input type='text' name='description' id='description' value='${description}' />
+					</@formGroup>
+					<@formGroup labelKey='#i18n{document.add_document_type_attribute.labelRequired}'>
+						<@checkBox labelFor='required' labelKey='#i18n{document.add_document_type_attribute.helpRequired}' name='required' id='required' checked=required />
+					</@formGroup>
+					<@formGroup labelKey='#i18n{document.add_document_type_attribute.labelSearchable}'>
+						<@checkBox labelFor='searchable' labelKey='#i18n{document.add_document_type_attribute.helpSearchable}' name='searchable' id='searchable' checked=searchable />
+					</@formGroup>
+					
 					${attribute_parameters}
-					<div class="form-group">
-						<div class="col-xs-12 col-sm-offset-3 col-sm-8 col-md-offset-3 col-md-6">
+					
+					<@formGroup>
 						<!--button class="btn btn-primary btn-sm" name="save" type="submit"><i class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{document.add_document_type_attribute.buttonAddAttribute}</button>
 						<button class="btn btn-primary btn-sm" name="apply" type="submit"><i class="glyphicon glyphicon-ok-sign"></i>&nbsp;#i18n{document.add_document_type_attribute.buttonApply}</button -->
-						<button type="submit" name="save" value="save" class="btn btn-primary btn-sm btn-flat" >
-							<i class="glyphicon glyphicon-plus">&nbsp;</i>&nbsp;#i18n{document.add_document_type_attribute.buttonAddAttribute}
-						</button>
+						<@button type='submit' name='save' value='save' title='#i18n{document.add_document_type_attribute.buttonAddAttribute}' buttonIcon='save' />
 						<!-- input type="submit" name="apply" value="#i18n{document.add_document_type_attribute.buttonApply}" class="btn btn-primary btn-sm" / -->
-						<button type="button" class="btn btn-default btn-sm btn-flat" onclick="javascript:window.history.back();" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</button>
-						</div>
-					</div>
-					<input type="hidden" name="attribute_type_code" value="${attribute_type_code}">
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
+						<@button type='button' params='onclick="javascript:window.history.back();"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
+					</@formGroup>
+					<@input type='hidden' name='attribute_type_code' value='${attribute_type_code}' />
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>

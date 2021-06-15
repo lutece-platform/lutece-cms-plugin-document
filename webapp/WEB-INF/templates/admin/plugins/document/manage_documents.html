@@ -4,233 +4,229 @@
 		<#case 6>
 		<#case 8>
 		<#case 11>
-			<#assign btnAction="btn-danger" />
+			<#assign btnAction='danger' />
 			<#break>
 		<#case 14>
 		<#case 15>
-			<#assign btnAction="btn-info" />
+			<#assign btnAction='info' />
 			<#break>
 		<#case 4>
 		<#case 12>
 		<#case 13>
-			<#assign btnAction="btn-success" />
+			<#assign btnAction='success' />
 			<#break>
 		<#case 5>
-			<#assign btnAction="btn-warning" />
+			<#assign btnAction='warning' />
 			<#break>
 		<#default>
-		<#assign btnAction="btn-primary" />
+		<#assign btnAction='primary' />
 	</#switch>
 	${btnAction}
 </#macro>
 
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-3">
-		<div class="box box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.manage_documents.labelSpaces}</h3>
-				<div class="box-tools">
-					<#if space_actions_list?size != 0 >
-						<#list space_actions_list as space_action>
-							<a href="${space_action.url}?id_space=${space.id}" alt="${space_action.description}" title="${space_action.description}" class="btn btn-flat btn-xs <#if space_action.permission="DELETE">btn-danger<#else>btn-primary</#if> btn-space-action">
-								<i class="${space_action.iconUrl} fa-fw"></i>
-							</a>
-						</#list>
-					</#if>
-        </div>
-      </div>
-      <div class="box-body">
-				<i class="fa fa-folder-open-o"></i> #i18n{document.manage_documents.labelSpaces}
-				${spaces_tree}
-			</div>
-		</div>
-		<#if mass_action?has_content && mass_action>
-			<div class="box box-solid box-primary">
-				<div class="box-header">
-					<h3 class="box-title">#i18n{document.manage_documents.labelMoreActions}</h3>
-				</div>
-				<div class="box-body">
-					<ul class="list-group">
-						<li class="list-group-item">
-							<form class="form-inline" method="post" id="archiveForm" name="archiveForm" action="jsp/admin/plugins/document/MassArchivalDocument.jsp">
-								<button class="btn btn-link" type="submit">
-									<i class="fa fa-file-archive-o"></i>&nbsp;#i18n{document.manage_document.mass_archival_labelBtn}
-								</button>
-							</form>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</#if>
-	</div>
-	<div class="col-xs-12 col-sm-12 col-md-9">
-	<#if space?has_content >
-		<div class="box box-primary">
-			<div class="box-header"></div>
-			<div class="box-body">
-				<div class="row">
-					<div class="col-xs-12 col-sm-9 col-md-3">
-						<form class="form-inline" method="post" id="SearchDocumentById" name="SearchDocumentById" action="jsp/admin/plugins/document/DoSearchDocumentById.jsp">
-							 <div class="input-group">
-								<label for="id_document">#i18n{document.manage_documents.buttonSearch}</label>
-								<input type="text" id="id_document" name="id_document" class="form-control input-xs" maxlength="10" >
-								<span class="input-group">
-									<button class="btn btn-primary" type="submit" title="#i18n{document.manage_documents.buttonSearch}" >
-										<i class="fa fa-search"></i>
-									</button>
-								</span>
-							</div>
-							<p class="help-text">#i18n{document.manage_documents.labelSearchById}</p>
-						</form>
-						<form class="form-inline" method="post" id="FullTextSearchDocument" name="FullTextSearchDocument" action="jsp/admin/plugins/document/DocumentSearch.jsp">
-							<input type="hidden" id="id_document" name="id_document">
-							<label for="query">#i18n{document.manage_documents.buttonSearch}</label>
-							<div class="input-group">
-								<input type="text" id="query" name="query" class="form-control input-xs" maxlength="50" >
-								<span class="input-group-btn">
-									<button class="btn btn-default btn-xs btn-flat" type="submit" title="#i18n{document.manage_documents.buttonSearch}" >
-										<i class="fa fa-search"></i>
-									</button>
-								</span>
-							</div>
-							<p class="help-text">#i18n{document.manage_documents.labelFullTextSearch}</p>
-						</form>
-					</div>
-					<div class="col-xs-12 col-sm-9 col-md-6">
-						<#if document_types_filter_list?size &gt; 1 >
-							<form class="form-inline" method="post" name="FilterDocumentsForm" action="jsp/admin/plugins/document/ManageDocuments.jsp">
-								<label for="document_type_code_filter">#i18n{document.manage_documents.labelType}</label>
-								<@select name='document_type_code_filter' default_value='${default_document_type}' items=document_types_filter_list />
-								<label>#i18n{document.manage_documents.labelState} :</label>
-								<@select name='id_state_filter' default_value='${default_state}' items=states_filter_list />
-								<button class="btn btn-primary btn-xs btn-flat" type="submit" title="#i18n{document.manage_documents.buttonFilter}">
-									<i class="fa fa-filter"></i>
-								</button>
-								<label for="view_type" class="sr-only">#i18n{document.manage_documents.labelViewType}</label>
-								<@select name='view_type' default_value='${view_type}' items=view_types_list />
-								<button class="btn btn-primary btn-xs btn-flat" type="submit">
-									<i class="fa fa-check"></i>
-								</button>
-							</form>
+<@row>
+	<@columns md=3>
+		<@box>
+			<@boxHeader title='#i18n{document.manage_documents.labelSpaces}'>
+				<#if space_actions_list?size != 0 >
+					<#list space_actions_list as space_action>
+						<#if space_action.permission="DELETE">
+							<#assign btnClass = 'danger' />
+						<#else>
+							<#assign btnClass = 'primary' />
 						</#if>
-					</div>
+						<@aButton href='${space_action.url}?id_space=${space.id}' title='${space_action.description}' class='btn-space-action ${btnClass}' buttonIcon='${space_action.iconUrl}' size='sm' />
+					</#list>
+				</#if>
+			</@boxHeader>
+			<@boxBody>
+				<@icon style='folder-open' /> #i18n{document.manage_documents.labelSpaces}
+				${spaces_tree}
+			</@boxBody>
+		</@box>
+		
+		<#if mass_action?has_content && mass_action>
+			<@box>
+				<@boxHeader title='#i18n{document.manage_documents.labelMoreActions}' />
+				<@boxBody>
+					<@listGroup>
+						<@listGroupItem>
+							<@tform type='inline' method='post' id='archiveForm' name='archiveForm' action='jsp/admin/plugins/document/MassArchivalDocument.jsp'>
+								<@button class='btn btn-link' type='submit' buttonIcon='file-archive' title='#i18n{document.manage_document.mass_archival_labelBtn}' />
+							</@tform>
+						</@listGroupItem>
+					</@listGroup>
+				</@boxBody>
+			</@box>
+		</#if>
+	</@columns>
+	<@columns md=9>
+	<#if space?has_content >
+		<@box>
+			<@boxBody>
+				<@row>
+					<@columns md=3>
+						<@tform type='inline' method='post' id='SearchDocumentById' name='SearchDocumentById' action='jsp/admin/plugins/document/DoSearchDocumentById.jsp'>
+							 <@formGroup labelFor='id_document' labelKey='#i18n{document.manage_documents.buttonSearch}' helpKey='#i18n{document.manage_documents.labelSearchById}'>
+								<@inputGroup>
+									<@input type='text' id='id_document' name='id_document' maxlength=10 />
+									<@inputGroupItem>
+										<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' />
+									</@inputGroupItem>
+								</@inputGroup>
+							</@formGroup>
+						</@tform>
+						<@tform type='inline' method='post' id='FullTextSearchDocument' name='FullTextSearchDocument' action='jsp/admin/plugins/document/DocumentSearch.jsp'>
+							<@input type='hidden' id='id_document' name='id_document' />
+							<@formGroup labelFor='query' labelKey='#i18n{document.manage_documents.buttonSearch}' helpKey='#i18n{document.manage_documents.labelFullTextSearch}'>
+								<@inputGroup>
+									<@input type='text' id='query' name='query' maxlength=50 />
+									<@inputGroupItem>
+										<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' />
+									</@inputGroupItem>
+								</@inputGroup>
+							</@formGroup>
+						</@tform>
+					</@columns>
+					<@columns md=6>
+						<#if document_types_filter_list?size &gt; 1 >
+							<@tform type='inline' method='post' name='FilterDocumentsForm' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
+								<@formGroup labelFor='document_type_code_filter' labelKey='#i18n{document.manage_documents.labelType}'>
+									<@select name='document_type_code_filter' default_value='${default_document_type}' items=document_types_filter_list />
+								</@formGroup>
+								<@formGroup labelFor='id_state_filter' labelKey='#i18n{document.manage_documents.labelState}'>
+									<@inputGroup>
+										<@select name='id_state_filter' default_value='${default_state}' items=states_filter_list />
+										<@inputGroupItem>
+											<@button type='submit' title='#i18n{document.manage_documents.buttonFilter}' buttonIcon='filter' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+								<@formGroup labelFor='view_type' labelKey)='#i18n{document.manage_documents.labelViewType}'>
+									<@inputGroup>
+										<@select name='view_type' default_value='${view_type}' items=view_types_list />
+										<@inputGroupItem>
+											<@button type='submit' buttonIcon='check' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+							</@tform>
+						</#if>
+					</@columns>
+					
 					<#if space.documentCreationAllowed >
 						<#if document_types_list?has_content>
-							<div class="col-xs-12 col-sm-3 col-md-3">
-								<form class="form-inline" method="post" name="CreateDocument" action="jsp/admin/plugins/document/CreateDocument.jsp">
-									<label for="document_type_code" class="sr-only">#i18n{document.manage_documents.labelCreate}</label>
-									<@select name='document_type_code' default_value='' items=document_types_list/>
-									<button class="btn btn-primary btn-xs btn-flat" type="submit" title="#i18n{document.manage_documents.buttonCreate}">
-										<i class="fa fa-plus"></i> #i18n{document.manage_documents.buttonCreate}
-									</button>
-
-                                                                        <#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>
-                                                                                <div class="btn btn-primary btn-xs btn-flat" title="#i18n{document.manage_documents.labelImport}" id="importLinkButton" >
-                                                                                        <i class="fa fa-plus"></i> #i18n{document.manage_documents.buttonImport}
-                                                                                </div>
-                                                                        </#if>
-								</form>                                                                
-							</div>
+							<@columns md=3>
+								<@tform type='inline' method='post' name='CreateDocument' action='jsp/admin/plugins/document/CreateDocument.jsp'>
+									<@formGroup labelFor='document_type_code' labelKey='#i18n{document.manage_documents.labelCreate}'>
+										<@inputGroup>
+											<@select name='document_type_code' default_value='' items=document_types_list />
+											<@inputGroupItem>
+												<@button type='submit' title='#i18n{document.manage_documents.buttonCreate}' buttonIcon='plus' />
+											</@inputGroupItem>
+										</@inputGroup>
+									</@formGroup>
+									<#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>
+										<@div class='btn btn-primary btn-xs btn-flat' title='#i18n{document.manage_documents.labelImport}' id='importLinkButton'>
+											<@icon style='plus' /> #i18n{document.manage_documents.buttonImport}
+										</@div>
+                                    </#if>
+								</@tform>                                                                
+							</@columns>
 						</#if>
 					</#if>
-				</div>
-			</div>
-		</div>
-		<div class="box box-primary">
-			<div class="box-header"></div>
-				<div class="box-body table-responsive">
-					<#if documents_list?size = 0 >
-						<br>
-						<div class="callout callout-warning">
-							<i class="fa fa-warning"></i>
-							<b>#i18n{document.manage_documents.noDocument}</b>
-						</div>
-					<#else>
-				<#if view_type = "detail" >
-					<form class="form-inline" id="documents_form" name="documents_form" method="post" action="jsp/admin/plugins/document/DoActionSelectionDocument.jsp">
-						<table class="table table-striped table-hover table-document">
-							<tr>
-								<th>
-									<label for="select_all" class="sr-only"></label>
-									<input id="select_all" name="select_all" type="checkbox">
-								</th>
-								<th>
-									#i18n{document.manage_documents.labelDocumentId}<@sort jsp_url="jsp/admin/plugins/document/ManageDocuments.jsp" attribute="id" />
-									&nbsp-&nbsp;#i18n{document.manage_documents.labelDocument}<@sort jsp_url="jsp/admin/plugins/document/ManageDocuments.jsp" attribute="title" />
+				</@row>
+			</@boxBody>
+		</@box>
+		<@box>
+			<@boxBody>
+				<#if documents_list?size = 0 >
+					<br>
+					<@alert color='warning'>
+						<@icon style='warning' />
+						<b>#i18n{document.manage_documents.noDocument}</b>
+					</@alert>
+				<#else>
+				<#if view_type = 'detail' >
+					<@tform style='inline' id='documents_form' name='documents_form' method='post' action='jsp/admin/plugins/document/DoActionSelectionDocument.jsp'>
+						<@table>
+							<@tr>
+								<@th>
+									<@checkBox id='select_all' name='select_all' />
+								</@th>
+								<@th>
+									#i18n{document.manage_documents.labelDocumentId}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='id' />
+									&nbsp-&nbsp;#i18n{document.manage_documents.labelDocument}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='title' />
 									<span id="set_selection" >
-										<select id="selection" name="selection" class="input-xs disabled" disabled="disabled">
+										<@select id='selection' name='selection' disabled=true>
 											<option value="validate">#i18n{document.manage_document.validate}</option>
 											<option value="submit">#i18n{document.manage_document.submit}</option>
 											<option value="refuse">#i18n{document.manage_document.refuse}</option>
 											<option value="remove">#i18n{document.manage_document.remove}</option>
 											<option value="archive">#i18n{document.manage_document.archive}</option>
 											<option value="unarchive">#i18n{document.manage_document.unarchive}</option>
-										</select>
-										<button class="btn btn-primary btn-flat btn-xs" type="submit" title="#i18n{document.manage_documents.applyToSelection}">
-											<i class="fa fa-check"></i>
-										</button>
+										</@select>
+										<@button type='submit' title='#i18n{document.manage_documents.applyToSelection}' buttonIcon='check' />
 									</span>
-								</th>
-								<th>#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url="jsp/admin/plugins/document/ManageDocuments.jsp" attribute="publishedStatus" /></th>
-								<th>#i18n{document.manage_documents.labelActions}</th>
-							</tr>
+								</@th>
+								<@th>#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='publishedStatus' /></@th>
+								<@th>#i18n{document.manage_documents.labelActions}</@th>
+							</@tr>
 							<#list documents_list as document >
-							<tr class="document-row" data-document="${document.id} ${document.title}">
-								<td>
-									<input id="document_selection" name="document_selection" type="checkbox" value="${document.id}" /></td>
-								<td>
+							<@tr class='document-row' params='data-document="${document.id} ${document.title}"'>
+								<@td><@checkBox id='document_selection' name='document_selection' value='${document.id}' /></@td>
+								<@td>
 									<p>
 										${document.id} - <strong title="${document.title}"><#if document.title?length &gt; 60>${document.title?substring(0,60)}...<#else>${document.title}</#if></strong>
 									</p>
 									<p>
-										<i class="fa fa-calendar" title="#i18n{document.manage_documents.labelDateModification}"></i>&nbsp;
+										<@icon style='calendar' title='#i18n{document.manage_documents.labelDateModification}' />&nbsp;
 										${document.dateModification}
 										<#if document.stateId = 3>
 										&nbsp;
-										<span class="label label-success" title="#i18n{document.manage_documents.labelState}">
-											<i class="fa fa-check-circle"></i>&nbsp;&nbsp;${document.state}&nbsp;&nbsp;&nbsp;</span>
+										<@tag color='success' title='#i18n{document.manage_documents.labelState}' tagIcon='check-circle'>${document.state}&nbsp;&nbsp;&nbsp;</@tag>
 										<#else>
-											<span class="label label-info" title="#i18n{document.manage_documents.labelState}">
-												<i class="fa fa-remove"></i>&nbsp;${document.state}
-											</span>
+											<@tag color='info' title='#i18n{document.manage_documents.labelState}' tagIcon='times'>${document.state}
+											</@tag>
 										</#if>
 									</p>
 									<#if document.comment != "">
-										<div class="alert alert-info">
-											<i class="fa fa-info"></i>
-												${document.comment}
-										</div>
+										<@alert color='info'>
+											<@icon style='info-circle' /> ${document.comment}
+										</@alert>
 									</#if>
-								</td>
-								<td>
+								</@td>
+								<@td>
 									<#if document.publishedStatus = 0>
-										<span class="label label-success"><i class="fa fa-check-circle"></i> #i18n{document.manage_documents.PublishedStatus}</span>
+										<@tag color='success' tagIcon='check-circle'>#i18n{document.manage_documents.PublishedStatus}</@tag>
 									<#else>
-										<span class="label label-danger"><i class="fa fa-remove"></i> #i18n{document.manage_documents.UnPublishedStatus}</span>
+										<@tag color='danger' tagIcon='times'>#i18n{document.manage_documents.UnPublishedStatus}</@tag>
 									</#if>
-								</td>
-								<td><#list document.actions?sort_by("idAction") as action >
+								</@td>
+								<@td>
+									<#list document.actions?sort_by("idAction") as action >
 										<#if action.url?has_content>
-											<a class="btn <@setBtnAction action_nb=action.idAction /> btn-xs btn-flat" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}">
-												<i class="${action.iconUrl}"></i>
-											</a>
+											<#assign aBtnColor>
+												<@setBtnAction action_nb=action.idAction />
+											</#assign>
+											<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color=aBtnColor />
 										</#if>
 									</#list>
-								</td>
-							</tr>
+								</@td>
+							</@tr>
 							</#list>
-						</table>
-					</form>
+						</@table>
+					</@tform>
 				</#if>
 				<#if view_type = "thumbnail">
-					<div class="col-xs-12 col-sm-12 col-md-12">
+					<@columns>
 						<#list documents_list as document >
-						<div class="col-xs-12 col-sm-6 col-md-4 document-row"  data-document="${document.id} ${document.title}">
+						<@columns sm=6 md=4 class='document-row' params='data-document="${document.id} ${document.title}"'>
 							<div class="thumbnail">
 								<img src="${document.thumbnail}&nocache" class="thumbnail" alt="${document.title}" title="${document.title} - ${document.type}" />
 								<div class="caption">
 									<p>
-										<span class="badge">${document.id}</span>
+										<@tag>${document.id}</@tag>
 										<strong title="${document.title}">
 											<#if document.title?length &gt; 18>${document.title?substring(0,18)}...<#else>${document.title}</#if>
 										</strong>
@@ -238,17 +234,18 @@
 									<p>
 										<#list document.actions?sort_by("idAction") as action >
 											<#if action.url?has_content>
-												<a class="btn btn-primary btn-xs <@setBtnAction action_nb=action.idAction />" href="${action.url}id_document=${document.id}&id_action=${action.idAction}" title="${action.description}">
-													<i class="${action.iconUrl}"></i>
-												</a>
+												<#assign aBtnColor>
+													<@setBtnAction action_nb=action.idAction />
+												</#assign>
+												<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color=aBtnColor />
 											</#if>
 										</#list>
 									</p>
 								</div>
 							</div>
-						</div>
+						</@columns>
 						</#list>
-					</div>
+					</@columns>
 				</#if>
 				<@paginationAdmin paginator=paginator combo=1 />
 			</#if>
@@ -259,19 +256,17 @@
 						<#list child_spaces_list as child_space>
 						<li>
 							<h4>
-								<a href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${child_space.id}">
+								<@link href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${child_space.id}'>
 									<img src="${child_space.iconUrl}" alt="${child_space.description}" title="${child_space.description}"> ${child_space.name} <small>${child_space.description}</small>
-								</a>
+								</@link>
 							</h4>
 						</li>
 						</#list>
 					</ul>
 				</#if>
 			</#if>
-			</div>
-		</div>
-	</div>
-</div>
+	</@columns>
+</@row>
 <script src="js/jquery/plugins/ui/jstree/jquery.jstree.js"></script>
 <script src="js/jquery/plugins/ui/jstree/jquery.cookie.js"></script>
 <script type="text/javascript">

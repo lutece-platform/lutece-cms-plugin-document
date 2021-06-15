@@ -1,13 +1,11 @@
 <#if category_list?has_content >
 <ul class="list-unstyled">
-	<#list category_list as categoryDisplay >
+	<#list category_list as categoryDisplay>
 	<li>
-		<div class="checkbox">
-			<label>
-				<input class="checkbox" type="checkbox" name="category_id" <#if categoryDisplay.assigned = true>checked="checked"</#if> value="${categoryDisplay.category.id}" />
-				<img src=${categoryDisplay.iconUrl!} class="img-responsive img-thumbnail thumbnail-sm" alt="${categoryDisplay.category.name}" /> ${categoryDisplay.category.name}&nbsp;
-			</label>
-		</div>
+		<#assign labelKey>
+			<img src=${categoryDisplay.iconUrl!} class="img-responsive img-thumbnail thumbnail-sm" alt="${categoryDisplay.category.name}" /> ${categoryDisplay.category.name}&nbsp;
+		</#assign>
+		<@checkBox labelFor='category_id_${categoryDisplay?index}' labelKey=labelKey name='category_id' id='category_id_${categoryDisplay?index}' checked=categoryDisplay.assigned value='${categoryDisplay.category.id}' />
 	</li>
 	</#list>
 </ul>

@@ -1,77 +1,53 @@
 <#if space?exists>
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12">
-		<div class="box box-solid box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.modify_space.title}</h3>
-			</div>
-            <div class="box-body">
-				<form class="form-horizontal" method="post" action="jsp/admin/plugins/document/DoModifySpace.jsp">
-				<input type="hidden" name="id_space" value="${space.id}">
-				<input type="hidden" name="id_parent_space" value="${space.idParent}">
-				<div class="form-group">
-					<label class="control-label col-xs-12 col-sm-3 col-md-3" for="name" >#i18n{document.modify_space.labelName}* :</label>
-					<div class="col-xs-12 col-sm-6 col-md-6">
-					<input type="text" class="form-control" name="name" id="name" tabindex="1" value="${space.name}" />
-				</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-xs-12 col-sm-3 col-md-3" for="description" >#i18n{document.modify_space.labelDescription}* :</label>
-					<div class="col-xs-12 col-sm-6 col-md-6">
-						<input type="text" class="form-control" name="description" id="description" value="${space.description}" tabindex="2" />
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-xs-12 col-sm-3 col-md-3" for="view_type" >#i18n{document.modify_space.labelView} :</label>
-					<div class="col-xs-12 col-sm-6 col-md-6">
-						<@select name='view_type' default_value='${view_type}' items=view_types_list />
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-xs-12 col-sm-3 col-md-3" for="icon" >#i18n{document.modify_space.labelIcon} :</label>
-					<div class="col-xs-12 col-sm-9 col-md-9">
-						<@radioImageList name="icon" default_value="${space.idIcon}" items=icons_list inline=1 />
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-xs-12 col-sm-3 col-md-3" for="document_type">#i18n{document.modify_space.labelDocumentTypes} :</label>
-					<div class="col-xs-12 col-sm-6 col-md-6">
-						<@checkboxList name="document_type" default_values="" items=document_types_list />
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-xs-12 col-sm-3 col-md-3 sr-only" for="workgroup_key">#i18n{document.modify_space.labelWorkgroup}</label>
-					<div class="col-xs-12 col-sm-6 col-md-6">
-					<#if space.workgroup?exists>
-						<@select name='workgroup_key' default_value=space.workgroup  items=user_workgroup_list/>
-					<#else>
-						<@select name='workgroup_key' default_value='all' items=user_workgroup_list/>
-					</#if>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-xs-12 col-sm-3 col-md-3" for="allow_creation" >#i18n{document.modify_space.labelAllowCreation} :</label>
-					<div class="col-xs-12 col-sm-9 col-md-9">
-						<div class="checkbox">
-						<label for="allow_creation" >
-						<input class="checkbox" type="checkbox" name="allow_creation" id="allow_creation" tabindex="5" <#if space.documentCreationAllowed>checked="checked"</#if> />#i18n{document.modify_space.labelAllowCreation}</label>
-						</div>
-						<span class="help-text">#i18n{document.modify_space.helpAllowCreation}</span>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-3 col-md-6">
-						<button class="btn btn-primary btn-flat" type="submit" >
-							<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{document.modify_space.buttonModify}
-						</button>
-						<button class="btn btn-default btn-flat" onclick="javascript:window.history.go(-1)" type="button" >
-							<i class="glyphicon glyphicon-remove-sign"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
-						</button>
-					</div>
-				</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
+	<@row>
+		<@columns>
+			<@box>
+				<@boxHeader title='#i18n{document.modify_space.title}' />
+				<@boxBody>
+					<@tform method='post' action='jsp/admin/plugins/document/DoModifySpace.jsp'>
+						<@input type='hidden' name='id_space' value='${space.id}' />
+						<@input type='hidden' name='id_parent_space' value='${space.idParent}' />
+						<@formGroup labelFor='name' labelKey='#i18n{document.modify_space.labelName}' mandatory=true>
+							<@input type='text' name='name' id='name' value='${space.name}' />
+						</@formGroup>
+						<@formGroup labelFor='description' labelKey='#i18n{document.modify_space.labelDescription}' mandatory=true>
+							<@input type='text' name='description' id='description' value='${space.description}' />
+						</@formGroup>
+						<@formGroup labelFor='view_type' labelKey='#i18n{document.modify_space.labelView}'>
+							<@select name='view_type' default_value='${view_type}' items=view_types_list />
+						</@formGroup>
+						<@formGroup labelFor='icon' labelKey='#i18n{document.modify_space.labelIcon}'>
+							<#list icons_list as item>
+								<#assign default_value = space.idIcon />
+								<#if default_value='${item.code}'><#local checked=true /><#else><#local checked=false /></#if>
+								<#local radioLabelKey>
+									<img src="${item.name}" alt="${item.name}" title="${item.name}" />
+								</#local>
+								<@radioButton orientation='inline' labelFor='${name}' labelKey=radioLabelKey checked=checked name='icon' value='${item.code}' />
+							</#list>
+						</@formGroup>
+						<@formGroup labelFor='document_type' labelKey='#i18n{document.modify_space.labelDocumentTypes}'>
+							<#list document_types_list as item>
+								<@checkBox labelFor='${item?index}' labelKey='${item.name}' name='document_type' id='${item?index}' value='${item.code}' checked=item.checked />
+							</#list>
+						</@formGroup>
+						<@formGroup labelFor='workgroup_key' labelKey='#i18n{document.modify_space.labelWorkgroup}'>
+							<#if space.workgroup?exists>
+								<@select name='workgroup_key' default_value=space.workgroup  items=user_workgroup_list/>
+							<#else>
+								<@select name='workgroup_key' default_value='all' items=user_workgroup_list/>
+							</#if>
+						</@formGroup>
+						<@formGroup labelFor='allow_creation' labelKey='#i18n{document.modify_space.labelAllowCreation}' helpKey='#i18n{document.modify_space.helpAllowCreation}'>
+							<@checkBox labelFor='allow_creation' labelKey='#i18n{document.modify_space.labelAllowCreation}' name='allow_creation' id='allow_creation' checked=space.documentCreationAllowed />
+						</@formGroup>
+						<@formGroup>
+							<@button type='submit' title='#i18n{document.modify_space.buttonModify}' buttonIcon='save' />
+							<@button type='button' params='onclick="javascript:window.history.go(-1)"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
+						</@formGroup>
+					</@tform>
+				</@boxBody>
+			</@box>
+		</@columns>
+	</@row>
 </#if>

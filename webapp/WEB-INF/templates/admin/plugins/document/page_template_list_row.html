@@ -1,10 +1,5 @@
-<div class="radio">
-	<label for="page_template_id">
-		<input class="radio" type="radio" name="page_template_id" value="${document_page_template.id}" ${checked}>
-		<img src="${document_page_template.picture}" class="thumblist" alt="${document_page_template.description}">
-		${document_page_template.description}
-	</label>
-</div>
-
-
- 
+<#assign labelKey>
+	<img src="${document_page_template.picture}" class="thumblist" alt="${document_page_template.description}" />
+	${document_page_template.description}
+</#assign>
+<@radioButton labelFor='page_template_id' labelKey=labelKey name='page_template_id' value='${document_page_template.id}' checked=checked />

@@ -1,40 +1,38 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12">
-		<div class="box box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.manage_rules.listTitle}</h3>
-				<div class="box-tools pull-right">
-					<form class="form-inline" method="post" name="AddRule" action="jsp/admin/plugins/document/CreateRule.jsp">
-						<label>#i18n{document.manage_rules.labelCreate}</label> 
-						<@select name='id_rule_type' default_value='' size='xs' items=rule_types_list />
-						<button class="btn btn-primary btn-xs btn-flat" type="submit" >
-							<i class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{document.manage_rules.buttonCreate}
-						</button>
-					</form>
-				</div>
-			</div>
-			<div class="box-body table-responsive">
-				<table class="table table-striped table-hover">
-				<thead>
-					<tr>
-						<th>#i18n{document.manage_rules.columnRule}</th>
-						<th>#i18n{document.manage_rules.columnActions}</th>
-					</tr>
-				</thead>
-				<tbody>
-					<#list rules_list as rule >
-						<tr>
-							<td>${rule.rule} </td>
-							<td>
-								<a class="btn btn-danger btn-sm" href="jsp/admin/plugins/document/DeleteRule.jsp?id_rule=${rule.id}"  title="#i18n{document.manage_rules.tooltipDelete}" >
-									<i class="glyphicon glyphicon-trash"></i>
-								</a>
-							</td>
-						</tr>
-					</#list>
-				</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-</div>
+<@row>
+	<@columns>
+		<@box>
+			<@boxHeader title='#i18n{document.manage_rules.listTitle}'>
+				<@tform type='inline' method='post' name='AddRule' action='jsp/admin/plugins/document/CreateRule.jsp'>
+					<@formGroup formStyle='inline' labelKey='#i18n{document.manage_rules.labelCreate}'>
+						<@inputGroup>
+							<@select name='id_rule_type' default_value='' items=rule_types_list />
+							<@inputGroupItem>
+								<@button type='submit' title='#i18n{document.manage_rules.buttonCreate}' buttonIcon='plus-circle' size='sm' />
+							</@inputGroupItem>
+						</@inputGroup>
+					</@formGroup>
+				</@tform>
+			</@boxHeader>
+			<@boxBody>
+				<@table>
+					<thead>
+						<@tr>
+							<@th>#i18n{document.manage_rules.columnRule}</@th>
+							<@th>#i18n{document.manage_rules.columnActions}</@th>
+						</@tr>
+					</thead>
+					<tbody>
+						<#list rules_list as rule >
+							<@tr>
+								<@td>${rule.rule} </@td>
+								<@td>
+									<@aButton href='jsp/admin/plugins/document/DeleteRule.jsp?id_rule=${rule.id}'  title='#i18n{document.manage_rules.tooltipDelete}' hideTitle=['all'] buttonIcon='trash' size='sm' color='danger' />
+								</@td>
+							</@tr>
+						</#list>
+					</tbody>
+				</@table>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>

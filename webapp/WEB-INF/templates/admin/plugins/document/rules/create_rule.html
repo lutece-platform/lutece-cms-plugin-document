@@ -1,25 +1,22 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12">
-		<div class="box box-solid box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.create_rule.title}</h3>
-			</div>
-            <div class="box-body">
-				<form class="form-horizontal" method="post" name="createRule" id="createRule" action="jsp/admin/plugins/document/DoCreateRule.jsp">
-					<input type="hidden" name="id_rule_type" value="${rule_type_id}">
-					<input type="hidden" name="rule_attribute_selected" id="rule_attribute_selected" value="">
+<@row>
+	<@columns>
+		<@box>
+			<@boxHeader title='#i18n{document.create_rule.title}' />
+            <@boxBody>
+				<@tform method='post' name='createRule' id='createRule' action='jsp/admin/plugins/document/DoCreateRule.jsp'>
+					<@input type='hidden' name='id_rule_type' value='${rule_type_id}' />
+					<@input type='hidden' name='rule_attribute_selected" id="rule_attribute_selected' value='' />
 					${create_form}
-					<div class="form-group">
-						<div class="col-sm-offset-3 col-sm-9">
-							<button class="btn btn-primary btn-flat" type="submit" ><i class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{document.create_rule.buttonCreate}</button>
-							<a class="btn btn-default btn-flat" href="jsp/admin/plugins/document/ManageRules.jsp"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}</a>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>    
-	</div>    
-</div>   
+					<@formGroup>
+						<@button type='submit' title='#i18n{document.create_rule.buttonCreate}' buttonIcon='save' />
+						<@aButton href='jsp/admin/plugins/document/ManageRules.jsp' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
+					</@formGroup>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
+   
 <script language="javascript">
 $(".btn-select").click( function(){
 	var d = $(this).attr("data-space");

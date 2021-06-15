@@ -1,51 +1,44 @@
-<div class="form-group">
-    <label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
-    <div class="col-xs-12 col-sm-10">
-        <div class="row">
-            <div class="col-xs-12 col-sm-8">
-                <input type="file" name="${attribute.code}" id="${attribute.code}" >
-            </div>
-            <div class="col-xs-12 col-sm-12">
-                <#if attribute.textValue?has_content>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-8">
-                            <div class="checkbox">
-                                <label for="update_${attribute.code}">
-                                    <input type="checkbox" name="update_${attribute.code}" id="update_${attribute.code}" value="1"> 
-                                    #i18n{document.attributeType.image.updateField} <small>#i18n{document.attributeType.image.deleteField}</small>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-4">
-                            <a href="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" data-title="${attribute.textValue}" <#if attribute.valueContentType?contains('image')>data-lightbox="image-document"</#if>>
-                               <img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-lg pull-right clearfix">
-                            </a>
-                        </div>
-                    </div>
-                <#else>
-                    <span class="help-block">${attribute.description}</span>
-                </#if>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-3">
-                        <div class="checkbox">
-                            <label for="${attribute.code}_crop">
-                                <input type="checkbox" name="${attribute.code}_croppable" id="${attribute.code}_crop">
-                                #i18n{document.attributeType.image.resize}
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-2">
-                        <label class="control-label sr-only">#i18n{document.attributeType.image.resize}</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control input-sm" name="${attribute.code}_width" value="" placeholder="#i18n{document.attributeType.image.width}" id="${attribute.code}_width">
-                            <span class="input-group-addon">px</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<#if !attribute.textValue?has_content>
+	<#assign helpKey = attribute.description />
+</#if>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey! mandatory=attribute.required>
+	<@row>
+		<@columns sm=8>
+			<@input type='file' name='${attribute.code}' id='${attribute.code} />
+		</@columns>
+		<@columns sm=12>
+			<#if attribute.textValue?has_content>
+				<@row>
+					<@columns sm=8>
+						<@checkBox labelFor='update_${attribute.code}' labelKey='#i18n{document.attributeType.image.updateField} #i18n{document.attributeType.image.deleteField}' name='update_${attribute.code}' id='update_${attribute.code}' value='1' />
+					</@columns>
+					<@columns sm=4>
+						<#assign params = 'data-title="${attribute.textValue}"' />
+						<#if attribute.valueContentType?contains('image')>
+							<#assign params += ' data-lightbox="image-document"' />
+						</#if>
+						<@link href='servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true' params=params>
+						   <img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-lg pull-right clearfix">
+						</@link>
+					</@columns>
+				</@row>
+			</#if>
+			<@row>
+				<@columns sm=3>
+					<@checkBox labelFor='${attribute.code}_crop' labelKey='#i18n{document.attributeType.image.resize}' name='${attribute.code}_croppable' id='${attribute.code}_crop' />
+				</@columns>
+				<@columns sm=2>
+					<@formGroup labelKey='#i18n{document.attributeType.image.resize}' hideLabel=['all']>
+						<@inputGroup>
+							<@input type='text' name='${attribute.code}_width' id='${attribute.code}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' />
+							<@inputGroupItem type='text'>px</@inputGroupItem>
+						</@inputGroup>
+					</@formGroup>
+				</@columns>
+			</@row>
+		</@columns>
+	</@row>
+</@formGroup>
 <script type="text/javascript">
     $(document).ready(function () {
         $("#${attribute.code}_width").prop({disabled: true});

@@ -1,24 +1,12 @@
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-2 col-md-2" for="${attribute.code}">${attribute.name}<#if attribute.required >*</#if></label>
-	<div class="col-xs-12 col-sm-10 col-md-10">
-		<input type="file" name="${attribute.code}" id="${attribute.code}" >
-		<p class="help-block">${attribute.description}</p>
-	</div>
-</div>
-<div class="form-group">
-	<div class="row">
-		<div class="col-xs-12 col-sm-10 col-sm-offset-2">
-			<input type="checkbox" name="${attribute.code}_croppable" id="crop">
-			#i18n{document.attributeType.image.resize}
-		</div>
-	</div>
-	<div class="row">
-		<label class="control-label col-xs-12 col-sm-2">#i18n{document.attributeType.image.width}</label>
-		<div class="col-xs-12 col-sm-10">
-			<input type="text" class="form-control input-sm" name="${attribute.code}_width" value="" placeholder="#i18n{document.attributeType.image.width}" id="${attribute.code}_width">
-		</div>
-	</div>
-</div>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' checked=attribute.required>
+	<@input type='file' name='${attribute.code}' id='${attribute.code}' />
+</@formGroup>
+<@formGroup>
+	<@checkBox labelFor='${attribute.code}_croppable' labelKey='#i18n{document.attributeType.image.resize}' name='${attribute.code}_croppable' id='crop' />
+</@formGroup>
+<@formGroup labelFor='${attribute.code}_width' labelKey='#i18n{document.attributeType.image.width}'>
+	<@input type='text' name='${attribute.code}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' id='${attribute.code}_width' />
+</@formGroup>
 
 <script type="text/javascript">
 $(document).ready( function(){

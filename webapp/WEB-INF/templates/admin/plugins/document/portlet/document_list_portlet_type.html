@@ -1,8 +1,6 @@
-<div class="form-group">
-	<label for="document_type_code">#i18n{document.document_list_portlet_type.labelComboTypeDocument}</label>
+<@formGroup labelFor='document_type_code' labelKey='#i18n{document.document_list_portlet_type.labelComboTypeDocument}'>
 	@combo_document_type@
-</div>
-<div class="form-group">
-<label for="categories">#i18n{document.document_list_portlet_type.labelFilterCategory}</label>
+</@formGroup>
+<@formGroup labelFor='categories' labelKey='#i18n{document.document_list_portlet_type.labelFilterCategory}'>
 	@combo_category_document@
-</div>
+</@formGroup>

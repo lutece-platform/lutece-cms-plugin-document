@@ -1,67 +1,64 @@
 <#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>${extendableResourceActionsHtml!}</#if>
-<div class="row">
-	<div class="col-xs-12 col-sm-4 col-md-4">
-		<div class="box box-solid box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.move_document.title} </h3>
-				<div class="box-tools pull-right">
-					<a class="btn btn-xs btn-flat btn-info " href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}" title="#i18n{document.preview_document.space}" >
-						<i class="glyphicon glyphicon-folder-open"></i> 
-					</a>
-					<button  type="button" class="btn btn-default  btn-flat btn-xs" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                </div>
-            </div>
-			<div class="box-body">
-				<blockquote>
-					<p class="lead">${document.id}</span>&nbsp;${document.title}</p>
-				</blockquote>
-				<dl>
-					<dt>#i18n{document.preview_document.columnTitleType}</dt>
-					<dd>${document.type}</dd>
-					<#if document.state?has_content>
-						<dt>#i18n{document.preview_document.columnTitleState}</dt>
-						<dd>${document.state}</dd>
-					</#if> 
-					<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
-					<dd>${document.dateCreation}</dd> 
-					<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
-					<dd>${document.dateModification}</dd>
-				</dl>
-				<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
-				<#assign dateBegin="">
-				<#if document.dateValidityBegin?has_content>
-					<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
-				</#if>    
-				<#assign dateEnd="">
-				<#if document.dateValidityEnd?has_content>
-					<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
-				</#if>                        
-				<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
-				<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
-				<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
-				<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
-				<#if dateBegin?has_content && dateEnd?has_content>
-					<p><i class="glyphicon glyphicon-calendar"></i>${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
-				<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
-					<p class="label label-warning">#i18n{document.preview_document.labelDateValidityNotDefined}</p>
-				<#elseif dateBegin?has_content && !( dateEnd?has_content )>
-					<p><i class="glyphicon glyphicon-calendar"></i>${labelBeginSince} ${dateBegin}</p>
-				<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
-					<p><i class="glyphicon glyphicon-calendar"></i>${labelEndUntil} ${dateEnd}</p> 
-				</#if> 
-			</div>
-		</div>
-	</div>
-	<div class="col-xs-12 col-sm-8 col-md-8">
-		<div class="box box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.move_document.title}</h3>
-				<form class="form" name="formMove" method="get" action="jsp/admin/plugins/document/DoMoveDocument.jsp" enctype="multipart/form-data" >
-					<input type="hidden" name="id_document" value="${document.id}" >
+<@row>
+	<@columns md=4>
+		<@box>
+			<@boxHeader title='#i18n{document.move_document.title}'>
+				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder' size='sm' hideTitle=['xs','sm'] />
+				<@button type='button' style='card-control collapse' buttonTargetId='#document_info' buttonIcon='minus' size='sm' />
+			</@boxHeader>
+			<@boxBody>
+				<@div id='document_info'>
+					<blockquote>
+						<p class="lead">${document.id}</span>&nbsp;${document.title}</p>
+					</blockquote>
+					<dl>
+						<dt>#i18n{document.preview_document.columnTitleType}</dt>
+						<dd>${document.type}</dd>
+						<#if document.state?has_content>
+							<dt>#i18n{document.preview_document.columnTitleState}</dt>
+							<dd>${document.state}</dd>
+						</#if> 
+						<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
+						<dd>${document.dateCreation}</dd> 
+						<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
+						<dd>${document.dateModification}</dd>
+					</dl>
+					<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
+					<#assign dateBegin="">
+					<#if document.dateValidityBegin?has_content>
+						<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
+					</#if>    
+					<#assign dateEnd="">
+					<#if document.dateValidityEnd?has_content>
+						<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
+					</#if>                        
+					<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
+					<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
+					<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
+					<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
+					<#if dateBegin?has_content && dateEnd?has_content>
+						<p><@icon style='calendar' /> ${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
+					<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
+						<@tag color='warning'>#i18n{document.preview_document.labelDateValidityNotDefined}</@tag>
+					<#elseif dateBegin?has_content && !( dateEnd?has_content )>
+						<p><@icon style='calendar' /> ${labelBeginSince} ${dateBegin}</p>
+					<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
+						<p><@icon style='calendar' /> ${labelEndUntil} ${dateEnd}</p> 
+					</#if>
+				</@div>
+			</@boxBody>
+		</@box>
+	</@columns>
+	<@columns md=8>
+		<@box>
+			<@boxHeader title='#i18n{document.move_document.title}' />
+			<@boxBody>
+				<@tform name='formMove' method='get' action='jsp/admin/plugins/document/DoMoveDocument.jsp' enctype='multipart/form-data'>
+					<@input type='hidden' name='id_document' value='${document.id}' />
 					${spaces_browser}
 					<!-- USELESS - Submit on select button
 					<div class="input-group">
-						<button class="btn btn-primary btn-sm" type="submit" <#if submit_button_disabled >disabled="disabled"</#if>>
+						<@button class="btn btn-primary btn-sm" type="submit" <#if submit_button_disabled >disabled="disabled"</#if>>
 							<i class="glyphicon glyphicon-arrow-right"></i>&nbsp;#i18n{document.move_document.buttonMove}
 						</button>
 						<a class="btn btn-default btn-sm" href="jsp/admin/plugins/document/ManageDocuments.jsp" >
@@ -69,11 +66,11 @@
 						</a>
 					</div>
 					-->
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
 <script>
 	/*
 	 * onclick="this.form.action='jsp/admin/plugins/document/ManageDocuments.jsp';this.form.submit();"

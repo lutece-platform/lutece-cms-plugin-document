@@ -6,44 +6,31 @@
 		<#assign items = parameter>
 	</#if>
 </#list>
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${items.name}_select" >${items.label}</label>
-	<div class="col-xs-12 col-sm-8 col-md-6">
-		<div class="input-group">
-			<input type="text" id="${items.name}_value" class="form-control input-sm" name="${items.name}_value" tabindex="6" placeholder="${items.description}">
-			<span class="input-group-btn">
-				<button class="btn btn-primary btn-sm"  type="submit" name="add" value="add" onclick="manageItems(1);return false;">
-					<i class="fa fa-plus-circle"></i> 	#i18n{document.attributeType.listbox.btnAddItem}
-				</button>
-			</span>
-		</div>
-	</div>
-</div>
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${items.name}_select" >&nbsp;</label>
-	<div class="col-xs-12 col-sm-8 col-md-6">
-		<select id="${items.name}_select" name="${items.name}_select" size="4" class="form-control" tabindex="8">
+<@formGroup labelFor='${items.name}_select' labelKey='${items.label}'>
+	<@inputGroup>
+		<@input type='text' id='${items.name}_value' name='${items.name}_value' placeHolder='${items.description}' />
+		<@inputGroupItem>
+			<@button type='submit' name='add' value='add' params='onclick="manageItems(1);return false;"' buttonIcon='plus-circle' title='#i18n{document.attributeType.listbox.btnAddItem}' />
+		</@inputGroupItem>
+	</@inputGroup>
+</@formGroup>
+<@formGroup labelFor='${items.name}_select'>
+	<@select id='${items.name}_select' name='${items.name}_select' inputSize=4>
+		<#list items.valueList as values >
+			<option value="${values}" <#list defaultValue.valueList as defaultvalue ><#if values==defaultvalue> class="bg-primary"</#if></#list>>${values}</option>
+		</#list>
+	</@select>
+	<@div params='style="display:none;"'>
+		<@select id='${items.name}' name='${items.name}' multiple=4>
 			<#list items.valueList as values >
-				<option value="${values}" <#list defaultValue.valueList as defaultvalue ><#if values==defaultvalue> class="bg-primary"</#if></#list>>${values}</option>
+				<option value="${values}" selected="selected">${values}</option>
 			</#list>
-		</select>
-		<div style="display:none;">
-			<select id="${items.name}" name="${items.name}" class="form-control input-sm" size="4" multiple="multiple" >
-				<#list items.valueList as values >
-					<option value="${values}" selected="selected">${values}</option>
-				</#list>
-			</select>
-		</div>
-		<span class="help-block"></span>
-		<button class="btn btn-danger btn-xs" type="submit" name="delete" value="delete" onclick="manageItems(-1);return false;">
-			<i class="fa fa-trash"></i> #i18n{document.attributeType.listbox.btnDelItem}
-		</button>
-		<button  name="bydefault" value="bydefault" class="btn btn-primary btn-xs" type="submit"onclick="setByDefault('${items.name}_select');return false;" >
-			<i class="fa fa-star-o"></i> #i18n{document.attributeType.listbox.btnDefItem}
-		</button>
-		<input type="hidden" id="${defaultValue.name}" name="${defaultValue.name}" value="${valueDefaultValue!}" >
-	</div>
-</div>
+		</@select>
+	</@div>
+	<@button type='submit' name='delete' value='delete' params='onclick="manageItems(-1);return false;"' title='#i18n{document.attributeType.listbox.btnDelItem}' buttonIcon='trash' color='danger' />
+	<@button type='submit' name='bydefault' value='bydefault' params='onclick="setByDefault('${items.name}_select');return false;"' title='#i18n{document.attributeType.listbox.btnDefItem}' buttonIcon='star' />
+	<@input type='hidden' id='${defaultValue.name}' name='${defaultValue.name}' value='${valueDefaultValue!}' />
+</@formGroup>
 <!--
 <div class="form-group">
 	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${defaultValue.name}">#i18n{document.attributeType.listbox.defaultValue}</label>

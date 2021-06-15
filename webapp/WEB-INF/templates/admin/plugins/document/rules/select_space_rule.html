@@ -1,26 +1,17 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12">
-		<div class="box box-solid box-primary">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{document.select_space_rule.title}</h3>
-			</div>
-            <div class="box-body">
-				<form class="form-horizontal" name="formSelect" method="get" action="jsp/admin/plugins/document/DoSelectSpace.jsp" >
-					<div class="form-group" >
-						<label class="control-label col-xs-12 col-sm-2 col-md-2" for="">#i18n{document.move_space.labelMove}</label>
-						<div class="col-xs-12 col-sm-10 col-md-10" >
-							${spaces_browser}
-						</div>
-					</div>
-					<div class="form-group" >
-						<div class="col-xs-12 col-sm-offset-2 col-sm-10 col-md-offset-2 col-md-10" >
-							<button type="button" class="btn btn-default" onclick="javascript:history.back();" >
-								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
-							</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
+<@row>
+	<@columns>
+		<@box>
+			<@boxHeader title='#i18n{document.select_space_rule.title}' />
+            <@boxBody>
+				<@tform name='formSelect' method='get' action='jsp/admin/plugins/document/DoSelectSpace.jsp'>
+					<@formGroup labelKey='#i18n{document.move_space.labelMove}'>
+						${spaces_browser}
+					</@formGroup>
+					<@formGroup>
+						<@button type='button' params='onclick="javascript:history.back();"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
+					</@formGroup>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
