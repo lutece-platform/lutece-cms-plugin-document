@@ -19,11 +19,11 @@
 						<@formGroup labelFor='icon' labelKey='#i18n{document.modify_space.labelIcon}'>
 							<#list icons_list as item>
 								<#assign default_value = space.idIcon />
-								<#if default_value='${item.code}'><#local checked=true /><#else><#local checked=false /></#if>
-								<#local radioLabelKey>
+								<#if default_value?string=item.code><#assign checked=true /><#else><#assign checked=false /></#if>
+								<#assign radioLabelKey>
 									<img src="${item.name}" alt="${item.name}" title="${item.name}" />
-								</#local>
-								<@radioButton orientation='inline' labelFor='${name}' labelKey=radioLabelKey checked=checked name='icon' value='${item.code}' />
+								</#assign>
+								<@radioButton orientation='inline' labelFor='${item.name}' labelKey=radioLabelKey checked=checked name='icon' value='${item.code}' />
 							</#list>
 						</@formGroup>
 						<@formGroup labelFor='document_type' labelKey='#i18n{document.modify_space.labelDocumentTypes}'>

@@ -1,29 +1,29 @@
 <@row>
-    <@columns sm=3 md=3>
+    <@columns lg=3>
         <@box>
 			<@boxHeader title='#i18n{document.modify_document_type.titleProperties}' />
 			<@boxBody>
 				<@tform method='post' action='jsp/admin/plugins/document/DoModifyDocumentType.jsp'>
 					<@input type='hidden' id='old_code' name='old_code' value='${document_type.code}' />
-					<@formGroup labelFor='code' labelKey='#i18n{document.modify_document_type.labelCode}' helpKey='#i18n{document.modify_document_type.helpCode}' mandatory=true>
-						<@input type='text' name='code' id='code' tabindex='1' maxlength=30 value='${document_type.code}' />
+					<@formGroup labelFor='code' labelKey='#i18n{document.modify_document_type.labelCode}' helpKey='#i18n{document.modify_document_type.helpCode}' mandatory=true rows=2>
+						<@input type='text' name='code' id='code' maxlength=30 value='${document_type.code}' />
 					</@formGroup>
-					<@formGroup labelFor='name' labelKey='#i18n{document.modify_document_type.labelName}' helpKey='#i18n{document.modify_document_type.helpName}' mandatory=true>
+					<@formGroup labelFor='name' labelKey='#i18n{document.modify_document_type.labelName}' helpKey='#i18n{document.modify_document_type.helpName}' mandatory=true rows=2>
 						<@input type='text' name='name' id='name' maxlength=100 value='${document_type.name}' />
 					</@formGroup>
-					<@formGroup labelFor='name' labelKey='#i18n{document.modify_document_type.labelDescription}' helpKey='#i18n{document.modify_document_type.helpDescription}' mandatory=true>
+					<@formGroup labelFor='name' labelKey='#i18n{document.modify_document_type.labelDescription}' helpKey='#i18n{document.modify_document_type.helpDescription}' mandatory=true rows=2>
 						<@input type='text' name='description' id='description' value='${document_type.description}' />
 					</@formGroup>
-					<@formGroup labelFor='icon_url' labelKey='#i18n{document.modify_document_type.labelThumbnailUrl}'>
+					<@formGroup labelFor='icon_url' labelKey='#i18n{document.modify_document_type.labelThumbnailUrl}' rows=2>
 						<@input type='text' name='icon_url' id='icon_url' value='${document_type.defaultThumbnailUrl}' />
 					</@formGroup>
-					<@formGroup labelFor='thumbnail_attribute' labelKey='#i18n{document.modify_document_type.labelThumbnailAttribute}'>
+					<@formGroup labelFor='thumbnail_attribute' labelKey='#i18n{document.modify_document_type.labelThumbnailAttribute}' rows=2>
 						<@select name='thumbnail_attribute' items=thumbnail_attributes_list default_value='${document_type.thumbnailAttributeId}' />
 					</@formGroup>
-					<@formGroup labelFor='name' labelKey='#i18n{document.modify_document_type.labelMetadata}' helpKey='#i18n{document.modify_document_type.helpMetadata}' mandatory=true>
+					<@formGroup labelFor='name' labelKey='#i18n{document.modify_document_type.labelMetadata}' helpKey='#i18n{document.modify_document_type.helpMetadata}' mandatory=true rows=2>
 						<@select name='metadata' items=metadata_handlers_list default_value='' />
 					</@formGroup>
-					<@formGroup>
+					<@formGroup rows=2>
 						<@button type='submit' title='#i18n{document.modify_document_type.buttonModify}' buttonIcon='save' />
 						 <@aButton href='jsp/admin/plugins/document/ManageDocumentTypes.jsp?plugin_name=document' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
 					</@formGroup>
@@ -31,17 +31,17 @@
 			</@boxBody>
 		</@box>
     </@columns>
-    <@columns sm=9 md=9>
+    <@columns lg=9>
         <@box>
 			<@boxHeader title='#i18n{document.modify_document_type.titleAttributesList}' />
 			<@boxBody>
-				<@tform class='form-search' type='inline' method='post' name='AddAttribute' action='jsp/admin/plugins/document/AddDocumentTypeAttribute.jsp'>
+				<@tform class='form-search' type='inline'  align='right' method='post' name='AddAttribute' action='jsp/admin/plugins/document/AddDocumentTypeAttribute.jsp'>
 					<@input type='hidden' name='document_type_code' value='${document_type.code}' />
 					<@formGroup formStyle='inline' labelFor='attribute_type_code' labelKey='#i18n{document.modify_document_type.labelAddAttribute}'>
 						<@inputGroup>
 							<@select name='attribute_type_code' default_value='' items=attribute_types_list />
 							<@inputGroupItem>
-								<@button type="submit' title='#i18n{document.modify_document_type.buttonAddAttribute}' buttonIcon='plus-circle' hideTitle=['all'] />
+								<@button type='submit' title='#i18n{document.modify_document_type.buttonAddAttribute}' buttonIcon='plus-square' hideTitle=['all'] />
 							</@inputGroupItem>
 						</@inputGroup>
 					</@formGroup>
@@ -72,9 +72,9 @@
 							</@td>
 							<@td>
 								<@aButton href='jsp/admin/plugins/document/ModifyDocumentTypeAttribute.jsp?attribute_id=${attribute.id}' title='${attribute.name}' buttonIcon='edit' size='sm' hideTitle=['all'] />
-								<@aButton href='jsp/admin/plugins/document/DoAttributeMoveUp.jsp?index=${attribute.attributeOrder}' title='#i18n{document.modify_document_type.buttonMoveUp}' buttonIcon='arrow-up' size='sm' hideTitle)['all'] />
-								<@aButton href='jsp/admin/plugins/document/DoAttributeMoveDown.jsp?index=${attribute.attributeOrder}' title='#i18n{document.modify_document_type.buttonMoveDown}' buttonIcon='arrow-down' size='sm' hideTitle)['all'] />
-								<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteAttribute.jsp?attribute_id=${attribute.id}' title='#i18n{document.modify_document_type.buttonDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle)['all'] />
+								<@aButton href='jsp/admin/plugins/document/DoAttributeMoveUp.jsp?index=${attribute.attributeOrder}' title='#i18n{document.modify_document_type.buttonMoveUp}' buttonIcon='arrow-up' size='sm' hideTitle=['all'] />
+								<@aButton href='jsp/admin/plugins/document/DoAttributeMoveDown.jsp?index=${attribute.attributeOrder}' title='#i18n{document.modify_document_type.buttonMoveDown}' buttonIcon='arrow-down' size='sm' hideTitle=['all'] />
+								<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteAttribute.jsp?attribute_id=${attribute.id}' title='#i18n{document.modify_document_type.buttonDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all'] />
 							</@td>
 						</@tr>
 						</#list>
@@ -82,18 +82,17 @@
 				</@table>
 			</@boxBody>
         </@box>
-        <hr>
         <@box>
-			<@boxHeader title='#i18n{document.modify_document_type.titleStyleSheets' />
+			<@boxHeader title='#i18n{document.modify_document_type.titleStyleSheets}' />
 			<@boxBody>
                 <@tform method='post' action='jsp/admin/plugins/document/DoLoadDocumentTypeStyleSheets.jsp' enctype='multipart/form-data' name='create_stylesheet'>
                     <@input type='hidden' name='document_type_code' value='${document_type.code}' />
                     <@row>
                         <@columns sm=6 md=6>
-							<@formGroup labelFor='stylesheet_source' labelKey='#i18n{document.modify_document_type.labelStyleSheetAdmin}'>
+							<@formGroup labelFor='stylesheet_source' labelKey='#i18n{document.modify_document_type.labelStyleSheetAdmin}' rows=2>
 								<@input type='file' id='stylesheet_admin' name='stylesheet_admin' maxlength=100 />
 							</@formGroup>
-							<@formGroup>
+							<@formGroup rows=2>
                                 <@checkBox labelFor='stylesheet_admin_update' labelKey='#i18n{document.modify_document_type.labelStyleSheetAdminUpdate}' id='stylesheet_admin_update' name='stylesheet_admin_update' value='true' />
 							</@formGroup>
 							
@@ -109,10 +108,10 @@
 						</@columns>
                         
 						<@columns sm=6 md=6>
-							<@formGroup labelFor='stylesheet_source' labelKey='#i18n{document.modify_document_type.labelStyleSheetContent}'>
+							<@formGroup labelFor='stylesheet_source' labelKey='#i18n{document.modify_document_type.labelStyleSheetContent}' rows=2>
 								<@input type='file' id='stylesheet_content' name='stylesheet_content' maxlength=100 />
 							</@formGroup>
-							<@formGroup>
+							<@formGroup rows=2>
 								<@checkBox labelFor='stylesheet_content_update' labelKey='#i18n{document.modify_document_type.labelStyleSheetContentUpdate}' id='stylesheet_content_update' name='stylesheet_content_update' value='true' />
 							</@formGroup>
 							<#if document_type.contentServiceXsl?has_content>
@@ -127,7 +126,7 @@
 						</@columns>
 					</@row>
 					<hr></hr>
-					<@formGroup>
+					<@formGroup rows=2>
 						<@button type='submit' title='#i18n{document.modify_document_type.buttonLoadStyleSheets}' buttonIcon='upload' />
 					</@formGroup>
                     <@input type='hidden' name='mode_id' value='-1' />
