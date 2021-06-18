@@ -23,7 +23,7 @@
 					${item_space.name}
 				</#if>
 			</#assign>
-			<@radioButton labelFor='browser_selected_space_id' labelKey=labelKey name='browser_selected_space_id' id='browser_selected_space_id' value='${item_space.id}' />
+			<@radioButton labelFor='space_${item_space?index}' labelKey=labelKey name='browser_selected_space_id' id='space_${item_space?index}' value='${item_space.id}' />
 		</#list>
 	</@formGroup>
 	<@formGroup>

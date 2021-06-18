@@ -5,10 +5,10 @@
             <@boxBody>
 				<@tform id='selectFilesForm' name='formMove' method='get' action='jsp/admin/plugins/document/DoMoveSpace.jsp' enctype='multipart/form-data'>
 					<@input type='hidden' name='id_space' value='${space.id}' />
-					<#if submit_button_disabled >
+					<#if submit_button_disabled>
 						<@formGroup>
 							<@staticText>#i18n{document.move_space.labelMove}</@staticText>
-						</@formGroup
+						</@formGroup>
 					</#if>
 					${spaces_browser}
 				</@tform>

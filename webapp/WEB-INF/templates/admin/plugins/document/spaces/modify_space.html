@@ -23,7 +23,7 @@
 								<#assign radioLabelKey>
 									<img src="${item.name}" alt="${item.name}" title="${item.name}" />
 								</#assign>
-								<@radioButton orientation='inline' labelFor='${item.name}' labelKey=radioLabelKey checked=checked name='icon' value='${item.code}' />
+								<@radioButton orientation='inline' labelFor='${item.name}' labelKey=radioLabelKey checked=checked name='icon' id='${item.name}' value='${item.code}' />
 							</#list>
 						</@formGroup>
 						<@formGroup labelFor='document_type' labelKey='#i18n{document.modify_space.labelDocumentTypes}'>
