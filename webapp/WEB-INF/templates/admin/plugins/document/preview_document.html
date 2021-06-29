@@ -24,7 +24,7 @@
 ${btnAction}
 </#macro>
 <@row>
-    <@columns md=4>
+    <@columns lg=4>
         <@box>
             <@boxHeader title='#i18n{document.preview_document.title}'>
 				<#list document.actions  as action >
@@ -32,11 +32,12 @@ ${btnAction}
 						<#assign btn_action>
 							<@setBtnAction action_nb=action.idAction />
 						</#assign>
-						<@aButton class=btn_action href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' size='sm' hideTitle=['xs','sm'] />
+						<@aButton color=btn_action?trim href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' size='sm' hideTitle=['all'] />
 					</#if>  
 				</#list>
-				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder' size='sm' hideTitle=['xs','sm'] />
-				<@button type='button' style='card-control collapse' buttonTargetId='#document_info' buttonIcon='minus' size='sm' hideTitle=['xs','sm'] />
+				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder' size='sm' hideTitle=['all'] />
+				<@button type='button' style='card-control collapse' buttonTargetId='#document_info' buttonIcon='minus' size='sm' hideTitle=['all'] />
+			</@boxHeader>
             <@boxBody>
 				<@div id='document_info'>
 					<blockquote>
@@ -77,15 +78,15 @@ ${btnAction}
 						<p><@icon style='calendar' /> ${labelEndUntil} ${dateEnd}</p> 
 					</#if> 
 				</@div>
-            </@boxBody
+            </@boxBody>
         </@box>
     </@columns>
-    <@columns md=8>
+    <@columns lg=8>
         <@box>
-            <@boxHeader title='' />
+            <@boxHeader title='#i18n{document.attributeType.internallink.buttonShowPreview} : ${document.title}' />
             <@boxBody>	
                 ${preview}
-            </@boxBody
+            </@boxBody>
         </@box>
     </@columns>
 </@row>

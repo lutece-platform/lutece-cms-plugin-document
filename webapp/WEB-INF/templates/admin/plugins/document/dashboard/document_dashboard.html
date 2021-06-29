@@ -1,11 +1,11 @@
 <@row>
 	<@columns>
-		<@box>
+		<@box id='site_dashboard_document_last_modified'>
 			<@boxHeader title='#i18n{document.dashboard.columnLastModifiedDocument}'>
-				<@button style='card-control collapse' buttonTargetId='' buttonIcon='minus' size='sm' />
-				<@button style='card-control remove' buttonTargetId='' buttonIcon='times' size='sm' />
+				<@button style='card-control collapse' buttonTargetId='#site_dashboard_document_last_modified_card_body' buttonIcon='minus' size='sm' />
+				<@button style='card-control remove' buttonTargetId='#site_dashboard_document_last_modified' buttonIcon='times' size='sm' />
 			</@boxHeader>
-			<@boxBody>
+			<@boxBody id='site_dashboard_document_last_modified_card_body'>
 				<@table>
 					<thead class="sr-only">
 						<@tr>
@@ -48,7 +48,7 @@
 												<#else>
 													<#assign color = 'primary' />
 												</#if>
-												<@aButton color=color href='${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}' title='${action.description}' hideTitle=['all'] buttonIcon='action.iconUrl' size='sm' />
+												<@aButton color=color href='${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}' title='${action.description}' hideTitle=['all'] buttonIcon=action.iconUrl size='sm' />
 											</#if>
 										</#list>
 									</p>
@@ -75,12 +75,12 @@
 
 <@row>
 	<@columns>
-		<@box>
+		<@box id='site_dashboard_document_last_published'>
 			<@boxHeader title='#i18n{document.dashboard.columnLastPublishedDocument}'>
-				<@button style='card-control collapse' buttonTargetId='' buttonIcon='minus' size='sm' />
-				<@button style='card-control remove' buttonTargetId='' buttonIcon='times' size='sm' />
+				<@button style='card-control collapse' buttonTargetId='#site_dashboard_document_last_published_card_body' buttonIcon='minus' size='sm' />
+				<@button style='card-control remove' buttonTargetId='#site_dashboard_document_last_published' buttonIcon='times' size='sm' />
 			</@boxHeader>
-			<@boxBody>
+			<@boxBody id='site_dashboard_document_last_published_card_body'>
 				<!-- LAST PUBLISHED DOCUMENT -->
 				<@table>
 					<thead class="sr-only">

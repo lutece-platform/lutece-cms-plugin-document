@@ -1,9 +1,9 @@
 <#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>${extendableResourceActionsHtml!}</#if>
 <@row>
-	<@columns md=4>
+	<@columns lg=4>
 		<@box>
 			<@boxHeader title='#i18n{document.move_document.title}'>
-				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder' size='sm' hideTitle=['xs','sm'] />
+				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder' size='sm' hideTitle=['xs','sm','md'] />
 				<@button type='button' style='card-control collapse' buttonTargetId='#document_info' buttonIcon='minus' size='sm' />
 			</@boxHeader>
 			<@boxBody>
@@ -49,23 +49,13 @@
 			</@boxBody>
 		</@box>
 	</@columns>
-	<@columns md=8>
+	<@columns lg=8>
 		<@box>
 			<@boxHeader title='#i18n{document.move_document.title}' />
 			<@boxBody>
 				<@tform name='formMove' method='get' action='jsp/admin/plugins/document/DoMoveDocument.jsp' enctype='multipart/form-data'>
 					<@input type='hidden' name='id_document' value='${document.id}' />
 					${spaces_browser}
-					<!-- USELESS - Submit on select button
-					<div class="input-group">
-						<@button class="btn btn-primary btn-sm" type="submit" <#if submit_button_disabled >disabled="disabled"</#if>>
-							<i class="glyphicon glyphicon-arrow-right"></i>&nbsp;#i18n{document.move_document.buttonMove}
-						</button>
-						<a class="btn btn-default btn-sm" href="jsp/admin/plugins/document/ManageDocuments.jsp" >
-							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.admin.message.buttonCancel}
-						</a>
-					</div>
-					-->
 				</@tform>
 			</@boxBody>
 		</@box>
