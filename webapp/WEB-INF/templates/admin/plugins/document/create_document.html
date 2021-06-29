@@ -35,7 +35,7 @@
 								<@formGroup labelFor='document_validity_begin' labelKey='#i18n{document.create_document.labelDocumentValidityBegin}' rows=2>
 									<@inputGroup>
 										<@inputGroupItem type='text'><@icon style='calendar' /></@inputGroupItem>
-										<@input type='text' name='document_validity_begin' id='document_validity_begin' value='${current_date!}' />
+										<@input type='daterange' dateRangeEndId='document_validity_end' name='document_validity_begin' id='document_validity_begin' value='${current_date!}' />
 									</@inputGroup>
 								</@formGroup>
 								<@formGroup labelFor='document_validity_end' labelKey='#i18n{document.create_document.labelDocumentValidityEnd}' rows=2>
@@ -78,7 +78,7 @@
 				<#if metadata?has_content >
 					<@box>
 						<@boxHeader title='#i18n{document.modify_document_type.labelMetadata}'>
-							<@button type='button' style='card-control collapse' buttonTargetId='#metadata' buttonIcon='minus' size='sm' />
+							<@button type='button' style='card-control collapse' buttonTargetId='#metadata' buttonIcon='plus' size='sm' />
 						</@boxHeader>
 						<@boxBody> 
 							<@div id='metadata'>

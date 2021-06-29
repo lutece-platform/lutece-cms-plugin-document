@@ -1,16 +1,18 @@
 <#if !attribute.textValue?has_content>
 	<#assign helpKey = attribute.description />
 </#if>
-<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey! mandatory=attribute.required>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey! mandatory=attribute.required rows=2>
 	<@row>
 		<@columns sm=8>
-			<@input type='file' name='${attribute.code}' id='${attribute.code} />
+			<@input type='file' name='${attribute.code}' id='${attribute.code}' />
 		</@columns>
 		<@columns sm=12>
 			<#if attribute.textValue?has_content>
 				<@row>
 					<@columns sm=8>
-						<@checkBox labelFor='update_${attribute.code}' labelKey='#i18n{document.attributeType.image.updateField} #i18n{document.attributeType.image.deleteField}' name='update_${attribute.code}' id='update_${attribute.code}' value='1' />
+						<@formGroup helpKey='#i18n{document.attributeType.image.deleteField}' rows=2>
+							<@checkBox labelFor='update_${attribute.code}' labelKey='#i18n{document.attributeType.image.updateField}' name='update_${attribute.code}' id='update_${attribute.code}' value='1' />
+						</@formGroup>
 					</@columns>
 					<@columns sm=4>
 						<#assign params = 'data-title="${attribute.textValue}"' />
@@ -18,24 +20,20 @@
 							<#assign params += ' data-lightbox="image-document"' />
 						</#if>
 						<@link href='servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true' params=params>
-						   <img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-lg pull-right clearfix">
+						   <img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-lg pull-right clearfix" style="max-width:100%;" />
 						</@link>
 					</@columns>
 				</@row>
 			</#if>
-			<@row>
-				<@columns sm=3>
-					<@checkBox labelFor='${attribute.code}_crop' labelKey='#i18n{document.attributeType.image.resize}' name='${attribute.code}_croppable' id='${attribute.code}_crop' />
-				</@columns>
-				<@columns sm=2>
-					<@formGroup labelKey='#i18n{document.attributeType.image.resize}' hideLabel=['all']>
-						<@inputGroup>
-							<@input type='text' name='${attribute.code}_width' id='${attribute.code}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' />
-							<@inputGroupItem type='text'>px</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-				</@columns>
-			</@row>
+			<@formGroup>
+				<@checkBox labelFor='${attribute.code}_crop' labelKey='#i18n{document.attributeType.image.resize}' name='${attribute.code}_croppable' id='${attribute.code}_crop' />
+			</@formGroup>
+			<@formGroup labelKey='#i18n{document.attributeType.image.resize}' hideLabel=['all']>
+				<@inputGroup>
+					<@input type='text' name='${attribute.code}_width' id='${attribute.code}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' />
+					<@inputGroupItem type='text'>px</@inputGroupItem>
+				</@inputGroup>
+			</@formGroup>
 		</@columns>
 	</@row>
 </@formGroup>

@@ -146,19 +146,25 @@
 										<@checkBox id='select_all' name='select_all' />
 									</@th>
 									<@th>
-										#i18n{document.manage_documents.labelDocumentId}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='id' />
-										&nbsp-&nbsp;#i18n{document.manage_documents.labelDocument}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='title' />
-										<span id="set_selection" >
-											<@select id='selection' name='selection' disabled=true>
-												<option value="validate">#i18n{document.manage_document.validate}</option>
-												<option value="submit">#i18n{document.manage_document.submit}</option>
-												<option value="refuse">#i18n{document.manage_document.refuse}</option>
-												<option value="remove">#i18n{document.manage_document.remove}</option>
-												<option value="archive">#i18n{document.manage_document.archive}</option>
-												<option value="unarchive">#i18n{document.manage_document.unarchive}</option>
-											</@select>
-											<@button type='submit' title='#i18n{document.manage_documents.applyToSelection}' buttonIcon='check' hideTitle=['all'] />
-										</span>
+										#i18n{document.manage_documents.labelDocumentId} <@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='id' />
+									</@th>
+									<@th>
+										#i18n{document.manage_documents.labelDocument}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='title' />
+										<@formGroup labelFor='selection' rows=2>
+											<@inputGroup>
+												<@select id='selection' name='selection' size='sm' disabled=true>
+													<option value="validate">#i18n{document.manage_document.validate}</option>
+													<option value="submit">#i18n{document.manage_document.submit}</option>
+													<option value="refuse">#i18n{document.manage_document.refuse}</option>
+													<option value="remove">#i18n{document.manage_document.remove}</option>
+													<option value="archive">#i18n{document.manage_document.archive}</option>
+													<option value="unarchive">#i18n{document.manage_document.unarchive}</option>
+												</@select>
+												<@inputGroupItem>
+													<@button type='submit' title='#i18n{document.manage_documents.applyToSelection}' buttonIcon='check' hideTitle=['all'] size='sm' />
+												</@inputGroupItem>
+											</@inputGroup>
+										</@formGroup>
 									</@th>
 									<@th>#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='publishedStatus' /></@th>
 									<@th>#i18n{document.manage_documents.labelActions}</@th>
@@ -166,9 +172,10 @@
 								<#list documents_list as document >
 								<@tr class='document-row' params='data-document="${document.id} ${document.title}"'>
 									<@td><@checkBox id='document_selection' name='document_selection' value='${document.id}' /></@td>
+									<@td>${document.id}</@td>
 									<@td>
 										<p>
-											${document.id} - <strong title="${document.title}"><#if document.title?length &gt; 60>${document.title?substring(0,60)}...<#else>${document.title}</#if></strong>
+											<strong title="${document.title}"><#if document.title?length &gt; 60>${document.title?substring(0,60)}...<#else>${document.title}</#if></strong>
 										</p>
 										<p>
 											<@icon style='calendar' title='#i18n{document.manage_documents.labelDateModification}' />&nbsp;
@@ -200,7 +207,7 @@
 												<#assign aBtnColor>
 													<@setBtnAction action_nb=action.idAction />
 												</#assign>
-												<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color=aBtnColor />
+												<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color=aBtnColor?trim hideTitle=['all'] size='sm' />
 											</#if>
 										</#list>
 									</@td>
@@ -331,15 +338,15 @@ jQuery(function($) {
 		if( this.checked ){
 			$('input[type="checkbox"]').each( function() {this.checked = true;} );
 		} else {
-			$('input[type="checkbox"]').each(function() { this.checked = false; } );
+			$('input[type="checkbox"]').each(function() {this.checked = false;} );
 		}
 	});
 
 	$("input[type='checkbox']").click( function(){
 	if( $("input[type='checkbox']:checked").length > 0 ){
-		$("#set_selection").children().removeAttr("disabled");
+		$("#selection").removeAttr("disabled");
 	} else {
-		$("#set_selection").children().attr("disabled","disabled");
+		$("#selection").attr("disabled","disabled");
 	}
 	});
 

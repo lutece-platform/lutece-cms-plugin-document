@@ -1,9 +1,9 @@
 <@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required>
 	<#list parameters.size as size>
-		<#assign inputSize = size />
+		<#assign inputSize = size?number />
 	</#list>
 	<#list parameters.maxlength as maxlength>
-		<#assign maxLength = maxlength />
+		<#assign maxLength = maxlength?number />
 	</#list>
 	<@input type='text' id='${attribute.code}' name='${attribute.code}' inputSize=inputSize maxlength=maxLength />
 </@formGroup>
