@@ -1,50 +1,35 @@
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="id_space_source" >#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText1} </label>
-		<div class="col-xs-12 col-sm-9 col-md-9">
-			<p class="form-control-static">
-			<#if id_space_source?exists> 
-				<input type="hidden" name="id_space_source" value="${id_space_source}">
-				<span class="label">${path_space_source}</span>
-			<#else>
-				<span class="label">#i18n{module.document.rulenotifyusers.create_rule_notify_users.noSpaceSelected}</span> 
-			</#if>
-				<button class="btn btn-xs btn-flat btn-select" type="submit" data-space="id_space_source" > #i18n{module.document.rulenotifyusers.create_rule_notify_users.buttonChoose}</button>
-			</p>
-		</div>
-</div>
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="id_state" >#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText2}</label>
-	<div class="col-xs-12 col-sm-9 col-md-9">
-		<p class="form-control-static">
-		<#if id_state?exists >
-			<@select name='id_state' default_value='${id_state}' items=states_list />
+<@formGroup labelFor='id_space_source' labelKey='#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText1}'>
+	<@staticText>
+		<#if id_space_source?exists> 
+			<@input type='hidden' name='id_space_source' value='${id_space_source}' />
+			<strong>${path_space_source}</strong>
 		<#else>
-			<@select name='id_state' default_value='' items=states_list />
+			<strong>#i18n{module.document.rulenotifyusers.create_rule_notify_users.noSpaceSelected}</strong> 
 		</#if>
-		</p>
-	</div>
-</div>
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="id_space_destination" >#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText3} </label>
-	<div class="col-xs-12 col-sm-9 col-md-9">
-		<p class="form-control-static">
-		<#if id_mailinglist?exists>
-			<@select name='id_mailinglist' default_value='${id_mailinglist}' items=mailinglists_list />
-		<#else>
-			<@select name='id_mailinglist' default_value='' items=mailinglists_list />
-		</#if>	
-	</p>
-	</div>
-</div>
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="id_space_destination" >#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText3} #i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText4}</label>
-	<div class="col-xs-12 col-sm-9 col-md-9">
-		<p class="form-control-static">
-		<#if message_template_key?exists >
-			<@select name='message_template_key' default_value='${message_template_key}'  items=message_templates_list />
-		<#else>
-			<@select name='message_template_key' default_value='' items=message_templates_list />
-		</#if>
-	</p>
-	</div>
-</div>
+	</@staticText>
+	<@button type='submit' params='data-space="id_space_source"' title='#i18n{module.document.rulenotifyusers.create_rule_notify_users.buttonChoose}' buttonIcon='check' />
+</@formGroup>
+
+<@formGroup labelFor='id_state' labelKey='#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText2}'>
+	<#if id_state?exists >
+		<@select name='id_state' default_value='${id_state}' items=states_list />
+	<#else>
+		<@select name='id_state' default_value='' items=states_list />
+	</#if>
+</@formGroup>
+
+<@formGroup labelFor='id_space_destination' labelKey='#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText3}'>
+	<#if id_mailinglist?exists>
+		<@select name='id_mailinglist' default_value='${id_mailinglist}' items=mailinglists_list />
+	<#else>
+		<@select name='id_mailinglist' default_value='' items=mailinglists_list />
+	</#if>
+</@formGroup>
+
+<@formGroup labelFor='id_space_destination' labelKey='#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText3} #i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText4}'>
+	<#if message_template_key?exists >
+		<@select name='message_template_key' default_value='${message_template_key}'  items=message_templates_list />
+	<#else>
+		<@select name='message_template_key' default_value='' items=message_templates_list />
+	</#if>
+</@formGroup>
