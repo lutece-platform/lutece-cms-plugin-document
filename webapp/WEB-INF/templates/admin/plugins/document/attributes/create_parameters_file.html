@@ -2,7 +2,7 @@
 	<#list parameter.defaultValue as values>
 		<#assign value = values?if_exists />
 	</#list>
-	<@formGroup labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}'>
+	<@formGroup labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}' rows=2>
 		<@input type='text' name='${parameter.name}' id='${parameter.name}' tabIndex='${parameter_index + 5}' value=value!'' /> 
 	</@formGroup>
 </#list>

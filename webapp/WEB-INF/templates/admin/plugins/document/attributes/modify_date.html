@@ -1,4 +1,4 @@
-<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required rows=2>
 	<#if attribute.textValue?has_content>
 		<#assign value = attribute.textValue />
 	</#if>

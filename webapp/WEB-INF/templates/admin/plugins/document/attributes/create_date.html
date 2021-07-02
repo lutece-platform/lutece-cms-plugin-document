@@ -1,4 +1,4 @@
-<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required rows=2>
 	<#if (parameters.currentdate)?has_content>
 		<#list parameters.currentdate as currentdate>
 			<#assign inputValue = currentdate?if_exists />

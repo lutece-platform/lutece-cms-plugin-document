@@ -1,11 +1,9 @@
-<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required rows=2>
 	<@input type='textarea' id='${attribute.code}' name='${attribute.code}' readonly=true rows=5 cols=60>${attribute.textValue}</@input> 
-		<@button type='button' params='onclick="javascript:linkservice${attribute.code}();return false;"'>
-			<i class="icon-lutece-logo"></i>
-		</@button>
+		<@button type='button' params='onclick="javascript:linkservice${attribute.code}();return false;"' buttonIcon='link' color='warning' />
 		<!-- DOCUMENT-97: enable clearing internal link field. -->
-		<@button type='button' id='btnShowPreview_${attribute.code}' buttonIcon='eye' />
-		<@button type='button' params='onclick="javascript:linkservice_clear${attribute.code}();return false;"' title='#i18n{document.attributeType.internallink.labelLinkServiceClear}' buttonIcon='trash' color='danger' />
+		<@button type='button' id='btnShowPreview_${attribute.code}' title='Link Service' buttonIcon='eye' hideTitle=['all'] />
+		<@button type='button' params='onclick="javascript:linkservice_clear${attribute.code}();return false;"' title='#i18n{document.attributeType.internallink.labelLinkServiceClear}' buttonIcon='trash' color='danger' hideTitle=['all'] />
 		<p id="show_preview_section_${attribute.code}">&nbsp;</p>
 		<div id="show_preview_${attribute.code}">&nbsp;</div>
 </@formGroup>

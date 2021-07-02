@@ -1,12 +1,12 @@
 <#list parameters as parameter>
 	<#if parameter_index = 0>
-		<@formGroup labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}'>
+		<@formGroup labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}' rows=2>
 			<#list parameter.valueList as values ><#assign inputValue = values /></#list>
 			<@input type='date' class='param' name='${parameter.name}' id='${parameter.name}' tabIndex='${parameter_index + 5}' value=inputValue />
 		</@formGroup>
 	</#if>
 	<#if parameter_index = 1>
-		<@formGroup helpKey='${parameter.description}'>
+		<@formGroup helpKey='${parameter.description}' rows=2>
 			<@checkBox labelFor='${parameter.name}' labelKey='${parameter.label}' name='${parameter.name}' id='${parameter.name}' checked=parameter.valueList?has_content />
 		</@formGroup>
 		<script>

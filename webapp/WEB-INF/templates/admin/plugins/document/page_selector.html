@@ -2,7 +2,7 @@
 	<@row>
 		<@columns>
 			<ol class="breadcrumb">
-			  <li><@link href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input}&amp;selected_text='><@icon style='home' /></li>
+			  <li><@link href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input}&amp;selected_text='><@icon style='home' /></@link></li>
 			  <li>#i18n{document.selector.page.pageChoice}</li>
 			</ol>
 			<#if pages_list?size = 0>
@@ -29,7 +29,7 @@
 					  <ul class="pager">
 						<li>
 							<@link href='javascript:history.go(-1);' title='#i18n{portal.util.labelPrevious}'>
-								<@icon style='chevron-left'>&nbsp;#i18n{portal.util.labelPrevious}
+								<@icon style='chevron-left' />&nbsp;#i18n{portal.util.labelPrevious}
 							</@link>
 						</li>
 						<li>

@@ -1,4 +1,4 @@
-<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' checked=attribute.required>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' checked=attribute.required rows=2>
 	<#list parameters.value as value>
 		<#if value?has_content >
 			<#assign defaultValue = '${value}'>
