@@ -1,10 +1,10 @@
 <@row>
-	<@columns md=3>
+	<@columns>
 		<@box>
 			<@boxHeader title='#i18n{document.manage_document_publishing.labelManagePortlet}'>
-				<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${portlet.pageId}' title='#i18n{document.manage_portlet_publishing.labelAdminSiteAccess}' buttonIcon='globe' size='sm' />
-				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{document.manage_documents.pageTitle}' buttonIcon='folder' size='sm' />
-				<@aButton href='#' id='btn-back' title='#i18n{portal.util.labelBack}' buttonIcon='arrow-left' size='sm' />
+				<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${portlet.pageId}' title='#i18n{document.manage_portlet_publishing.labelAdminSiteAccess}' hideTitle=['xs','sm','md'] buttonIcon='globe' size='sm' />
+				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{document.manage_documents.pageTitle}' hideTitle=['xs','sm','md'] buttonIcon='folder' size='sm' />
+				<@aButton href='#' id='btn-back' title='#i18n{portal.util.labelBack}' hideTitle=['xs','sm','md'] buttonIcon='arrow-left' size='sm' />
 			</@boxHeader>
 			<@boxBody>
 				<blockquote><p class="lead">${portlet.id} - ${portlet.name}</p> </blockquote>
@@ -42,12 +42,8 @@
 						<p>#i18n{document.manage_portlet_publishing.columnTitlePage} <@tag>${portlet.pageId}</@tag></p>
 					</@alert>
 				</#if>
-			</@boxBody>
-		</@box>
-	</@columns>
-	<@columns md=9>
-		<@box>
-			<@boxBody>
+
+			<hr></hr>
 				<#if mode_publication = 0>
 					<@row>
 						<@columns md=6>
@@ -65,7 +61,9 @@
 						<@tform name='formAddSpaceAutoPublication' method='post' action='jsp/admin/plugins/document/CreateDocumentAutoPublication.jsp' enctype='multipart/form-data'>
 							<@input type='hidden' name='id_portlet' value='${portlet.id}' />
 							<@input type='hidden' name='mode_publication' value='1' />
-							<@button type='submit' title='#i18n{document.manage_portlet_publishing.buttonAddAutoPublication}' buttonIcon='plus-circle' />
+							<@div align='right'>
+								<@button type='submit' title='#i18n{document.manage_portlet_publishing.buttonAddAutoPublication}' hideTitle=['xs','sm','md'] buttonIcon='plus-circle' size='sm' />
+							</@div>
 						</@tform>
 					</h3>
 					<@table>

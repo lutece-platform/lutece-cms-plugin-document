@@ -24,9 +24,9 @@
 ${btnAction}
 </#macro>
 <@row>
-    <@columns lg=4>
+    <@columns>
         <@box>
-            <@boxHeader title='#i18n{document.preview_document.title}'>
+            <@boxHeader title='#i18n{document.attributeType.internallink.buttonShowPreview} : ${document.title}'>
 				<#list document.actions  as action >
 					<#if action.url?has_content>
 						<#assign btn_action>
@@ -36,56 +36,54 @@ ${btnAction}
 					</#if>  
 				</#list>
 				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder' size='sm' hideTitle=['all'] />
-				<@button type='button' style='card-control collapse' buttonTargetId='#document_info' buttonIcon='minus' size='sm' hideTitle=['all'] />
 			</@boxHeader>
             <@boxBody>
-				<@div id='document_info'>
-					<blockquote>
-						<p class="lead">${document.id}</span>&nbsp;${document.title}</p>
-					</blockquote>
-					<dl>
-						<dt>#i18n{document.preview_document.columnTitleType}</dt>
-						<dd>${document.type}</dd>
-						<#if document.state?has_content>
-						<dt>#i18n{document.preview_document.columnTitleState}</dt>
-						<dd>${document.state}</dd>
-						</#if> 
-						<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
-						<dd>${document.dateCreation}</dd> 
-						<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
-						<dd>${document.dateModification}</dd>
-					</dl>
-					<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
-					<#assign dateBegin="">
-					<#if document.dateValidityBegin?has_content>
-					<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
-					</#if>    
-					<#assign dateEnd="">
-					<#if document.dateValidityEnd?has_content>
-					<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
-					</#if>                        
-					<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
-					<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
-					<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
-					<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
-					<#if dateBegin?has_content && dateEnd?has_content>
-						<p><@icon style='calendar' /> ${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
-						<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
-						<@tag color='warning'>#i18n{document.preview_document.labelDateValidityNotDefined}</@tag>
-						<#elseif dateBegin?has_content && !( dateEnd?has_content )>
-						<p><@icon style='calendar' /> ${labelBeginSince} ${dateBegin}</p>
-						<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
-						<p><@icon style='calendar' /> ${labelEndUntil} ${dateEnd}</p> 
-					</#if> 
-				</@div>
-            </@boxBody>
-        </@box>
-    </@columns>
-    <@columns lg=8>
-        <@box>
-            <@boxHeader title='#i18n{document.attributeType.internallink.buttonShowPreview} : ${document.title}' />
-            <@boxBody>	
-                ${preview}
+				<@row>
+					<@columns md=3>
+						<@div id='document_info'>
+							<blockquote>
+								<p class="lead">${document.id}</span>&nbsp;${document.title}</p>
+							</blockquote>
+							<dl>
+								<dt>#i18n{document.preview_document.columnTitleType}</dt>
+								<dd>${document.type}</dd>
+								<#if document.state?has_content>
+								<dt>#i18n{document.preview_document.columnTitleState}</dt>
+								<dd>${document.state}</dd>
+								</#if> 
+								<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
+								<dd>${document.dateCreation}</dd> 
+								<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
+								<dd>${document.dateModification}</dd>
+							</dl>
+							<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
+							<#assign dateBegin="">
+							<#if document.dateValidityBegin?has_content>
+							<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
+							</#if>    
+							<#assign dateEnd="">
+							<#if document.dateValidityEnd?has_content>
+							<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
+							</#if>                        
+							<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
+							<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
+							<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
+							<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
+							<#if dateBegin?has_content && dateEnd?has_content>
+								<p><@icon style='calendar' /> ${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
+								<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
+								<@tag color='warning'>#i18n{document.preview_document.labelDateValidityNotDefined}</@tag>
+								<#elseif dateBegin?has_content && !( dateEnd?has_content )>
+								<p><@icon style='calendar' /> ${labelBeginSince} ${dateBegin}</p>
+								<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
+								<p><@icon style='calendar' /> ${labelEndUntil} ${dateEnd}</p> 
+							</#if> 
+						</@div>
+					</@columns>
+					<@columns md=6>
+						${preview}
+					</@columns>
+				</@row>
             </@boxBody>
         </@box>
     </@columns>

@@ -34,7 +34,7 @@
 						<#else>
 							<#assign btnClass = 'primary' />
 						</#if>
-						<@aButton href='${space_action.url}?id_space=${space.id}' title='${space_action.description}' class='btn-space-action ${btnClass}' buttonIcon='${space_action.iconUrl}' size='sm' hideTitle=['all'] />
+						<@aButton href='${space_action.url}?id_space=${space.id}' title='${space_action.description}' class='btn-space-action' color='${btnClass}' buttonIcon='${space_action.iconUrl}' size='sm' hideTitle=['all'] />
 					</#list>
 				</#if>
 			</@boxHeader>
@@ -127,10 +127,10 @@
 						</@tform>                                                                
 					</#if>
 				</#if>
-			</@boxBody>
-		</@box>
-		<@box>
-			<@boxBody>
+				
+				<hr style="margin:50px 0;"></hr>
+
+
 				<#if documents_list?size = 0>
 					<br>
 					<@alert color='warning'>
