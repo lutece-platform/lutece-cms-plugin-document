@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.document.service.attributes;
 
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Locale;

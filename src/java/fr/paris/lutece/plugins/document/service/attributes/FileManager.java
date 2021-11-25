@@ -37,7 +37,7 @@ import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.util.xml.XmlUtil;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**

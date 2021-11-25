@@ -58,8 +58,8 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -402,7 +402,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_LINK, null, model );
 
-        return insertUrl( request, _input, StringEscapeUtils.escapeJavaScript( template.getHtml(  ) ) );
+        return insertUrl( request, _input, StringEscapeUtils.escapeEcmaScript( template.getHtml(  ) ) );
     }
 
     /**

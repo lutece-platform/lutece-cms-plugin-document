@@ -44,7 +44,7 @@ import fr.paris.lutece.portal.service.rbac.ResourceTypeManager;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Locale;
 

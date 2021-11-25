@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.document.business.portlet;
 
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**

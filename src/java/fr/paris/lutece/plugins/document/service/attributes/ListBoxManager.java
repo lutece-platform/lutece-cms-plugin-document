@@ -37,7 +37,7 @@ import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParamet
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttributeHome;
 import fr.paris.lutece.portal.web.constants.Messages;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
