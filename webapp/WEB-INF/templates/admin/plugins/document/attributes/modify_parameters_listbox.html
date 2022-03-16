@@ -6,7 +6,7 @@
 		<#assign items = parameter>
 	</#if>
 </#list>
-<@formGroup labelFor='${items.name}_select' labelKey='${items.label}' rows=2>
+<@formGroup formStyle='' labelFor='${items.name}_select' labelKey='${items.label}'>
 	<@inputGroup>
 		<@input type='text' id='${items.name}_value' name='${items.name}_value' placeHolder='${items.description}' />
 		<@inputGroupItem>
@@ -14,7 +14,7 @@
 		</@inputGroupItem>
 	</@inputGroup>
 </@formGroup>
-<@formGroup labelFor='${items.name}_select' rows=2>
+<@formGroup formStyle='' labelFor='${items.name}_select'>
 	<@select id='${items.name}_select' name='${items.name}_select' inputSize=4>
 		<#list items.valueList as values >
 			<option value="${values}" <#list defaultValue.valueList as defaultvalue ><#if values==defaultvalue> class="bg-primary"</#if></#list>>${values}</option>
@@ -31,14 +31,6 @@
 	<@button type='submit' name='bydefault' value='bydefault' params='onclick="setByDefault('${items.name}_select');return false;"' title='#i18n{document.attributeType.listbox.btnDefItem}' buttonIcon='star' />
 	<@input type='hidden' id='${defaultValue.name}' name='${defaultValue.name}' value='${valueDefaultValue!}' />
 </@formGroup>
-<!--
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-3 col-md-3" for="${defaultValue.name}">#i18n{document.attributeType.listbox.defaultValue}</label>
-	<div class="col-xs-12 col-sm-8 col-md-6">
-		<input type="text" class="form-control input-sm" id="${defaultValue.name}" name="${defaultValue.name}" value="<#list defaultValue.valueList as values >${values}</#list>" readonly="readonly" tabindex="11" >
-	</div>
-</div>
--->
 <script src="js/selectbox.js"></script>
 <script>
 function manageItems( actionItem ){

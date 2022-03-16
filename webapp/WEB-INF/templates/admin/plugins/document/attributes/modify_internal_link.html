@@ -1,4 +1,4 @@
-<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required rows=2>
+<@formGroup formStyle='' labelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required>
 	<@input type='textarea' id='${attribute.code}' name='${attribute.code}' readonly=true rows=5 cols=60>${attribute.textValue}</@input> 
 		<@button type='button' params='onclick="javascript:linkservice${attribute.code}();return false;"' buttonIcon='link' color='warning' />
 		<!-- DOCUMENT-97: enable clearing internal link field. -->
@@ -7,7 +7,6 @@
 		<p id="show_preview_section_${attribute.code}">&nbsp;</p>
 		<div id="show_preview_${attribute.code}">&nbsp;</div>
 </@formGroup>
-
 <script>
 // jQuery("img_linkservice_${attribute.code}").style.display = "inline";
 // DOCUMENT-97: enable clearing internal link field.

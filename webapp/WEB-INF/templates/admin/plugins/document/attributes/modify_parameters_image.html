@@ -1,5 +1,5 @@
 <#list parameters as parameter>
-	<@formGroup labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}' rows=2>
+	<@formGroup formStyle='' labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}'>
 		<#list parameter.valueList as values><#assign inputValue = values /></#list>
 		<@input type='text' name='${parameter.name}' id='${parameter.name}' value=inputValue /> 
 	</@formGroup>

@@ -1,11 +1,11 @@
-<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required rows=2>
-	<@select id='${attribute.code}' name='${attribute.code}'>
-		<#list parameters.items as item>
-			<#if attribute.textValue="${item}">
-				<option selected="selected" value="${item}" >${item}</option>
-			<#else>
-				<option value="${item}" >${item}</option>
-			</#if>
-		</#list>
-	</@select>
+<@formGroup formStyle='' labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required>
+<@select id='${attribute.code}' name='${attribute.code}'>
+	<#list parameters.items as item>
+		<#if attribute.textValue="${item}">
+			<option selected="selected" value="${item}" >${item}</option>
+		<#else>
+			<option value="${item}" >${item}</option>
+		</#if>
+	</#list>
+</@select>
 </@formGroup>
