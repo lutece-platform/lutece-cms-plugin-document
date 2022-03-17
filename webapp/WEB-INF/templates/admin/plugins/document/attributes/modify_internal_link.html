@@ -1,4 +1,4 @@
-<@formGroup formStyle='' labelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required>
+<@formGroup formStyle='inline' labelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required>
 	<@input type='textarea' id='${attribute.code}' name='${attribute.code}' readonly=true rows=5 cols=60>${attribute.textValue}</@input> 
 		<@button type='button' params='onclick="javascript:linkservice${attribute.code}();return false;"' buttonIcon='link' color='warning' />
 		<!-- DOCUMENT-97: enable clearing internal link field. -->

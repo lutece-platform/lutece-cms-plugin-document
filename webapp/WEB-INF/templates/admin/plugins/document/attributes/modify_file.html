@@ -7,13 +7,11 @@
 <#else>
 	<#assign helpKey = attribute.description />
 </#if>
-
-<@formGroup formStyle='' labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey mandatory=attribute.required rows=2>
-	<@input type='file' name='${attribute.code}' id='${attribute.code}' />    BLUH
+<@formGroup formStyle='inline' labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey mandatory=attribute.required rows=2>
+	<@input type='file' name='${attribute.code}' id='${attribute.code}' /> 
 </@formGroup>
-
 <#if attribute.textValue?has_content>
-	<@formGroup helpKey='#i18n{document.attributeType.file.deleteField}' rows=2>
+	<@formGroup formStyle='inline'  helpKey='#i18n{document.attributeType.file.deleteField}' rows=2>
 		<@checkBox labelFor='update_${attribute.code}' labelKey='#i18n{document.attributeType.file.updateField}' name='update_${attribute.code}' id='update_${attribute.code}' value='1' />
 	</@formGroup>
 </#if>

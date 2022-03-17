@@ -1,7 +1,7 @@
 <#if !attribute.textValue?has_content>
 	<#assign helpKey = attribute.description />
 </#if>
-<@formGroup formStyle='' labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey! mandatory=attribute.required>
+<@formGroup formStyle='inline'  labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey! mandatory=attribute.required>
 	<@row>
 		<@columns sm=8>
 			<@input type='file' name='${attribute.code}' id='${attribute.code}' />
@@ -25,10 +25,10 @@
 					</@columns>
 				</@row>
 			</#if>
-			<@formGroup>
+			<@formGroup formStyle='inline' >
 				<@checkBox labelFor='${attribute.code}_crop' labelKey='#i18n{document.attributeType.image.resize}' name='${attribute.code}_croppable' id='${attribute.code}_crop' />
 			</@formGroup>
-			<@formGroup labelKey='#i18n{document.attributeType.image.resize}' hideLabel=['all']>
+			<@formGroup formStyle='inline' labelKey='#i18n{document.attributeType.image.resize}' hideLabel=['all']>
 				<@inputGroup>
 					<@input type='text' name='${attribute.code}_width' id='${attribute.code}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' />
 					<@inputGroupItem type='text'>px</@inputGroupItem>

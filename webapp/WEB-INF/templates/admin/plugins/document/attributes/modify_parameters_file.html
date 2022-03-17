@@ -1,6 +1,6 @@
 <#list parameters as parameter>
-	<@formGroup formStyle='' labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}'>
-		<#list parameter.valueList as values ><#assign inputValue = values /></#list>
-		<@input type='text' name='${parameter.name}' id='${parameter.name}' value=inputValue />
-	</@formGroup>
+<@formGroup formStyle='inline' labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}'>
+	<#list parameter.valueList as values ><#assign inputValue = values /></#list> 
+	<@input type='text' name='${parameter.name}' id='${parameter.name}' value=inputValue /> 
+</@formGroup>
 </#list>

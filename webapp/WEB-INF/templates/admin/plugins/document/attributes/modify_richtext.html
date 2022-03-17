@@ -1,4 +1,4 @@
-<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required rows=2>
+<@formGroup formStyle='inline' slabelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required >
 	<@input type='textarea' id='${attribute.code}' name='${attribute.code}' rows=5 richtext=true>${attribute.textValue}</@input>
 </@formGroup>
 

@@ -24,7 +24,7 @@
 	<#break>
 	</#list>
 </#if>
-<@formGroup formStyle='' labelFor='${items.name}_value' labelKey)='${items.label}>
+<@formGroup formStyle='inline'  labelFor='${items.name}_value' labelKey)='${items.label}>
 	<@inputGroup>
 		<@input type='text' id='${items.name}_value' name='${items.name}_value' placeHolder='${items.description}' />
 		<@inputGroupItem>
@@ -33,7 +33,7 @@
 	</@inputGroup>
 </@formGroup>
 
-<@formGroup formStyle='' labelFor='${items.name}_select'>
+<@formGroup formStyle='inline'  labelFor='${items.name}_select'>
 	<@select id='${items.name}_select' name='${items.name}_select' multiple=4>
 		<#list listValues as values >
 			<option value="${values}"<#if values==valueDefaultValue> class="bg-primary"</#if>>

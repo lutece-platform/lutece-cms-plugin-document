@@ -6,7 +6,7 @@
 		<#assign items = parameter>
 	</#if>
 </#list>
-<@formGroup formStyle='' labelFor='${items.name}_select' labelKey='${items.label}'>
+<@formGroup formStyle='inline' labelFor='${items.name}_select' labelKey='${items.label}'>
 	<@inputGroup>
 		<@input type='text' id='${items.name}_value' name='${items.name}_value' placeHolder='${items.description}' />
 		<@inputGroupItem>
@@ -14,7 +14,7 @@
 		</@inputGroupItem>
 	</@inputGroup>
 </@formGroup>
-<@formGroup formStyle='' labelFor='${items.name}_select'>
+<@formGroup formStyle='inline'  labelFor='${items.name}_select'>
 	<@select id='${items.name}_select' name='${items.name}_select' inputSize=4>
 		<#list items.valueList as values >
 			<option value="${values}" <#list defaultValue.valueList as defaultvalue ><#if values==defaultvalue> class="bg-primary"</#if></#list>>${values}</option>

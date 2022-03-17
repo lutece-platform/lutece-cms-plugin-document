@@ -1,6 +1,6 @@
 <#list parameters as parameter>
 <#if parameter_index = 0>
-	<@formGroup labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}'>
+	<@formGroup formStyle='inline' labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}'>
 		<#list parameter.defaultValue as values><#assign inputValue = values?if_exists /></#list>
 		<@input type='text' name='${parameter.name}' class='param' id='${parameter.name}' tabIndex='${parameter_index + 5}' value=inputValue />
 	</@formGroup>
@@ -9,7 +9,7 @@
 	</script>
 </#if>
 <#if parameter_index = 1>
-	<@formGroup formStyle='' labelFor='${parameter.name}' labelKey='${parameter.label}'>
+	<@formGroup formStyle='inline' labelFor='${parameter.name}' labelKey='${parameter.label}'>
 		<@checkBox labelFor='${parameter.name}' labelKey='${parameter.description}' name='${parameter.name}' id='${parameter.name}' checked=parameter.defaultValue?has_content />
 	</@formGroup>
 	<script>
