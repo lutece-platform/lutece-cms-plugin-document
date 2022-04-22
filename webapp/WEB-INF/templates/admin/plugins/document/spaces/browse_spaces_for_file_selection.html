@@ -4,11 +4,9 @@
 	<#else>
 		<#assign value = false />
 	</#if>
-	<@input type='hidden' id=isDocumentCreationAllowed name=isDocumentCreationAllowed value=value />
-
+	<@input type='hidden' id='isDocumentCreationAllowed' name='isDocumentCreationAllowed' value=value?c />
 	<@input type='hidden' name='browser_id_space' value='${space.id}' />
 	<@input type='hidden' name='browser_selected_space_id' value='${space.id}' />
-        
 	<#if space?has_content && space.documentCreationAllowed >
 		<@formGroup>
 			<@aButton href='javascript:goUp();' title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' color='default' />
@@ -33,20 +31,19 @@
 				</#list>
 			</@listGroup>
 		</@formGroup>
-		
 <script>
-	formId = 0;
-	function goUp(){ 
-		document.forms[formId].action='${action}';
-		document.forms[formId].browser_id_space.value='${space.idParent}';
-		document.forms[formId].browser_selected_space_id='${space.idParent}';
-		document.forms[formId].submit();
-	}
+formId = 0;
+function goUp(){ 
+	document.forms[formId].action='${action}';
+	document.forms[formId].browser_id_space.value='${space.idParent}';
+	document.forms[formId].browser_selected_space_id='${space.idParent}';
+	document.forms[formId].submit();
+}
 
-	function openSpace(idSpace){
-		document.forms[formId].action='${action}';
-		document.forms[formId].browser_id_space.value=idSpace;
-			document.forms[formId].browser_selected_space_id.value=idSpace;  
-		document.forms[formId].submit();
-	}
+function openSpace(idSpace){
+	document.forms[formId].action='${action}';
+	document.forms[formId].browser_id_space.value=idSpace;
+		document.forms[formId].browser_selected_space_id.value=idSpace;  
+	document.forms[formId].submit();
+}
 </script>
