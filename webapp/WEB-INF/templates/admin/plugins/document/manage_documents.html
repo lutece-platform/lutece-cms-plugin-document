@@ -352,7 +352,7 @@ jQuery(function($) {
 
 
 	/****** Document search ******/
-	$("#FullTextSearchDocument p.help-block").text("#i18n{document.manage_document.labelAllTextSearch}");
+	$("#FullTextSearchDocument p.help-block").text("#i18n{document.manage_documents.labelAllTextSearch}");
 	$("#FullTextSearchDocument").submit(function(){
 		if( $.isNumeric($("#FullTextSearchDocument input#query").val()) ){
 			$("#FullTextSearchDocument input#id_document").val($("#FullTextSearchDocument input#query").val());
