@@ -40,8 +40,8 @@ import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
-import fr.paris.lutece.plugins.lucene.service.indexer.IFileIndexer;
-import fr.paris.lutece.plugins.lucene.service.indexer.IFileIndexerFactory;
+import fr.paris.lutece.plugins.parser.service.IParserFactory;
+import fr.paris.lutece.plugins.parser.service.IStreamParser;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.business.portlet.Portlet;
@@ -65,12 +65,6 @@ import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.html.HtmlParser;
-import org.apache.tika.sax.BodyContentHandler;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -80,6 +74,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -266,29 +261,18 @@ public class DocumentIndexer implements SearchIndexer
         String strIdDocument = String.valueOf( document.getId(  ) );
         doc.add( new Field( SearchItem.FIELD_UID, strIdDocument + "_" + DocumentIndexer.SHORT_NAME, ft ) );
 
-        String strContentToIndex = getContentToIndex( document );
-        int nWriteLimit = AppPropertiesService.getPropertyInt( PROPERTY_WRITER_MAX_FIELD_LENGTH, DEFAULT_WRITER_MAX_FIELD_LENGTH );
-        ContentHandler handler = new BodyContentHandler( nWriteLimit );
-        Metadata metadata = new Metadata(  );
-
-        try
-        {
-            new HtmlParser(  ).parse( new ByteArrayInputStream( strContentToIndex.getBytes(  ) ), handler, metadata,
-                new ParseContext(  ) );
-        }
-        catch ( SAXException e )
-        {
-            throw new AppException( "Error during document parsing.", e );
-        }
-        catch ( TikaException e )
-        {
-            throw new AppException( "Error during document parsing.", e );
-        }
-
         //the content of the article is recovered in the parser because this one
         //had replaced the encoded caracters (as &eacute;) by the corresponding special caracter (as ?)
-        String strContent = handler.toString(  );
-
+        String strContent = "";
+        String strContentToIndex = getContentToIndex( document );
+        IParserFactory factoryParser =  SpringContextService.getBean( IParserFactory.BEAN_FILE_PARSER_FACTORY );
+        Optional<IStreamParser> parser = factoryParser.getParser( "text/html" );
+        if(parser.isPresent( )) {
+        	strContent= parser.get().parse(new ByteArrayInputStream(strContentToIndex.getBytes()));
+        }
+        else{
+        	AppLogService.debug("Error HtmlParser not found");
+        }
         // Add the tag-stripped contents as a Reader-valued Text field so it will
         // get tokenized and indexed.
         doc.add( new Field( SearchItem.FIELD_CONTENTS, strContent, TextField.TYPE_NOT_STORED ) );
@@ -335,16 +319,16 @@ public class DocumentIndexer implements SearchIndexer
                 {
                     // Binary file attribute
                     // Gets indexer depending on the ContentType (ie: "application/pdf" should use a PDF indexer)
-                    IFileIndexerFactory factoryIndexer = (IFileIndexerFactory) SpringContextService.getBean( IFileIndexerFactory.BEAN_FILE_INDEXER_FACTORY );
-                    IFileIndexer indexer = factoryIndexer.getIndexer( attribute.getValueContentType(  ) );
+                	  IParserFactory factoryParser =  SpringContextService.getBean( IParserFactory.BEAN_FILE_PARSER_FACTORY );
+                      Optional<IStreamParser> parser = factoryParser.getParser( attribute.getValueContentType(  ) );
 
-                    if ( indexer != null )
+                    if ( parser.isPresent( ) )
                     {
                         try
                         {
                             ByteArrayInputStream bais = new ByteArrayInputStream( attribute.getBinaryValue(  ) );
                             sbContentToIndex.append( " " );
-                            sbContentToIndex.append( indexer.getContentToIndex( bais ) );
+                            sbContentToIndex.append( parser.get().parse( bais ) );
                             bais.close(  );
                         }
                         catch ( IOException e )

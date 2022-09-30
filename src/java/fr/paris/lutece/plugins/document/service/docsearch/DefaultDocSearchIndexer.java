@@ -36,27 +36,16 @@ package fr.paris.lutece.plugins.document.service.docsearch;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
-import fr.paris.lutece.plugins.lucene.service.indexer.IFileIndexer;
-import fr.paris.lutece.plugins.lucene.service.indexer.IFileIndexerFactory;
+import fr.paris.lutece.plugins.parser.service.IParserFactory;
+import fr.paris.lutece.plugins.parser.service.IStreamParser;
 import fr.paris.lutece.portal.service.search.SearchItem;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
-import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
-
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.html.HtmlParser;
-import org.apache.tika.sax.BodyContentHandler;
-
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -66,6 +55,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -74,10 +64,7 @@ import java.util.List;
 public class DefaultDocSearchIndexer implements IDocSearchIndexer
 {
 
-    private static final String PROPERTY_WRITER_MAX_FIELD_LENGTH = "search.lucene.writer.maxFieldLength"; // from the core
-    private static final int DEFAULT_WRITER_MAX_FIELD_LENGTH = 1000000;
-
-    /**
+     /**
      * Build Lucene docs to index
      * @param listDocumentIds Documents to index
      * @return A list of Lucene documents
@@ -130,28 +117,21 @@ public class DefaultDocSearchIndexer implements IDocSearchIndexer
         doc.add( new Field( SearchItem.FIELD_UID, strIdDocument, ft ) );
 
         String strContentToIndex = getContentToIndex( document );
-        int nWriteLimit = AppPropertiesService.getPropertyInt( PROPERTY_WRITER_MAX_FIELD_LENGTH, DEFAULT_WRITER_MAX_FIELD_LENGTH );
-        ContentHandler handler = new BodyContentHandler( nWriteLimit );
-        Metadata metadata = new Metadata(  );
-
-        try
-        {
-            new HtmlParser(  ).parse( new ByteArrayInputStream( strContentToIndex.getBytes(  ) ), handler, metadata,
-                new ParseContext(  ) );
-        }
-        catch ( SAXException e )
-        {
-            throw new AppException( "Error during document parsing.", e );
-        }
-        catch ( TikaException e )
-        {
-            throw new AppException( "Error during document parsing.", e );
-        }
+       
+        IParserFactory factoryParser =  SpringContextService.getBean( IParserFactory.BEAN_FILE_PARSER_FACTORY );
+        Optional<IStreamParser> parser = factoryParser.getParser( "text/html" );
 
         //the content of the article is recovered in the parser because this one
         //had replaced the encoded caracters (as &eacute;) by the corresponding special caracter (as ?)
-        StringBuilder sb = new StringBuilder( handler.toString(  ) );
-
+        StringBuilder sb = new StringBuilder(  );
+        if ( parser.isPresent( ) )
+        {
+        	sb.append( parser.get().parse(new ByteArrayInputStream(strContentToIndex.getBytes())));
+        }else {
+        	
+        	AppLogService.debug("Error HtmlParser not found");
+        }  
+        
         // Add the tag-stripped contents as a Reader-valued Text field so it will
         // get tokenized and indexed.
         doc.add( new Field( SearchItem.FIELD_CONTENTS, sb.toString(  ), TextField.TYPE_NOT_STORED ) );
@@ -194,15 +174,15 @@ public class DefaultDocSearchIndexer implements IDocSearchIndexer
                 }
                 else
                 {
-                    IFileIndexerFactory factoryIndexer = (IFileIndexerFactory) SpringContextService.getBean( IFileIndexerFactory.BEAN_FILE_INDEXER_FACTORY );
-                    IFileIndexer indexer = factoryIndexer.getIndexer( attribute.getValueContentType(  ) );
+                    IParserFactory factoryParser =  SpringContextService.getBean( IParserFactory.BEAN_FILE_PARSER_FACTORY );
+                    Optional<IStreamParser> parser = factoryParser.getParser( attribute.getValueContentType(  ) );
 
-                    if ( indexer != null )
+                    if ( parser.isPresent( ) )
                     {
                         try
                         {
                             ByteArrayInputStream bais = new ByteArrayInputStream( attribute.getBinaryValue(  ) );
-                            sbContentToIndex.append( indexer.getContentToIndex( bais ) );
+                            sbContentToIndex.append( parser.get().parse( bais ) );
                             sbContentToIndex.append( " " );
                             bais.close(  );
                         }
