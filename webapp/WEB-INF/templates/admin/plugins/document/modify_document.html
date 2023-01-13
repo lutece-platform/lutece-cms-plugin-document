@@ -47,7 +47,7 @@
 									<@inputGroupItem type='text'>
 										<@icon style='calendar' />
 									</@inputGroupItem>
-									<@input type='daterange' name='document_validity_begin' id='document_validity_begin' dateRangeEndId='document_validity_end' value='${date_validity_begin}' />
+									<@input type='text' name='document_validity_begin' id='document_validity_begin' value='${current_date!}' />
 								</@inputGroup>
 							</@formGroup>
 							<@formGroup labelFor='document_validity_end' labelKey='#i18n{document.create_document.labelDocumentValidityEnd}' rows=2>
