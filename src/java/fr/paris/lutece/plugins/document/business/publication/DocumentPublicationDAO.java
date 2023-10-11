@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-
 /**
  * This class provides Data Access methods for DocumentPublication objects
  */
@@ -64,79 +63,85 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
     /**
      * Insert the documentsPublication object
      *
-     * @param documentPublication The document Publication object
+     * @param documentPublication
+     *            The document Publication object
      */
     public void insert( DocumentPublication documentPublication )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
 
-        daoUtil.setInt( 1, documentPublication.getPortletId(  ) );
-        daoUtil.setInt( 2, documentPublication.getDocumentId(  ) );
-        daoUtil.setInt( 3, documentPublication.getDocumentOrder(  ) );
-        daoUtil.setInt( 4, documentPublication.getStatus(  ) );
-        daoUtil.setTimestamp( 5, new Timestamp( documentPublication.getDatePublishing(  ).getTime(  ) ) );
+        daoUtil.setInt( 1, documentPublication.getPortletId( ) );
+        daoUtil.setInt( 2, documentPublication.getDocumentId( ) );
+        daoUtil.setInt( 3, documentPublication.getDocumentOrder( ) );
+        daoUtil.setInt( 4, documentPublication.getStatus( ) );
+        daoUtil.setTimestamp( 5, new Timestamp( documentPublication.getDatePublishing( ).getTime( ) ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Update the {@link DocumentPublication} object
      *
-     * @param documentPublication The {@link DocumentPublication} object
+     * @param documentPublication
+     *            The {@link DocumentPublication} object
      */
     public void store( DocumentPublication documentPublication )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setInt( 1, documentPublication.getDocumentOrder(  ) );
-        daoUtil.setInt( 2, documentPublication.getStatus(  ) ); //FIXME old : daoUtil.setInt( 2, maxOrderDocumentList( nPortletId ) + 1 );
-        daoUtil.setTimestamp( 3, new Timestamp( documentPublication.getDatePublishing(  ).getTime(  ) ) );
-        daoUtil.setInt( 4, documentPublication.getPortletId(  ) );
-        daoUtil.setInt( 5, documentPublication.getDocumentId(  ) );
+        daoUtil.setInt( 1, documentPublication.getDocumentOrder( ) );
+        daoUtil.setInt( 2, documentPublication.getStatus( ) ); // FIXME old : daoUtil.setInt( 2, maxOrderDocumentList( nPortletId ) + 1 );
+        daoUtil.setTimestamp( 3, new Timestamp( documentPublication.getDatePublishing( ).getTime( ) ) );
+        daoUtil.setInt( 4, documentPublication.getPortletId( ) );
+        daoUtil.setInt( 5, documentPublication.getDocumentId( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
-    * Delete records for table document_published specified by portlet id and document id
-    *
-    * @param nPortletId the portlet identifier
-    * @param nDocumentId the document identifier
-    */
+     * Delete records for table document_published specified by portlet id and document id
+     *
+     * @param nPortletId
+     *            the portlet identifier
+     * @param nDocumentId
+     *            the document identifier
+     */
     public void delete( int nPortletId, int nDocumentId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
         daoUtil.setInt( 1, nPortletId );
         daoUtil.setInt( 2, nDocumentId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
-    * Delete records for table document_published specified by portlet id
-    *
-    * @param nPortletId the portlet identifier
-    */
+     * Delete records for table document_published specified by portlet id
+     *
+     * @param nPortletId
+     *            the portlet identifier
+     */
     public void deleteFromPortletId( int nPortletId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_FROM_PORTLET_ID );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
-    * Delete records for table document_published specified by portlet id
-    *
-    * @param nDocumentId the document identifier
-    */
+     * Delete records for table document_published specified by portlet id
+     *
+     * @param nDocumentId
+     *            the document identifier
+     */
     public void deleteFromDocumentId( int nDocumentId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_FROM_DOCUMENT_ID );
         daoUtil.setInt( 1, nDocumentId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -144,8 +149,11 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
 
     /**
      * Select the {@link DocumentPublication} object specified by the portlet id and document id
-     * @param nPortletId The portlet identifier
-     * @param nDocumentId The document identifier
+     * 
+     * @param nPortletId
+     *            The portlet identifier
+     * @param nDocumentId
+     *            The document identifier
      * @return The {@link DocumentPublication} object or null if the object does not exists
      */
     public DocumentPublication select( int nPortletId, int nDocumentId )
@@ -154,11 +162,11 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
         daoUtil.setInt( 1, nPortletId );
         daoUtil.setInt( 2, nDocumentId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            documentPublication = new DocumentPublication(  );
+            documentPublication = new DocumentPublication( );
             documentPublication.setPortletId( nPortletId );
             documentPublication.setDocumentId( nDocumentId );
             documentPublication.setDocumentOrder( daoUtil.getInt( 1 ) );
@@ -166,26 +174,28 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
             documentPublication.setDatePublishing( daoUtil.getTimestamp( 3 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return documentPublication;
     }
 
     /**
      * Select the list of {@link DocumentPublication} objects specified by the portlet id
-     * @param nPortletId The portlet identifier
+     * 
+     * @param nPortletId
+     *            The portlet identifier
      * @return The {@link DocumentPublication} objects list (empty list if no objects found)
      */
     public Collection<DocumentPublication> selectByPortletId( int nPortletId )
     {
-        Collection<DocumentPublication> listDocumentPublication = new ArrayList<DocumentPublication>(  );
+        Collection<DocumentPublication> listDocumentPublication = new ArrayList<DocumentPublication>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PORTLET_ID );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            DocumentPublication documentPublication = new DocumentPublication(  );
+            DocumentPublication documentPublication = new DocumentPublication( );
             documentPublication.setPortletId( nPortletId );
             documentPublication.setDocumentId( daoUtil.getInt( 1 ) );
             documentPublication.setDocumentOrder( daoUtil.getInt( 2 ) );
@@ -194,26 +204,28 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
             listDocumentPublication.add( documentPublication );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDocumentPublication;
     }
 
     /**
      * Select the list of {@link DocumentPublication} objects specified by the document id
-     * @param nDocumentId The document identifier
+     * 
+     * @param nDocumentId
+     *            The document identifier
      * @return The {@link DocumentPublication} objects list (empty list if no objects found)
      */
     public Collection<DocumentPublication> selectByDocumentId( int nDocumentId )
     {
-        Collection<DocumentPublication> listDocumentPublication = new ArrayList<DocumentPublication>(  );
+        Collection<DocumentPublication> listDocumentPublication = new ArrayList<DocumentPublication>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DOCUMENT_ID );
         daoUtil.setInt( 1, nDocumentId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            DocumentPublication documentPublication = new DocumentPublication(  );
+            DocumentPublication documentPublication = new DocumentPublication( );
             documentPublication.setPortletId( daoUtil.getInt( 1 ) );
             documentPublication.setDocumentId( nDocumentId );
             documentPublication.setDocumentOrder( daoUtil.getInt( 2 ) );
@@ -222,28 +234,31 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
             listDocumentPublication.add( documentPublication );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDocumentPublication;
     }
 
     /**
      * Select the list of {@link DocumentPublication} objects specified by the portlet id and the status
-     * @param nPortletId The portlet identifier
-     * @param nStatus The status
+     * 
+     * @param nPortletId
+     *            The portlet identifier
+     * @param nStatus
+     *            The status
      * @return The {@link DocumentPublication} objects list (empty list if no objects found)
      */
     public Collection<DocumentPublication> selectByPortletIdAndStatus( int nPortletId, int nStatus )
     {
-        Collection<DocumentPublication> listDocumentPublication = new ArrayList<DocumentPublication>(  );
+        Collection<DocumentPublication> listDocumentPublication = new ArrayList<DocumentPublication>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PORTLET_ID_AND_STATUS );
         daoUtil.setInt( 1, nPortletId );
         daoUtil.setInt( 2, nStatus );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            DocumentPublication documentPublication = new DocumentPublication(  );
+            DocumentPublication documentPublication = new DocumentPublication( );
             documentPublication.setPortletId( nPortletId );
             documentPublication.setDocumentId( daoUtil.getInt( 1 ) );
             documentPublication.setDocumentOrder( daoUtil.getInt( 2 ) );
@@ -252,28 +267,31 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
             listDocumentPublication.add( documentPublication );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDocumentPublication;
     }
 
     /**
      * Select the list of {@link DocumentPublication} objects specified by the document id and the status
-     * @param nDocumentId The document identifier
-     * @param nStatus The status
+     * 
+     * @param nDocumentId
+     *            The document identifier
+     * @param nStatus
+     *            The status
      * @return The {@link DocumentPublication} objects list (empty list if no objects found)
      */
     public Collection<DocumentPublication> selectByDocumentIdAndStatus( int nDocumentId, int nStatus )
     {
-        Collection<DocumentPublication> listDocumentPublication = new ArrayList<DocumentPublication>(  );
+        Collection<DocumentPublication> listDocumentPublication = new ArrayList<DocumentPublication>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DOCUMENT_ID_AND_STATUS );
         daoUtil.setInt( 1, nDocumentId );
         daoUtil.setInt( 2, nStatus );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            DocumentPublication documentPublication = new DocumentPublication(  );
+            DocumentPublication documentPublication = new DocumentPublication( );
             documentPublication.setPortletId( daoUtil.getInt( 1 ) );
             documentPublication.setDocumentId( nDocumentId );
             documentPublication.setDocumentOrder( daoUtil.getInt( 2 ) );
@@ -282,28 +300,31 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
             listDocumentPublication.add( documentPublication );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDocumentPublication;
     }
 
     /**
      * Find the list of {@link DocumentPublication} objects specified the status and published at or after the specified date
-     * @param datePublishing The publication date
-     * @param nStatus The status
+     * 
+     * @param datePublishing
+     *            The publication date
+     * @param nStatus
+     *            The status
      * @return The {@link DocumentPublication} objects {@link Collection} ordered by documentOrder ascending. The list is empty if no objects found.
      */
     public Collection<DocumentPublication> selectSinceDatePublishingAndStatus( Date datePublishing, int nStatus )
     {
-        Collection<DocumentPublication> listDocumentPublication = new ArrayList<DocumentPublication>(  );
+        Collection<DocumentPublication> listDocumentPublication = new ArrayList<DocumentPublication>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DATE_PUBLISHING_AND_STATUS );
-        daoUtil.setTimestamp( 1, new Timestamp( datePublishing.getTime(  ) ) );
+        daoUtil.setTimestamp( 1, new Timestamp( datePublishing.getTime( ) ) );
         daoUtil.setInt( 2, nStatus );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            DocumentPublication documentPublication = new DocumentPublication(  );
+            DocumentPublication documentPublication = new DocumentPublication( );
             documentPublication.setPortletId( daoUtil.getInt( 1 ) );
             documentPublication.setDocumentId( daoUtil.getInt( 2 ) );
             documentPublication.setDocumentOrder( daoUtil.getInt( 3 ) );
@@ -312,14 +333,16 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
             listDocumentPublication.add( documentPublication );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDocumentPublication;
     }
 
     /**
      * Select the max order from a list of {@link DocumentPublication} specified by portlet id
-     * @param nPortletId the portlet identifer
+     * 
+     * @param nPortletId
+     *            the portlet identifer
      * @return The max order of document
      */
     public int selectMaxDocumentOrder( int nPortletId )
@@ -327,14 +350,14 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
         int nOrder = 0;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_MAX_ORDER );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             nOrder = daoUtil.getInt( 1 );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return nOrder;
     }
@@ -342,20 +365,22 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
     /**
      * Return a document identifier in a distinct order
      *
-     * @param nDocumentOrder The order number
-     * @param nPortletId the portlet identifier
+     * @param nDocumentOrder
+     *            The order number
+     * @param nPortletId
+     *            the portlet identifier
      * @return The order of the Document
      */
     public int selectDocumentIdByOrder( int nDocumentOrder, int nPortletId )
     {
-        //    	FIXME The document_order column is not a primary key, so this method have to return a collection
+        // FIXME The document_order column is not a primary key, so this method have to return a collection
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_MODIFY_ORDER_BY_ID );
         int nResult = nDocumentOrder;
         daoUtil.setInt( 1, nResult );
         daoUtil.setInt( 2, nPortletId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        if ( !daoUtil.next(  ) )
+        if ( !daoUtil.next( ) )
         {
             // If number order doesn't exist
             nResult = 1;
@@ -365,7 +390,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
             nResult = daoUtil.getInt( 1 );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return nResult;
     }

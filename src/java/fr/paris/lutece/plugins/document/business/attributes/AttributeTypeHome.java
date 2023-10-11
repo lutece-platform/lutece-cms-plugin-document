@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
  * This class provides instances management methods (create, find, ...) for DocumentAttributeType objects
  */
@@ -53,15 +52,16 @@ public final class AttributeTypeHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AttributeTypeHome(  )
+    private AttributeTypeHome( )
     {
     }
 
     /**
      * Creation of an instance of documentAttributeType
      *
-     * @param documentAttributeType The instance of the documentAttributeType which contains the informations to store
-     * @return The  instance of documentAttributeType which has been created with its primary key.
+     * @param documentAttributeType
+     *            The instance of the documentAttributeType which contains the informations to store
+     * @return The instance of documentAttributeType which has been created with its primary key.
      */
     public static AttributeType create( AttributeType documentAttributeType )
     {
@@ -73,8 +73,9 @@ public final class AttributeTypeHome
     /**
      * Update of the documentAttributeType which is specified in parameter
      *
-     * @param documentAttributeType The instance of the documentAttributeType which contains the data to store
-     * @return The instance of the  documentAttributeType which has been updated
+     * @param documentAttributeType
+     *            The instance of the documentAttributeType which contains the data to store
+     * @return The instance of the documentAttributeType which has been updated
      */
     public static AttributeType update( AttributeType documentAttributeType )
     {
@@ -86,7 +87,8 @@ public final class AttributeTypeHome
     /**
      * Remove the DocumentAttributeType whose identifier is specified in parameter
      *
-     * @param documentAttributeType The DocumentAttributeType object to remove
+     * @param documentAttributeType
+     *            The DocumentAttributeType object to remove
      */
     public static void remove( AttributeType documentAttributeType )
     {
@@ -99,7 +101,8 @@ public final class AttributeTypeHome
     /**
      * Returns an instance of a documentAttributeType whose identifier is specified in parameter
      *
-     * @param nKey The Primary key of the documentAttributeType
+     * @param nKey
+     *            The Primary key of the documentAttributeType
      * @return An instance of documentAttributeType
      */
     public static AttributeType findByPrimaryKey( int nKey )
@@ -109,17 +112,20 @@ public final class AttributeTypeHome
 
     /**
      * Returns a collection of documentAttributeTypes objects
+     * 
      * @return A collection of documentAttributeTypes
      */
-    public static Collection<AttributeType> findAll(  )
+    public static Collection<AttributeType> findAll( )
     {
-        return _dao.selectDocumentAttributeTypeList(  );
+        return _dao.selectDocumentAttributeTypeList( );
     }
 
     /**
      * Returns a ReferenceList of AttributeTypes objects
+     * 
      * @return A ReferenceList of AttributeTypes
-     * @param locale The locale
+     * @param locale
+     *            The locale
      */
     public static ReferenceList getAttributeTypesList( Locale locale )
     {
@@ -128,17 +134,21 @@ public final class AttributeTypeHome
 
     /**
      * Gets managers list
+     * 
      * @return A list of attribute managers
      */
-    public static ReferenceList getAttributeManagersList(  )
+    public static ReferenceList getAttributeManagersList( )
     {
-        return _dao.getAttributeManagersList(  );
+        return _dao.getAttributeManagersList( );
     }
 
     /**
      * Get Attribute type parameters list
-     * @param strAttributeTypeCode The attribute type code
-     * @param locale The locale
+     * 
+     * @param strAttributeTypeCode
+     *            The attribute type code
+     * @param locale
+     *            The locale
      * @return A list of attribute parameters list
      */
     public static List<AttributeTypeParameter> getAttributeTypeParameterList( String strAttributeTypeCode, Locale locale )

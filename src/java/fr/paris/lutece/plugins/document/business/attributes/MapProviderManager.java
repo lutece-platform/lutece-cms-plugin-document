@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,13 +40,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
-
 /**
  *
- * MapProviderManager : manages all map providers register.
- * <br />
- * Map providers are registered through {@link SpringContextService#getBeansOfType}.
- * Such providers implement {@link IMapProvider} and need to be declared in a spring context file.
+ * MapProviderManager : manages all map providers register. <br />
+ * Map providers are registered through {@link SpringContextService#getBeansOfType}. Such providers implement {@link IMapProvider} and need to be declared in a
+ * spring context file.
+ * 
  * @see IMapProvider
  * @see SpringContextService#getBeansOfType
  *
@@ -56,14 +55,16 @@ public final class MapProviderManager
     /**
      * Empty constructor
      */
-    private MapProviderManager(  )
+    private MapProviderManager( )
     {
         // nothing
     }
 
     /**
      * Gets the mapProvider for the provided key.
-     * @param strKey the key
+     * 
+     * @param strKey
+     *            the key
      * @return <code>null</code> if <code>strKey</code> is blank, the map provider if found, <code>null</code> otherwise.
      * @see StringUtils#isBlank(String)
      */
@@ -74,24 +75,25 @@ public final class MapProviderManager
             return null;
         }
 
-        for ( IMapProvider mapProvider : getMapProvidersList(  ) )
+        for ( IMapProvider mapProvider : getMapProvidersList( ) )
         {
-            if ( strKey.equals( mapProvider.getKey(  ) ) )
+            if ( strKey.equals( mapProvider.getKey( ) ) )
             {
                 return mapProvider;
             }
         }
 
-        AppLogService.info( MapProviderManager.class.getName(  ) + " : No map provider found for key " + strKey );
+        AppLogService.info( MapProviderManager.class.getName( ) + " : No map provider found for key " + strKey );
 
         return null;
     }
 
     /**
      * Builds all available providers list
+     * 
      * @return all available providers
      */
-    public static List<IMapProvider> getMapProvidersList(  )
+    public static List<IMapProvider> getMapProvidersList( )
     {
         return SpringContextService.getBeansOfType( IMapProvider.class );
     }

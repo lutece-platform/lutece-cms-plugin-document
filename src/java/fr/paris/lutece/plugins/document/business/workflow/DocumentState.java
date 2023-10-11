@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,13 +37,12 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 
 import java.util.Locale;
 
-
 /**
  *
  */
 public class DocumentState
 {
-    // Variables declarations	
+    // Variables declarations
     public static final int STATE_WRITING = 1;
     public static final int STATE_WAITING_FOR_APPROVAL = 2;
     public static final int STATE_VALIDATE = 3;
@@ -61,7 +60,7 @@ public class DocumentState
      *
      * @return The IdState
      */
-    public int getId(  )
+    public int getId( )
     {
         return _nIdState;
     }
@@ -69,7 +68,8 @@ public class DocumentState
     /**
      * Sets the IdState
      *
-     * @param nIdState The IdState
+     * @param nIdState
+     *            The IdState
      */
     public void setId( int nIdState )
     {
@@ -79,7 +79,8 @@ public class DocumentState
     /**
      * Sets the Locale
      *
-     * @param locale the locale
+     * @param locale
+     *            the locale
      */
     public void setLocale( Locale locale )
     {
@@ -91,7 +92,7 @@ public class DocumentState
      *
      * @return The NameKey
      */
-    public String getNameKey(  )
+    public String getNameKey( )
     {
         return _strNameKey;
     }
@@ -99,7 +100,8 @@ public class DocumentState
     /**
      * Sets the NameKey
      *
-     * @param strNameKey The NameKey
+     * @param strNameKey
+     *            The NameKey
      */
     public void setNameKey( String strNameKey )
     {
@@ -111,7 +113,7 @@ public class DocumentState
      *
      * @return The DescriptionKey
      */
-    public String getDescriptionKey(  )
+    public String getDescriptionKey( )
     {
         return _strDescriptionKey;
     }
@@ -119,7 +121,8 @@ public class DocumentState
     /**
      * Sets the DescriptionKey
      *
-     * @param strDescriptionKey The DescriptionKey
+     * @param strDescriptionKey
+     *            The DescriptionKey
      */
     public void setDescriptionKey( String strDescriptionKey )
     {
@@ -131,7 +134,7 @@ public class DocumentState
      *
      * @return The Name
      */
-    public String getName(  )
+    public String getName( )
     {
         return I18nService.getLocalizedString( _strNameKey, _locale );
     }

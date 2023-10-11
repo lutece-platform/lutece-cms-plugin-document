@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.util.Collection;
 
-
 /**
  * This class provides instances management methods (create, find, ...) for Category objects
  */
@@ -50,7 +49,7 @@ public final class CategoryHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private CategoryHome(  )
+    private CategoryHome( )
     {
     }
 
@@ -59,16 +58,18 @@ public final class CategoryHome
      *
      * @return Collection of Category (empty collection is no result)
      */
-    public static Collection<Category> findAll(  )
+    public static Collection<Category> findAll( )
     {
-        Collection<Category> categoryList = _dao.selectAll(  );
+        Collection<Category> categoryList = _dao.selectAll( );
 
         return categoryList;
     }
 
     /**
      * Create a new Category
-     * @param category The new Category
+     * 
+     * @param category
+     *            The new Category
      *
      */
     public static void create( Category category )
@@ -78,7 +79,9 @@ public final class CategoryHome
 
     /**
      * Find the data of Category from the table
-     * @param nIdCategory The id of the category
+     * 
+     * @param nIdCategory
+     *            The id of the category
      * @return The Instance of the object Category of null if no category match
      */
     public static Category find( int nIdCategory )
@@ -88,7 +91,9 @@ public final class CategoryHome
 
     /**
      * Find the data of Category from the table
-     * @param strCategoryName The id of the category
+     * 
+     * @param strCategoryName
+     *            The id of the category
      * @return The Collection of Category (empty collection is no result)
      */
     public static Collection<Category> findByName( String strCategoryName )
@@ -98,7 +103,9 @@ public final class CategoryHome
 
     /**
      * Remove a record from the table
-     * @param nIdCategory The identifier of the object Category
+     * 
+     * @param nIdCategory
+     *            The identifier of the object Category
      */
     public static void remove( int nIdCategory )
     {
@@ -107,7 +114,9 @@ public final class CategoryHome
 
     /**
      * Update the record in the table
-     * @param category The instance of the Category to update
+     * 
+     * @param category
+     *            The instance of the Category to update
      */
     public static void update( Category category )
     {
@@ -116,7 +125,9 @@ public final class CategoryHome
 
     /**
      * Find the number of documents linked to a category
-     * @param nIdCategory The category id
+     * 
+     * @param nIdCategory
+     *            The category id
      * @return count of id document
      */
     public static int findCountIdDocuments( int nIdCategory )
@@ -125,10 +136,12 @@ public final class CategoryHome
     }
 
     /**
-    * Return the image resource for the specified category id
-    * @param nCategoryId The identifier of Category object
-    * @return ImageResource
-    */
+     * Return the image resource for the specified category id
+     * 
+     * @param nCategoryId
+     *            The identifier of Category object
+     * @return ImageResource
+     */
     public static ImageResource getImageResource( int nCategoryId )
     {
         return _dao.loadImageResource( nCategoryId );

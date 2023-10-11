@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.document.business.attributes;
 
 import java.util.List;
 
-
 /**
  * This class represents the business object DocumentAttribute
  */
@@ -53,7 +52,7 @@ public class DocumentAttribute
     private boolean _bSearchable;
     private List<AttributeTypeParameter> _listParameters;
     private String _strTextValue;
-    private byte[] _bytes;
+    private byte [ ] _bytes;
     private boolean _bBinary;
     private String _strValueContentType;
     private IMapProvider _mapProvider; // For attribute type Geolocation
@@ -63,7 +62,7 @@ public class DocumentAttribute
      *
      * @return The IdDocumentAttribute
      */
-    public int getId(  )
+    public int getId( )
     {
         return _nIdDocumentAttribute;
     }
@@ -71,7 +70,8 @@ public class DocumentAttribute
     /**
      * Sets the IdDocumentAttribute
      *
-     * @param nIdDocumentAttribute The IdDocumentAttribute
+     * @param nIdDocumentAttribute
+     *            The IdDocumentAttribute
      */
     public void setId( int nIdDocumentAttribute )
     {
@@ -83,7 +83,7 @@ public class DocumentAttribute
      *
      * @return The CodeDocumentType
      */
-    public String getCodeDocumentType(  )
+    public String getCodeDocumentType( )
     {
         return _strCodeDocumentType;
     }
@@ -91,7 +91,8 @@ public class DocumentAttribute
     /**
      * Sets the CodeDocumentType
      *
-     * @param strCodeDocumentType The CodeDocumentType
+     * @param strCodeDocumentType
+     *            The CodeDocumentType
      */
     public void setCodeDocumentType( String strCodeDocumentType )
     {
@@ -103,7 +104,7 @@ public class DocumentAttribute
      *
      * @return The CodeAttributeType
      */
-    public String getCodeAttributeType(  )
+    public String getCodeAttributeType( )
     {
         return _strCodeAttributeType;
     }
@@ -111,7 +112,8 @@ public class DocumentAttribute
     /**
      * Sets the CodeAttributeType
      *
-     * @param strCodeAttributeType The CodeAttributeType
+     * @param strCodeAttributeType
+     *            The CodeAttributeType
      */
     public void setCodeAttributeType( String strCodeAttributeType )
     {
@@ -123,7 +125,7 @@ public class DocumentAttribute
      *
      * @return The Code
      */
-    public String getCode(  )
+    public String getCode( )
     {
         return _strCode;
     }
@@ -131,7 +133,8 @@ public class DocumentAttribute
     /**
      * Sets the Code
      *
-     * @param strCode The Code
+     * @param strCode
+     *            The Code
      */
     public void setCode( String strCode )
     {
@@ -143,7 +146,7 @@ public class DocumentAttribute
      *
      * @return The Name
      */
-    public String getName(  )
+    public String getName( )
     {
         return _strName;
     }
@@ -151,7 +154,8 @@ public class DocumentAttribute
     /**
      * Sets the Name
      *
-     * @param strName The Name
+     * @param strName
+     *            The Name
      */
     public void setName( String strName )
     {
@@ -163,7 +167,7 @@ public class DocumentAttribute
      *
      * @return The Description
      */
-    public String getDescription(  )
+    public String getDescription( )
     {
         return _strDescription;
     }
@@ -171,7 +175,8 @@ public class DocumentAttribute
     /**
      * Sets the Description
      *
-     * @param strDescription The Description
+     * @param strDescription
+     *            The Description
      */
     public void setDescription( String strDescription )
     {
@@ -183,7 +188,7 @@ public class DocumentAttribute
      *
      * @return The AttributeOrder
      */
-    public int getAttributeOrder(  )
+    public int getAttributeOrder( )
     {
         return _nAttributeOrder;
     }
@@ -191,7 +196,8 @@ public class DocumentAttribute
     /**
      * Sets the AttributeOrder
      *
-     * @param nAttributeOrder The AttributeOrder
+     * @param nAttributeOrder
+     *            The AttributeOrder
      */
     public void setAttributeOrder( int nAttributeOrder )
     {
@@ -203,14 +209,16 @@ public class DocumentAttribute
      *
      * @return The Required
      */
-    public boolean isRequired(  )
+    public boolean isRequired( )
     {
         return _bRequired;
     }
 
     /**
      * Sets if Required
-     * @param bRequired The required value
+     * 
+     * @param bRequired
+     *            The required value
      */
     public void setRequired( boolean bRequired )
     {
@@ -222,14 +230,16 @@ public class DocumentAttribute
      *
      * @return The Searchable
      */
-    public boolean isSearchable(  )
+    public boolean isSearchable( )
     {
         return _bSearchable;
     }
 
     /**
      * Sets the Searchable
-     * @param bSearchable The searchable value
+     * 
+     * @param bSearchable
+     *            The searchable value
      */
     public void setSearchable( boolean bSearchable )
     {
@@ -241,14 +251,16 @@ public class DocumentAttribute
      *
      * @return The Binary
      */
-    public boolean isBinary(  )
+    public boolean isBinary( )
     {
         return _bBinary;
     }
 
     /**
      * Sets the Binary
-     * @param bBinary The Binary value
+     * 
+     * @param bBinary
+     *            The Binary value
      */
     public void setBinary( boolean bBinary )
     {
@@ -257,7 +269,9 @@ public class DocumentAttribute
 
     /**
      * Sets parameters list
-     * @param listParameters The parameters list
+     * 
+     * @param listParameters
+     *            The parameters list
      */
     public void setParameters( List<AttributeTypeParameter> listParameters )
     {
@@ -266,16 +280,19 @@ public class DocumentAttribute
 
     /**
      * Gets parameters list
+     * 
      * @return The parameters list
      */
-    public List<AttributeTypeParameter> getParameters(  )
+    public List<AttributeTypeParameter> getParameters( )
     {
         return _listParameters;
     }
 
     /**
      * Sets the value
-     * @param strTextValue The value
+     * 
+     * @param strTextValue
+     *            The value
      */
     public void setTextValue( String strTextValue )
     {
@@ -284,34 +301,40 @@ public class DocumentAttribute
 
     /**
      * Gets the value
+     * 
      * @return The value
      */
-    public String getTextValue(  )
+    public String getTextValue( )
     {
         return _strTextValue;
     }
 
     /**
      * Sets the value
-     * @param bytes The value
+     * 
+     * @param bytes
+     *            The value
      */
-    public void setBinaryValue( byte[] bytes )
+    public void setBinaryValue( byte [ ] bytes )
     {
         _bytes = bytes;
     }
 
     /**
      * Gets the value
+     * 
      * @return The value
      */
-    public byte[] getBinaryValue(  )
+    public byte [ ] getBinaryValue( )
     {
         return _bytes;
     }
 
     /**
      * Sets the content type value
-     * @param strValueContentType The content type value
+     * 
+     * @param strValueContentType
+     *            The content type value
      */
     public void setValueContentType( String strValueContentType )
     {
@@ -320,9 +343,10 @@ public class DocumentAttribute
 
     /**
      * Gets the content type value
+     * 
      * @return The content type value
      */
-    public String getValueContentType(  )
+    public String getValueContentType( )
     {
         return _strValueContentType;
     }
@@ -330,13 +354,14 @@ public class DocumentAttribute
     /**
      * @return the _mapProvider
      */
-    public IMapProvider getMapProvider(  )
+    public IMapProvider getMapProvider( )
     {
         return _mapProvider;
     }
 
     /**
-     * @param _mapProvider the _mapProvider to set
+     * @param _mapProvider
+     *            the _mapProvider to set
      */
     public void setMapProvider( IMapProvider mapProvider )
     {

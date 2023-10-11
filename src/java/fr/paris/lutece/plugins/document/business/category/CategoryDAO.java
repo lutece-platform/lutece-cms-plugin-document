@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,6 @@ import fr.paris.lutece.util.sql.DAOUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 /**
  * This class provides Data Access methods for Category objects
  */
@@ -62,24 +61,25 @@ public final class CategoryDAO implements ICategoryDAO
     private static final String SQL_QUERY_SELECT_RESOURCE_IMAGE = " SELECT icon_content, icon_mime_type FROM document_category WHERE id_category = ? ";
 
     ///////////////////////////////////////////////////////////////////////////////////////
-    //Access methods to data
+    // Access methods to data
 
     /**
-    * Load the list of Category
-    * @return The Collection of Category (empty collection is no result)
-    */
-    public Collection<Category> selectAll(  )
+     * Load the list of Category
+     * 
+     * @return The Collection of Category (empty collection is no result)
+     */
+    public Collection<Category> selectAll( )
     {
         int nParam;
-        Collection<Category> listCategory = new ArrayList<Category>(  );
+        Collection<Category> listCategory = new ArrayList<Category>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             nParam = 0;
 
-            Category category = new Category(  );
+            Category category = new Category( );
             category.setId( daoUtil.getInt( ++nParam ) );
             category.setName( daoUtil.getString( ++nParam ) );
             category.setDescription( daoUtil.getString( ++nParam ) );
@@ -90,56 +90,61 @@ public final class CategoryDAO implements ICategoryDAO
             listCategory.add( category );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listCategory;
     }
 
     /**
-    * Insert a new Category
-    * @param category The object category to insert
-    */
+     * Insert a new Category
+     * 
+     * @param category
+     *            The object category to insert
+     */
     public void insert( Category category )
     {
         int nParam = 0;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
 
-        daoUtil.setInt( ++nParam, getNewPrimaryKey(  ) );
-        daoUtil.setString( ++nParam, category.getName(  ) );
-        daoUtil.setString( ++nParam, category.getDescription(  ) );
-        daoUtil.setBytes( ++nParam, category.getIconContent(  ) );
-        daoUtil.setString( ++nParam, category.getIconMimeType(  ) );
-        daoUtil.setString( ++nParam, category.getWorkgroup(  ) );
+        daoUtil.setInt( ++nParam, getNewPrimaryKey( ) );
+        daoUtil.setString( ++nParam, category.getName( ) );
+        daoUtil.setString( ++nParam, category.getDescription( ) );
+        daoUtil.setBytes( ++nParam, category.getIconContent( ) );
+        daoUtil.setString( ++nParam, category.getIconMimeType( ) );
+        daoUtil.setString( ++nParam, category.getWorkgroup( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Auto increment the primary key for the new category
+     * 
      * @return the new primary key for category
      */
-    private int getNewPrimaryKey(  )
+    private int getNewPrimaryKey( )
     {
         int nNewPrimaryKey = -1;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_MAX_PK );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             nNewPrimaryKey = daoUtil.getInt( 1 );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return ++nNewPrimaryKey;
     }
 
     /**
-    * Load the data of Category from the table
-    * @param nIdCategory The identifier of the category
-    * @return The Instance of the object Category
-    */
+     * Load the data of Category from the table
+     * 
+     * @param nIdCategory
+     *            The identifier of the category
+     * @return The Instance of the object Category
+     */
     public Category load( int nIdCategory )
     {
         int nParam;
@@ -147,12 +152,12 @@ public final class CategoryDAO implements ICategoryDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
         daoUtil.setInt( 1, nIdCategory );
 
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             nParam = 0;
-            category = new Category(  );
+            category = new Category( );
             category.setId( nIdCategory );
             category.setName( daoUtil.getString( ++nParam ) );
             category.setDescription( daoUtil.getString( ++nParam ) );
@@ -161,61 +166,67 @@ public final class CategoryDAO implements ICategoryDAO
             category.setWorkgroup( daoUtil.getString( ++nParam ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return category;
     }
 
     /**
      * Delete a record from the table
-     * @param nIdCategory The identifier of the object Category
+     * 
+     * @param nIdCategory
+     *            The identifier of the object Category
      */
     public void delete( int nIdCategory )
     {
         int nParam = 0;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
         daoUtil.setInt( ++nParam, nIdCategory );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Update the record in the table
-     * @param category The instance of the Category to update
+     * 
+     * @param category
+     *            The instance of the Category to update
      */
     public void store( Category category )
     {
         int nParam = 0;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setString( ++nParam, category.getName(  ) );
-        daoUtil.setString( ++nParam, category.getDescription(  ) );
-        daoUtil.setBytes( ++nParam, category.getIconContent(  ) );
-        daoUtil.setString( ++nParam, category.getIconMimeType(  ) );
-        daoUtil.setString( ++nParam, category.getWorkgroup(  ) );
-        daoUtil.setInt( ++nParam, category.getId(  ) );
+        daoUtil.setString( ++nParam, category.getName( ) );
+        daoUtil.setString( ++nParam, category.getDescription( ) );
+        daoUtil.setBytes( ++nParam, category.getIconContent( ) );
+        daoUtil.setString( ++nParam, category.getIconMimeType( ) );
+        daoUtil.setString( ++nParam, category.getWorkgroup( ) );
+        daoUtil.setInt( ++nParam, category.getId( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Load the data of Category from the table
-     * @param strCategoryName The name of the category
+     * 
+     * @param strCategoryName
+     *            The name of the category
      * @return The Collection of Category (empty collection is no result)
      */
     public Collection<Category> selectByName( String strCategoryName )
     {
         int nParam;
-        Collection<Category> listCategory = new ArrayList<Category>(  );
+        Collection<Category> listCategory = new ArrayList<Category>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_NAME );
         daoUtil.setString( 1, strCategoryName );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             nParam = 0;
 
-            Category category = new Category(  );
+            Category category = new Category( );
             category.setId( daoUtil.getInt( ++nParam ) );
             category.setName( strCategoryName );
             category.setDescription( daoUtil.getString( ++nParam ) );
@@ -226,15 +237,18 @@ public final class CategoryDAO implements ICategoryDAO
             listCategory.add( category );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listCategory;
     }
 
     /**
      * Delete a link between category and document
-     * @param nIdCategory The identifier of the object Category
-     * @param nIdDocument The id of document
+     * 
+     * @param nIdCategory
+     *            The identifier of the object Category
+     * @param nIdDocument
+     *            The id of document
      */
     public void deleteLinkCategoryDocument( int nIdCategory, int nIdDocument )
     {
@@ -242,36 +256,38 @@ public final class CategoryDAO implements ICategoryDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_LINK_CATEGORY_DOCUMENT );
         daoUtil.setInt( ++nParam, nIdDocument );
         daoUtil.setInt( ++nParam, nIdCategory );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Select a list of Id Documents for a specified category
-     * @param nIdCategory The category name
+     * 
+     * @param nIdCategory
+     *            The category name
      * @return The array of Id Document
      */
-    public int[] selectAllIdDocument( int nIdCategory )
+    public int [ ] selectAllIdDocument( int nIdCategory )
     {
-        Collection<Integer> listIdDocument = new ArrayList<Integer>(  );
+        Collection<Integer> listIdDocument = new ArrayList<Integer>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ID_DOCUMENT );
         daoUtil.setInt( 1, nIdCategory );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             listIdDocument.add( daoUtil.getInt( 1 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         // Convert ArrayList to Int[]
-        int[] arrayIdDocument = new int[listIdDocument.size(  )];
+        int [ ] arrayIdDocument = new int [ listIdDocument.size( )];
         int i = 0;
 
         for ( Integer nIdDocument : listIdDocument )
         {
-            arrayIdDocument[i++] = nIdDocument.intValue(  );
+            arrayIdDocument [i++] = nIdDocument.intValue( );
         }
 
         return arrayIdDocument;
@@ -279,20 +295,24 @@ public final class CategoryDAO implements ICategoryDAO
 
     /**
      * Delete all links for a category
-     * @param nIdCategory The identifier of the object Category
+     * 
+     * @param nIdCategory
+     *            The identifier of the object Category
      */
     public void deleteLinksCategory( int nIdCategory )
     {
         int nParam = 0;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_LINKS_CATEGORY );
         daoUtil.setInt( ++nParam, nIdCategory );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Return the number of documents linked to a category
-     * @param nIdCategory The category name
+     * 
+     * @param nIdCategory
+     *            The category name
      * @return count of id document
      */
     public int selectCountIdDocuments( int nIdCategory )
@@ -300,39 +320,41 @@ public final class CategoryDAO implements ICategoryDAO
         int nCountDocumentsId = -1;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_COUNT_OF_DOCUMENT_ID );
         daoUtil.setInt( 1, nIdCategory );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             nCountDocumentsId = daoUtil.getInt( 1 );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return nCountDocumentsId;
     }
 
     /**
      * Return the image resource corresponding to the category id
-     * @param nCategoryId The identifier of Category object
+     * 
+     * @param nCategoryId
+     *            The identifier of Category object
      * @return The image resource
      */
     public ImageResource loadImageResource( int nCategoryId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_RESOURCE_IMAGE );
         daoUtil.setInt( 1, nCategoryId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         ImageResource image = null;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
-            image = new ImageResource(  );
+            image = new ImageResource( );
             image.setImage( daoUtil.getBytes( 1 ) );
             image.setMimeType( daoUtil.getString( 2 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return image;
     }

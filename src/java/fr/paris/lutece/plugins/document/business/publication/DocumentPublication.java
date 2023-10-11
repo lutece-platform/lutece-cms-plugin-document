@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.document.business.publication;
 
 import java.util.Date;
 
-
 /**
  *
  * This class represents business objects DocumentPublication Portlet
@@ -47,7 +46,7 @@ public class DocumentPublication
     // Public constants
     public static final int STATUS_PUBLISHED = 0;
     public static final int STATUS_UNPUBLISHED = 1;
-    public static final int DOCUMENT_ORDER_DEFAULT_VALUE = 0; //When document is not published, set document order with this constant
+    public static final int DOCUMENT_ORDER_DEFAULT_VALUE = 0; // When document is not published, set document order with this constant
     private int _nPortletId;
     private int _nDocumentId;
     private int _nDocumentOrder;
@@ -57,13 +56,14 @@ public class DocumentPublication
     /**
      * @return the _nDocumentId
      */
-    public int getDocumentId(  )
+    public int getDocumentId( )
     {
         return _nDocumentId;
     }
 
     /**
-     * @param nDocumentId the _nDocumentId to set
+     * @param nDocumentId
+     *            the _nDocumentId to set
      */
     public void setDocumentId( int nDocumentId )
     {
@@ -73,13 +73,14 @@ public class DocumentPublication
     /**
      * @return the _nDocumentOrder
      */
-    public int getDocumentOrder(  )
+    public int getDocumentOrder( )
     {
         return _nDocumentOrder;
     }
 
     /**
-     * @param nDocumentOrder the _nDocumentOrder to set
+     * @param nDocumentOrder
+     *            the _nDocumentOrder to set
      */
     public void setDocumentOrder( int nDocumentOrder )
     {
@@ -89,13 +90,14 @@ public class DocumentPublication
     /**
      * @return the _nPortletId
      */
-    public int getPortletId(  )
+    public int getPortletId( )
     {
         return _nPortletId;
     }
 
     /**
-     * @param nPortletId the _nPortletId to set
+     * @param nPortletId
+     *            the _nPortletId to set
      */
     public void setPortletId( int nPortletId )
     {
@@ -105,13 +107,14 @@ public class DocumentPublication
     /**
      * @return the _nStatus
      */
-    public int getStatus(  )
+    public int getStatus( )
     {
         return _nStatus;
     }
 
     /**
-     * @param nStatus the _nStatus to set
+     * @param nStatus
+     *            the _nStatus to set
      */
     public void setStatus( int nStatus )
     {
@@ -121,13 +124,14 @@ public class DocumentPublication
     /**
      * @return the _datePublishing
      */
-    public Date getDatePublishing(  )
+    public Date getDatePublishing( )
     {
         return _datePublishing;
     }
 
     /**
-     * @param datePublishing the _datePublishing to set
+     * @param datePublishing
+     *            the _datePublishing to set
      */
     public void setDatePublishing( Date datePublishing )
     {

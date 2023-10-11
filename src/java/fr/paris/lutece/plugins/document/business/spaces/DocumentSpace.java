@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,6 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
 
 import java.util.ArrayList;
 
-
 /**
  * A Space to store documents
  */
@@ -54,7 +53,7 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
     private String _strViewType;
     private int _nIdIcon;
     private String _strIconUrl;
-    private ArrayList<String> _listDocumentType = new ArrayList<String>(  );
+    private ArrayList<String> _listDocumentType = new ArrayList<String>( );
     private boolean _bDocumentCreationAllowed;
     private String _strWorkgroup;
 
@@ -63,7 +62,7 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
      *
      * @return The IdSpace
      */
-    public int getId(  )
+    public int getId( )
     {
         return _nIdSpace;
     }
@@ -71,7 +70,8 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
     /**
      * Sets the IdSpace
      *
-     * @param nIdSpace The IdSpace
+     * @param nIdSpace
+     *            The IdSpace
      */
     public void setId( int nIdSpace )
     {
@@ -83,7 +83,7 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
      *
      * @return The IdParent
      */
-    public int getIdParent(  )
+    public int getIdParent( )
     {
         return _nIdParent;
     }
@@ -91,7 +91,8 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
     /**
      * Sets the IdParent
      *
-     * @param nIdParent The IdParent
+     * @param nIdParent
+     *            The IdParent
      */
     public void setIdParent( int nIdParent )
     {
@@ -103,7 +104,7 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
      *
      * @return The Name
      */
-    public String getName(  )
+    public String getName( )
     {
         return _strName;
     }
@@ -111,7 +112,8 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
     /**
      * Sets the Name
      *
-     * @param strName The Name
+     * @param strName
+     *            The Name
      */
     public void setName( String strName )
     {
@@ -123,7 +125,7 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
      *
      * @return The Description
      */
-    public String getDescription(  )
+    public String getDescription( )
     {
         return _strDescription;
     }
@@ -131,7 +133,8 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
     /**
      * Sets the Description
      *
-     * @param strDescription The Description
+     * @param strDescription
+     *            The Description
      */
     public void setDescription( String strDescription )
     {
@@ -143,7 +146,7 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
      *
      * @return The ViewType
      */
-    public String getViewType(  )
+    public String getViewType( )
     {
         return _strViewType;
     }
@@ -151,7 +154,8 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
     /**
      * Sets the ViewType
      *
-     * @param strViewType The ViewType
+     * @param strViewType
+     *            The ViewType
      */
     public void setViewType( String strViewType )
     {
@@ -163,7 +167,7 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
      *
      * @return The IdIcon
      */
-    public int getIdIcon(  )
+    public int getIdIcon( )
     {
         return _nIdIcon;
     }
@@ -171,7 +175,8 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
     /**
      * Sets the IdIcon
      *
-     * @param nIdIcon The IdIcon
+     * @param nIdIcon
+     *            The IdIcon
      */
     public void setIdIcon( int nIdIcon )
     {
@@ -183,7 +188,7 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
      *
      * @return The IconUrl
      */
-    public String getIconUrl(  )
+    public String getIconUrl( )
     {
         return _strIconUrl;
     }
@@ -191,7 +196,8 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
     /**
      * Sets the IconUrl
      *
-     * @param strIconUrl The IconUrl
+     * @param strIconUrl
+     *            The IconUrl
      */
     public void setIconUrl( String strIconUrl )
     {
@@ -203,15 +209,16 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
      *
      * @return True if Document Creation is Allowed
      */
-    public boolean isDocumentCreationAllowed(  )
+    public boolean isDocumentCreationAllowed( )
     {
         return _bDocumentCreationAllowed;
     }
 
     /**
-     * Sets  whether or not Document Creation is Allowed for this space
+     * Sets whether or not Document Creation is Allowed for this space
      *
-     * @param bDocumentCreationAllowed The DocumentCreationAllowed value
+     * @param bDocumentCreationAllowed
+     *            The DocumentCreationAllowed value
      */
     public void setDocumentCreationAllowed( boolean bDocumentCreationAllowed )
     {
@@ -220,7 +227,9 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
 
     /**
      * Add allowed document
-     * @param strDocumentType The document type to allow
+     * 
+     * @param strDocumentType
+     *            The document type to allow
      */
     public void addAllowedDocumentType( String strDocumentType )
     {
@@ -230,24 +239,25 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
     /**
      * Reset allowed document types list
      */
-    public void resetAllowedDocumentTypesList(  )
+    public void resetAllowedDocumentTypesList( )
     {
-        _listDocumentType.clear(  );
+        _listDocumentType.clear( );
     }
 
     /**
      * Returns allowed document types
+     * 
      * @return Allowed document types
      */
-    public String[] getAllowedDocumentTypes(  )
+    public String [ ] getAllowedDocumentTypes( )
     {
-        String[] checkedItems = new String[_listDocumentType.size(  )];
+        String [ ] checkedItems = new String [ _listDocumentType.size( )];
 
         int nIndex = 0;
 
         for ( String strType : _listDocumentType )
         {
-            checkedItems[nIndex] = strType;
+            checkedItems [nIndex] = strType;
             nIndex++;
         }
 
@@ -259,34 +269,38 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
 
     /**
      * Returns the Resource Type Code that identify the resource type
+     * 
      * @return The Resource Type Code
      */
-    public String getResourceTypeCode(  )
+    public String getResourceTypeCode( )
     {
         return RESOURCE_TYPE;
     }
 
     /**
      * Returns the resource Id of the current object
+     * 
      * @return The resource Id of the current object
      */
-    public String getResourceId(  )
+    public String getResourceId( )
     {
-        return "" + getId(  );
+        return "" + getId( );
     }
 
     /**
-    *
-    * @return the work group associate to the DocumentSpace
-    */
-    public String getWorkgroup(  )
+     *
+     * @return the work group associate to the DocumentSpace
+     */
+    public String getWorkgroup( )
     {
         return _strWorkgroup;
     }
 
     /**
-     * set  the work group associate to the DocumentSpace
-     * @param workGroup  the work group associate to the DocumentSpace
+     * set the work group associate to the DocumentSpace
+     * 
+     * @param workGroup
+     *            the work group associate to the DocumentSpace
      */
     public void setWorkgroup( String workGroup )
     {

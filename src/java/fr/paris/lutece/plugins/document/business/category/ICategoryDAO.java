@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,6 @@ import fr.paris.lutece.portal.service.image.ImageResource;
 
 import java.util.Collection;
 
-
 /**
  * Interface for Category DAO
  */
@@ -45,53 +44,68 @@ public interface ICategoryDAO
 {
     /**
      * Load the list of category
+     * 
      * @return The Collection of category
      */
-    Collection<Category> selectAll(  );
+    Collection<Category> selectAll( );
 
     /**
      * insert a new Category
-     * @param category the new Category object
+     * 
+     * @param category
+     *            the new Category object
      */
     void insert( Category category );
 
     /**
      * Load the data of Category from the table
-     * @param nIdCategory The id of the category
+     * 
+     * @param nIdCategory
+     *            The id of the category
      * @return The Instance of the object Category
      */
     Category load( int nIdCategory );
 
     /**
      * Load the data of Category from the table
-     * @param strCategoryName The name of the category
+     * 
+     * @param strCategoryName
+     *            The name of the category
      * @return The Collection of Category
      */
     Collection<Category> selectByName( String strCategoryName );
 
     /**
      * Delete a record from the table
-     * @param nIdCategory The identifier of the object Category
+     * 
+     * @param nIdCategory
+     *            The identifier of the object Category
      */
     void delete( int nIdCategory );
 
     /**
      * Update the record in the table
-     * @param category The instance of the Category to update
+     * 
+     * @param category
+     *            The instance of the Category to update
      */
     void store( Category category );
 
     /**
      * Return the number of documents linked to a category
-     * @param nIdCategory The category id
+     * 
+     * @param nIdCategory
+     *            The category id
      * @return count of id document
      */
     int selectCountIdDocuments( int nIdCategory );
 
     /**
-    * Return the image resource corresponding to the category id
-    * @param nCategoryId The Category id
-    * @return The image resource
-    */
+     * Return the image resource corresponding to the category id
+     * 
+     * @param nCategoryId
+     *            The Category id
+     * @return The image resource
+     */
     ImageResource loadImageResource( int nCategoryId );
 }

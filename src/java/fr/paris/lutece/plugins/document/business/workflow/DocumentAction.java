@@ -1,5 +1,5 @@
 /*
- * Copyright(c) 2002-2013, Mairie de Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,10 +22,10 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
  * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE)
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
@@ -38,7 +38,6 @@ import fr.paris.lutece.portal.service.i18n.Localizable;
 import fr.paris.lutece.portal.service.rbac.RBACAction;
 
 import java.util.Locale;
-
 
 /**
  * This class represents the business object DocumentAction
@@ -68,14 +67,16 @@ public class DocumentAction implements Localizable, RBACAction
      *
      * @return the id of the document action
      */
-    public int getIdAction(  )
+    public int getIdAction( )
     {
         return _nIdAction;
     }
 
     /**
      * set the id of the document action
-     * @param idAction the id of the document action
+     * 
+     * @param idAction
+     *            the id of the document action
      */
     public void setIdAction( int idAction )
     {
@@ -84,16 +85,18 @@ public class DocumentAction implements Localizable, RBACAction
 
     /**
      *
-     * @return the state of the document  after doing the action
+     * @return the state of the document after doing the action
      */
-    public DocumentState getFinishDocumentState(  )
+    public DocumentState getFinishDocumentState( )
     {
         return _finishDocumentState;
     }
 
     /**
-     * set  the state of the document  after doing the action
-     * @param documentState  the state of the document  after doing the action
+     * set the state of the document after doing the action
+     * 
+     * @param documentState
+     *            the state of the document after doing the action
      */
     public void setFinishDocumentState( DocumentState documentState )
     {
@@ -101,9 +104,11 @@ public class DocumentAction implements Localizable, RBACAction
     }
 
     /**
-    * Implements Localizable
-    * @param locale The current locale
-    */
+     * Implements Localizable
+     * 
+     * @param locale
+     *            The current locale
+     */
     public void setLocale( Locale locale )
     {
         _locale = locale;
@@ -114,7 +119,7 @@ public class DocumentAction implements Localizable, RBACAction
      *
      * @return The Url
      */
-    public String getUrl(  )
+    public String getUrl( )
     {
         return _strUrl;
     }
@@ -122,7 +127,8 @@ public class DocumentAction implements Localizable, RBACAction
     /**
      * Sets the Url
      *
-     * @param strUrl The Url
+     * @param strUrl
+     *            The Url
      */
     public void setUrl( String strUrl )
     {
@@ -134,7 +140,7 @@ public class DocumentAction implements Localizable, RBACAction
      *
      * @return The NameKey
      */
-    public String getNameKey(  )
+    public String getNameKey( )
     {
         return _strNameKey;
     }
@@ -144,7 +150,7 @@ public class DocumentAction implements Localizable, RBACAction
      *
      * @return The Name
      */
-    public String getName(  )
+    public String getName( )
     {
         return I18nService.getLocalizedString( _strNameKey, _locale );
     }
@@ -152,7 +158,8 @@ public class DocumentAction implements Localizable, RBACAction
     /**
      * Sets the NameKey
      *
-     * @param strNameKey The NameKey
+     * @param strNameKey
+     *            The NameKey
      */
     public void setNameKey( String strNameKey )
     {
@@ -164,7 +171,7 @@ public class DocumentAction implements Localizable, RBACAction
      *
      * @return The DescriptionKey
      */
-    public String getDescriptionKey(  )
+    public String getDescriptionKey( )
     {
         return _strDescriptionKey;
     }
@@ -174,7 +181,7 @@ public class DocumentAction implements Localizable, RBACAction
      *
      * @return The Description
      */
-    public String getDescription(  )
+    public String getDescription( )
     {
         return I18nService.getLocalizedString( _strDescriptionKey, _locale );
     }
@@ -182,7 +189,8 @@ public class DocumentAction implements Localizable, RBACAction
     /**
      * Sets the DescriptionKey
      *
-     * @param strDescriptionKey The DescriptionKey
+     * @param strDescriptionKey
+     *            The DescriptionKey
      */
     public void setDescriptionKey( String strDescriptionKey )
     {
@@ -194,7 +202,7 @@ public class DocumentAction implements Localizable, RBACAction
      *
      * @return The IconUrl
      */
-    public String getIconUrl(  )
+    public String getIconUrl( )
     {
         return _strIconUrl;
     }
@@ -202,7 +210,8 @@ public class DocumentAction implements Localizable, RBACAction
     /**
      * Sets the IconUrl
      *
-     * @param strIconUrl The IconUrl
+     * @param strIconUrl
+     *            The IconUrl
      */
     public void setIconUrl( String strIconUrl )
     {
@@ -211,9 +220,10 @@ public class DocumentAction implements Localizable, RBACAction
 
     /**
      * Returns the permission associated to the action
+     * 
      * @return The permission
      */
-    public String getPermission(  )
+    public String getPermission( )
     {
         return _strPermission;
     }
@@ -221,7 +231,8 @@ public class DocumentAction implements Localizable, RBACAction
     /**
      * Sets the Permission
      *
-     * @param strPermission The Permission
+     * @param strPermission
+     *            The Permission
      */
     public void setPermission( String strPermission )
     {

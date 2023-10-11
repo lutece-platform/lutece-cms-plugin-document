@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,28 +38,28 @@ import fr.paris.lutece.util.sql.DAOUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * SpaceActionDAO
  */
 public class SpaceActionDAO implements ISpaceActionDAO
 {
-    private static final String SQL_QUERY_SELECT_ACTIONS = "SELECT a.name_key, a.description_key, a.action_url, a.icon_url, a.action_permission " +
-        " FROM document_space_action a ";
+    private static final String SQL_QUERY_SELECT_ACTIONS = "SELECT a.name_key, a.description_key, a.action_url, a.icon_url, a.action_permission "
+            + " FROM document_space_action a ";
 
     /**
      * Load the list of actions for a document
+     * 
      * @return The Collection of actions
      */
-    public List<SpaceAction> selectActions(  )
+    public List<SpaceAction> selectActions( )
     {
-        List<SpaceAction> listActions = new ArrayList<SpaceAction>(  );
+        List<SpaceAction> listActions = new ArrayList<SpaceAction>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIONS );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            SpaceAction action = new SpaceAction(  );
+            SpaceAction action = new SpaceAction( );
             action.setNameKey( daoUtil.getString( 1 ) );
             action.setDescriptionKey( daoUtil.getString( 2 ) );
             action.setUrl( daoUtil.getString( 3 ) );
@@ -69,7 +69,7 @@ public class SpaceActionDAO implements ISpaceActionDAO
             listActions.add( action );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listActions;
     }

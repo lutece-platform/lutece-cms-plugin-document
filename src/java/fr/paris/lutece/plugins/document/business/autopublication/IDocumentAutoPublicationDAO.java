@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,6 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 
 import java.util.Collection;
 
-
 /**
  * This class porvides Data Access methods for DocumentAutoPublicationDAO interface
  *
@@ -48,16 +47,18 @@ public interface IDocumentAutoPublicationDAO
     /**
      * Insert a new record in the table document_auto_publication
      *
-     * @param documentAutoPublication the instance of the
-     *            DocumentAutoPublication object to insert
+     * @param documentAutoPublication
+     *            the instance of the DocumentAutoPublication object to insert
      */
     void insert( DocumentAutoPublication documentAutoPublication );
 
     /**
      * Loads the data of Document Auto Publication whose identifier is specified in parameter
      *
-     * @param nPortletId The {@link Portlet} identifier
-     * @param nSpaceId The {@link DocumentSpace} identifier
+     * @param nPortletId
+     *            The {@link Portlet} identifier
+     * @param nSpaceId
+     *            The {@link DocumentSpace} identifier
      * @return The {@link DocumentAutoPublication} object
      */
     DocumentAutoPublication load( int nPortletId, int nSpaceId );
@@ -67,12 +68,13 @@ public interface IDocumentAutoPublicationDAO
      *
      * @return The {@link Collection} of {@link DocumentAutoPublication} object
      */
-    Collection<DocumentAutoPublication> load(  );
+    Collection<DocumentAutoPublication> load( );
 
     /**
      * Load the list of Document Auto Publication whose portlet identifier is specified in parameter
      *
-     * @param nPortletId The {@link Portlet} identifier
+     * @param nPortletId
+     *            The {@link Portlet} identifier
      * @return The {@link Collection} of {@link DocumentAutoPublication} object
      */
     Collection<DocumentAutoPublication> selectByPortletId( int nPortletId );
@@ -80,7 +82,8 @@ public interface IDocumentAutoPublicationDAO
     /**
      * Load the list of Document Auto Publication whose {@link DocumentSpace} identifier is specified in parameter
      *
-     * @param nSpaceId The {@link DocumentSpace} identifier
+     * @param nSpaceId
+     *            The {@link DocumentSpace} identifier
      * @return The {@link Collection} of {@link DocumentAutoPublication} object
      */
     Collection<DocumentAutoPublication> selectBySpaceId( int nSpaceId );
@@ -88,22 +91,26 @@ public interface IDocumentAutoPublicationDAO
     /**
      * Update the record in the table
      *
-     * @param documentAutoPublication The DocumentAutoPublication to update
+     * @param documentAutoPublication
+     *            The DocumentAutoPublication to update
      */
     void store( DocumentAutoPublication documentAutoPublication );
 
     /**
      * Delete records from a Document Auto Publication object identifier in the table document_auto_publication
      *
-     * @param nPortletId the portlet identifier
-     * @param nSpaceId the {@link DocumentSpace} identifier
+     * @param nPortletId
+     *            the portlet identifier
+     * @param nSpaceId
+     *            the {@link DocumentSpace} identifier
      */
     void delete( int nPortletId, int nSpaceId );
 
     /**
      * Delete records from a portlet
      *
-     * @param nPortletId the portlet identifier
+     * @param nPortletId
+     *            the portlet identifier
      */
     void deleteAllSpaces( int nPortletId );
 }

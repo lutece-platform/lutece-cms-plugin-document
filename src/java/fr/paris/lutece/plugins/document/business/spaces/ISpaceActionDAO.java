@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.document.business.spaces;
 
 import java.util.List;
 
-
 /**
  * SpaceActionDAO Interface
  */
@@ -43,7 +42,8 @@ public interface ISpaceActionDAO
 {
     /**
      * Load the list of actions for a document
+     * 
      * @return The Collection of actions
      */
-    List<SpaceAction> selectActions(  );
+    List<SpaceAction> selectActions( );
 }

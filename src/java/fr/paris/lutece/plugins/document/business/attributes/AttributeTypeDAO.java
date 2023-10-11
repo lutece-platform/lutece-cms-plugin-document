@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
  * This class provides Data Access methods for DocumentAttributeType objects
  */
@@ -59,91 +58,98 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
     /**
      * Insert a new record in the table.
      *
-     * @param documentAttributeType The documentAttributeType object
+     * @param documentAttributeType
+     *            The documentAttributeType object
      */
     public void insert( AttributeType documentAttributeType )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setString( 1, documentAttributeType.getCode(  ) );
-        daoUtil.setString( 2, documentAttributeType.getNameKey(  ) );
-        daoUtil.setString( 3, documentAttributeType.getDescriptionKey(  ) );
-        daoUtil.setString( 4, documentAttributeType.getClassName(  ) );
+        daoUtil.setString( 1, documentAttributeType.getCode( ) );
+        daoUtil.setString( 2, documentAttributeType.getNameKey( ) );
+        daoUtil.setString( 3, documentAttributeType.getDescriptionKey( ) );
+        daoUtil.setString( 4, documentAttributeType.getClassName( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Load the data of DocumentAttributeType from the table
      *
-     * @param nDocumentAttributeTypeId The identifier of DocumentAttributeType
+     * @param nDocumentAttributeTypeId
+     *            The identifier of DocumentAttributeType
      * @return the instance of the DocumentAttributeType
      */
     public AttributeType load( int nDocumentAttributeTypeId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
         daoUtil.setInt( 1, nDocumentAttributeTypeId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         AttributeType documentAttributeType = null;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
-            documentAttributeType = new AttributeType(  );
+            documentAttributeType = new AttributeType( );
             documentAttributeType.setCode( daoUtil.getString( 1 ) );
             documentAttributeType.setNameKey( daoUtil.getString( 2 ) );
             documentAttributeType.setDescriptionKey( daoUtil.getString( 3 ) );
             documentAttributeType.setClassName( daoUtil.getString( 4 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return documentAttributeType;
     }
 
     /**
      * Delete a record from the table
-     * @param documentAttributeType The DocumentAttributeType object
+     * 
+     * @param documentAttributeType
+     *            The DocumentAttributeType object
      */
     public void delete( AttributeType documentAttributeType )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setString( 1, documentAttributeType.getCode(  ) );
+        daoUtil.setString( 1, documentAttributeType.getCode( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Update the record in the table
-     * @param documentAttributeType The reference of documentAttributeType
+     * 
+     * @param documentAttributeType
+     *            The reference of documentAttributeType
      */
     public void store( AttributeType documentAttributeType )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setString( 1, documentAttributeType.getCode(  ) );
-        daoUtil.setString( 2, documentAttributeType.getNameKey(  ) );
-        daoUtil.setString( 3, documentAttributeType.getDescriptionKey(  ) );
-        daoUtil.setString( 4, documentAttributeType.getClassName(  ) );
-        daoUtil.setString( 5, documentAttributeType.getCode(  ) );
+        daoUtil.setString( 1, documentAttributeType.getCode( ) );
+        daoUtil.setString( 2, documentAttributeType.getNameKey( ) );
+        daoUtil.setString( 3, documentAttributeType.getDescriptionKey( ) );
+        daoUtil.setString( 4, documentAttributeType.getClassName( ) );
+        daoUtil.setString( 5, documentAttributeType.getCode( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Load the list of documentAttributeTypes
+     * 
      * @return The Collection of the DocumentAttributeTypes
      */
-    public Collection<AttributeType> selectDocumentAttributeTypeList(  )
+    public Collection<AttributeType> selectDocumentAttributeTypeList( )
     {
-        Collection<AttributeType> listDocumentAttributeTypes = new ArrayList<AttributeType>(  );
+        Collection<AttributeType> listDocumentAttributeTypes = new ArrayList<AttributeType>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            AttributeType documentAttributeType = new AttributeType(  );
+            AttributeType documentAttributeType = new AttributeType( );
             documentAttributeType.setCode( daoUtil.getString( 1 ) );
             documentAttributeType.setNameKey( daoUtil.getString( 2 ) );
             documentAttributeType.setDescriptionKey( daoUtil.getString( 3 ) );
@@ -152,32 +158,34 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
             listDocumentAttributeTypes.add( documentAttributeType );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDocumentAttributeTypes;
     }
 
     /**
      * Load the list of Attribute Types
+     * 
      * @return The Collection of the DocumentAttributeTypes
-     * @param locale The locale
+     * @param locale
+     *            The locale
      */
     public ReferenceList selectAttributeTypeList( Locale locale )
     {
-        ReferenceList listAttributeTypes = new ReferenceList(  );
+        ReferenceList listAttributeTypes = new ReferenceList( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            AttributeType documentAttributeType = new AttributeType(  );
+            AttributeType documentAttributeType = new AttributeType( );
             documentAttributeType.setLocale( locale );
             documentAttributeType.setCode( daoUtil.getString( 1 ) );
             documentAttributeType.setNameKey( daoUtil.getString( 2 ) );
-            listAttributeTypes.addItem( documentAttributeType.getCode(  ), documentAttributeType.getName(  ) );
+            listAttributeTypes.addItem( documentAttributeType.getCode( ), documentAttributeType.getName( ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listAttributeTypes;
     }
@@ -187,20 +195,21 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
 
     /**
      * Gets attributes managers list
+     * 
      * @return The list of attribute managers
      */
-    public ReferenceList getAttributeManagersList(  )
+    public ReferenceList getAttributeManagersList( )
     {
-        ReferenceList listAttributeManagers = new ReferenceList(  );
+        ReferenceList listAttributeManagers = new ReferenceList( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_MANAGERS );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             listAttributeManagers.addItem( daoUtil.getString( 1 ), daoUtil.getString( 2 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listAttributeManagers;
     }
@@ -210,21 +219,23 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
 
     /**
      * Load the list of attributeTypeParameters
+     * 
      * @return The Collection of the AttributeTypeParameters
-     * @param strAttributeTypeCode The attribute type code
+     * @param strAttributeTypeCode
+     *            The attribute type code
      */
     public List<AttributeTypeParameter> selectAttributeTypeParameterList( String strAttributeTypeCode )
     {
-        List<AttributeTypeParameter> listAttributeTypeParameters = new ArrayList<AttributeTypeParameter>(  );
-        List<String> listDefaultValue = new ArrayList<String>(  );
+        List<AttributeTypeParameter> listAttributeTypeParameters = new ArrayList<AttributeTypeParameter>( );
+        List<String> listDefaultValue = new ArrayList<String>( );
         String strDefaultValue;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PARAMETERS );
         daoUtil.setString( 1, strAttributeTypeCode );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            AttributeTypeParameter attributeTypeParameter = new AttributeTypeParameter(  );
+            AttributeTypeParameter attributeTypeParameter = new AttributeTypeParameter( );
             attributeTypeParameter.setName( daoUtil.getString( 1 ) );
             attributeTypeParameter.setLabelKey( daoUtil.getString( 2 ) );
             attributeTypeParameter.setDescriptionKey( daoUtil.getString( 3 ) );
@@ -236,12 +247,12 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
             }
 
             attributeTypeParameter.setDefaultValue( listDefaultValue );
-            listDefaultValue.clear(  );
+            listDefaultValue.clear( );
 
             listAttributeTypeParameters.add( attributeTypeParameter );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listAttributeTypeParameters;
     }

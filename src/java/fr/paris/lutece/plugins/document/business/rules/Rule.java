@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,6 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * Interface of rules that can be applied on documents by the RuleEngine
  */
@@ -54,49 +53,62 @@ public interface Rule extends Localizable
     /**
      * Initialize the rule
      */
-    void init(  );
+    void init( );
 
     /**
      * Sets the Rule Id
-     * @param nId The rule Id
+     * 
+     * @param nId
+     *            The rule Id
      */
     void setId( int nId );
 
     /**
      * Gets the Rule Id
+     * 
      * @return the Rule Id
      */
-    int getId(  );
+    int getId( );
 
     /**
      * Sets the RuleTypeId
-     * @param strId The Rule type Id
+     * 
+     * @param strId
+     *            The Rule type Id
      */
     void setRuleTypeId( String strId );
 
     /**
      * Gets the Rule Type Id
+     * 
      * @return the Rule Type Id
      */
-    String getRuleTypeId(  );
+    String getRuleTypeId( );
 
     /**
      * Gets a specific attribute by its name
-     * @param strAttributeName The attribute name
+     * 
+     * @param strAttributeName
+     *            The attribute name
      * @return The attribute value
      */
     String getAttribute( String strAttributeName );
 
     /**
      * Sets a specific rule attribute
-     * @param strAttributeName The attribute name
-     * @param strAttributeValue The attribute value
+     * 
+     * @param strAttributeName
+     *            The attribute name
+     * @param strAttributeValue
+     *            The attribute value
      */
     void setAttribute( String strAttributeName, String strAttributeValue );
 
     /**
      * Reads rule attributes
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      */
     void readAttributes( HttpServletRequest request );
 
@@ -105,60 +117,75 @@ public interface Rule extends Localizable
 
     /**
      * Execute the rule
-     * @param event The document event
-     * @throws DocumentException raise when error occurs in event or rule
+     * 
+     * @param event
+     *            The document event
+     * @throws DocumentException
+     *             raise when error occurs in event or rule
      */
     void apply( DocumentEvent event ) throws DocumentException;
 
     /**
      * Check the rule
+     * 
      * @return null if rule is valid, message if rule not valid
      */
-    String validateRule(  );
+    String validateRule( );
 
     /**
      * Return the HTML form containing specific fields of the rule
-     * @param user The current user
-     * @param locale The Locale
+     * 
+     * @param user
+     *            The current user
+     * @param locale
+     *            The Locale
      * @return The Create HTML form
      */
     String getCreateForm( AdminUser user, Locale locale );
 
     /**
      * Gives all specific attributes of the rule
+     * 
      * @return A string array containing all attributes names
      */
-    String[] getAttributesList(  );
+    String [ ] getAttributesList( );
 
     /**
      * Gets the Rule definition
+     * 
      * @return The Rule definition
      */
-    String getRule(  );
+    String getRule( );
 
     /**
      * Gets the current user
+     * 
      * @return the current user
      */
-    AdminUser getUser(  );
+    AdminUser getUser( );
 
     /**
      * true if the user is authorized to view the rule
-     * @param user  the current user
+     * 
+     * @param user
+     *            the current user
      * @return true if the user is authorized to view the rule
      */
     boolean isAuthorized( AdminUser user );
 
     /**
      * set the admin user who use the rule
-     * @param user the admin user who use the rule
+     * 
+     * @param user
+     *            the admin user who use the rule
      *
      */
     void setUser( AdminUser user );
 
     /**
      * Gets the Rule name key
+     * 
      * @return The Rule name key
      */
-    String getNameKey(  );
+    String getNameKey( );
 }

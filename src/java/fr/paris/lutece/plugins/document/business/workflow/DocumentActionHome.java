@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
  * This class provides instances management methods (create, find, ...) for DocumentAction objects
  */
@@ -52,13 +51,15 @@ public final class DocumentActionHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private DocumentActionHome(  )
+    private DocumentActionHome( )
     {
     }
 
     /**
-     * Load the  Document Action
-     * @param nIdAction The identifier of the action
+     * Load the Document Action
+     * 
+     * @param nIdAction
+     *            The identifier of the action
      * @return the instance of action
      */
     public static DocumentAction findByPrimaryKey( int nIdAction )
@@ -68,8 +69,11 @@ public final class DocumentActionHome
 
     /**
      * Returns the list of allowed actions for the current document
-     * @param document The document
-     * @param locale The locale
+     * 
+     * @param document
+     *            The document
+     * @param locale
+     *            The locale
      * @return A list of actions for the current document
      */
     public static List<DocumentAction> getActionsList( Document document, Locale locale )

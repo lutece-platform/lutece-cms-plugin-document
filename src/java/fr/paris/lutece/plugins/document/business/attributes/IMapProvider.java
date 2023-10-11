@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.document.business.attributes;
 
 import fr.paris.lutece.util.ReferenceItem;
 
-
 /**
  *
  * IMapProvider : map provider for Geolocation
@@ -45,54 +44,63 @@ public interface IMapProvider
 {
     /**
      * Gets the key. This key <b>must be unique</b>.
+     * 
      * @return the key;
      */
-    String getKey(  );
+    String getKey( );
 
     /**
      * Gets the displayed name
+     * 
      * @return the displayed name
      */
-    String getDisplayedName(  );
+    String getDisplayedName( );
 
     /**
      * Gets the html code
+     * 
      * @return the html code
      */
-    String getHtmlCode(  );
+    String getHtmlCode( );
 
     /**
      * Gets the html code for list result in Back Office
+     * 
      * @return the html code
      */
-    String getBackListHtmlCode(  );
+    String getBackListHtmlCode( );
 
     /**
      * Gets the html code for list result front office
+     * 
      * @return the html code
      */
-    String getFrontListHtmlCode(  );
+    String getFrontListHtmlCode( );
 
     /**
      * Gets the html code for front office
+     * 
      * @return the html code
      */
-    String getFrontHtmlCode(  );
+    String getFrontHtmlCode( );
 
     /**
      * Builds a new {@link ReferenceItem} for the map provider
+     * 
      * @return the item created.
      */
-    ReferenceItem toRefItem(  );
+    ReferenceItem toRefItem( );
 
     /**
      * Defines if map in bo and fo lists is supported
+     * 
      * @return <code>true</code> if a map can be generated (show on map button), <code>false</code> otherwise.
      */
-    boolean isMapListSupported(  );
+    boolean isMapListSupported( );
 
     /**
      * returns the Parameter class contains all the parameters of the map
+     * 
      * @return the Parameter
      */
     Object getParameter( int nKey );

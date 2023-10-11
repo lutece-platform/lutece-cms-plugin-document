@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.document.business.attributes;
 
 import fr.paris.lutece.util.ReferenceItem;
 
-
 /**
  *
  * MapProvider
@@ -55,14 +54,16 @@ public class MapProvider implements IMapProvider
      * {@inheritDoc}
      */
     @Override
-    public String getKey(  )
+    public String getKey( )
     {
         return _strKey;
     }
 
     /**
      * Sets the key
-     * @param key the key
+     * 
+     * @param key
+     *            the key
      */
     public void setKey( String key )
     {
@@ -73,14 +74,16 @@ public class MapProvider implements IMapProvider
      * {@inheritDoc}
      */
     @Override
-    public String getDisplayedName(  )
+    public String getDisplayedName( )
     {
         return _strDisplayedName;
     }
 
     /**
      * Set the displayed name
-     * @param displayedName the displayed name
+     * 
+     * @param displayedName
+     *            the displayed name
      */
     public void setDisplayedName( String displayedName )
     {
@@ -91,14 +94,16 @@ public class MapProvider implements IMapProvider
      * {@inheritDoc}
      */
     @Override
-    public String getHtmlCode(  )
+    public String getHtmlCode( )
     {
         return _strHtmlCode;
     }
 
     /**
      * Sets the html code
-     * @param htmlCode the html code
+     * 
+     * @param htmlCode
+     *            the html code
      */
     public void setHtmlCode( String htmlCode )
     {
@@ -109,12 +114,12 @@ public class MapProvider implements IMapProvider
      * {@inheritDoc}
      */
     @Override
-    public ReferenceItem toRefItem(  )
+    public ReferenceItem toRefItem( )
     {
-        ReferenceItem refItem = new ReferenceItem(  );
+        ReferenceItem refItem = new ReferenceItem( );
 
-        refItem.setCode( getKey(  ) );
-        refItem.setName( getDisplayedName(  ) );
+        refItem.setCode( getKey( ) );
+        refItem.setName( getDisplayedName( ) );
 
         return refItem;
     }
@@ -123,7 +128,7 @@ public class MapProvider implements IMapProvider
      * {@inheritDoc}
      */
     @Override
-    public String getFrontHtmlCode(  )
+    public String getFrontHtmlCode( )
     {
         return _strFrontHtmlCode;
     }
@@ -132,14 +137,16 @@ public class MapProvider implements IMapProvider
      * {@inheritDoc}
      */
     @Override
-    public String getFrontListHtmlCode(  )
+    public String getFrontListHtmlCode( )
     {
         return _strFrontListHtmlCode;
     }
 
     /**
      * Sets the front list html code
-     * @param strFrontListHtmlCode the front list template
+     * 
+     * @param strFrontListHtmlCode
+     *            the front list template
      */
     public void setFrontListHtmlCode( String strFrontListHtmlCode )
     {
@@ -148,7 +155,9 @@ public class MapProvider implements IMapProvider
 
     /**
      * Sets the front html
-     * @param strFrontHtmlCode the front template
+     * 
+     * @param strFrontHtmlCode
+     *            the front template
      */
     public void setFrontHtmlCode( String strFrontHtmlCode )
     {
@@ -157,7 +166,9 @@ public class MapProvider implements IMapProvider
 
     /**
      * Set back list html code
-     * @param strBackListHtmlCode the back list template
+     * 
+     * @param strBackListHtmlCode
+     *            the back list template
      */
     public void setBackListHtmlCode( String strBackListHtmlCode )
     {
@@ -168,7 +179,7 @@ public class MapProvider implements IMapProvider
      * {@inheritDoc}
      */
     @Override
-    public String getBackListHtmlCode(  )
+    public String getBackListHtmlCode( )
     {
         return _strBackListHtmlCode;
     }
@@ -177,14 +188,16 @@ public class MapProvider implements IMapProvider
      * {@inheritDoc}
      */
     @Override
-    public boolean isMapListSupported(  )
+    public boolean isMapListSupported( )
     {
         return _bMapListSupported;
     }
 
     /**
      * Set to <code>true</code> if map list is supported, <code>false</code> otherwise
-     * @param bMapListSupported the new value
+     * 
+     * @param bMapListSupported
+     *            the new value
      */
     public void setMapListSupported( boolean bMapListSupported )
     {

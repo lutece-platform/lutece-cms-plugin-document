@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,6 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 
-
 /**
  * Rule Types Sets Interface
  */
@@ -47,34 +46,43 @@ public interface IRuleTypesSet
 {
     /**
      * Sets the rule types map
-     * @param mapRules The rule types map
+     * 
+     * @param mapRules
+     *            The rule types map
      */
     void setRuleTypesMap( Map<String, Rule> mapRules );
 
     /**
      * Returns the rule types list
-     * @param locale the locale
+     * 
+     * @param locale
+     *            the locale
      * @return The rule types list
      */
     ReferenceList getRuleTypesList( Locale locale );
 
     /**
      * Returns the rule type of a given class type
-     * @param rule the rule
+     * 
+     * @param rule
+     *            the rule
      * @return The rule type
      */
     String getRuleTypeKey( Rule rule );
 
     /**
      * Create a new instance of a rule of a given type
-     * @param strRuleTypeKey The key name of the rule type
+     * 
+     * @param strRuleTypeKey
+     *            The key name of the rule type
      * @return A new Rule instance
      */
     Rule newInstance( String strRuleTypeKey );
 
     /**
      * Returns all rule types
+     * 
      * @return A collection of rule types
      */
-    Collection<Rule> getRuleTypes(  );
+    Collection<Rule> getRuleTypes( );
 }

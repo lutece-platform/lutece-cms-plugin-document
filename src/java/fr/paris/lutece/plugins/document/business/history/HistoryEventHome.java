@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
  * This class provides instances management methods (create, find, ...) for HistoryEvent objects
  */
@@ -52,15 +51,16 @@ public final class HistoryEventHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private HistoryEventHome(  )
+    private HistoryEventHome( )
     {
     }
 
     /**
      * Creation of an instance of historyEvent
      *
-     * @param historyEvent The instance of the historyEvent which contains the informations to store
-     * @return The  instance of historyEvent which has been created with its primary key.
+     * @param historyEvent
+     *            The instance of the historyEvent which contains the informations to store
+     * @return The instance of historyEvent which has been created with its primary key.
      */
     public static HistoryEvent create( HistoryEvent historyEvent )
     {
@@ -72,7 +72,8 @@ public final class HistoryEventHome
     /**
      * Remove the HistoryEvent whose identifier is specified in parameter
      *
-     * @param nDocumentId The document Id
+     * @param nDocumentId
+     *            The document Id
      */
     public static void remove( int nDocumentId )
     {
@@ -86,8 +87,10 @@ public final class HistoryEventHome
      * Returns a collection of historyEvents objects
      *
      * @return A collection of historyEvents
-     * @param nDocumentId The document Id
-     * @param locale The current locale
+     * @param nDocumentId
+     *            The document Id
+     * @param locale
+     *            The current locale
      */
     public static List<HistoryEvent> findByDocument( int nDocumentId, Locale locale )
     {
@@ -100,8 +103,10 @@ public final class HistoryEventHome
      * Returns a collection of historyEvents objects
      *
      * @return A collection of historyEvents
-     * @param strUser The user Id
-     * @param locale The current locale
+     * @param strUser
+     *            The user Id
+     * @param locale
+     *            The current locale
      */
     public static Collection<HistoryEvent> findByUser( String strUser, Locale locale )
     {

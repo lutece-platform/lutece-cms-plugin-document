@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
  * This class provides instances management methods (create, find, ...) for Rule objects
  */
@@ -53,15 +52,16 @@ public final class RuleHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private RuleHome(  )
+    private RuleHome( )
     {
     }
 
     /**
      * Creation of an instance of rule
      *
-     * @param rule The instance of the rule which contains the informations to store
-     * @return The  instance of rule which has been created with its primary key.
+     * @param rule
+     *            The instance of the rule which contains the informations to store
+     * @return The instance of rule which has been created with its primary key.
      */
     public static Rule create( Rule rule )
     {
@@ -73,8 +73,9 @@ public final class RuleHome
     /**
      * Update of the rule which is specified in parameter
      *
-     * @param rule The instance of the rule which contains the data to store
-     * @return The instance of the  rule which has been updated
+     * @param rule
+     *            The instance of the rule which contains the data to store
+     * @return The instance of the rule which has been updated
      */
     public static Rule update( Rule rule )
     {
@@ -86,7 +87,8 @@ public final class RuleHome
     /**
      * Remove the Rule whose identifier is specified in parameter
      *
-     * @param nRuleId The Rule Id
+     * @param nRuleId
+     *            The Rule Id
      */
     public static void remove( int nRuleId )
     {
@@ -99,7 +101,8 @@ public final class RuleHome
     /**
      * Returns an instance of a rule whose identifier is specified in parameter
      *
-     * @param nKey The Primary key of the rule
+     * @param nKey
+     *            The Primary key of the rule
      * @return An instance of rule
      */
     public static Rule findByPrimaryKey( int nKey )
@@ -109,7 +112,9 @@ public final class RuleHome
 
     /**
      * Returns a collection of rules objects
-     * @param locale the current local
+     * 
+     * @param locale
+     *            the current local
      * @return A collection of rules
      */
     public static List<Rule> findAll( Locale locale )
@@ -121,7 +126,9 @@ public final class RuleHome
 
     /**
      * Returns the rule types list
-     * @param locale the Locale
+     * 
+     * @param locale
+     *            the Locale
      * @return The rule types list
      */
     public static ReferenceList getRuleTypesList( Locale locale )
@@ -131,7 +138,9 @@ public final class RuleHome
 
     /**
      * Create a new instance of a rule of a given type
-     * @param strRuleTypeId The key name of the rule type
+     * 
+     * @param strRuleTypeId
+     *            The key name of the rule type
      * @return A new Rule instance
      */
     public static Rule newInstance( String strRuleTypeId )
@@ -141,16 +150,19 @@ public final class RuleHome
 
     /**
      * Returns all rule types
+     * 
      * @return A collection of rule types
      */
-    public static Collection<Rule> getRuleTypes(  )
+    public static Collection<Rule> getRuleTypes( )
     {
-        return _ruleTypesSet.getRuleTypes(  );
+        return _ruleTypesSet.getRuleTypes( );
     }
 
     /**
      * Returns the rule type of a given class type
-     * @param rule The Rule object
+     * 
+     * @param rule
+     *            The Rule object
      * @return The rule type
      */
     public static String getRuleTypeKey( Rule rule )
@@ -160,7 +172,9 @@ public final class RuleHome
 
     /**
      * Returns a collection of rules objects specified by rule type key
-     * @param strRuleTypeKey The rule type key
+     * 
+     * @param strRuleTypeKey
+     *            The rule type key
      * @return A collection of Rule
      */
     public static Collection<Rule> findByRuleTypeKey( String strRuleTypeKey )

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * Default implementation of a rule
  */
@@ -52,7 +51,7 @@ public abstract class AbstractRule implements Rule
     // Variables declarations
     private int _nIdRule;
     private String _strIdRuleType;
-    private Map<String, String> _mapAttributes = new HashMap<String, String>(  );
+    private Map<String, String> _mapAttributes = new HashMap<String, String>( );
     private Locale _locale;
     private AdminUser _user;
 
@@ -61,7 +60,7 @@ public abstract class AbstractRule implements Rule
      *
      * @return The IdRule
      */
-    public int getId(  )
+    public int getId( )
     {
         return _nIdRule;
     }
@@ -69,7 +68,8 @@ public abstract class AbstractRule implements Rule
     /**
      * Sets the IdRule
      *
-     * @param nIdRule The IdRule
+     * @param nIdRule
+     *            The IdRule
      */
     public void setId( int nIdRule )
     {
@@ -81,7 +81,7 @@ public abstract class AbstractRule implements Rule
      *
      * @return The IdRuleType
      */
-    public String getRuleTypeId(  )
+    public String getRuleTypeId( )
     {
         return _strIdRuleType;
     }
@@ -89,7 +89,8 @@ public abstract class AbstractRule implements Rule
     /**
      * Sets the IdRuleType
      *
-     * @param strIdRuleType The IdRuleType
+     * @param strIdRuleType
+     *            The IdRuleType
      */
     public void setRuleTypeId( String strIdRuleType )
     {
@@ -99,7 +100,8 @@ public abstract class AbstractRule implements Rule
     /**
      * Sets the locale
      *
-     * @param locale The locale
+     * @param locale
+     *            The locale
      */
     public void setLocale( Locale locale )
     {
@@ -108,17 +110,21 @@ public abstract class AbstractRule implements Rule
 
     /**
      * Get the locale
+     * 
      * @return The locale
      */
-    public Locale getLocale(  )
+    public Locale getLocale( )
     {
         return _locale;
     }
 
     /**
      * Set an attribute
-     * @param strAttributeName the name of the attribute
-     * @param strAttributeValue the value of the attribute
+     * 
+     * @param strAttributeName
+     *            the name of the attribute
+     * @param strAttributeValue
+     *            the value of the attribute
      */
     public void setAttribute( String strAttributeName, String strAttributeValue )
     {
@@ -127,7 +133,9 @@ public abstract class AbstractRule implements Rule
 
     /**
      * Get the value of an attribute from its name
-     * @param strAttributeNamethe name of the attribute
+     * 
+     * @param strAttributeNamethe
+     *            name of the attribute
      * @return the value of the attribute
      */
     public String getAttribute( String strAttributeName )
@@ -137,22 +145,24 @@ public abstract class AbstractRule implements Rule
 
     /**
      * Read attributes from a request
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      */
     public void readAttributes( HttpServletRequest request )
     {
         String strRuleTypeId = request.getParameter( PARAMETER_RULE_TYPE_ID );
         setRuleTypeId( strRuleTypeId );
 
-        String[] attributes = getAttributesList(  );
+        String [ ] attributes = getAttributesList( );
 
         for ( int i = 0; i < attributes.length; i++ )
         {
-            String strAttributeValue = request.getParameter( attributes[i] );
+            String strAttributeValue = request.getParameter( attributes [i] );
 
             if ( strAttributeValue != null )
             {
-                setAttribute( attributes[i], strAttributeValue );
+                setAttribute( attributes [i], strAttributeValue );
             }
         }
     }
@@ -165,16 +175,19 @@ public abstract class AbstractRule implements Rule
 
     /**
      * Gets the current user
+     * 
      * @return The the current user
      */
-    public AdminUser getUser(  )
+    public AdminUser getUser( )
     {
         return _user;
     }
 
     /**
      * set the current user
-     * @param user the current user
+     * 
+     * @param user
+     *            the current user
      *
      */
     public void setUser( AdminUser user )

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,15 +37,13 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import org.apache.commons.lang3.StringUtils;
 
-
 /**
  * PortletOrder
  */
 public class PortletOrder
 {
     // CONSTANTS
-    public static final int DATE_UPDATE_PORTLET = AppPropertiesService.getPropertyInt( "document.order.date_update_portlet",
-            0 );
+    public static final int DATE_UPDATE_PORTLET = AppPropertiesService.getPropertyInt( "document.order.date_update_portlet", 0 );
     public static final int PAGE_NAME = AppPropertiesService.getPropertyInt( "document.order.page_name", 1 );
     public static final int PAGE_ID = AppPropertiesService.getPropertyInt( "document.order.page_id", 2 );
     public static final int PORTLET_NAME = AppPropertiesService.getPropertyInt( "document.order.portlet_name", 3 );
@@ -64,7 +62,7 @@ public class PortletOrder
     /**
      * Constructor
      */
-    public PortletOrder(  )
+    public PortletOrder( )
     {
         _bSortAsc = false;
         _nTypeOrder = DATE_UPDATE_PORTLET;
@@ -72,8 +70,11 @@ public class PortletOrder
 
     /**
      * Constructor
-     * @param bSortAsc true if it must be sorted ascendingly, false otherwise
-     * @param nTypeOrder the order type
+     * 
+     * @param bSortAsc
+     *            true if it must be sorted ascendingly, false otherwise
+     * @param nTypeOrder
+     *            the order type
      */
     public PortletOrder( boolean bSortAsc, int nTypeOrder )
     {
@@ -83,7 +84,9 @@ public class PortletOrder
 
     /**
      * Set the way of sorting the portlets
-     * @param bSortAsc true if it must be sorted ascendingly, false otherwise
+     * 
+     * @param bSortAsc
+     *            true if it must be sorted ascendingly, false otherwise
      */
     public void setSortAsc( boolean bSortAsc )
     {
@@ -92,16 +95,19 @@ public class PortletOrder
 
     /**
      * Return true if it must be sorted ascendingly, false otherwise
+     * 
      * @return true if it must be sorted ascendingly, false otherwise
      */
-    public boolean isSortAsc(  )
+    public boolean isSortAsc( )
     {
         return _bSortAsc;
     }
 
     /**
      * Set the order type
-     * @param nTypeOrder the order type
+     * 
+     * @param nTypeOrder
+     *            the order type
      */
     public void setTypeOrder( int nTypeOrder )
     {
@@ -110,43 +116,48 @@ public class PortletOrder
 
     /**
      * Get the order type
+     * 
      * @return the order type
      */
-    public int getTypeOrder(  )
+    public int getTypeOrder( )
     {
         return _nTypeOrder;
     }
 
     /**
      * Get the SQL query for ordering the portlet
+     * 
      * @return the SQL query
      */
-    public String getSQLOrderBy(  )
+    public String getSQLOrderBy( )
     {
-        StringBuilder sbSQL = new StringBuilder(  );
+        StringBuilder sbSQL = new StringBuilder( );
 
         if ( _nTypeOrder == PAGE_NAME )
         {
             sbSQL.append( SQL_ORDER_BY_PAGE_NAME );
         }
-        else if ( _nTypeOrder == PAGE_ID )
-        {
-            sbSQL.append( SQL_ORDER_BY_PAGE_ID );
-        }
-        else if ( _nTypeOrder == PORTLET_NAME )
-        {
-            sbSQL.append( SQL_ORDER_BY_PORTLET_NAME );
-        }
-        else if ( _nTypeOrder == DATE_UPDATE_PORTLET )
-        {
-            sbSQL.append( SQL_ORDER_BY_DATE_UPDATE_PORTLET );
-        }
+        else
+            if ( _nTypeOrder == PAGE_ID )
+            {
+                sbSQL.append( SQL_ORDER_BY_PAGE_ID );
+            }
+            else
+                if ( _nTypeOrder == PORTLET_NAME )
+                {
+                    sbSQL.append( SQL_ORDER_BY_PORTLET_NAME );
+                }
+                else
+                    if ( _nTypeOrder == DATE_UPDATE_PORTLET )
+                    {
+                        sbSQL.append( SQL_ORDER_BY_DATE_UPDATE_PORTLET );
+                    }
 
-        if ( StringUtils.isNotBlank( sbSQL.toString(  ) ) )
+        if ( StringUtils.isNotBlank( sbSQL.toString( ) ) )
         {
             sbSQL.append( _bSortAsc ? SQL_ASC : SQL_DESC );
         }
 
-        return sbSQL.toString(  );
+        return sbSQL.toString( );
     }
 }

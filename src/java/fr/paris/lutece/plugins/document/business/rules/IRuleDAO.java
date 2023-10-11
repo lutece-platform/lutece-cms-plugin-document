@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.document.business.rules;
 
 import java.util.List;
 
-
 /**
  * Rule DAO Interface
  */
@@ -44,7 +43,8 @@ public interface IRuleDAO
     /**
      * Delete a record from the table
      *
-     * @param nRuleId The Rule Id
+     * @param nRuleId
+     *            The Rule Id
      */
     void delete( int nRuleId );
 
@@ -52,30 +52,38 @@ public interface IRuleDAO
      * Insert a new record in the table.
      *
      *
-     * @param rule The rule object
+     * @param rule
+     *            The rule object
      */
     void insert( Rule rule );
 
     /**
      * Load the data of Rule from the table
      *
-     * @param nRuleId The identifier of Rule
-     * @param ruleTypesSet The rule type set
+     * @param nRuleId
+     *            The identifier of Rule
+     * @param ruleTypesSet
+     *            The rule type set
      * @return the instance of the Rule
      */
     Rule load( int nRuleId, IRuleTypesSet ruleTypesSet );
 
     /**
      * Load the list of rules
-     * @param ruleTypesSet The rule type set
+     * 
+     * @param ruleTypesSet
+     *            The rule type set
      * @return The Collection of the Rules
      */
     List<Rule> selectRuleList( IRuleTypesSet ruleTypesSet );
 
     /**
      * Load the list of rules specified by rule type key
-     * @param strRuleTypeKey The rule type key
-     * @param ruleTypesSet The rule types set
+     * 
+     * @param strRuleTypeKey
+     *            The rule type key
+     * @param ruleTypesSet
+     *            The rule types set
      * @return The Collection of the Rules
      */
     List<Rule> selectRuleListByRuleTypeKey( String strRuleTypeKey, IRuleTypesSet ruleTypesSet );
@@ -83,7 +91,8 @@ public interface IRuleDAO
     /**
      * Update the record in the table
      *
-     * @param rule The reference of rule
+     * @param rule
+     *            The reference of rule
      */
     void store( Rule rule );
 }

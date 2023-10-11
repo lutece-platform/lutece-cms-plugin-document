@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,6 @@ import java.util.Map;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-
 /**
  * This class represents the business object DocumentType
  */
@@ -66,13 +65,12 @@ public class DocumentType implements RBACResource
     private static final String MARK_DOCUMENT_TYPE = "document_type";
     private static final int MODE_ADMIN = 1;
 
-    //Style prefix Id
-    private static final String STYLE_PREFIX_ID = UniqueIDGenerator.getNewId(  ) + "document-";
-    private static final String STYLE_PREFIX_DEFAULT = UniqueIDGenerator.getNewId(  ) + "default-";
+    // Style prefix Id
+    private static final String STYLE_PREFIX_ID = UniqueIDGenerator.getNewId( ) + "document-";
+    private static final String STYLE_PREFIX_DEFAULT = UniqueIDGenerator.getNewId( ) + "default-";
     private static final String STYLE_PREFIX_CONTENT_SERVICE = STYLE_PREFIX_ID + "content-";
     private static final String STYLE_PREFIX_ADMIN_SERVICE = STYLE_PREFIX_ID + "admin-";
-    private static final String STYLE_PREFIX_DEFAULT_CONTENT_SERVICE = STYLE_PREFIX_CONTENT_SERVICE +
-        STYLE_PREFIX_DEFAULT;
+    private static final String STYLE_PREFIX_DEFAULT_CONTENT_SERVICE = STYLE_PREFIX_CONTENT_SERVICE + STYLE_PREFIX_DEFAULT;
     private static final String STYLE_PREFIX_DEFAULT_ADMIN_SERVICE = STYLE_PREFIX_ADMIN_SERVICE + STYLE_PREFIX_DEFAULT;
 
     // Variables declarations
@@ -80,9 +78,9 @@ public class DocumentType implements RBACResource
     private String _strOldCode;
     private String _strName;
     private String _strDescription;
-    private byte[] _baAdminXsl;
-    private byte[] _baContentServiceXsl;
-    private ArrayList<DocumentAttribute> _listAttributes = new ArrayList<DocumentAttribute>(  );
+    private byte [ ] _baAdminXsl;
+    private byte [ ] _baContentServiceXsl;
+    private ArrayList<DocumentAttribute> _listAttributes = new ArrayList<DocumentAttribute>( );
     private int _nThumbnailAttributeId;
     private String _strDefaultThumbnailUrl;
     private String _strMetadataHandler;
@@ -92,7 +90,7 @@ public class DocumentType implements RBACResource
      *
      * @return The Code
      */
-    public String getCode(  )
+    public String getCode( )
     {
         return _strCode;
     }
@@ -100,7 +98,8 @@ public class DocumentType implements RBACResource
     /**
      * Sets the Code
      *
-     * @param strCode The Code
+     * @param strCode
+     *            The Code
      */
     public void setCode( String strCode )
     {
@@ -112,7 +111,7 @@ public class DocumentType implements RBACResource
      *
      * @return The old code
      */
-    public String getOldCode(  )
+    public String getOldCode( )
     {
         return _strOldCode;
     }
@@ -120,7 +119,8 @@ public class DocumentType implements RBACResource
     /**
      * Sets the old code
      *
-     * @param strCode The old code
+     * @param strCode
+     *            The old code
      */
     public void setOldCode( String strOldCode )
     {
@@ -132,7 +132,7 @@ public class DocumentType implements RBACResource
      *
      * @return The Name
      */
-    public String getName(  )
+    public String getName( )
     {
         return _strName;
     }
@@ -140,7 +140,8 @@ public class DocumentType implements RBACResource
     /**
      * Sets the Name
      *
-     * @param strName The Name
+     * @param strName
+     *            The Name
      */
     public void setName( String strName )
     {
@@ -152,7 +153,7 @@ public class DocumentType implements RBACResource
      *
      * @return The Description
      */
-    public String getDescription(  )
+    public String getDescription( )
     {
         return _strDescription;
     }
@@ -160,7 +161,8 @@ public class DocumentType implements RBACResource
     /**
      * Sets the Description
      *
-     * @param strDescription The Description
+     * @param strDescription
+     *            The Description
      */
     public void setDescription( String strDescription )
     {
@@ -172,7 +174,7 @@ public class DocumentType implements RBACResource
      *
      * @return The Xsl
      */
-    public byte[] getAdminXsl(  )
+    public byte [ ] getAdminXsl( )
     {
         return _baAdminXsl;
     }
@@ -180,9 +182,10 @@ public class DocumentType implements RBACResource
     /**
      * Sets the Xsl for the Administration module
      *
-     * @param baXsl The Xsl
+     * @param baXsl
+     *            The Xsl
      */
-    public void setAdminXsl( byte[] baXsl )
+    public void setAdminXsl( byte [ ] baXsl )
     {
         _baAdminXsl = baXsl;
     }
@@ -192,7 +195,7 @@ public class DocumentType implements RBACResource
      *
      * @return The Xsl
      */
-    public byte[] getContentServiceXsl(  )
+    public byte [ ] getContentServiceXsl( )
     {
         return _baContentServiceXsl;
     }
@@ -200,16 +203,19 @@ public class DocumentType implements RBACResource
     /**
      * Sets the Xsl for the Document ContentService
      *
-     * @param baXsl The Xsl
+     * @param baXsl
+     *            The Xsl
      */
-    public void setContentServiceXsl( byte[] baXsl )
+    public void setContentServiceXsl( byte [ ] baXsl )
     {
         _baContentServiceXsl = baXsl;
     }
 
     /**
      * Add a document attribute to this type of document
-     * @param documentAttribute The documentAttribute to add
+     * 
+     * @param documentAttribute
+     *            The documentAttribute to add
      */
     public void addAttribute( DocumentAttribute documentAttribute )
     {
@@ -218,9 +224,10 @@ public class DocumentType implements RBACResource
 
     /**
      * Gets attributes list for the document type
+     * 
      * @return The attrubutes list
      */
-    public List<DocumentAttribute> getAttributes(  )
+    public List<DocumentAttribute> getAttributes( )
     {
         return _listAttributes;
     }
@@ -230,7 +237,7 @@ public class DocumentType implements RBACResource
      *
      * @return The ThumbnailAttributeId
      */
-    public int getThumbnailAttributeId(  )
+    public int getThumbnailAttributeId( )
     {
         return _nThumbnailAttributeId;
     }
@@ -238,7 +245,8 @@ public class DocumentType implements RBACResource
     /**
      * Sets the ThumbnailAttributeId
      *
-     * @param nThumbnailAttributeId The ThumbnailAttributeId
+     * @param nThumbnailAttributeId
+     *            The ThumbnailAttributeId
      */
     public void setThumbnailAttributeId( int nThumbnailAttributeId )
     {
@@ -250,7 +258,7 @@ public class DocumentType implements RBACResource
      *
      * @return The DefaultThumbnailUrl
      */
-    public String getDefaultThumbnailUrl(  )
+    public String getDefaultThumbnailUrl( )
     {
         return ( _strDefaultThumbnailUrl != null ) ? _strDefaultThumbnailUrl : "";
     }
@@ -258,7 +266,8 @@ public class DocumentType implements RBACResource
     /**
      * Sets the DefaultThumbnailUrl
      *
-     * @param strDefaultThumbnailUrl The DefaultThumbnailUrl
+     * @param strDefaultThumbnailUrl
+     *            The DefaultThumbnailUrl
      */
     public void setDefaultThumbnailUrl( String strDefaultThumbnailUrl )
     {
@@ -267,69 +276,70 @@ public class DocumentType implements RBACResource
 
     /**
      * RBAC resource implementation
+     * 
      * @return The resource type code
      */
-    public String getResourceTypeCode(  )
+    public String getResourceTypeCode( )
     {
         return RESOURCE_TYPE;
     }
 
     /**
      * RBAC resource implementation
+     * 
      * @return The resourceId
      */
-    public String getResourceId(  )
+    public String getResourceId( )
     {
-        return getCode(  );
+        return getCode( );
     }
 
     /**
-     * Returns a default XSL stylesheet to display the document into the
-     * backoffice
+     * Returns a default XSL stylesheet to display the document into the backoffice
+     * 
      * @return An XSL stylesheet as a String
      */
-    private String getAdminDefaultXsl(  )
+    private String getAdminDefaultXsl( )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_DOCUMENT_TYPE, this );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADMIN_DEFAULT_XSL, Locale.getDefault(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADMIN_DEFAULT_XSL, Locale.getDefault( ), model );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
-     * Returns a default XSL stylesheet to display the document into the
-     * frontoffice
+     * Returns a default XSL stylesheet to display the document into the frontoffice
+     * 
      * @return An XSL stylesheet as a String
      */
-    private String getContentServiceDefaultXsl(  )
+    private String getContentServiceDefaultXsl( )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_DOCUMENT_TYPE, this );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CONTENT_SERVICE_DEFAULT_XSL,
-                Locale.getDefault(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CONTENT_SERVICE_DEFAULT_XSL, Locale.getDefault( ), model );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
-     * Return the admin xsl source : if the admin xsl is null, a default one is
-     * generated and returned
+     * Return the admin xsl source : if the admin xsl is null, a default one is generated and returned
+     * 
      * @return the xsl stylesheet as a source
      */
-    public Source getAdminXslSource(  )
+    public Source getAdminXslSource( )
     {
         Source xslSource;
 
-        if ( getAdminXsl(  ) != null )
+        if ( getAdminXsl( ) != null )
         {
-            xslSource = new StreamSource( new ByteArrayInputStream( getAdminXsl(  ) ) );
+            xslSource = new StreamSource( new ByteArrayInputStream( getAdminXsl( ) ) );
         }
         else
         {
-            StringReader xslStringReader = new StringReader( getAdminDefaultXsl(  ) );
+            StringReader xslStringReader = new StringReader( getAdminDefaultXsl( ) );
             xslSource = new StreamSource( xslStringReader );
         }
 
@@ -337,21 +347,21 @@ public class DocumentType implements RBACResource
     }
 
     /**
-     * Return the xsl source to display the document into the frontoffice :
-     * if the admin xsl is null, a default one is generated and returned.
+     * Return the xsl source to display the document into the frontoffice : if the admin xsl is null, a default one is generated and returned.
+     * 
      * @return the xsl stylesheet as a source
      */
-    public Source getContentServiceXslSource(  )
+    public Source getContentServiceXslSource( )
     {
         Source xslSource;
 
-        if ( ( getContentServiceXsl(  ) != null ) && ( getContentServiceXsl(  ).length > 0 ) )
+        if ( ( getContentServiceXsl( ) != null ) && ( getContentServiceXsl( ).length > 0 ) )
         {
-            xslSource = new StreamSource( new ByteArrayInputStream( getContentServiceXsl(  ) ) );
+            xslSource = new StreamSource( new ByteArrayInputStream( getContentServiceXsl( ) ) );
         }
         else
         {
-            StringReader xslStringReader = new StringReader( getContentServiceDefaultXsl(  ) );
+            StringReader xslStringReader = new StringReader( getContentServiceDefaultXsl( ) );
             xslSource = new StreamSource( xslStringReader );
         }
 
@@ -360,7 +370,9 @@ public class DocumentType implements RBACResource
 
     /**
      * Return the StyleSheet unique Id
-     * @param nMode The current mode.
+     * 
+     * @param nMode
+     *            The current mode.
      * @return the StyleSheet unique Id
      */
     public String getStyleSheetId( int nMode )
@@ -369,11 +381,11 @@ public class DocumentType implements RBACResource
 
         if ( nMode == MODE_ADMIN )
         {
-            strResult = this.getAdminStyleSheetId(  );
+            strResult = this.getAdminStyleSheetId( );
         }
         else
         {
-            strResult = this.getContentServiceStyleSheetId(  );
+            strResult = this.getContentServiceStyleSheetId( );
         }
 
         return strResult;
@@ -381,15 +393,16 @@ public class DocumentType implements RBACResource
 
     /**
      * Return the content service StyleSheet unique Id
+     * 
      * @return The id
      */
-    public String getContentServiceStyleSheetId(  )
+    public String getContentServiceStyleSheetId( )
     {
         String strStyleSheetId;
 
-        if ( ( getContentServiceXsl(  ) != null ) && ( getContentServiceXsl(  ).length > 0 ) )
+        if ( ( getContentServiceXsl( ) != null ) && ( getContentServiceXsl( ).length > 0 ) )
         {
-            strStyleSheetId = STYLE_PREFIX_CONTENT_SERVICE + this.getResourceId(  );
+            strStyleSheetId = STYLE_PREFIX_CONTENT_SERVICE + this.getResourceId( );
         }
         else
         {
@@ -401,15 +414,16 @@ public class DocumentType implements RBACResource
 
     /**
      * Return the admin StyleSheet unique Id
+     * 
      * @return The id
      */
-    public String getAdminStyleSheetId(  )
+    public String getAdminStyleSheetId( )
     {
         String strStyleSheetId;
 
-        if ( ( getAdminXsl(  ) != null ) && ( getAdminXsl(  ).length > 0 ) )
+        if ( ( getAdminXsl( ) != null ) && ( getAdminXsl( ).length > 0 ) )
         {
-            strStyleSheetId = STYLE_PREFIX_ADMIN_SERVICE + this.getResourceId(  );
+            strStyleSheetId = STYLE_PREFIX_ADMIN_SERVICE + this.getResourceId( );
         }
         else
         {
@@ -424,7 +438,7 @@ public class DocumentType implements RBACResource
      *
      * @return The MetadataHandler
      */
-    public String getMetadataHandler(  )
+    public String getMetadataHandler( )
     {
         return _strMetadataHandler;
     }
@@ -432,7 +446,8 @@ public class DocumentType implements RBACResource
     /**
      * Sets the MetadataHandler name
      *
-     * @param strMetadataHandler The MetadataHandler
+     * @param strMetadataHandler
+     *            The MetadataHandler
      */
     public void setMetadataHandler( String strMetadataHandler )
     {
@@ -441,14 +456,14 @@ public class DocumentType implements RBACResource
 
     /**
      * Returns the metahandler
+     * 
      * @return the metahandler
      */
-    public MetadataHandler metadataHandler(  )
+    public MetadataHandler metadataHandler( )
     {
         MetadataHandler handler = null;
 
-        if ( ( _strMetadataHandler != null ) && ( !_strMetadataHandler.equals( "" ) ) &&
-                ( !_strMetadataHandler.equals( MetadataService.NO_HANDLER ) ) )
+        if ( ( _strMetadataHandler != null ) && ( !_strMetadataHandler.equals( "" ) ) && ( !_strMetadataHandler.equals( MetadataService.NO_HANDLER ) ) )
         {
             String strBeanName = MetadataService.getBeanName( _strMetadataHandler );
             handler = SpringContextService.getBean( strBeanName );

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,64 +38,66 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.util.Locale;
 
-
 /**
- * This class porvides Data Access methods for DocumentStateDAO  objects
+ * This class porvides Data Access methods for DocumentStateDAO objects
  */
 public class DocumentStateDAO implements IDocumentStateDAO
 {
-    // Constants    
+    // Constants
     private static final String SQL_QUERY_SELECT = " SELECT id_state, name_key, description_key FROM document_workflow_state WHERE id_state = ?  ";
     private static final String SQL_QUERY_SELECTALL = "SELECT id_state , name_key , description_key FROM document_workflow_state ORDER BY state_order";
 
     /**
      * Load the data of Rule from the table
      *
-     * @param nDocumentStateId The document state id
+     * @param nDocumentStateId
+     *            The document state id
      * @return the instance of the Rule
      */
     public DocumentState load( int nDocumentStateId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
         daoUtil.setInt( 1, nDocumentStateId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         DocumentState documentState = null;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
-            documentState = new DocumentState(  );
+            documentState = new DocumentState( );
             documentState.setId( daoUtil.getInt( 1 ) );
             documentState.setNameKey( daoUtil.getString( 2 ) );
             documentState.setDescriptionKey( daoUtil.getString( 3 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return documentState;
     }
 
     /**
      * Load the list of Document States
-     * @param locale The locale
+     * 
+     * @param locale
+     *            The locale
      * @return The Reference of the Document States
      */
     public ReferenceList selectDocumentStatesList( Locale locale )
     {
-        ReferenceList list = new ReferenceList(  );
+        ReferenceList list = new ReferenceList( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            DocumentState state = new DocumentState(  );
+            DocumentState state = new DocumentState( );
             state.setLocale( locale );
             state.setId( daoUtil.getInt( 1 ) );
             state.setNameKey( daoUtil.getString( 2 ) );
-            list.addItem( state.getId(  ), state.getName(  ) );
+            list.addItem( state.getId( ), state.getName( ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return list;
     }

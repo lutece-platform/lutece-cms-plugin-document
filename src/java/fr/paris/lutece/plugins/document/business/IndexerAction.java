@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.business;
 
-
 /**
  *
  * IndexerAction
@@ -52,14 +51,16 @@ public class IndexerAction
      *
      * @return the action id
      */
-    public int getIdAction(  )
+    public int getIdAction( )
     {
         return _nIdAction;
     }
 
     /**
      * set the action id
-     * @param idAction idAction
+     * 
+     * @param idAction
+     *            idAction
      */
     public void setIdAction( int idAction )
     {
@@ -70,14 +71,16 @@ public class IndexerAction
      *
      * @return the document Id
      */
-    public int getIdDocument(  )
+    public int getIdDocument( )
     {
         return _nIdDocument;
     }
 
     /**
      * set the DocumentId
-     * @param idDocument  document if
+     * 
+     * @param idDocument
+     *            document if
      */
     public void setIdDocument( int idDocument )
     {
@@ -86,16 +89,19 @@ public class IndexerAction
 
     /**
      * get the task id
+     * 
      * @return the task id
      */
-    public int getIdTask(  )
+    public int getIdTask( )
     {
         return _nIdTask;
     }
 
     /**
      * set the task id
-     * @param idTask the task id
+     * 
+     * @param idTask
+     *            the task id
      */
     public void setIdTask( int idTask )
     {

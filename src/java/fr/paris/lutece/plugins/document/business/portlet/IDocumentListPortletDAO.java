@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@
  *
  * License 1.0
  */
-
 /*
  * IDocumentListPortletDAO.java
  *
@@ -48,18 +47,17 @@ import fr.paris.lutece.util.ReferenceItem;
 
 import java.util.Collection;
 
-
 /**
  *
  */
 public interface IDocumentListPortletDAO extends IPortletInterfaceDAO
 {
     /**
-     * Deletes records for a portlet identifier in the tables portlet_articles_list, published_article_portlet,
-     * auto_publishing
+     * Deletes records for a portlet identifier in the tables portlet_articles_list, published_article_portlet, auto_publishing
      *
      *
-     * @param nPortletId the portlet identifier
+     * @param nPortletId
+     *            the portlet identifier
      */
     void delete( int nPortletId );
 
@@ -67,7 +65,8 @@ public interface IDocumentListPortletDAO extends IPortletInterfaceDAO
      * Insert a new record in the table portlet_articles_list
      *
      *
-     * @param portlet the instance of the Portlet object to insert
+     * @param portlet
+     *            the instance of the Portlet object to insert
      */
     void insert( Portlet portlet );
 
@@ -75,34 +74,41 @@ public interface IDocumentListPortletDAO extends IPortletInterfaceDAO
      * Loads the data of Document List Portlet whose identifier is specified in parameter
      *
      *
-     * @param nPortletId The Portlet identifier
+     * @param nPortletId
+     *            The Portlet identifier
      * @return theDocumentListPortlet object
      */
     Portlet load( int nPortletId );
 
     /**
      * Load the list of documentTypes
-     * @param nDocumentId the document ID
-     * @param strCodeDocumentType The code
-     * @param pOrder order of the portlets
-     * @param pFilter The portlet filter
+     * 
+     * @param nDocumentId
+     *            the document ID
+     * @param strCodeDocumentType
+     *            The code
+     * @param pOrder
+     *            order of the portlets
+     * @param pFilter
+     *            The portlet filter
      * @return The Collection of the ReferenceItem
      */
-    Collection<ReferenceItem> selectByDocumentIdAndDocumentType( int nDocumentId, String strCodeDocumentType,
-        PortletOrder pOrder, PortletFilter pFilter );
+    Collection<ReferenceItem> selectByDocumentIdAndDocumentType( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder, PortletFilter pFilter );
 
     /**
      * Update the record in the table
      *
      *
-     * @param portlet A portlet
+     * @param portlet
+     *            A portlet
      */
     void store( Portlet portlet );
 
     /**
      * Tests if is a portlet is portlet type alias
      *
-     * @param nPortletId The identifier of the document
+     * @param nPortletId
+     *            The identifier of the document
      * @return true if the portlet is alias, false otherwise
      */
     boolean checkIsAliasPortlet( int nPortletId );

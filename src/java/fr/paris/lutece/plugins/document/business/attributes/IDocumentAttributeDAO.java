@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,6 @@ import fr.paris.lutece.plugins.document.business.DocumentType;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
  * DocumentAttribute Interface
  */
@@ -47,15 +46,18 @@ public interface IDocumentAttributeDAO
     /**
      * Delete a record from the table
      *
-     * @param nAttributeId The DocumentAttribute Id
+     * @param nAttributeId
+     *            The DocumentAttribute Id
      */
     void delete( int nAttributeId );
 
     /**
      * Returns the parameter values of an attribute
      *
-     * @param nAttributeId The attribute Id
-     * @param strParameterName The parameter name
+     * @param nAttributeId
+     *            The attribute Id
+     * @param strParameterName
+     *            The parameter name
      * @return The parameter values of an attribute
      */
     List<String> getAttributeParameterValues( int nAttributeId, String strParameterName );
@@ -64,14 +66,16 @@ public interface IDocumentAttributeDAO
      * Insert a new record in the table.
      *
      *
-     * @param documentAttribute The documentAttribute object
+     * @param documentAttribute
+     *            The documentAttribute object
      */
     void insert( DocumentAttribute documentAttribute );
 
     /**
      * Load the data of DocumentAttribute from the table
      *
-     * @param nAttributeId The attribute Id
+     * @param nAttributeId
+     *            The attribute Id
      * @return the instance of the DocumentAttribute
      */
     DocumentAttribute load( int nAttributeId );
@@ -79,7 +83,8 @@ public interface IDocumentAttributeDAO
     /**
      * Gets Attribute parameters values
      *
-     * @param nAttributeId The attribute Id
+     * @param nAttributeId
+     *            The attribute Id
      * @return List of attribute parameters values
      */
     List<AttributeTypeParameter> selectAttributeParametersValues( int nAttributeId );
@@ -87,14 +92,16 @@ public interface IDocumentAttributeDAO
     /**
      * Add attributes to a document
      *
-     * @param documentType The document Type
+     * @param documentType
+     *            The document Type
      */
     void selectAttributesByDocumentType( DocumentType documentType );
 
     /**
      * Get all attributes of document type
-         *
-     * @param codeDocumentType The code document Type
+     *
+     * @param codeDocumentType
+     *            The code document Type
      * @return listDocumentAttributes The list of all attributes of selected code document type
      */
     List<DocumentAttribute> selectAllAttributesOfDocumentType( String codeDocumentType );
@@ -102,30 +109,36 @@ public interface IDocumentAttributeDAO
     /**
      * Update the record in the table
      *
-     * @param documentAttribute The document attribute
+     * @param documentAttribute
+     *            The document attribute
      */
     void store( DocumentAttribute documentAttribute );
 
     /**
      * Inserts an association between an attribute and a regular expression
      *
-     * @param nIdAttribute The identifier of the document attribute
-     * @param nIdExpression The identifier of the regular expression
+     * @param nIdAttribute
+     *            The identifier of the document attribute
+     * @param nIdExpression
+     *            The identifier of the regular expression
      */
     void insertRegularExpression( int nIdAttribute, int nIdExpression );
 
     /**
      * Deletes an association between an attribute and a regular expression
      *
-     * @param nIdAttribute The identifier of the document attribute
-     * @param nIdExpression The identifier of the regular expression
+     * @param nIdAttribute
+     *            The identifier of the document attribute
+     * @param nIdExpression
+     *            The identifier of the regular expression
      */
     void deleteRegularExpression( int nIdAttribute, int nIdExpression );
 
     /**
      * Loads all regular expression key associated to the attribute and returns them into a collection
      *
-     * @param nIdAttribute The identifier of the document attribute
+     * @param nIdAttribute
+     *            The identifier of the document attribute
      * @return A collection of regular expression key
      */
     Collection<Integer> selectListRegularExpressionKeyByIdAttribute( int nIdAttribute );

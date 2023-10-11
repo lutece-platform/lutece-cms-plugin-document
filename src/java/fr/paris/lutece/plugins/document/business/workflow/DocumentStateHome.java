@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,6 @@ import fr.paris.lutece.util.ReferenceList;
 
 import java.util.Locale;
 
-
 /**
  *
  */
@@ -49,8 +48,10 @@ public class DocumentStateHome
 
     /**
      * Returns a ReferenceList of Document States
+     * 
      * @return A ReferenceList of Document States
-     * @param locale The current Locale
+     * @param locale
+     *            The current Locale
      */
     public static ReferenceList getDocumentStatesList( Locale locale )
     {
@@ -59,7 +60,9 @@ public class DocumentStateHome
 
     /**
      * Find a state by its Id
-     * @param nStateId Te Id of the state to find
+     * 
+     * @param nStateId
+     *            Te Id of the state to find
      * @return A DocumentState object
      */
     public static DocumentState findByPrimaryKey( int nStateId )

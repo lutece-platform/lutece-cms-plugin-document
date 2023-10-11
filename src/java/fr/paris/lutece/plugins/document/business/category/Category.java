@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.document.business.category;
 
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
 
-
 /**
  * This class defines the Category business object.
  *
@@ -46,22 +45,23 @@ public class Category implements AdminWorkgroupResource
     private int _nId;
     private String _strName;
     private String _strDescription;
-    private byte[] _byteIconContent;
+    private byte [ ] _byteIconContent;
     private String _strIconMimeType;
     private String _strWorkgroup;
 
     /**
      * @return the _byteIconContent
      */
-    public byte[] getIconContent(  )
+    public byte [ ] getIconContent( )
     {
         return _byteIconContent;
     }
 
     /**
-     * @param byteIconContent the _byteIconContent to set
+     * @param byteIconContent
+     *            the _byteIconContent to set
      */
-    public void setIconContent( byte[] byteIconContent )
+    public void setIconContent( byte [ ] byteIconContent )
     {
         _byteIconContent = byteIconContent;
     }
@@ -69,13 +69,14 @@ public class Category implements AdminWorkgroupResource
     /**
      * @return the _strDescription
      */
-    public String getDescription(  )
+    public String getDescription( )
     {
         return _strDescription;
     }
 
     /**
-     * @param strDescription the _strDescription to set
+     * @param strDescription
+     *            the _strDescription to set
      */
     public void setDescription( String strDescription )
     {
@@ -85,13 +86,14 @@ public class Category implements AdminWorkgroupResource
     /**
      * @return the _strIconMimeType
      */
-    public String getIconMimeType(  )
+    public String getIconMimeType( )
     {
         return _strIconMimeType;
     }
 
     /**
-     * @param strIconMimeType the _strIconMimeType to set
+     * @param strIconMimeType
+     *            the _strIconMimeType to set
      */
     public void setIconMimeType( String strIconMimeType )
     {
@@ -101,13 +103,14 @@ public class Category implements AdminWorkgroupResource
     /**
      * @return the _strName
      */
-    public String getName(  )
+    public String getName( )
     {
         return _strName;
     }
 
     /**
-     * @param strName the _strName to set
+     * @param strName
+     *            the _strName to set
      */
     public void setName( String strName )
     {
@@ -117,13 +120,14 @@ public class Category implements AdminWorkgroupResource
     /**
      * @return the _nId
      */
-    public int getId(  )
+    public int getId( )
     {
         return _nId;
     }
 
     /**
-     * @param nId the _nId to set
+     * @param nId
+     *            the _nId to set
      */
     public void setId( int nId )
     {
@@ -131,17 +135,19 @@ public class Category implements AdminWorkgroupResource
     }
 
     /**
-    *
-    * @return the work group associate to the category
-    */
-    public String getWorkgroup(  )
+     *
+     * @return the work group associate to the category
+     */
+    public String getWorkgroup( )
     {
         return _strWorkgroup;
     }
 
     /**
-     * set  the work group associate to the category
-     * @param workGroup  the work group associate to the category
+     * set the work group associate to the category
+     * 
+     * @param workGroup
+     *            the work group associate to the category
      */
     public void setWorkgroup( String workGroup )
     {

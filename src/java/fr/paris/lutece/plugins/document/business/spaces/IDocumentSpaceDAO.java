@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,6 @@ import fr.paris.lutece.util.ReferenceList;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
  * DocumentSpaceDAO Interface
  */
@@ -46,14 +45,17 @@ public interface IDocumentSpaceDAO
 {
     /**
      * Delete a record from the table
-     * @param nSpaceId The Id to delete
+     * 
+     * @param nSpaceId
+     *            The Id to delete
      */
     void delete( int nSpaceId );
 
     /**
      * Returns all allowed document types for a given space
      *
-     * @param nSpaceId The space Id
+     * @param nSpaceId
+     *            The space Id
      * @return Allowed documents types as a ReferenceList
      */
     ReferenceList getAllowedDocumentTypes( int nSpaceId );
@@ -63,31 +65,37 @@ public interface IDocumentSpaceDAO
      *
      * @return The Collection of the DocumentSpaces
      */
-    ReferenceList getDocumentSpaceList(  );
+    ReferenceList getDocumentSpaceList( );
 
     /**
      * Gets a list of icons available or space customization
      *
      * @return A list of icons
      */
-    ReferenceList getIconsList(  );
+    ReferenceList getIconsList( );
 
     /**
      * Load the list of documentSpaces
-     * @param locale The Locale
+     * 
+     * @param locale
+     *            The Locale
      * @return The Collection of the DocumentSpaces
      */
     ReferenceList getViewTypeList( Locale locale );
 
     /**
      * Insert a new record in the table.
-     * @param space The space object
+     * 
+     * @param space
+     *            The space object
      */
     void insert( DocumentSpace space );
 
     /**
      * Load the data of DocumentSpace from the table
-     * @param nDocumentSpaceId The identifier of DocumentSpace
+     * 
+     * @param nDocumentSpaceId
+     *            The identifier of DocumentSpace
      * @return the instance of the DocumentSpace
      */
     DocumentSpace load( int nDocumentSpaceId );
@@ -97,13 +105,15 @@ public interface IDocumentSpaceDAO
      *
      * @return A collection of all spaces.
      */
-    List<DocumentSpace> selectAll(  );
+    List<DocumentSpace> selectAll( );
 
     /**
      * Load the list of documentSpaces childs
      *
-     * @param strCodeType the document type filter if needed (null if not)
-     * @param nSpaceId The space identifier
+     * @param strCodeType
+     *            the document type filter if needed (null if not)
+     * @param nSpaceId
+     *            The space identifier
      * @return The Collection of the DocumentSpaces
      */
     List<DocumentSpace> selectChilds( int nSpaceId, String strCodeType );
@@ -111,17 +121,19 @@ public interface IDocumentSpaceDAO
     /**
      * Load the list of documentSpaces authorizing the selected document type
      *
-     * @param strCodeType the document type filter
-     * @param createDocumentIsAllowed code to define if document creation is allowed or not
+     * @param strCodeType
+     *            the document type filter
+     * @param createDocumentIsAllowed
+     *            code to define if document creation is allowed or not
      * @return The Collection of the DocumentSpaces
      */
-    List<DocumentSpace> selectSpacesAllowingDocumentCreationByDocumentType( String strCodeType,
-        int createDocumentIsAllowed );
+    List<DocumentSpace> selectSpacesAllowingDocumentCreationByDocumentType( String strCodeType, int createDocumentIsAllowed );
 
     /**
      * Update the record in the table
      *
-     * @param space The reference of space
+     * @param space
+     *            The reference of space
      */
     void store( DocumentSpace space );
 }

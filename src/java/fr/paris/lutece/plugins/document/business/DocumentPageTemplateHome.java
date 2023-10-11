@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.util.List;
 
-
 /**
  * This class provides instances management methods (create, find, ...) for DocumentPageTemplate objects
  */
@@ -47,14 +46,15 @@ public final class DocumentPageTemplateHome
     private static IDocumentPageTemplateDAO _dao = SpringContextService.getBean( "document.documentPageTemplateDAO" );
 
     /** Creates a new instance of DocumentPageTemplateHome */
-    private DocumentPageTemplateHome(  )
+    private DocumentPageTemplateHome( )
     {
     }
 
     /**
      * Creation of an instance of a document page template
      *
-     * @param documentPageTemplate template An instance of a page template which contains the informations to store
+     * @param documentPageTemplate
+     *            template An instance of a page template which contains the informations to store
      * @return The instance of a page template which has been created with its primary key.
      */
     public static DocumentPageTemplate create( DocumentPageTemplate documentPageTemplate )
@@ -67,7 +67,8 @@ public final class DocumentPageTemplateHome
     /**
      * Update of the page template which is specified
      *
-     * @param documentPageTemplate The instance of the page template which contains the data to store
+     * @param documentPageTemplate
+     *            The instance of the page template which contains the data to store
      * @return The instance of the page template which has been updated
      */
     public static DocumentPageTemplate update( DocumentPageTemplate documentPageTemplate )
@@ -80,7 +81,8 @@ public final class DocumentPageTemplateHome
     /**
      * Remove the page template whose identifier is specified in parameter
      *
-     * @param nId The identifier of the page template to remove
+     * @param nId
+     *            The identifier of the page template to remove
      */
     public static void remove( int nId )
     {
@@ -93,7 +95,8 @@ public final class DocumentPageTemplateHome
     /**
      * Returns an instance of an page template whose identifier is specified in parameter
      *
-     * @param nKey The page template primary key
+     * @param nKey
+     *            The page template primary key
      * @return an instance of a page template
      */
     public static DocumentPageTemplate findByPrimaryKey( int nKey )
@@ -106,8 +109,8 @@ public final class DocumentPageTemplateHome
      *
      * @return A collection of page templates objects
      */
-    public static List<DocumentPageTemplate> getPageTemplatesList(  )
+    public static List<DocumentPageTemplate> getPageTemplatesList( )
     {
-        return _dao.selectPageTemplatesList(  );
+        return _dao.selectPageTemplatesList( );
     }
 }

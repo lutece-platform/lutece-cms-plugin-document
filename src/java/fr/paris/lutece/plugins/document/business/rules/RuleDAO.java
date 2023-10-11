@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,6 @@ import fr.paris.lutece.util.sql.DAOUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * This class provides Data Access methods for Rule objects
  */
@@ -57,16 +56,17 @@ public final class RuleDAO implements IRuleDAO
 
     /**
      * Generates a new primary key
+     * 
      * @return The new primary key
      */
-    private int newPrimaryKey(  )
+    private int newPrimaryKey( )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         int nKey;
 
-        if ( !daoUtil.next(  ) )
+        if ( !daoUtil.next( ) )
         {
             // if the table is empty
             nKey = 1;
@@ -74,7 +74,7 @@ public final class RuleDAO implements IRuleDAO
 
         nKey = daoUtil.getInt( 1 ) + 1;
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return nKey;
     }
@@ -82,17 +82,18 @@ public final class RuleDAO implements IRuleDAO
     /**
      * Insert a new record in the table.
      *
-     * @param rule The rule object
+     * @param rule
+     *            The rule object
      */
     public synchronized void insert( Rule rule )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        rule.setId( newPrimaryKey(  ) );
-        daoUtil.setInt( 1, rule.getId(  ) );
-        daoUtil.setString( 2, rule.getRuleTypeId(  ) );
+        rule.setId( newPrimaryKey( ) );
+        daoUtil.setInt( 1, rule.getId( ) );
+        daoUtil.setString( 2, rule.getRuleTypeId( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
 
         // Rule attributes
         insertAttributes( rule );
@@ -101,30 +102,33 @@ public final class RuleDAO implements IRuleDAO
     /**
      * Insert a new record in the table.
      *
-     * @param rule The rule object
+     * @param rule
+     *            The rule object
      */
     private void insertAttributes( Rule rule )
     {
-        String[] attributes = rule.getAttributesList(  );
+        String [ ] attributes = rule.getAttributesList( );
 
         for ( int i = 0; i < attributes.length; i++ )
         {
-            String strAttributeValue = rule.getAttribute( attributes[i] );
+            String strAttributeValue = rule.getAttribute( attributes [i] );
             DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_ATTRIBUTE );
-            daoUtil.setInt( 1, rule.getId(  ) );
-            daoUtil.setString( 2, attributes[i] );
+            daoUtil.setInt( 1, rule.getId( ) );
+            daoUtil.setString( 2, attributes [i] );
             daoUtil.setString( 3, strAttributeValue );
 
-            daoUtil.executeUpdate(  );
-            daoUtil.free(  );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
         }
     }
 
     /**
      * Load the data of Rule from the table
      *
-     * @param nRuleId The identifier of Rule
-     * @param ruleTypesSet The rule type set object
+     * @param nRuleId
+     *            The identifier of Rule
+     * @param ruleTypesSet
+     *            The rule type set object
      * @return the instance of the Rule
      */
     public Rule load( int nRuleId, IRuleTypesSet ruleTypesSet )
@@ -132,9 +136,9 @@ public final class RuleDAO implements IRuleDAO
         Rule rule = null;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
         daoUtil.setInt( 1, nRuleId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             String strRuleTypeId = daoUtil.getString( 2 );
             rule = ruleTypesSet.newInstance( strRuleTypeId );
@@ -143,32 +147,36 @@ public final class RuleDAO implements IRuleDAO
             loadAttributes( rule );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return rule;
     }
 
     /**
      * Load the attributes
-     * @param rule The Rule object
+     * 
+     * @param rule
+     *            The Rule object
      */
     private void loadAttributes( Rule rule )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ATTRIBUTES );
-        daoUtil.setInt( 1, rule.getId(  ) );
-        daoUtil.executeQuery(  );
+        daoUtil.setInt( 1, rule.getId( ) );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             rule.setAttribute( daoUtil.getString( 1 ), daoUtil.getString( 2 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
     }
 
     /**
      * Delete a record from the table
-     * @param nRuleId The Rule Id
+     * 
+     * @param nRuleId
+     *            The Rule Id
      */
     public void delete( int nRuleId )
     {
@@ -177,71 +185,80 @@ public final class RuleDAO implements IRuleDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
         daoUtil.setInt( 1, nRuleId );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Delete a record from the table
-     * @param nRuleId The Rule Id
+     * 
+     * @param nRuleId
+     *            The Rule Id
      */
     private void deleteAttributes( int nRuleId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ATTRIBUTES );
         daoUtil.setInt( 1, nRuleId );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Update the record in the table
-     * @param rule The reference of rule
+     * 
+     * @param rule
+     *            The reference of rule
      */
     public void store( Rule rule )
     {
         // Just update attributes
-        deleteAttributes( rule.getId(  ) );
+        deleteAttributes( rule.getId( ) );
         insertAttributes( rule );
     }
 
     /**
      * Load the list of rules
-     * @param ruleTypesSet The ruleTypeSet
+     * 
+     * @param ruleTypesSet
+     *            The ruleTypeSet
      * @return The Collection of the Rules
      */
     public List<Rule> selectRuleList( IRuleTypesSet ruleTypesSet )
     {
-        List<Rule> listRules = new ArrayList<Rule>(  );
+        List<Rule> listRules = new ArrayList<Rule>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             int nRuleId = daoUtil.getInt( 1 );
             Rule rule = load( nRuleId, ruleTypesSet );
             listRules.add( rule );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listRules;
     }
 
     /**
      * Load the list of rules specified by rule type key
-     * @param strRuleTypeKey The rule type key
-     * @param ruleTypesSet The rule types set
+     * 
+     * @param strRuleTypeKey
+     *            The rule type key
+     * @param ruleTypesSet
+     *            The rule types set
      * @return The Collection of the Rules
      */
     public List<Rule> selectRuleListByRuleTypeKey( String strRuleTypeKey, IRuleTypesSet ruleTypesSet )
     {
-        List<Rule> listRules = new ArrayList<Rule>(  );
+        List<Rule> listRules = new ArrayList<Rule>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_RULE_TYPE_KEY );
         daoUtil.setString( 1, strRuleTypeKey );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             Rule rule = ruleTypesSet.newInstance( strRuleTypeKey );
             rule.setId( daoUtil.getInt( 1 ) );
@@ -250,7 +267,7 @@ public final class RuleDAO implements IRuleDAO
             listRules.add( rule );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listRules;
     }

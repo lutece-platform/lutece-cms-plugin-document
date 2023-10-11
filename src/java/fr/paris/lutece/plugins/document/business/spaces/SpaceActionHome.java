@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,10 +39,8 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
- * This class provides instances management methods (create, find, ...) for
- * SpaceAction objects
+ * This class provides instances management methods (create, find, ...) for SpaceAction objects
  */
 public final class SpaceActionHome
 {
@@ -52,18 +50,20 @@ public final class SpaceActionHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private SpaceActionHome(  )
+    private SpaceActionHome( )
     {
     }
 
     /**
      * Returns the list of allowed actions for the current document
+     * 
      * @return A list of actions for the current document
-     * @param locale The locale
+     * @param locale
+     *            The locale
      */
     public static List<SpaceAction> getActionsList( Locale locale )
     {
-        List<SpaceAction> listActions = _dao.selectActions(  );
+        List<SpaceAction> listActions = _dao.selectActions( );
 
         return I18nService.localizeCollection( listActions, locale );
     }

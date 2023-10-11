@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.document.business;
 
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 
-
 /**
  * This class represents the business object DocumentType
  */
@@ -44,13 +43,13 @@ public class DocumentMassAction implements RBACResource
     public static final String RESOURCE_TYPE = "DOCUMENT_MASS_ACTION";
 
     @Override
-    public String getResourceTypeCode(  )
+    public String getResourceTypeCode( )
     {
         return RESOURCE_TYPE;
     }
 
     @Override
-    public String getResourceId(  )
+    public String getResourceId( )
     {
         return "*";
     }

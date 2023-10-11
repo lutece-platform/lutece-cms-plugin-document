@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 public class DocumentPortletDAO implements IDocumentPortletDAO
 {
     private static final String SQL_QUERY_INSERT = "INSERT INTO document_portlet ( id_portlet , code_document_type ) VALUES ( ? , ? )";
@@ -50,14 +49,12 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     private static final String SQL_QUERY_UPDATE = "UPDATE document_portlet SET id_portlet = ?, code_document_type = ? WHERE id_portlet = ? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM document_portlet WHERE id_portlet= ? ";
     private static final String SQL_QUERY_DELETE_PUBLISHED_DOCUMENT_PORTLET = " DELETE FROM document_published WHERE id_portlet = ? ";
-    private static final String SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY = "SELECT DISTINCT b.id_portlet , a.name, a.date_update " +
-        "FROM document_portlet b " +
-        "LEFT JOIN document_published c ON b.id_portlet = c.id_portlet AND c.id_document= ? " +
-        "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet " +
-        "LEFT OUTER JOIN document_category_portlet d ON b.id_portlet = d.id_portlet " +
-        "INNER JOIN core_page f ON a.id_page = f.id_page " +
-        "WHERE c.id_portlet IS NULL AND b.code_document_type = ? AND (d.id_category IN (SELECT e.id_category " +
-        "FROM document_category_link e WHERE e.id_document = ?) OR d.id_category IS NULL) ";
+    private static final String SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY = "SELECT DISTINCT b.id_portlet , a.name, a.date_update "
+            + "FROM document_portlet b " + "LEFT JOIN document_published c ON b.id_portlet = c.id_portlet AND c.id_document= ? "
+            + "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet " + "LEFT OUTER JOIN document_category_portlet d ON b.id_portlet = d.id_portlet "
+            + "INNER JOIN core_page f ON a.id_page = f.id_page "
+            + "WHERE c.id_portlet IS NULL AND b.code_document_type = ? AND (d.id_category IN (SELECT e.id_category "
+            + "FROM document_category_link e WHERE e.id_document = ?) OR d.id_category IS NULL) ";
     private static final String SQL_QUERY_CHECK_IS_ALIAS = "SELECT id_alias FROM core_portlet_alias WHERE id_alias = ?";
     private static final String SQL_QUERY_SELECT_PORTLETS_BY_DOCUMENT_ID = "SELECT id_portlet FROM document_published WHERE id_document = ?";
 
@@ -82,11 +79,11 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
         DocumentPortlet p = (DocumentPortlet) portlet;
 
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, p.getId(  ) );
-        daoUtil.setString( 2, p.getDocumentTypeCode(  ) );
+        daoUtil.setInt( 1, p.getId( ) );
+        daoUtil.setString( 2, p.getDocumentTypeCode( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
 
         insertCategory( portlet );
     }
@@ -101,25 +98,24 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     {
         DocumentPortlet p = (DocumentPortlet) portlet;
 
-        if ( p.getIdCategory(  ) != null )
+        if ( p.getIdCategory( ) != null )
         {
             DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CATEGORY_PORTLET );
 
-            for ( int nIdCategory : p.getIdCategory(  ) )
+            for ( int nIdCategory : p.getIdCategory( ) )
             {
-                daoUtil.setInt( 1, p.getId(  ) );
+                daoUtil.setInt( 1, p.getId( ) );
                 daoUtil.setInt( 2, nIdCategory );
 
-                daoUtil.executeUpdate(  );
+                daoUtil.executeUpdate( );
             }
 
-            daoUtil.free(  );
+            daoUtil.free( );
         }
     }
 
     /**
-     * Deletes records for a portlet identifier in the tables document_portlet,
-     * document_published, document_category_portlet
+     * Deletes records for a portlet identifier in the tables document_portlet, document_published, document_category_portlet
      *
      * @param nPortletId
      *            the portlet identifier
@@ -128,13 +124,13 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
 
         daoUtil = new DAOUtil( SQL_QUERY_DELETE_PUBLISHED_DOCUMENT_PORTLET );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
 
         deleteCategories( nPortletId );
         deleteAutoPublication( nPortletId );
@@ -150,8 +146,8 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_CATEGORY_PORTLET );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -164,13 +160,12 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_AUTO_PUBLICATION_PORTLET );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
-     * Loads the data of Document Portlet whose identifier is specified in
-     * parameter
+     * Loads the data of Document Portlet whose identifier is specified in parameter
      *
      * @param nPortletId
      *            The Portlet identifier
@@ -180,17 +175,17 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        DocumentPortlet portlet = new DocumentPortlet(  );
+        DocumentPortlet portlet = new DocumentPortlet( );
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             portlet.setId( daoUtil.getInt( 1 ) );
             portlet.setDocumentTypeCode( daoUtil.getString( 2 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         portlet.setIdCategory( loadCategories( nPortletId ) );
 
@@ -203,27 +198,27 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
      * @param nPortletId
      * @return Array of categories
      */
-    private int[] loadCategories( int nPortletId )
+    private int [ ] loadCategories( int nPortletId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CATEGORY_PORTLET );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        Collection<Integer> nListIdCategory = new ArrayList<Integer>(  );
+        Collection<Integer> nListIdCategory = new ArrayList<Integer>( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             nListIdCategory.add( daoUtil.getInt( 1 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
-        int[] nArrayIdCategory = new int[nListIdCategory.size(  )];
+        int [ ] nArrayIdCategory = new int [ nListIdCategory.size( )];
         int i = 0;
 
         for ( Integer nIdCategory : nListIdCategory )
         {
-            nArrayIdCategory[i++] = nIdCategory.intValue(  );
+            nArrayIdCategory [i++] = nIdCategory.intValue( );
         }
 
         return nArrayIdCategory;
@@ -239,21 +234,20 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     {
         DocumentPortlet p = (DocumentPortlet) portlet;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setInt( 1, p.getId(  ) );
-        daoUtil.setString( 2, p.getDocumentTypeCode(  ) );
-        daoUtil.setInt( 3, p.getId(  ) );
+        daoUtil.setInt( 1, p.getId( ) );
+        daoUtil.setString( 2, p.getDocumentTypeCode( ) );
+        daoUtil.setInt( 3, p.getId( ) );
 
-        daoUtil.executeUpdate(  );
+        daoUtil.executeUpdate( );
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
-        deleteCategories( p.getId(  ) );
+        deleteCategories( p.getId( ) );
         insertCategory( p );
     }
 
     /**
-     * Returns a list of couple id_portlet/name filtered by documentType and
-     * category
+     * Returns a list of couple id_portlet/name filtered by documentType and category
      *
      * @param nDocumentId
      *            the Document ID
@@ -263,13 +257,13 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
      *            the order of the portlets
      * @return A collection of referenceItem
      */
-    public Collection<ReferenceItem> selectByDocumentOdAndDocumentType( int nDocumentId, String strCodeDocumentType,
-        PortletOrder pOrder, PortletFilter pFilter )
+    public Collection<ReferenceItem> selectByDocumentOdAndDocumentType( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder,
+            PortletFilter pFilter )
     {
-        StringBuilder strSQl = new StringBuilder(  );
+        StringBuilder strSQl = new StringBuilder( );
         strSQl.append( SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY );
 
-        String strFilter = ( pFilter != null ) ? pFilter.getSQLFilter(  ) : null;
+        String strFilter = ( pFilter != null ) ? pFilter.getSQLFilter( ) : null;
 
         if ( strFilter != null )
         {
@@ -277,45 +271,47 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
             strSQl.append( strFilter );
         }
 
-        strSQl.append( pOrder.getSQLOrderBy(  ) );
+        strSQl.append( pOrder.getSQLOrderBy( ) );
 
-        DAOUtil daoUtil = new DAOUtil( strSQl.toString(  ) );
+        DAOUtil daoUtil = new DAOUtil( strSQl.toString( ) );
         daoUtil.setInt( 1, nDocumentId );
         daoUtil.setString( 2, strCodeDocumentType );
         daoUtil.setInt( 3, nDocumentId );
 
         if ( strFilter != null )
         {
-            if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PAGE_NAME ) )
+            if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_NAME ) )
             {
-                for ( int i = 0; i < pFilter.getPageName(  ).length; i++ )
+                for ( int i = 0; i < pFilter.getPageName( ).length; i++ )
                 {
-                    daoUtil.setString( i + 4, "%" + pFilter.getPageName(  )[i] + "%" );
+                    daoUtil.setString( i + 4, "%" + pFilter.getPageName( ) [i] + "%" );
                 }
             }
-            else if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PORTLET_NAME ) )
-            {
-                for ( int i = 0; i < pFilter.getPortletName(  ).length; i++ )
+            else
+                if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PORTLET_NAME ) )
                 {
-                    daoUtil.setString( i + 4, "%" + pFilter.getPortletName(  )[i] + "%" );
+                    for ( int i = 0; i < pFilter.getPortletName( ).length; i++ )
+                    {
+                        daoUtil.setString( i + 4, "%" + pFilter.getPortletName( ) [i] + "%" );
+                    }
                 }
-            }
-            else if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PAGE_ID ) )
-            {
-                daoUtil.setInt( 4, pFilter.getIdPage(  ) );
-            }
+                else
+                    if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_ID ) )
+                    {
+                        daoUtil.setInt( 4, pFilter.getIdPage( ) );
+                    }
         }
 
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        ReferenceList list = new ReferenceList(  );
+        ReferenceList list = new ReferenceList( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             list.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return list;
     }
@@ -333,36 +329,36 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CHECK_IS_ALIAS );
 
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             bIsAlias = true;
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return bIsAlias;
     }
 
     /**
      *
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     public List<Integer> selectPortletsByDocumentId( int nDocumentId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PORTLETS_BY_DOCUMENT_ID );
         daoUtil.setInt( 1, nDocumentId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        List<Integer> list = new ArrayList<Integer>(  );
+        List<Integer> list = new ArrayList<Integer>( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             list.add( daoUtil.getInt( 1 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return list;
     }

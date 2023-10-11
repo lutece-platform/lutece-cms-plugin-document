@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.util.Collection;
 
-
 /**
  * This class provides instances management methods for DocumentAutoPublication objects
  *
@@ -47,23 +46,22 @@ import java.util.Collection;
 public class DocumentAutoPublicationHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentAutoPublicationDAO _dao = SpringContextService.getBean( 
-            "document.documentAutoPublicationDAO" );
+    private static IDocumentAutoPublicationDAO _dao = SpringContextService.getBean( "document.documentAutoPublicationDAO" );
 
     /* This class implements the Singleton design pattern. */
 
     /**
      * Constructor
      */
-    private DocumentAutoPublicationHome(  )
+    private DocumentAutoPublicationHome( )
     {
     }
 
     /**
      * Insert a new document auto publication
      *
-     * @param documentAutoPublication the instance of the
-     *            DocumentAutoPublication object to insert
+     * @param documentAutoPublication
+     *            the instance of the DocumentAutoPublication object to insert
      */
     public static void add( DocumentAutoPublication documentAutoPublication )
     {
@@ -75,16 +73,18 @@ public class DocumentAutoPublicationHome
      *
      * @return The {@link Collection} of {@link DocumentAutoPublication} object
      */
-    public static Collection<DocumentAutoPublication> findAll(  )
+    public static Collection<DocumentAutoPublication> findAll( )
     {
-        return _dao.load(  );
+        return _dao.load( );
     }
 
     /**
      * Loads the data of Document Auto Publication whose identifier is specified in parameter
      *
-     * @param nPortletId The {@link Portlet} identifier
-     * @param nSpaceId The {@link DocumentSpace} identifier
+     * @param nPortletId
+     *            The {@link Portlet} identifier
+     * @param nSpaceId
+     *            The {@link DocumentSpace} identifier
      * @return The {@link DocumentAutoPublication} object
      */
     public static DocumentAutoPublication findByPrimaryKey( int nPortletId, int nSpaceId )
@@ -95,7 +95,8 @@ public class DocumentAutoPublicationHome
     /**
      * Load the list of Document Auto Publication whose portlet identifier is specified in parameter
      *
-     * @param nPortletId The {@link Portlet} identifier
+     * @param nPortletId
+     *            The {@link Portlet} identifier
      * @return The {@link Collection} of {@link DocumentAutoPublication} object
      */
     public static Collection<DocumentAutoPublication> findByPortletId( int nPortletId )
@@ -106,7 +107,8 @@ public class DocumentAutoPublicationHome
     /**
      * Load the list of Document Auto Publication whose {@link DocumentSpace} identifier is specified in parameter
      *
-     * @param nSpaceId The {@link DocumentSpace} identifier
+     * @param nSpaceId
+     *            The {@link DocumentSpace} identifier
      * @return The {@link Collection} of {@link DocumentAutoPublication} object
      */
     public static Collection<DocumentAutoPublication> findBySpaceId( int nSpaceId )
@@ -117,7 +119,8 @@ public class DocumentAutoPublicationHome
     /**
      * Update the document auto publication
      *
-     * @param documentAutoPublication The DocumentAutoPublication to update
+     * @param documentAutoPublication
+     *            The DocumentAutoPublication to update
      */
     public static void update( DocumentAutoPublication documentAutoPublication )
     {
@@ -127,8 +130,10 @@ public class DocumentAutoPublicationHome
     /**
      * Delete a document auto publication object
      *
-     * @param nPortletId the portlet identifier
-     * @param nSpaceId the space identifier
+     * @param nPortletId
+     *            the portlet identifier
+     * @param nSpaceId
+     *            the space identifier
      */
     public static void remove( int nPortletId, int nSpaceId )
     {
@@ -138,7 +143,8 @@ public class DocumentAutoPublicationHome
     /**
      * Delete All Space from a portlet
      *
-     * @param nPortletId the portlet identifier
+     * @param nPortletId
+     *            the portlet identifier
      */
     public static void removeAllSpaces( int nPortletId )
     {
@@ -148,12 +154,13 @@ public class DocumentAutoPublicationHome
     /**
      * Check if the specified portlet is auto published
      *
-     * @param nPortletId The portlet id
+     * @param nPortletId
+     *            The portlet id
      * @return true if portlet is auto published, false else.
      */
     public static boolean isPortletAutoPublished( int nPortletId )
     {
-        if ( _dao.selectByPortletId( nPortletId ).size(  ) == 0 )
+        if ( _dao.selectByPortletId( nPortletId ).size( ) == 0 )
         {
             return false;
         }
@@ -164,12 +171,13 @@ public class DocumentAutoPublicationHome
     /**
      * Check if the specified Space is auto published
      *
-     * @param nSpaceId The space id
+     * @param nSpaceId
+     *            The space id
      * @return true if Space is auto published, false else.
      */
     public static boolean isSpaceAutoPublished( int nSpaceId )
     {
-        if ( _dao.selectBySpaceId( nSpaceId ).size(  ) == 0 )
+        if ( _dao.selectBySpaceId( nSpaceId ).size( ) == 0 )
         {
             return false;
         }

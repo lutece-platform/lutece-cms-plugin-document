@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,6 @@ import fr.paris.lutece.util.ReferenceList;
 
 import java.util.Collection;
 
-
 /**
  * Interface for DocumentType DAO
  */
@@ -46,7 +45,8 @@ public interface IDocumentTypeDAO
     /**
      * Check if type has document
      *
-     * @param strCode The code type
+     * @param strCode
+     *            The code type
      * @return bCheck the boolean
      */
     boolean checkDocuments( String strCode );
@@ -54,7 +54,8 @@ public interface IDocumentTypeDAO
     /**
      * Delete a record from the table
      *
-     * @param strCode the code type
+     * @param strCode
+     *            the code type
      */
     void delete( String strCode );
 
@@ -63,19 +64,21 @@ public interface IDocumentTypeDAO
      *
      * @return listDocumentTypes
      */
-    ReferenceList getDocumentTypeList(  );
+    ReferenceList getDocumentTypeList( );
 
     /**
      * Insert a new record in the table.
      *
-     * @param documentType The documentType object
+     * @param documentType
+     *            The documentType object
      */
     void insert( DocumentType documentType );
 
     /**
      * Load the data of DocumentType from the table
      *
-     * @param strDocumentTypeCode the code
+     * @param strDocumentTypeCode
+     *            the code
      * @return the instance of the DocumentType
      */
     DocumentType load( String strDocumentTypeCode );
@@ -83,10 +86,14 @@ public interface IDocumentTypeDAO
     /**
      * Reorder attributes
      *
-     * @param nIdAttribute1 the attribute order
-     * @param nOrderAttribute1 the attribute order
-     * @param nIdAttribute2 the attribute order
-     * @param nOrderAttribute2 the attribute order
+     * @param nIdAttribute1
+     *            the attribute order
+     * @param nOrderAttribute1
+     *            the attribute order
+     * @param nIdAttribute2
+     *            the attribute order
+     * @param nOrderAttribute2
+     *            the attribute order
      */
     void reorderAttributes( int nIdAttribute1, int nOrderAttribute1, int nIdAttribute2, int nOrderAttribute2 );
 
@@ -95,26 +102,33 @@ public interface IDocumentTypeDAO
      *
      * @return The Collection of the DocumentTypes
      */
-    Collection<DocumentType> selectDocumentTypeList(  );
+    Collection<DocumentType> selectDocumentTypeList( );
 
     /**
      * Update the record in the table
      *
-     * @param documentType The reference of documentType
+     * @param documentType
+     *            The reference of documentType
      */
     void store( DocumentType documentType );
 
     /**
      * Sets the admin stylesheet
-     * @param baXslAdmin The stylesheet
-     * @param strCodeType The code type
+     * 
+     * @param baXslAdmin
+     *            The stylesheet
+     * @param strCodeType
+     *            The code type
      */
-    void setAdminStyleSheet( byte[] baXslAdmin, String strCodeType );
+    void setAdminStyleSheet( byte [ ] baXslAdmin, String strCodeType );
 
     /**
      * Sets the content service stylesheet
-     * @param baXslContent The stylesheet
-     * @param strCodeType The code type
+     * 
+     * @param baXslContent
+     *            The stylesheet
+     * @param strCodeType
+     *            The code type
      */
-    void setContentStyleSheet( byte[] baXslContent, String strCodeType );
+    void setContentStyleSheet( byte [ ] baXslContent, String strCodeType );
 }

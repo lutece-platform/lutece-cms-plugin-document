@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,6 @@ import fr.paris.lutece.util.ReferenceList;
 
 import java.util.Collection;
 
-
 /**
  * This class provides instances management methods (create, find, ...) for DocumentType objects
  */
@@ -50,15 +49,16 @@ public final class DocumentTypeHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private DocumentTypeHome(  )
+    private DocumentTypeHome( )
     {
     }
 
     /**
      * Creation of an instance of documentType
      *
-     * @param documentType The instance of the documentType which contains the informations to store
-     * @return The  instance of documentType which has been created with its primary key.
+     * @param documentType
+     *            The instance of the documentType which contains the informations to store
+     * @return The instance of documentType which has been created with its primary key.
      */
     public static DocumentType create( DocumentType documentType )
     {
@@ -70,8 +70,9 @@ public final class DocumentTypeHome
     /**
      * Update of the documentType which is specified in parameter
      *
-     * @param documentType The instance of the documentType which contains the data to store
-     * @return The instance of the  documentType which has been updated
+     * @param documentType
+     *            The instance of the documentType which contains the data to store
+     * @return The instance of the documentType which has been updated
      */
     public static DocumentType update( DocumentType documentType )
     {
@@ -83,7 +84,8 @@ public final class DocumentTypeHome
     /**
      * Remove the DocumentType whose identifier is specified in parameter
      *
-     * @param strCode The document type code
+     * @param strCode
+     *            The document type code
      */
     public static void remove( String strCode )
     {
@@ -94,11 +96,11 @@ public final class DocumentTypeHome
     // Finders
 
     /**
-     * Returns an instance of a documentType whose identifier is specified in
-     * parameter
+     * Returns an instance of a documentType whose identifier is specified in parameter
      *
      * @return An instance of documentType
-     * @param strCode The document type code
+     * @param strCode
+     *            The document type code
      */
     public static DocumentType findByPrimaryKey( String strCode )
     {
@@ -107,16 +109,19 @@ public final class DocumentTypeHome
 
     /**
      * Returns a collection of documentTypes objects
+     * 
      * @return A collection of documentTypes
      */
-    public static Collection<DocumentType> findAll(  )
+    public static Collection<DocumentType> findAll( )
     {
-        return _dao.selectDocumentTypeList(  );
+        return _dao.selectDocumentTypeList( );
     }
 
     /**
      * Checks if type has documents
-     * @param strCode The document type code
+     * 
+     * @param strCode
+     *            The document type code
      * @return True if the given type has documents
      */
     public static boolean checkDocuments( String strCode )
@@ -127,42 +132,52 @@ public final class DocumentTypeHome
     /**
      * Reorder Attributes
      *
-     * @param nIdAttribute1 The id of the first attribute
-     * @param nOrderAttribute1 The order of the first attribute
-     * @param nIdAttribute2 The id of the second attribute
-     * @param nOrderAttribute2 The order of the second attribute
+     * @param nIdAttribute1
+     *            The id of the first attribute
+     * @param nOrderAttribute1
+     *            The order of the first attribute
+     * @param nIdAttribute2
+     *            The id of the second attribute
+     * @param nOrderAttribute2
+     *            The order of the second attribute
      */
-    public static void reorderAttributes( int nIdAttribute1, int nOrderAttribute1, int nIdAttribute2,
-        int nOrderAttribute2 )
+    public static void reorderAttributes( int nIdAttribute1, int nOrderAttribute1, int nIdAttribute2, int nOrderAttribute2 )
     {
         _dao.reorderAttributes( nIdAttribute1, nOrderAttribute1, nIdAttribute2, nOrderAttribute2 );
     }
 
     /**
      * Get document types list
-     * @return  document types list
+     * 
+     * @return document types list
      */
-    public static ReferenceList getDocumentTypesList(  )
+    public static ReferenceList getDocumentTypesList( )
     {
-        return _dao.getDocumentTypeList(  );
+        return _dao.getDocumentTypeList( );
     }
 
     /**
      * Sets the admin stylesheet
-     * @param baXslAdmin The stylesheet
-     * @param strCodeType The code type
+     * 
+     * @param baXslAdmin
+     *            The stylesheet
+     * @param strCodeType
+     *            The code type
      */
-    public static void setAdminStyleSheet( byte[] baXslAdmin, String strCodeType )
+    public static void setAdminStyleSheet( byte [ ] baXslAdmin, String strCodeType )
     {
         _dao.setAdminStyleSheet( baXslAdmin, strCodeType );
     }
 
     /**
      * Sets the content service stylesheet
-     * @param baXslContent The stylesheet
-     * @param strCodeType The code type
+     * 
+     * @param baXslContent
+     *            The stylesheet
+     * @param strCodeType
+     *            The code type
      */
-    public static void setContentStyleSheet( byte[] baXslContent, String strCodeType )
+    public static void setContentStyleSheet( byte [ ] baXslContent, String strCodeType )
     {
         _dao.setContentStyleSheet( baXslContent, strCodeType );
     }

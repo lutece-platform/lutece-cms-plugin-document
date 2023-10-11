@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,6 @@ import fr.paris.lutece.portal.service.i18n.Localizable;
 
 import java.util.Locale;
 
-
 /**
  * This class represents the business object DocumentAttributeType
  */
@@ -56,7 +55,7 @@ public class AttributeType implements Localizable
      *
      * @return The Code
      */
-    public String getCode(  )
+    public String getCode( )
     {
         return _strCode;
     }
@@ -64,7 +63,8 @@ public class AttributeType implements Localizable
     /**
      * Sets the Code
      *
-     * @param strCode The Code
+     * @param strCode
+     *            The Code
      */
     public void setCode( String strCode )
     {
@@ -76,7 +76,7 @@ public class AttributeType implements Localizable
      *
      * @return The Locale
      */
-    public Locale getLocale(  )
+    public Locale getLocale( )
     {
         return _locale;
     }
@@ -84,7 +84,8 @@ public class AttributeType implements Localizable
     /**
      * Sets the Locale
      *
-     * @param locale The Locale
+     * @param locale
+     *            The Locale
      */
     public void setLocale( Locale locale )
     {
@@ -96,7 +97,7 @@ public class AttributeType implements Localizable
      *
      * @return The Name
      */
-    public String getNameKey(  )
+    public String getNameKey( )
     {
         return _strNameKey;
     }
@@ -104,7 +105,8 @@ public class AttributeType implements Localizable
     /**
      * Sets the Name
      *
-     * @param strNameKey The Name
+     * @param strNameKey
+     *            The Name
      */
     public void setNameKey( String strNameKey )
     {
@@ -116,7 +118,7 @@ public class AttributeType implements Localizable
      *
      * @return The Description
      */
-    public String getDescriptionKey(  )
+    public String getDescriptionKey( )
     {
         return _strDescriptionKey;
     }
@@ -124,7 +126,8 @@ public class AttributeType implements Localizable
     /**
      * Sets the Description
      *
-     * @param strDescriptionKey The Description
+     * @param strDescriptionKey
+     *            The Description
      */
     public void setDescriptionKey( String strDescriptionKey )
     {
@@ -136,7 +139,7 @@ public class AttributeType implements Localizable
      *
      * @return The ClassName
      */
-    public String getClassName(  )
+    public String getClassName( )
     {
         return _strClassName;
     }
@@ -144,7 +147,8 @@ public class AttributeType implements Localizable
     /**
      * Sets the ClassName
      *
-     * @param strClassName The ClassName
+     * @param strClassName
+     *            The ClassName
      */
     public void setClassName( String strClassName )
     {
@@ -156,7 +160,7 @@ public class AttributeType implements Localizable
      *
      * @return The Name
      */
-    public String getName(  )
+    public String getName( )
     {
         return I18nService.getLocalizedString( _strNameKey, _locale );
     }
@@ -166,7 +170,7 @@ public class AttributeType implements Localizable
      *
      * @return The Description
      */
-    public String getDescription(  )
+    public String getDescription( )
     {
         return I18nService.getLocalizedString( _strDescriptionKey, _locale );
     }

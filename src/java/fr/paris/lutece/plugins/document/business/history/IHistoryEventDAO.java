@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.document.business.history;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
  * HistoryEventDAO Interface
  */
@@ -54,7 +53,8 @@ public interface IHistoryEventDAO
      * Insert a new record in the table.
      *
      *
-     * @param historyEvent The historyEvent object
+     * @param historyEvent
+     *            The historyEvent object
      */
     void insert( HistoryEvent historyEvent );
 
@@ -62,7 +62,8 @@ public interface IHistoryEventDAO
      * Load the list of historyEvents
      *
      *
-     * @param nDocumentId The document Id
+     * @param nDocumentId
+     *            The document Id
      * @return The Collection of the HistoryEvents
      */
     List<HistoryEvent> selectEventListByDocument( int nDocumentId );
@@ -71,7 +72,8 @@ public interface IHistoryEventDAO
      * Load the list of historyEvents
      *
      *
-     * @param strUserId The UserId
+     * @param strUserId
+     *            The UserId
      * @return The Collection of the HistoryEvents
      */
     Collection<HistoryEvent> selectEventListByUser( String strUserId );

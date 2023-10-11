@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.document.business.autopublication;
 
 import fr.paris.lutece.plugins.document.service.spaces.SpaceRemovalListenerService;
 
-
 /**
  * This class represents business objects DocumentAutoPublication
  *
@@ -49,26 +48,27 @@ public class DocumentAutoPublication
     /**
      * Initialize the DocumentAutoPublication
      */
-    public static void init(  )
+    public static void init( )
     {
         // Create removal listeners and register them
         if ( _listenerDocumentSpace == null )
         {
-            _listenerDocumentSpace = new DocumentAutoPublicationDocumentSpaceRemovalListener(  );
-            SpaceRemovalListenerService.getService(  ).registerListener( _listenerDocumentSpace );
+            _listenerDocumentSpace = new DocumentAutoPublicationDocumentSpaceRemovalListener( );
+            SpaceRemovalListenerService.getService( ).registerListener( _listenerDocumentSpace );
         }
     }
 
     /**
      * @return the _nIdPortlet
      */
-    public int getIdPortlet(  )
+    public int getIdPortlet( )
     {
         return _nIdPortlet;
     }
 
     /**
-     * @param nIdPortlet the _nIdPortlet to set
+     * @param nIdPortlet
+     *            the _nIdPortlet to set
      */
     public void setIdPortlet( int nIdPortlet )
     {
@@ -78,13 +78,14 @@ public class DocumentAutoPublication
     /**
      * @return the _nIdSpace
      */
-    public int getIdSpace(  )
+    public int getIdSpace( )
     {
         return _nIdSpace;
     }
 
     /**
-     * @param nIdSpace the _nIdSpace to set
+     * @param nIdSpace
+     *            the _nIdSpace to set
      */
     public void setIdSpace( int nIdSpace )
     {

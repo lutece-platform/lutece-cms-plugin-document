@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,6 @@ import fr.paris.lutece.util.sql.DAOUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 /**
  * This class provides Data Access methods for DocumentAutoPublication objects
  *
@@ -53,59 +52,64 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
     private static final String SQL_QUERY_SELECT_BY_PORTLET_ID = "SELECT id_space FROM document_auto_publication WHERE id_portlet = ? ";
     private static final String SQL_QUERY_SELECT_BY_SPACE_ID = "SELECT id_portlet FROM document_auto_publication WHERE id_space = ? ";
 
-    //    private static final String SQL_QUERY_UPDATE = "UPDATE document_auto_publication SET WHERE id_portlet = ? AND id_space = ? ";
+    // private static final String SQL_QUERY_UPDATE = "UPDATE document_auto_publication SET WHERE id_portlet = ? AND id_space = ? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM document_auto_publication WHERE id_portlet= ? AND id_space= ? ";
     private static final String SQL_QUERY_DELETE_ALL_SPACES = "DELETE FROM document_auto_publication WHERE id_portlet= ? ";
 
     /**
      * Deletes records from a Document Auto Publication object identifier in the table document_auto_publication
      *
-     * @param nPortletId the portlet identifier
-     * @param nSpaceId the {@link DocumentSpace} identifier
+     * @param nPortletId
+     *            the portlet identifier
+     * @param nSpaceId
+     *            the {@link DocumentSpace} identifier
      */
     public void delete( int nPortletId, int nSpaceId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
         daoUtil.setInt( 1, nPortletId );
         daoUtil.setInt( 2, nSpaceId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Delete records from a portlet
      *
-     * @param nPortletId the portlet identifier
+     * @param nPortletId
+     *            the portlet identifier
      */
     public void deleteAllSpaces( int nPortletId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ALL_SPACES );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Insert a new record in the table document_auto_publication
      *
-     * @param documentAutoPublication the instance of the
-     *            DocumentAutoPublication object to insert
+     * @param documentAutoPublication
+     *            the instance of the DocumentAutoPublication object to insert
      */
     public void insert( DocumentAutoPublication documentAutoPublication )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, documentAutoPublication.getIdPortlet(  ) );
-        daoUtil.setInt( 2, documentAutoPublication.getIdSpace(  ) );
+        daoUtil.setInt( 1, documentAutoPublication.getIdPortlet( ) );
+        daoUtil.setInt( 2, documentAutoPublication.getIdSpace( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Loads the data of Document Auto Publication whose identifier is specified in parameter
      *
-     * @param nPortletId The {@link Portlet} identifier
-     * @param nSpaceId The {@link DocumentSpace} identifier
+     * @param nPortletId
+     *            The {@link Portlet} identifier
+     * @param nSpaceId
+     *            The {@link DocumentSpace} identifier
      * @return The {@link DocumentAutoPublication} object
      */
     public DocumentAutoPublication load( int nPortletId, int nSpaceId )
@@ -113,18 +117,18 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PRIMARY_KEY );
         daoUtil.setInt( 1, nPortletId );
         daoUtil.setInt( 2, nSpaceId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         DocumentAutoPublication documentAutoPublication = null;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
-            documentAutoPublication = new DocumentAutoPublication(  );
+            documentAutoPublication = new DocumentAutoPublication( );
             documentAutoPublication.setIdPortlet( daoUtil.getInt( 1 ) );
             documentAutoPublication.setIdSpace( daoUtil.getInt( 2 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return documentAutoPublication;
     }
@@ -134,22 +138,22 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      *
      * @return The {@link Collection} of {@link DocumentAutoPublication} object
      */
-    public Collection<DocumentAutoPublication> load(  )
+    public Collection<DocumentAutoPublication> load( )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<DocumentAutoPublication>(  );
+        Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<DocumentAutoPublication>( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            DocumentAutoPublication documentAutoPublication = new DocumentAutoPublication(  );
+            DocumentAutoPublication documentAutoPublication = new DocumentAutoPublication( );
             documentAutoPublication.setIdPortlet( daoUtil.getInt( 1 ) );
             documentAutoPublication.setIdSpace( daoUtil.getInt( 2 ) );
             listDocumentAutoPublication.add( documentAutoPublication );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDocumentAutoPublication;
     }
@@ -157,26 +161,27 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
     /**
      * Load the list of Document Auto Publication whose portlet identifier is specified in parameter
      *
-     * @param nPortletId The {@link Portlet} identifier
+     * @param nPortletId
+     *            The {@link Portlet} identifier
      * @return The {@link DocumentAutoPublication} object
      */
     public Collection<DocumentAutoPublication> selectByPortletId( int nPortletId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PORTLET_ID );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<DocumentAutoPublication>(  );
+        Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<DocumentAutoPublication>( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            DocumentAutoPublication documentAutoPublication = new DocumentAutoPublication(  );
+            DocumentAutoPublication documentAutoPublication = new DocumentAutoPublication( );
             documentAutoPublication.setIdPortlet( nPortletId );
             documentAutoPublication.setIdSpace( daoUtil.getInt( 1 ) );
             listDocumentAutoPublication.add( documentAutoPublication );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDocumentAutoPublication;
     }
@@ -184,26 +189,27 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
     /**
      * Load the list of Document Auto Publication whose {@link DocumentSpace} identifier is specified in parameter
      *
-     * @param nSpaceId The {@link DocumentSpace} identifier
+     * @param nSpaceId
+     *            The {@link DocumentSpace} identifier
      * @return The {@link DocumentAutoPublication} object
      */
     public Collection<DocumentAutoPublication> selectBySpaceId( int nSpaceId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_SPACE_ID );
         daoUtil.setInt( 1, nSpaceId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<DocumentAutoPublication>(  );
+        Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<DocumentAutoPublication>( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            DocumentAutoPublication documentAutoPublication = new DocumentAutoPublication(  );
+            DocumentAutoPublication documentAutoPublication = new DocumentAutoPublication( );
             documentAutoPublication.setIdPortlet( daoUtil.getInt( 1 ) );
             documentAutoPublication.setIdSpace( nSpaceId );
             listDocumentAutoPublication.add( documentAutoPublication );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDocumentAutoPublication;
     }
@@ -211,17 +217,18 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
     /**
      * Update the record in the table
      *
-     * @param documentAutoPublication The DocumentAutoPublication to update
+     * @param documentAutoPublication
+     *            The DocumentAutoPublication to update
      */
     public void store( DocumentAutoPublication documentAutoPublication )
     {
-        //        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
+        // DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
         //
-        //        daoUtil.setInt( 1, documentAutoPublication.getIdPortlet(  ) );
-        //        daoUtil.setInt( 2, documentAutoPublication.getIdSpace(  ) );
+        // daoUtil.setInt( 1, documentAutoPublication.getIdPortlet( ) );
+        // daoUtil.setInt( 2, documentAutoPublication.getIdSpace( ) );
         //
-        //        daoUtil.executeUpdate(  );
+        // daoUtil.executeUpdate( );
         //
-        //        daoUtil.free(  );
+        // daoUtil.free( );
     }
 }

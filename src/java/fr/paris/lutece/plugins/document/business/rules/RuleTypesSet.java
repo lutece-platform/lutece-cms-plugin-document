@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 
-
 /**
  * Rules Set
  */
@@ -51,7 +50,9 @@ public class RuleTypesSet implements IRuleTypesSet
 
     /**
      * Sets the rule types map
-     * @param mapRules The rule types map
+     * 
+     * @param mapRules
+     *            The rule types map
      */
     public void setRuleTypesMap( Map<String, Rule> mapRules )
     {
@@ -60,7 +61,9 @@ public class RuleTypesSet implements IRuleTypesSet
 
     /**
      * Create a new instance of a rule of a given type
-     * @param strRuleTypeKey The key name of the rule type
+     * 
+     * @param strRuleTypeKey
+     *            The key name of the rule type
      * @return A new Rule instance
      */
     public Rule newInstance( String strRuleTypeKey )
@@ -69,47 +72,48 @@ public class RuleTypesSet implements IRuleTypesSet
 
         try
         {
-            rule = _mapRuleTypes.get( strRuleTypeKey ).getClass(  ).newInstance(  );
+            rule = _mapRuleTypes.get( strRuleTypeKey ).getClass( ).newInstance( );
             rule.setRuleTypeId( strRuleTypeKey );
         }
-        catch ( InstantiationException e )
+        catch( InstantiationException e )
         {
-            AppLogService.error( e.getMessage(  ), e );
+            AppLogService.error( e.getMessage( ), e );
         }
-        catch ( IllegalAccessException e )
+        catch( IllegalAccessException e )
         {
-            AppLogService.error( e.getMessage(  ), e );
+            AppLogService.error( e.getMessage( ), e );
         }
 
         return rule;
     }
 
     /**
-    * Returns the rule type of a given class type
-    * @return The rule type
-    */
+     * Returns the rule type of a given class type
+     * 
+     * @return The rule type
+     */
     public String getRuleTypeKey( Rule rule )
     {
-        for ( String key : _mapRuleTypes.keySet(  ) )
+        for ( String key : _mapRuleTypes.keySet( ) )
         {
             Rule ruleType;
 
             try
             {
-                ruleType = _mapRuleTypes.get( key ).getClass(  ).newInstance(  );
+                ruleType = _mapRuleTypes.get( key ).getClass( ).newInstance( );
 
-                if ( ruleType.getClass(  ).isInstance( rule ) )
+                if ( ruleType.getClass( ).isInstance( rule ) )
                 {
                     return key;
                 }
             }
-            catch ( InstantiationException e )
+            catch( InstantiationException e )
             {
-                AppLogService.error( e.getMessage(  ), e );
+                AppLogService.error( e.getMessage( ), e );
             }
-            catch ( IllegalAccessException e )
+            catch( IllegalAccessException e )
             {
-                AppLogService.error( e.getMessage(  ), e );
+                AppLogService.error( e.getMessage( ), e );
             }
         }
 
@@ -118,15 +122,16 @@ public class RuleTypesSet implements IRuleTypesSet
 
     /**
      * Returns the rule types list
+     * 
      * @return The rule types list
      */
     public ReferenceList getRuleTypesList( Locale locale )
     {
-        ReferenceList listRules = new ReferenceList(  );
+        ReferenceList listRules = new ReferenceList( );
 
-        for ( String strRuleKey : _mapRuleTypes.keySet(  ) )
+        for ( String strRuleKey : _mapRuleTypes.keySet( ) )
         {
-            String strRuleNameKey = newInstance( strRuleKey ).getNameKey(  );
+            String strRuleNameKey = newInstance( strRuleKey ).getNameKey( );
             listRules.addItem( strRuleKey, I18nService.getLocalizedString( strRuleNameKey, locale ) );
         }
 
@@ -135,10 +140,11 @@ public class RuleTypesSet implements IRuleTypesSet
 
     /**
      * Returns all rule types
+     * 
      * @return A collection of rule types
      */
-    public Collection<Rule> getRuleTypes(  )
+    public Collection<Rule> getRuleTypes( )
     {
-        return _mapRuleTypes.values(  );
+        return _mapRuleTypes.values( );
     }
 }

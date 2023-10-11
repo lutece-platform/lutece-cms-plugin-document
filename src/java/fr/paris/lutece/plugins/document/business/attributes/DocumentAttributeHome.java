@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
  * This class provides instances management methods (create, find, ...) for DocumentAttribute objects
  */
@@ -53,15 +52,16 @@ public final class DocumentAttributeHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private DocumentAttributeHome(  )
+    private DocumentAttributeHome( )
     {
     }
 
     /**
      * Creation of an instance of documentAttribute
      *
-     * @param documentAttribute The instance of the documentAttribute which contains the informations to store
-     * @return The  instance of documentAttribute which has been created with its primary key.
+     * @param documentAttribute
+     *            The instance of the documentAttribute which contains the informations to store
+     * @return The instance of documentAttribute which has been created with its primary key.
      */
     public static DocumentAttribute create( DocumentAttribute documentAttribute )
     {
@@ -73,8 +73,9 @@ public final class DocumentAttributeHome
     /**
      * Update of the documentAttribute which is specified in parameter
      *
-     * @param documentAttribute The instance of the documentAttribute which contains the data to store
-     * @return The instance of the  documentAttribute which has been updated
+     * @param documentAttribute
+     *            The instance of the documentAttribute which contains the data to store
+     * @return The instance of the documentAttribute which has been updated
      */
     public static DocumentAttribute update( DocumentAttribute documentAttribute )
     {
@@ -86,7 +87,8 @@ public final class DocumentAttributeHome
     /**
      * Remove the DocumentAttribute whose identifier is specified in parameter
      *
-     * @param nAttributeId The id of the attribute
+     * @param nAttributeId
+     *            The id of the attribute
      */
     public static void remove( int nAttributeId )
     {
@@ -99,7 +101,8 @@ public final class DocumentAttributeHome
     /**
      * Returns an instance of a documentAttribute whose identifier is specified in parameter
      *
-     * @param nKey The Primary key of the documentAttribute
+     * @param nKey
+     *            The Primary key of the documentAttribute
      * @return An instance of documentAttribute
      */
     public static DocumentAttribute findByPrimaryKey( int nKey )
@@ -109,7 +112,9 @@ public final class DocumentAttributeHome
 
     /**
      * Returns a collection of documentAttributes objects
-     * @param documentType The document type
+     * 
+     * @param documentType
+     *            The document type
      */
     public static void setDocumentTypeAttributes( DocumentType documentType )
     {
@@ -118,7 +123,9 @@ public final class DocumentAttributeHome
 
     /**
      * Get all attributes of document type
-     * @param codeDocumentType The code document Type
+     * 
+     * @param codeDocumentType
+     *            The code document Type
      * @return listDocumentAttributes The list of all attributes of selected code document type
      */
     public static List<DocumentAttribute> selectAllAttributesOfDocumentType( String codeDocumentType )
@@ -128,8 +135,11 @@ public final class DocumentAttributeHome
 
     /**
      * Get the attribute type parameters of an attribute
-     * @param nAttributeId The id of the attribute to get the parameter of
-     * @param locale The locale
+     * 
+     * @param nAttributeId
+     *            The id of the attribute to get the parameter of
+     * @param locale
+     *            The locale
      * @return The list of parameters
      */
     public static Collection<AttributeTypeParameter> getAttributeParametersValues( int nAttributeId, Locale locale )
@@ -141,8 +151,11 @@ public final class DocumentAttributeHome
 
     /**
      * Get the list of values of a parameters of an attribute
-     * @param nAttributeId The id of the attribute
-     * @param strParameterName The name of the parameter
+     * 
+     * @param nAttributeId
+     *            The id of the attribute
+     * @param strParameterName
+     *            The name of the parameter
      * @return The list of values of the parameter of the attribute
      */
     public static List<String> getAttributeParameterValues( int nAttributeId, String strParameterName )
@@ -153,8 +166,10 @@ public final class DocumentAttributeHome
     /**
      * Inserts a regular expression in the attribute
      *
-     * @param nIdAttribute The identifier of the document attribute
-     * @param nIdExpression The identifier of the regular expression
+     * @param nIdAttribute
+     *            The identifier of the document attribute
+     * @param nIdExpression
+     *            The identifier of the regular expression
      */
     public static void insertRegularExpression( int nIdAttribute, int nIdExpression )
     {
@@ -164,8 +179,10 @@ public final class DocumentAttributeHome
     /**
      * Deletes a regular expression in the attribute
      *
-     * @param nIdAttribute The identifier of the document attribute
-     * @param nIdExpression The identifier of the regular expression
+     * @param nIdAttribute
+     *            The identifier of the document attribute
+     * @param nIdExpression
+     *            The identifier of the regular expression
      */
     public static void deleteRegularExpression( int nIdAttribute, int nIdExpression )
     {
@@ -175,7 +192,8 @@ public final class DocumentAttributeHome
     /**
      * Loads all regular expression key associated to the attribute and returns them into a collection
      *
-     * @param nIdAttribute The identifier of the document attribute
+     * @param nIdAttribute
+     *            The identifier of the document attribute
      * @return A collection of regular expression key
      */
     public static Collection<Integer> getListRegularExpressionKeyByIdAttribute( int nIdAttribute )

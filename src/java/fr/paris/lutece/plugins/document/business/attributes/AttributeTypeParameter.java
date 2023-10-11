@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
  * This class represents the business object AttributeTypeParameter
  */
@@ -50,8 +49,8 @@ public class AttributeTypeParameter implements Localizable
     private String _strName;
     private String _strLabelKey;
     private String _strDescriptionKey;
-    private List<String> _listDefaultValue = new ArrayList<String>(  );
-    private List<String> _listValues = new ArrayList<String>(  );
+    private List<String> _listDefaultValue = new ArrayList<String>( );
+    private List<String> _listValues = new ArrayList<String>( );
     private Locale _locale;
 
     /**
@@ -59,7 +58,7 @@ public class AttributeTypeParameter implements Localizable
      *
      * @return The Name
      */
-    public String getName(  )
+    public String getName( )
     {
         return _strName;
     }
@@ -69,7 +68,7 @@ public class AttributeTypeParameter implements Localizable
      *
      * @return The Locale
      */
-    public Locale getLocale(  )
+    public Locale getLocale( )
     {
         return _locale;
     }
@@ -77,7 +76,8 @@ public class AttributeTypeParameter implements Localizable
     /**
      * Sets the Locale
      *
-     * @param locale The Locale
+     * @param locale
+     *            The Locale
      */
     public void setLocale( Locale locale )
     {
@@ -87,7 +87,8 @@ public class AttributeTypeParameter implements Localizable
     /**
      * Sets the Name
      *
-     * @param strName The Name
+     * @param strName
+     *            The Name
      */
     public void setName( String strName )
     {
@@ -99,7 +100,7 @@ public class AttributeTypeParameter implements Localizable
      *
      * @return The Label
      */
-    public String getLabelKey(  )
+    public String getLabelKey( )
     {
         return _strLabelKey;
     }
@@ -107,7 +108,8 @@ public class AttributeTypeParameter implements Localizable
     /**
      * Sets the Label
      *
-     * @param strLabelKey The Label
+     * @param strLabelKey
+     *            The Label
      */
     public void setLabelKey( String strLabelKey )
     {
@@ -119,7 +121,7 @@ public class AttributeTypeParameter implements Localizable
      *
      * @return The Description
      */
-    public String getDescriptionKey(  )
+    public String getDescriptionKey( )
     {
         return _strDescriptionKey;
     }
@@ -127,7 +129,8 @@ public class AttributeTypeParameter implements Localizable
     /**
      * Sets the Description
      *
-     * @param strDescriptionKey The Description
+     * @param strDescriptionKey
+     *            The Description
      */
     public void setDescriptionKey( String strDescriptionKey )
     {
@@ -136,11 +139,13 @@ public class AttributeTypeParameter implements Localizable
 
     /**
      * Set the value list
-     * @param listValues The new list of values
+     * 
+     * @param listValues
+     *            The new list of values
      */
     public void setValueList( List<String> listValues )
     {
-        _listValues.clear(  );
+        _listValues.clear( );
         _listValues.addAll( listValues );
     }
 
@@ -148,9 +153,9 @@ public class AttributeTypeParameter implements Localizable
      *
      * @return listValues
      */
-    public List<String> getValueList(  )
+    public List<String> getValueList( )
     {
-        List<String> returnList = new ArrayList<String>(  );
+        List<String> returnList = new ArrayList<String>( );
         returnList.addAll( _listValues );
 
         return returnList;
@@ -161,7 +166,7 @@ public class AttributeTypeParameter implements Localizable
      *
      * @return The Label
      */
-    public String getLabel(  )
+    public String getLabel( )
     {
         return I18nService.getLocalizedString( _strLabelKey, _locale );
     }
@@ -171,7 +176,7 @@ public class AttributeTypeParameter implements Localizable
      *
      * @return The Description
      */
-    public String getDescription(  )
+    public String getDescription( )
     {
         return I18nService.getLocalizedString( _strDescriptionKey, _locale );
     }
@@ -181,9 +186,9 @@ public class AttributeTypeParameter implements Localizable
      *
      * @return The default value
      */
-    public List<String> getDefaultValue(  )
+    public List<String> getDefaultValue( )
     {
-        List<String> returnList = new ArrayList<String>(  );
+        List<String> returnList = new ArrayList<String>( );
         returnList.addAll( _listDefaultValue );
 
         return returnList;
@@ -191,11 +196,13 @@ public class AttributeTypeParameter implements Localizable
 
     /**
      * Set the default value
-     * @param listDefaultValue The list of default values
+     * 
+     * @param listDefaultValue
+     *            The list of default values
      */
     public void setDefaultValue( List<String> listDefaultValue )
     {
-        _listDefaultValue.clear(  );
+        _listDefaultValue.clear( );
         _listDefaultValue.addAll( listDefaultValue );
     }
 }

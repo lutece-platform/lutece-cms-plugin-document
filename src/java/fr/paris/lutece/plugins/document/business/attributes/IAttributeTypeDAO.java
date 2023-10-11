@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
  * AttributeTypeDAO Interface
  */
@@ -48,7 +47,8 @@ public interface IAttributeTypeDAO
     /**
      * Delete a record from the table
      *
-     * @param documentAttributeType The DocumentAttributeType object
+     * @param documentAttributeType
+     *            The DocumentAttributeType object
      */
     void delete( AttributeType documentAttributeType );
 
@@ -57,13 +57,14 @@ public interface IAttributeTypeDAO
      *
      * @return The list of attribute managers
      */
-    ReferenceList getAttributeManagersList(  );
+    ReferenceList getAttributeManagersList( );
 
     /**
      * Insert a new record in the table.
      *
      *
-     * @param documentAttributeType The documentAttributeType object
+     * @param documentAttributeType
+     *            The documentAttributeType object
      */
     void insert( AttributeType documentAttributeType );
 
@@ -71,7 +72,8 @@ public interface IAttributeTypeDAO
      * Load the data of DocumentAttributeType from the table
      *
      *
-     * @param nDocumentAttributeTypeId The identifier of DocumentAttributeType
+     * @param nDocumentAttributeTypeId
+     *            The identifier of DocumentAttributeType
      * @return the instance of the DocumentAttributeType
      */
     AttributeType load( int nDocumentAttributeTypeId );
@@ -97,12 +99,13 @@ public interface IAttributeTypeDAO
      *
      * @return The Collection of the DocumentAttributeTypes
      */
-    Collection<AttributeType> selectDocumentAttributeTypeList(  );
+    Collection<AttributeType> selectDocumentAttributeTypeList( );
 
     /**
      * Update the record in the table
      *
-     * @param documentAttributeType The reference of documentAttributeType
+     * @param documentAttributeType
+     *            The reference of documentAttributeType
      */
     void store( AttributeType documentAttributeType );
 }

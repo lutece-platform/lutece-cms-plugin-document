@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.document.business;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
  * Interface for DocumentDAO
  */
@@ -44,25 +43,32 @@ public interface IDocumentDAO
 {
     /**
      * Generates a new primary key
+     * 
      * @return The new primary key
      */
-    int newPrimaryKey(  );
+    int newPrimaryKey( );
 
     /**
      * Delete a record from the table
-     * @param nDocumentId the document identifier
+     * 
+     * @param nDocumentId
+     *            the document identifier
      */
     void delete( int nDocumentId );
 
     /**
      * Insert a new record in the table.
-     * @param document The document object
+     * 
+     * @param document
+     *            The document object
      */
     void insert( Document document );
 
     /**
      * Load the data of Document from the table
-     * @param nDocumentId The identifier of Document
+     * 
+     * @param nDocumentId
+     *            The identifier of Document
      * @return the instance of the Document
      */
     Document load( int nDocumentId );
@@ -70,98 +76,124 @@ public interface IDocumentDAO
     /**
      * Returns an instance of a document whose identifier is specified in parameter
      *
-     * @param nDocumentId The Primary key of the document
+     * @param nDocumentId
+     *            The Primary key of the document
      * @return An instance of document
      */
     Document loadWithoutBinaries( int nDocumentId );
 
     /**
      * Returns documents by space id
-     * @param nSpaceId The space Id
+     * 
+     * @param nSpaceId
+     *            The space Id
      * @return A list of documents
      */
     List<Document> loadFromSpaceId( int nSpaceId );
 
     /**
      * Load a resource (image, file, ...) corresponding to an attribute of a Document
-     * @param nDocumentId The Document Id
+     * 
+     * @param nDocumentId
+     *            The Document Id
      * @return the instance of the DocumentResource
      */
     DocumentResource loadResource( int nDocumentId );
 
     /**
      * Load a resource (image, file, ...) corresponding to an attribute of a Document
-     * @param nDocumentId The Document Id
-     * @param nAttributeId The Attribute Id
-     * @param bValidated true if we want the validated resource
+     * 
+     * @param nDocumentId
+     *            The Document Id
+     * @param nAttributeId
+     *            The Attribute Id
+     * @param bValidated
+     *            true if we want the validated resource
      * @return the instance of the DocumentResource
      */
     DocumentResource loadSpecificResource( int nDocumentId, int nAttributeId, boolean bValidated );
 
     /**
      * Gets all documents id
+     * 
      * @return A collection of Integer
      */
-    Collection<Integer> selectAllPrimaryKeys(  );
+    Collection<Integer> selectAllPrimaryKeys( );
 
     /**
      * Gets all documents
      *
      * @return the document list
      */
-    List<Document> selectAll(  );
+    List<Document> selectAll( );
 
     /**
      * Load the list of documents
      *
      * @return The Collection of the Document ids
-     * @param filter The DocumentFilter Object
+     * @param filter
+     *            The DocumentFilter Object
      */
     Collection<Integer> selectPrimaryKeysByFilter( DocumentFilter filter );
 
     /**
      * Load the list of documents
-     * @param filter The DocumentFilter Object
+     * 
+     * @param filter
+     *            The DocumentFilter Object
      * @return The Collection of the Documents
      */
     List<Document> selectByFilter( DocumentFilter filter );
 
     /**
      * Load the list of published documents in relation with categories of specified document
-     * @param document The document with the categories
+     * 
+     * @param document
+     *            The document with the categories
      * @return The Collection of the Documents
      */
     List<Document> selectByRelatedCategories( Document document );
 
     /**
      * Update the record in the table
-     * @param document The reference of document
-     * @param bUpdateContent the boolean
+     * 
+     * @param document
+     *            The reference of document
+     * @param bUpdateContent
+     *            the boolean
      */
     void store( Document document, boolean bUpdateContent );
 
     /**
      * Load document attributes
-     * @param document the reference of the document
+     * 
+     * @param document
+     *            the reference of the document
      */
     void loadAttributes( Document document );
 
     /**
      * Load document attributes
-     * @param document the reference of the document
-     * @param bValidated true if the content of the document must be validated, false otherwise
+     * 
+     * @param document
+     *            the reference of the document
+     * @param bValidated
+     *            true if the content of the document must be validated, false otherwise
      */
     void loadAttributesWithoutBinaries( Document document, boolean bValidated );
 
     /**
      * Load document pageTemplatePath
-     * @param idPageTemplateDocument the Id page template identifier
+     * 
+     * @param idPageTemplateDocument
+     *            the Id page template identifier
      * @return The page template document path
      */
     String getPageTemplateDocumentPath( int idPageTemplateDocument );
 
     /**
      * Load document type and date last modification for HTTP GET conditional request ("If-Modified-Since")
+     * 
      * @param nDocumentId
      * @return the document
      */
@@ -169,14 +201,17 @@ public interface IDocumentDAO
 
     /**
      * Validate the document attributes
-     * @param nDocumentId the Id of the document
+     * 
+     * @param nDocumentId
+     *            the Id of the document
      */
     void validateAttributes( int nDocumentId );
 
     /**
      * Load the data of last Document the user worked in from the table
      *
-     * @param strUserName the user name
+     * @param strUserName
+     *            the user name
      * @return the instance of the Document
      */
     Document loadLastModifiedDocumentFromUser( String strUserName );
@@ -186,5 +221,5 @@ public interface IDocumentDAO
      *
      * @return the instance of the Document
      */
-    Document loadLastPublishedDocument(  );
+    Document loadLastPublishedDocument( );
 }

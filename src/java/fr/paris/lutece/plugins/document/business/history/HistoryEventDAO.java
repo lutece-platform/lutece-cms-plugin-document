@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
  * This class provides Data Access methods for HistoryEvent objects
  */
@@ -54,52 +53,55 @@ public final class HistoryEventDAO implements IHistoryEventDAO
     /**
      * Insert a new record in the table.
      *
-     * @param historyEvent The historyEvent object
+     * @param historyEvent
+     *            The historyEvent object
      */
     public void insert( HistoryEvent historyEvent )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, historyEvent.getIdDocument(  ) );
-        daoUtil.setTimestamp( 2, historyEvent.getDate(  ) );
-        daoUtil.setString( 3, historyEvent.getEventUser(  ) );
-        daoUtil.setString( 4, historyEvent.getEventMessageKey(  ) );
-        daoUtil.setString( 5, historyEvent.getDocumentStateKey(  ) );
-        daoUtil.setString( 6, historyEvent.getSpace(  ) );
+        daoUtil.setInt( 1, historyEvent.getIdDocument( ) );
+        daoUtil.setTimestamp( 2, historyEvent.getDate( ) );
+        daoUtil.setString( 3, historyEvent.getEventUser( ) );
+        daoUtil.setString( 4, historyEvent.getEventMessageKey( ) );
+        daoUtil.setString( 5, historyEvent.getDocumentStateKey( ) );
+        daoUtil.setString( 6, historyEvent.getSpace( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Delete a record from the table
      *
-     * @param nDocumentId The id of the document
+     * @param nDocumentId
+     *            The id of the document
      */
     public void delete( int nDocumentId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
         daoUtil.setInt( 1, nDocumentId );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Load the list of historyEvents
      *
      * @return The Collection of the HistoryEvents
-     * @param nDocumentId The document Id
+     * @param nDocumentId
+     *            The document Id
      */
     public List<HistoryEvent> selectEventListByDocument( int nDocumentId )
     {
-        List<HistoryEvent> listHistoryEvents = new ArrayList<HistoryEvent>(  );
+        List<HistoryEvent> listHistoryEvents = new ArrayList<HistoryEvent>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DOCUMENT );
         daoUtil.setInt( 1, nDocumentId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            HistoryEvent event = new HistoryEvent(  );
+            HistoryEvent event = new HistoryEvent( );
             event.setIdDocument( daoUtil.getInt( 1 ) );
             event.setDate( daoUtil.getTimestamp( 2 ) );
             event.setEventUser( daoUtil.getString( 3 ) );
@@ -110,7 +112,7 @@ public final class HistoryEventDAO implements IHistoryEventDAO
             listHistoryEvents.add( event );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listHistoryEvents;
     }
@@ -119,18 +121,19 @@ public final class HistoryEventDAO implements IHistoryEventDAO
      * Load the list of historyEvents
      *
      * @return The Collection of the HistoryEvents
-     * @param strUserId The UserId
+     * @param strUserId
+     *            The UserId
      */
     public Collection<HistoryEvent> selectEventListByUser( String strUserId )
     {
-        Collection<HistoryEvent> listHistoryEvents = new ArrayList<HistoryEvent>(  );
+        Collection<HistoryEvent> listHistoryEvents = new ArrayList<HistoryEvent>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_USER );
         daoUtil.setString( 1, strUserId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            HistoryEvent event = new HistoryEvent(  );
+            HistoryEvent event = new HistoryEvent( );
             event.setIdDocument( daoUtil.getInt( 1 ) );
             event.setDate( daoUtil.getTimestamp( 2 ) );
             event.setEventUser( daoUtil.getString( 3 ) );
@@ -141,7 +144,7 @@ public final class HistoryEventDAO implements IHistoryEventDAO
             listHistoryEvents.add( event );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listHistoryEvents;
     }

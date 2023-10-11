@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,6 @@ import fr.paris.lutece.portal.service.i18n.Localizable;
 
 import java.util.Locale;
 
-
 /**
  * This class represents the business object HistoryEvent
  */
@@ -62,7 +61,7 @@ public class HistoryEvent implements Localizable
      *
      * @return The IdDocument
      */
-    public int getIdDocument(  )
+    public int getIdDocument( )
     {
         return _nIdDocument;
     }
@@ -70,7 +69,8 @@ public class HistoryEvent implements Localizable
     /**
      * Sets the IdDocument
      *
-     * @param nIdDocument The IdDocument
+     * @param nIdDocument
+     *            The IdDocument
      */
     public void setIdDocument( int nIdDocument )
     {
@@ -82,7 +82,7 @@ public class HistoryEvent implements Localizable
      *
      * @return The Space
      */
-    public String getSpace(  )
+    public String getSpace( )
     {
         return _strSpace;
     }
@@ -90,7 +90,8 @@ public class HistoryEvent implements Localizable
     /**
      * Sets the Space
      *
-     * @param strSpace The Space
+     * @param strSpace
+     *            The Space
      */
     public void setSpace( String strSpace )
     {
@@ -102,7 +103,7 @@ public class HistoryEvent implements Localizable
      *
      * @return The EventDate
      */
-    public java.sql.Timestamp getDate(  )
+    public java.sql.Timestamp getDate( )
     {
         return _eventDate;
     }
@@ -110,7 +111,8 @@ public class HistoryEvent implements Localizable
     /**
      * Sets the EventDate
      *
-     * @param eventDate The EventDate
+     * @param eventDate
+     *            The EventDate
      */
     public void setDate( java.sql.Timestamp eventDate )
     {
@@ -122,7 +124,7 @@ public class HistoryEvent implements Localizable
      *
      * @return The EventUser
      */
-    public String getEventUser(  )
+    public String getEventUser( )
     {
         return _strEventUser;
     }
@@ -130,7 +132,8 @@ public class HistoryEvent implements Localizable
     /**
      * Sets the EventUser
      *
-     * @param strEventUser The EventUser
+     * @param strEventUser
+     *            The EventUser
      */
     public void setEventUser( String strEventUser )
     {
@@ -142,7 +145,7 @@ public class HistoryEvent implements Localizable
      *
      * @return The EventMessageKey
      */
-    public String getEventMessageKey(  )
+    public String getEventMessageKey( )
     {
         return _strEventMessageKey;
     }
@@ -150,7 +153,8 @@ public class HistoryEvent implements Localizable
     /**
      * Sets the EventMessageKey
      *
-     * @param strEventMessageKey The EventMessageKey
+     * @param strEventMessageKey
+     *            The EventMessageKey
      */
     public void setEventMessageKey( String strEventMessageKey )
     {
@@ -162,17 +166,19 @@ public class HistoryEvent implements Localizable
      *
      * @return The EventMessageKey
      */
-    public String getDescription(  )
+    public String getDescription( )
     {
         String strUser = USER_UNKNOWN;
         AdminUser user = AdminUserHome.findUserByLogin( _strEventUser );
 
         if ( user != null )
         {
-            strUser = user.getFirstName(  ) + " " + user.getLastName(  );
+            strUser = user.getFirstName( ) + " " + user.getLastName( );
         }
 
-        String[] args = { strUser, I18nService.getLocalizedString( _strDocumentStateKey, _locale ), _strSpace };
+        String [ ] args = {
+                strUser, I18nService.getLocalizedString( _strDocumentStateKey, _locale ), _strSpace
+        };
 
         return I18nService.getLocalizedString( _strEventMessageKey, args, _locale );
     }
@@ -180,7 +186,8 @@ public class HistoryEvent implements Localizable
     /**
      * Sets the locale
      *
-     * @param locale The locale
+     * @param locale
+     *            The locale
      */
     public void setLocale( Locale locale )
     {
@@ -192,7 +199,7 @@ public class HistoryEvent implements Localizable
      *
      * @return The DocumentStateKey
      */
-    public String getDocumentStateKey(  )
+    public String getDocumentStateKey( )
     {
         return _strDocumentStateKey;
     }
@@ -200,7 +207,8 @@ public class HistoryEvent implements Localizable
     /**
      * Sets the DocumentStateKey
      *
-     * @param strDocumentStateKey The DocumentStateKey
+     * @param strDocumentStateKey
+     *            The DocumentStateKey
      */
     public void setDocumentStateKey( String strDocumentStateKey )
     {

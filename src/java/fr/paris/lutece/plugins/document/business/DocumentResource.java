@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,14 +33,13 @@
  */
 package fr.paris.lutece.plugins.document.business;
 
-
 /**
  * Document Resource (such as binary resources)
  */
 public class DocumentResource
 {
     // Variables declarations
-    private byte[] _strContent;
+    private byte [ ] _strContent;
     private String _strContentType;
     private String _strName;
 
@@ -49,7 +48,7 @@ public class DocumentResource
      *
      * @return The Content
      */
-    public byte[] getContent(  )
+    public byte [ ] getContent( )
     {
         return _strContent;
     }
@@ -57,9 +56,10 @@ public class DocumentResource
     /**
      * Sets the Content
      *
-     * @param strContent The Content
+     * @param strContent
+     *            The Content
      */
-    public void setContent( byte[] strContent )
+    public void setContent( byte [ ] strContent )
     {
         _strContent = strContent;
     }
@@ -69,7 +69,7 @@ public class DocumentResource
      *
      * @return The ContentType
      */
-    public String getContentType(  )
+    public String getContentType( )
     {
         return _strContentType;
     }
@@ -77,7 +77,8 @@ public class DocumentResource
     /**
      * Sets the ContentType
      *
-     * @param strContentType The ContentType
+     * @param strContentType
+     *            The ContentType
      */
     public void setContentType( String strContentType )
     {
@@ -87,13 +88,14 @@ public class DocumentResource
     /**
      * @return the _strName
      */
-    public String getName(  )
+    public String getName( )
     {
         return _strName;
     }
 
     /**
-     * @param strName the _strName to set
+     * @param strName
+     *            the _strName to set
      */
     public void setName( String strName )
     {

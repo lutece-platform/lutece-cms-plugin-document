@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.document.business;
 
 import java.util.List;
 
-
 /**
  * Interface for document page template DAO
  */
@@ -44,14 +43,16 @@ public interface IDocumentPageTemplateDAO
     /**
      * Delete a record from the table
      *
-     * @param nPageTemplateId The indentifier of the object DocumentPageTemplate
+     * @param nPageTemplateId
+     *            The indentifier of the object DocumentPageTemplate
      */
     void delete( int nPageTemplateId );
 
     /**
      * Insert a new record in the table.
      *
-     * @param documentPageTemplate The Instance of the object DocumentPageTemplate
+     * @param documentPageTemplate
+     *            The Instance of the object DocumentPageTemplate
      */
     void insert( DocumentPageTemplate documentPageTemplate );
 
@@ -59,7 +60,8 @@ public interface IDocumentPageTemplateDAO
      * load the data of DocumentPageTemplate from the table
      *
      *
-     * @param nPageTemplateId The indentifier of the object PageTemplate
+     * @param nPageTemplateId
+     *            The indentifier of the object PageTemplate
      * @return The Instance of the object PageTemplate
      */
     DocumentPageTemplate load( int nPageTemplateId );
@@ -69,12 +71,13 @@ public interface IDocumentPageTemplateDAO
      *
      * @return A list of PageTemplates objects
      */
-    List<DocumentPageTemplate> selectPageTemplatesList(  );
+    List<DocumentPageTemplate> selectPageTemplatesList( );
 
     /**
      * Update the record in the table
      *
-     * @param pageTemplate The instance of the PageTemplate to update
+     * @param pageTemplate
+     *            The instance of the PageTemplate to update
      */
     void store( DocumentPageTemplate pageTemplate );
 }
