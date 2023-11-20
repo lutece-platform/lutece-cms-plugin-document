@@ -23,256 +23,261 @@
 	</#switch>${btnAction}
 </#macro>
 
-<@row>
-	<@columns lg=3>
-		<@box>
-			<@boxHeader title='#i18n{document.manage_documents.labelSpaces}'>
-				<#if space_actions_list?size != 0 >
-					<#list space_actions_list as space_action>
-						<#if space_action.permission="DELETE">
-							<#assign btnClass = 'danger' />
-						<#else>
-							<#assign btnClass = 'primary' />
+<@pageContainer>
+    <@pageColumn>
+		<@pageHeader title='#i18n{document.adminFeature.documents_management.name}' />
+		<@row>
+			<@columns xl=3>
+				<@box>
+					<@boxHeader title='#i18n{document.manage_documents.labelSpaces}'>
+						<#if space_actions_list?size != 0 >
+							<#list space_actions_list as space_action>
+								<#if space_action.permission="DELETE">
+									<#assign btnClass = 'danger' />
+								<#else>
+									<#assign btnClass = 'primary' />
+								</#if>
+								<@aButton href='${space_action.url}?id_space=${space.id}' title='${space_action.description}' class='btn-space-action' color='${btnClass}' buttonIcon='${space_action.iconUrl}' size='sm' hideTitle=['all'] />
+							</#list>
 						</#if>
-						<@aButton href='${space_action.url}?id_space=${space.id}' title='${space_action.description}' class='btn-space-action' color='${btnClass}' buttonIcon='${space_action.iconUrl}' size='sm' hideTitle=['all'] />
-					</#list>
+					</@boxHeader>
+					<@boxBody>
+						<@icon style='folder-open' /> #i18n{document.manage_documents.labelSpaces}
+						${spaces_tree}
+					</@boxBody>
+				</@box>
+				
+				<#if mass_action?has_content && mass_action>
+					<@box>
+						<@boxHeader title='#i18n{document.manage_documents.labelMoreActions}' />
+						<@boxBody>
+							<@listGroup>
+								<@listGroupItem>
+									<@tform type='inline' method='post' id='archiveForm' name='archiveForm' action='jsp/admin/plugins/document/MassArchivalDocument.jsp'>
+										<@button class='btn btn-link' type='submit' buttonIcon='file-archive' title='#i18n{document.manage_document.mass_archival_labelBtn}' />
+									</@tform>
+								</@listGroupItem>
+							</@listGroup>
+						</@boxBody>
+					</@box>
 				</#if>
-			</@boxHeader>
-			<@boxBody>
-				<@icon style='folder-open' /> #i18n{document.manage_documents.labelSpaces}
-				${spaces_tree}
-			</@boxBody>
-		</@box>
-		
-		<#if mass_action?has_content && mass_action>
-			<@box>
-				<@boxHeader title='#i18n{document.manage_documents.labelMoreActions}' />
-				<@boxBody>
-					<@listGroup>
-						<@listGroupItem>
-							<@tform type='inline' method='post' id='archiveForm' name='archiveForm' action='jsp/admin/plugins/document/MassArchivalDocument.jsp'>
-								<@button class='btn btn-link' type='submit' buttonIcon='file-archive' title='#i18n{document.manage_document.mass_archival_labelBtn}' />
-							</@tform>
-						</@listGroupItem>
-					</@listGroup>
-				</@boxBody>
-			</@box>
-		</#if>
-	</@columns>
-	<@columns lg=9>
-	<#if space?has_content>
-		<@box>
-			<@boxHeader title='#i18n{document.manage_documents.buttonSearch}' />
-			<@boxBody>
-				<@tform method='post' id='SearchDocumentById' name='SearchDocumentById' action='jsp/admin/plugins/document/DoSearchDocumentById.jsp'>
-					 <@formGroup labelFor='id_document' labelKey='#i18n{document.manage_documents.buttonSearch}' helpKey='#i18n{document.manage_documents.labelSearchById}'>
-						<@inputGroup>
-							<@input type='text' id='id_document' name='id_document' maxlength=10 />
-							<@inputGroupItem>
-								<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' hideTitle=['all'] />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-				</@tform>
-				<@tform method='post' id='FullTextSearchDocument' name='FullTextSearchDocument' action='jsp/admin/plugins/document/DocumentSearch.jsp'>
-					<@input type='hidden' id='id_document' name='id_document' />
-					<@formGroup labelFor='query' labelKey='#i18n{document.manage_documents.buttonSearch}' helpKey='#i18n{document.manage_documents.labelFullTextSearch}'>
-						<@inputGroup>
-							<@input type='text' id='query' name='query' maxlength=50 />
-							<@inputGroupItem>
-								<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' hideTitle=['all'] />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-				</@tform>
-
-				<#if document_types_filter_list?size &gt; 1 >
-					<@tform method='post' name='FilterDocumentsForm' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
-						<@formGroup labelFor='document_type_code_filter' labelKey='#i18n{document.manage_documents.labelType}'>
-							<@select name='document_type_code_filter' default_value='${default_document_type}' items=document_types_filter_list />
-						</@formGroup>
-						<@formGroup labelFor='id_state_filter' labelKey='#i18n{document.manage_documents.labelState}'>
-							<@inputGroup>
-								<@select name='id_state_filter' default_value='${default_state}' items=states_filter_list />
-								<@inputGroupItem>
-									<@button type='submit' title='#i18n{document.manage_documents.buttonFilter}' buttonIcon='filter' hideTitle=['all'] />
-								</@inputGroupItem>
-							</@inputGroup>
-						</@formGroup>
-						<@formGroup labelFor='view_type' labelKey='#i18n{document.manage_documents.labelViewType}'>
-							<@inputGroup>
-								<@select name='view_type' default_value='${view_type}' items=view_types_list />
-								<@inputGroupItem>
-									<@button type='submit' buttonIcon='check' />
-								</@inputGroupItem>
-							</@inputGroup>
-						</@formGroup>
-					</@tform>
-				</#if>
-					
-				<#if space.documentCreationAllowed >
-					<#if document_types_list?has_content>
-						<@tform method='post' name='CreateDocument' action='jsp/admin/plugins/document/CreateDocument.jsp'>
-							<@formGroup labelFor='document_type_code' labelKey='#i18n{document.manage_documents.labelCreate}'>
+			</@columns>
+			<@columns xl=9>
+			<#if space?has_content>
+				<@box>
+					<@boxHeader title='#i18n{document.manage_documents.buttonSearch}' />
+					<@boxBody>
+						<@tform method='post' id='SearchDocumentById' name='SearchDocumentById' action='jsp/admin/plugins/document/DoSearchDocumentById.jsp'>
+							 <@formGroup labelFor='id_document' labelKey='#i18n{document.manage_documents.buttonSearch}' helpKey='#i18n{document.manage_documents.labelSearchById}'>
 								<@inputGroup>
-									<@select name='document_type_code' default_value='' items=document_types_list />
+									<@input type='text' id='id_document' name='id_document' maxlength=10 />
 									<@inputGroupItem>
-										<@button type='submit' title='#i18n{document.manage_documents.buttonCreate}' buttonIcon='plus-circle' hideTitle=['all'] />
+										<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' hideTitle=['all'] />
 									</@inputGroupItem>
 								</@inputGroup>
 							</@formGroup>
-							<#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>
-								<@button type='button' title='#i18n{document.manage_documents.buttonImport}' id='importLinkButton' buttonIcon='plus-circle' /> 
-							</#if>
-						</@tform>                                                                
-					</#if>
-				</#if>
-				
-				<hr style="margin:50px 0;"></hr>
-
-
-				<#if documents_list?size = 0>
-					<br>
-					<@alert color='warning'>
-						<@icon style='exclamation-triangle' />
-						<b>#i18n{document.manage_documents.noDocument}</b>
-					</@alert>
-				<#else>
-					<#if view_type = 'detail' >
-						<@tform id='documents_form' name='documents_form' method='post' action='jsp/admin/plugins/document/DoActionSelectionDocument.jsp'>
-							<@table>
-								<@tr>
-									<@th>
-										<@checkBox id='select_all' name='select_all' />
-									</@th>
-									<@th>
-										#i18n{document.manage_documents.labelDocumentId} <@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='id' />
-									</@th>
-									<@th>
-										#i18n{document.manage_documents.labelDocument}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='title' />
-										<@formGroup labelFor='selection' rows=2>
-											<@inputGroup>
-												<@select id='selection' name='selection' size='sm' disabled=true>
-													<option value="validate">#i18n{document.manage_document.validate}</option>
-													<option value="submit">#i18n{document.manage_document.submit}</option>
-													<option value="refuse">#i18n{document.manage_document.refuse}</option>
-													<option value="remove">#i18n{document.manage_document.remove}</option>
-													<option value="archive">#i18n{document.manage_document.archive}</option>
-													<option value="unarchive">#i18n{document.manage_document.unarchive}</option>
-												</@select>
-												<@inputGroupItem>
-													<@button type='submit' title='#i18n{document.manage_documents.applyToSelection}' buttonIcon='check' hideTitle=['all'] size='sm' />
-												</@inputGroupItem>
-											</@inputGroup>
-										</@formGroup>
-									</@th>
-									<@th>#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='publishedStatus' /></@th>
-									<@th>#i18n{document.manage_documents.labelActions}</@th>
-								</@tr>
-								<#list documents_list as document >
-								<@tr class='document-row' params='data-document="${document.id} ${document.title}"'>
-									<@td><@checkBox id='document_selection' name='document_selection' value='${document.id}' /></@td>
-									<@td>${document.id}</@td>
-									<@td>
-										<p>
-											<strong title="${document.title}"><#if document.title?length &gt; 60>${document.title?substring(0,60)}...<#else>${document.title}</#if></strong>
-										</p>
-										<p>
-											<@icon style='calendar' title='#i18n{document.manage_documents.labelDateModification}' />&nbsp;
-											${document.dateModification}
-											<#if document.stateId = 3>
-											&nbsp;
-											<@tag color='success' title='#i18n{document.manage_documents.labelState}' tagIcon='check-circle'>${document.state}&nbsp;&nbsp;&nbsp;</@tag>
-											<#else>
-												<@tag color='info' title='#i18n{document.manage_documents.labelState}' tagIcon='times'>${document.state}
-												</@tag>
-											</#if>
-										</p>
-										<#if document.comment != ''>
-											<@alert color='info'>
-												<@icon style='info-circle' /> ${document.comment}
-											</@alert>
-										</#if>
-									</@td>
-									<@td>
-										<#if document.publishedStatus = 0>
-											<@tag color='success' tagIcon='check-circle'>#i18n{document.manage_documents.PublishedStatus}</@tag>
-										<#else>
-											<@tag color='danger' tagIcon='times'>#i18n{document.manage_documents.UnPublishedStatus}</@tag>
-										</#if>
-									</@td>
-									<@td>
-										<#list document.actions?sort_by("idAction") as action>
-											<#if action.url?has_content>
-												<#assign aBtnColor>
-													<@setBtnAction action_nb=action.idAction />
-												</#assign>
-												<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color=aBtnColor?trim hideTitle=['all'] size='sm' />
-											</#if>
-										</#list>
-									</@td>
-								</@tr>
-								</#list>
-							</@table>
 						</@tform>
-					</#if>
-					<#if view_type = "thumbnail">
-						<@columns>
-							<@row>
-							<#list documents_list as document >
-							<@columns sm=6 class='document-row' params='data-document="${document.id} ${document.title}"'>
-								<div class="thumbnail" style="background-color:rgba(0,0,0,0.05); padding:10px; border-radius:4px; margin-bottom:15px;">
-									<img src="${document.thumbnail}&nocache" class="thumbnail" alt="${document.title}" title="${document.title} - ${document.type}" style="max-width:100%;" />
-									<div class="caption" style="margin-top:20px;">
-										<p>
-											<@tag>${document.id}</@tag>
-											<strong title="${document.title}">
-												<#if document.title?length &gt; 18>${document.title?substring(0,18)}...<#else>${document.title}</#if>
-											</strong>
-										</p>
-										<@btnGroup size='sm'>
-											<#list document.actions?sort_by("idAction") as action>
-												<#if action.url?has_content>
-													<#assign aBtnColor>
-														<@setBtnAction action_nb=action.idAction />
-													</#assign>
-													<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color=aBtnColor?trim hideTitle=['all'] />
+						<@tform method='post' id='FullTextSearchDocument' name='FullTextSearchDocument' action='jsp/admin/plugins/document/DocumentSearch.jsp'>
+							<@input type='hidden' id='id_document' name='id_document' />
+							<@formGroup labelFor='query' labelKey='#i18n{document.manage_documents.buttonSearch}' helpKey='#i18n{document.manage_documents.labelFullTextSearch}'>
+								<@inputGroup>
+									<@input type='text' id='query' name='query' maxlength=50 />
+									<@inputGroupItem type='btn'>
+										<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' hideTitle=['all'] />
+									</@inputGroupItem>
+								</@inputGroup>
+							</@formGroup>
+						</@tform>
+
+						<#if document_types_filter_list?size &gt; 1 >
+							<@tform method='post' name='FilterDocumentsForm' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
+								<@formGroup labelFor='document_type_code_filter' labelKey='#i18n{document.manage_documents.labelType}'>
+									<@select name='document_type_code_filter' default_value='${default_document_type}' items=document_types_filter_list />
+								</@formGroup>
+								<@formGroup labelFor='id_state_filter' labelKey='#i18n{document.manage_documents.labelState}'>
+									<@inputGroup>
+										<@select name='id_state_filter' default_value='${default_state}' items=states_filter_list />
+										<@inputGroupItem type='btn'>
+											<@button type='submit' title='#i18n{document.manage_documents.buttonFilter}' buttonIcon='filter' hideTitle=['all'] />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+								<@formGroup labelFor='view_type' labelKey='#i18n{document.manage_documents.labelViewType}'>
+									<@inputGroup>
+										<@select name='view_type' default_value='${view_type}' items=view_types_list />
+										<@inputGroupItem type='btn'>
+											<@button type='submit' buttonIcon='check' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+							</@tform>
+						</#if>
+							
+						<#if space.documentCreationAllowed >
+							<#if document_types_list?has_content>
+								<@tform method='post' name='CreateDocument' action='jsp/admin/plugins/document/CreateDocument.jsp'>
+									<@formGroup labelFor='document_type_code' labelKey='#i18n{document.manage_documents.labelCreate}'>
+										<@inputGroup>
+											<@select name='document_type_code' default_value='' items=document_types_list />
+											<@inputGroupItem type='btn'>
+												<@button type='submit' title='#i18n{document.manage_documents.buttonCreate}' buttonIcon='plus' hideTitle=['all'] />
+											</@inputGroupItem>
+										</@inputGroup>
+									</@formGroup>
+									<#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>
+										<@button type='button' title='#i18n{document.manage_documents.buttonImport}' id='importLinkButton' buttonIcon='plus-circle' /> 
+									</#if>
+								</@tform>                                                                
+							</#if>
+						</#if>
+						
+						<hr style="margin:50px 0;"></hr>
+
+
+						<#if documents_list?size = 0>
+							<br>
+							<@alert color='warning'>
+								<@icon style='exclamation-triangle' />
+								<b>#i18n{document.manage_documents.noDocument}</b>
+							</@alert>
+						<#else>
+							<#if view_type = 'detail' >
+								<@tform id='documents_form' name='documents_form' method='post' action='jsp/admin/plugins/document/DoActionSelectionDocument.jsp'>
+									<@table>
+										<@tr>
+											<@th>
+												<@checkBox id='select_all' name='select_all' />
+											</@th>
+											<@th>
+												#i18n{document.manage_documents.labelDocumentId} <@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='id' />
+											</@th>
+											<@th>
+												#i18n{document.manage_documents.labelDocument}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='title' />
+												<@formGroup labelFor='selection' rows=2>
+													<@inputGroup>
+														<@select id='selection' name='selection' size='sm' disabled=true>
+															<option value="validate">#i18n{document.manage_document.validate}</option>
+															<option value="submit">#i18n{document.manage_document.submit}</option>
+															<option value="refuse">#i18n{document.manage_document.refuse}</option>
+															<option value="remove">#i18n{document.manage_document.remove}</option>
+															<option value="archive">#i18n{document.manage_document.archive}</option>
+															<option value="unarchive">#i18n{document.manage_document.unarchive}</option>
+														</@select>
+														<@inputGroupItem type='btn'>
+															<@button type='submit' title='#i18n{document.manage_documents.applyToSelection}' buttonIcon='check' hideTitle=['all'] size='sm' />
+														</@inputGroupItem>
+													</@inputGroup>
+												</@formGroup>
+											</@th>
+											<@th>#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='publishedStatus' /></@th>
+											<@th>#i18n{document.manage_documents.labelActions}</@th>
+										</@tr>
+										<#list documents_list as document >
+										<@tr class='document-row' params='data-document="${document.id} ${document.title}"'>
+											<@td><@checkBox id='document_selection' name='document_selection' value='${document.id}' /></@td>
+											<@td>${document.id}</@td>
+											<@td>
+												<p>
+													<strong title="${document.title}"><#if document.title?length &gt; 60>${document.title?substring(0,60)}...<#else>${document.title}</#if></strong>
+												</p>
+												<p>
+													<@icon style='calendar' title='#i18n{document.manage_documents.labelDateModification}' />&nbsp;
+													${document.dateModification}
+													<#if document.stateId = 3>
+													&nbsp;
+													<@tag color='success' title='#i18n{document.manage_documents.labelState}' tagIcon='check-circle'>${document.state}&nbsp;&nbsp;&nbsp;</@tag>
+													<#else>
+														<@tag color='info' title='#i18n{document.manage_documents.labelState}' tagIcon='times'>${document.state}
+														</@tag>
+													</#if>
+												</p>
+												<#if document.comment != ''>
+													<@alert color='info'>
+														<@icon style='info-circle' /> ${document.comment}
+													</@alert>
 												</#if>
-											</#list>
-										</@btnGroup>
-									</div>
-								</div>
-							</@columns>
-							</#list>
-							</@row>
-						</@columns>
-					</#if>
-					<@paginationAdmin paginator=paginator combo=1 />
+											</@td>
+											<@td>
+												<#if document.publishedStatus = 0>
+													<@tag color='success' tagIcon='check-circle'>#i18n{document.manage_documents.PublishedStatus}</@tag>
+												<#else>
+													<@tag color='danger' tagIcon='times'>#i18n{document.manage_documents.UnPublishedStatus}</@tag>
+												</#if>
+											</@td>
+											<@td>
+												<#list document.actions?sort_by("idAction") as action>
+													<#if action.url?has_content>
+														<#assign aBtnColor>
+															<@setBtnAction action_nb=action.idAction />
+														</#assign>
+														<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color=aBtnColor?trim hideTitle=['all'] size='sm' />
+													</#if>
+												</#list>
+											</@td>
+										</@tr>
+										</#list>
+									</@table>
+								</@tform>
+							</#if>
+							<#if view_type = "thumbnail">
+								<@columns>
+									<@row>
+									<#list documents_list as document >
+									<@columns sm=6 class='document-row' params='data-document="${document.id} ${document.title}"'>
+										<div class="thumbnail" style="background-color:rgba(0,0,0,0.05); padding:10px; border-radius:4px; margin-bottom:15px;">
+											<img src="${document.thumbnail}&nocache" class="thumbnail" alt="${document.title}" title="${document.title} - ${document.type}" style="max-width:100%;" />
+											<div class="caption" style="margin-top:20px;">
+												<p>
+													<@tag>${document.id}</@tag>
+													<strong title="${document.title}">
+														<#if document.title?length &gt; 18>${document.title?substring(0,18)}...<#else>${document.title}</#if>
+													</strong>
+												</p>
+												<@btnGroup size='sm'>
+													<#list document.actions?sort_by("idAction") as action>
+														<#if action.url?has_content>
+															<#assign aBtnColor>
+																<@setBtnAction action_nb=action.idAction />
+															</#assign>
+															<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color=aBtnColor?trim hideTitle=['all'] />
+														</#if>
+													</#list>
+												</@btnGroup>
+											</div>
+										</div>
+									</@columns>
+									</#list>
+									</@row>
+								</@columns>
+							</#if>
+							<@paginationAdmin paginator=paginator combo=1 />
+						</#if>
+					</@boxBody>
+				</@box>
+			<#else>
+				<#if child_spaces_list?size != 0 >
+					<@box>
+						<@boxHeader title='#i18n{document.manage_documents.childSpacesList}' />
+						<@boxBody>
+							<ul>
+								<#list child_spaces_list as child_space>
+								<li>
+									<h4>
+										<@link href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${child_space.id}'>
+											<img src="${child_space.iconUrl}" alt="${child_space.description}" title="${child_space.description}"> ${child_space.name} <small>${child_space.description}</small>
+										</@link>
+									</h4>
+								</li>
+								</#list>
+							</ul>
+						</@boxBody>
+					</@box>
 				</#if>
-			</@boxBody>
-		</@box>
-	<#else>
-		<#if child_spaces_list?size != 0 >
-			<@box>
-				<@boxHeader title='#i18n{document.manage_documents.childSpacesList}' />
-				<@boxBody>
-					<ul>
-						<#list child_spaces_list as child_space>
-						<li>
-							<h4>
-								<@link href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${child_space.id}'>
-									<img src="${child_space.iconUrl}" alt="${child_space.description}" title="${child_space.description}"> ${child_space.name} <small>${child_space.description}</small>
-								</@link>
-							</h4>
-						</li>
-						</#list>
-					</ul>
-				</@boxBody>
-			</@box>
-		</#if>
-	</#if>
-	</@columns>
-</@row>
+			</#if>
+			</@columns>
+		</@row>
+	</@pageColumn>
+</@pageContainer>
 <script src="js/jquery/plugins/ui/jstree/jquery.jstree.js"></script>
 <script src="js/jquery/plugins/ui/jstree/jquery.cookie.js"></script>
 <script type="text/javascript">

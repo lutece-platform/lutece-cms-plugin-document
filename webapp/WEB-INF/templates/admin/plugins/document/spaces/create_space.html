@@ -1,42 +1,38 @@
 <#if parent_space?exists>
-	<@row>
-		<@columns>
-			<@box>
-				<@boxHeader title='#i18n{document.create_space.title}' />
-				<@boxBody>
-					<@tform method='post' action='jsp/admin/plugins/document/DoCreateSpace.jsp'>
-						<@input type='hidden' name='id_parent_space' value='${parent_space.id}' />
-						<@formGroup labelFor='name' labelKey='#i18n{document.create_space.labelName}' mandatory=true>							<@input type='text' name='name' id='name' />						</@formGroup>
-						<@formGroup labelFor='description' labelKey='#i18n{document.create_space.labelDescription}' mandatory=true>							<@input type='text' name='description' id='description' />						</@formGroup>
-						<@formGroup labelFor='view_type' labelKey='#i18n{document.create_space.labelView}'>							<@select name='view_type' default_value='${view_type}' items=view_types_list />						</@formGroup>
-						<@formGroup labelFor='icon' labelKey='#i18n{document.create_space.labelIcon}'>
-							<#list icons_list as item>
-								<#assign default_value = '1' />
-								<#if default_value=item.code><#assign checked=true /><#else><#assign checked=false /></#if>
-								<#assign radioLabelKey>
-									<img src="${item.name}" alt="${item.name}" title="${item.name}" />
-								</#assign>
-								<@radioButton orientation='inline' labelFor='${item.name}' labelKey=radioLabelKey checked=checked name='icon' id='${item.name}' value='${item.code}' />
-							</#list>
-						</@formGroup>
-						<@formGroup labelFor='document_type' labelKey='#i18n{document.create_space.labelDocumentTypes}'>
-							<#list document_types_list as item>
-								<@checkBox labelFor='${item?index}' labelKey='${item.name}' name='document_type' id='${item?index}' value='${item.code}' checked=item.checked />
-							</#list>
-						</@formGroup>
-						<@formGroup labelFor='workgroup_key' labelKey='#i18n{document.create_space.labelWorkgroup}'>
-							<@select name='workgroup_key'  default_value='${selected_workgroup}' items=user_workgroup_list />
-						</@formGroup>
-						<@formGroup labelFor='allow_creation' labelKey='#i18n{document.create_space.labelAllowCreation}' helpKey='#i18n{document.create_space.helpAllowCreation}'>
-							<@checkBox labelFor='allow_creation' labelKey='#i18n{document.create_space.labelAllowCreation}' name='allow_creation' id='allow_creation' />
-						</@formGroup>
-						<@formGroup>
-							<@button type='submit' title='#i18n{document.create_space.buttonCreate}' buttonIcon='save' />
-							<@button type='button' params='onclick="javascript:history.go(-1)"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
-						</@formGroup>
-					</@tform>
-				</@boxBody>
-			</@box>
-		</@columns>
-	</@row>
+<@pageContainer>
+    <@pageColumn>
+		<@pageHeader title='#i18n{document.create_space.title}' />
+		<@tform method='post' action='jsp/admin/plugins/document/DoCreateSpace.jsp' boxed=true>
+			<@input type='hidden' name='id_parent_space' value='${parent_space.id}' />
+			<@formGroup labelFor='name' labelKey='#i18n{document.create_space.labelName}' mandatory=true>				<@input type='text' name='name' id='name' />			</@formGroup>
+			<@formGroup labelFor='description' labelKey='#i18n{document.create_space.labelDescription}' mandatory=true>				<@input type='text' name='description' id='description' />			</@formGroup>
+			<@formGroup labelFor='view_type' labelKey='#i18n{document.create_space.labelView}'>				<@select name='view_type' default_value='${view_type}' items=view_types_list />			</@formGroup>
+			<@formGroup labelFor='icon' labelKey='#i18n{document.create_space.labelIcon}'>
+				<#list icons_list as item>
+					<#assign default_value = '1' />
+					<#if default_value=item.code><#assign checked=true /><#else><#assign checked=false /></#if>
+					<#assign radioLabelKey>
+						<img src="${item.name}" alt="${item.name}" title="${item.name}" />
+					</#assign>
+					<@radioButton orientation='inline' labelFor='${item.name}' labelKey=radioLabelKey checked=checked name='icon' id='${item.name}' value='${item.code}' />
+				</#list>
+			</@formGroup>
+			<@formGroup labelFor='document_type' labelKey='#i18n{document.create_space.labelDocumentTypes}'>
+				<#list document_types_list as item>
+					<@checkBox labelFor='${item?index}' labelKey='${item.name}' name='document_type' id='${item?index}' value='${item.code}' checked=item.checked />
+				</#list>
+			</@formGroup>
+			<@formGroup labelFor='workgroup_key' labelKey='#i18n{document.create_space.labelWorkgroup}'>
+				<@select name='workgroup_key'  default_value='${selected_workgroup}' items=user_workgroup_list />
+			</@formGroup>
+			<@formGroup labelFor='allow_creation' labelKey='#i18n{document.create_space.labelAllowCreation}' helpKey='#i18n{document.create_space.helpAllowCreation}' hideLabel=['all']>
+				<@checkBox labelFor='allow_creation' labelKey='#i18n{document.create_space.labelAllowCreation}' name='allow_creation' id='allow_creation' />
+			</@formGroup>
+			<@formGroup>
+				<@button type='submit' title='#i18n{document.create_space.buttonCreate}' buttonIcon='device-floppy' />
+				<@button type='button' params='onclick="javascript:history.go(-1)"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
+			</@formGroup>
+		</@tform>
+	</@pageColumn>
+</@pageContainer>
 </#if>

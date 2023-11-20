@@ -1,34 +1,30 @@
-<@row>
-    <@columns>
-        <@box>
-			<@boxHeader title='#i18n{document.manage_document_types.listTitle}'>
-				<@tform type='inline' method='post' action='jsp/admin/plugins/document/CreateDocumentType.jsp'>
-					<@button type='submit' title='#i18n{document.manage_document_types.buttonCreate}' buttonIcon='plus-circle' size='sm' hideTitle=['xs','sm'] />
-				</@tform>
-			</@boxHeader>
-			<@boxBody>
-				<@table>
-					<thead>
-						<@tr>
-							<@th>#i18n{document.manage_document_types.columnTitleName}</@th>
-							<@th>#i18n{document.manage_document_types.columnTitleDescription}</@th>
-							<@th>#i18n{document.manage_document_types.columnTitleActions}</@th>
-						</@tr>
-					</thead>
-					<tbody>
-						<#list document_types_list?sort_by('name') as type >
-						<@tr>
-							<@td>${type.name}</@td>
-							<@td>${type.description}</@td>
-							<@td>
-								<@aButton href='jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.modify_document_type.buttonModify}' buttonIcon='edit' size='sm' hideTitle=['all'] />
-								<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.manage_document_types.buttonDelete}' buttonIcon='trash' size='sm' color='danger' hideTitle=['all'] />
-							</@td>
-						</@tr>
-						</#list>
-					</tbody>
-				</@table>
-			</@boxBody>
-		</@box>
-    </@columns>
-</@row>
+<@pageContainer>
+    <@pageColumn>
+		<@pageHeader title='#i18n{document.manage_document_types.listTitle}'>
+			<@tform method='post' action='jsp/admin/plugins/document/CreateDocumentType.jsp'>
+				<@button type='submit' title='#i18n{document.manage_document_types.buttonCreate}' buttonIcon='plus-circle' hideTitle=['xs','sm'] />
+			</@tform>
+		</@pageHeader>
+		<@table>
+			<thead>
+				<@tr>
+					<@th>#i18n{document.manage_document_types.columnTitleName}</@th>
+					<@th>#i18n{document.manage_document_types.columnTitleDescription}</@th>
+					<@th>#i18n{document.manage_document_types.columnTitleActions}</@th>
+				</@tr>
+			</thead>
+			<tbody>
+				<#list document_types_list?sort_by('name') as type >
+				<@tr>
+					<@td>${type.name}</@td>
+					<@td>${type.description}</@td>
+					<@td>
+						<@aButton href='jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.modify_document_type.buttonModify}' buttonIcon='edit' size='sm' hideTitle=['all'] />
+						<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.manage_document_types.buttonDelete}' buttonIcon='trash' size='sm' color='danger' hideTitle=['all'] />
+					</@td>
+				</@tr>
+				</#list>
+			</tbody>
+		</@table>
+	</@pageColumn>
+</@pageContainer>
