@@ -1,79 +1,85 @@
-<@row>
-	<@columns>
-      <@box>
-		<@boxHeader title='#i18n{document.modify_document_type_attribute.titleAddAttribute} ${document_type_code}' />
-		<@boxBody>
-			<@tform method='post' action='jsp/admin/plugins/document/DoModifyDocumentTypeAttribute.jsp'>
-				<@input type='hidden' name='attribute_id' value='${attribute.id}' />
-				<@input type='hidden' name='attribute_type_code' value='${attribute_type_code}' />
-				<@formGroup labelFor='name' labelKey='#i18n{document.modify_document_type_attribute.labelName}' helpKey='#i18n{document.modify_document_type_attribute.helpName}' mandatory=true>
-					<@input type='text' name='name' id='name' value='${attribute.name}' />
-				</@formGroup>
-				<@formGroup labelFor='code' labelKey='#i18n{document.modify_document_type_attribute.labelCode}' helpKey='#i18n{document.modify_document_type_attribute.helpCode}' mandatory=true>
-					<@input type='text' name='code' id='code' value='${attribute.code}' readonly=true />
-				</@formGroup>
-				<@formGroup labelFor='description' labelKey='#i18n{document.modify_document_type_attribute.labelDescription}' helpKey='#i18n{document.modify_document_type_attribute.helpDescription}' mandatory=true>
-					<@input type='text' name='description' id='description' value='${attribute.description}' />
-				</@formGroup>
-				<@formGroup labelFor='required' labelKey='#i18n{document.modify_document_type_attribute.labelRequired}' mandatory=true>
-					<@checkBox labelFor='required' labelKey='#i18n{document.modify_document_type_attribute.helpRequired}' name='required' id='required' checked=attribute.required />
-				</@formGroup>
-				<@formGroup labelKey='#i18n{document.modify_document_type_attribute.labelSearchable}' mandatory=true>
-					<@checkBox labelFor='searchable' labelKey='#i18n{document.modify_document_type_attribute.helpSearchable}' name='searchable' id='searchable' checked=attribute.searchable />
-				</@formGroup>
-				${attribute_parameters}
-				<@formGroup>
-					<@button type='submit' name='save' value='save' title='#i18n{document.modify_document_type_attribute.buttonAddAttribute}' buttonIcon='save' />
-					<@aButton href='jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${document_type_code}' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
-				</@formGroup>
-			</@tform>
-		</@boxBody>
-    </@box>
-	
-    <#if attribute_type_code != "listbox">
-       <@box>
-			<@boxHeader title='#i18n{document.modify_document_type_attribute.manageRegularExpression.title}'>
-				<@tform type='inline' method='post' action='jsp/admin/plugins/document/DoInsertRegularExpression.jsp'>
-					<@input type='hidden' name='attribute_id' value='${attribute.id}' />
-					<@formGroup formStyle='inline' labelFor='expression_id' labelKey='#i18n{document.modify_document_type_attribute.manageRegularExpression.labelInsert}'>
-						<@inputGroup>
-							<@select name='expression_id' items=regular_expression_to_add_list default_value=-1 />
-							<@inputGroupItem>
-								<@button type='submit' title='#i18n{document.modify_document_type_attribute.manageRegularExpression.buttonInsert}' buttonIcon='plus-circle' size='sm' hideTitle=['all'] />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-				</@tform>
-			</@boxHeader>
-			<@boxBody>	
-				<@table>
-					<thead>
-						<@tr>
-							<@th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowTitle}</@th>
-							<@th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowInformationMessage}</@th>
-							<@th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowValidExemple}</@th>
-							<@th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowAction}</@th>
-						</@tr>
-					</thead>
-					<tbody>
-						<#list regular_expression_added_list as regular_expression>
-						<@tr>
-							<@td>${regular_expression.title}</@td>
-							<@td>${regular_expression.informationMessage}</@td>
-							<@td>${regular_expression.validExemple}</@td>
-							<@td>
-								<@tform type='inline' method='post' action='jsp/admin/plugins/document/DoDeleteRegularExpression.jsp'>
-									<@input type='hidden' name='attribute_id' value='${attribute.id}' />
-									<@input type='hidden' name='expression_id' value='${regular_expression.idExpression}' />
-									<@button type='submit' title='#i18n{document.modify_document_type_attribute.manageRegularExpression.titleDelete}' buttonIcon='trash' color='sm' hideTitle=['all'] />
-								</@tform>
-							</@td>
-						</@tr>
-						</#list>
-					</tbody>
-				</@table>
-			</@boxBody>
-		</@box>
-    </#if>
-    </@columns>
-</@row>
+<@pageContainer>
+    <@pageColumn>
+		<@pageHeader title='#i18n{document.modify_document_type_attribute.pageTitle}' />
+		<@row>
+			<@columns xl=3>
+				<@box>
+					<@boxHeader title='#i18n{document.modify_document_type_attribute.titleAddAttribute} ${document_type_code}' />
+					<@boxBody>
+						<@tform method='post' action='jsp/admin/plugins/document/DoModifyDocumentTypeAttribute.jsp'>
+							<@input type='hidden' name='attribute_id' value='${attribute.id}' />
+							<@input type='hidden' name='attribute_type_code' value='${attribute_type_code}' />
+							<@formGroup labelFor='name' labelKey='#i18n{document.modify_document_type_attribute.labelName}' helpKey='#i18n{document.modify_document_type_attribute.helpName}' mandatory=true rows=2>
+								<@input type='text' name='name' id='name' value='${attribute.name}' />
+							</@formGroup>
+							<@formGroup labelFor='code' labelKey='#i18n{document.modify_document_type_attribute.labelCode}' helpKey='#i18n{document.modify_document_type_attribute.helpCode}' mandatory=true rows=2>
+								<@input type='text' name='code' id='code' value='${attribute.code}' readonly=true />
+							</@formGroup>
+							<@formGroup labelFor='description' labelKey='#i18n{document.modify_document_type_attribute.labelDescription}' helpKey='#i18n{document.modify_document_type_attribute.helpDescription}' mandatory=true rows=2>
+								<@input type='text' name='description' id='description' value='${attribute.description}' />
+							</@formGroup>
+							<@formGroup labelFor='required' labelKey='#i18n{document.modify_document_type_attribute.labelRequired}' mandatory=true rows=2>
+								<@checkBox labelFor='required' labelKey='#i18n{document.modify_document_type_attribute.helpRequired}' name='required' id='required' checked=attribute.required />
+							</@formGroup>
+							<@formGroup labelKey='#i18n{document.modify_document_type_attribute.labelSearchable}' mandatory=true rows=2>
+								<@checkBox labelFor='searchable' labelKey='#i18n{document.modify_document_type_attribute.helpSearchable}' name='searchable' id='searchable' checked=attribute.searchable />
+							</@formGroup>
+							${attribute_parameters}
+							<@formGroup>
+								<@button type='submit' name='save' value='save' title='#i18n{document.modify_document_type_attribute.buttonAddAttribute}' buttonIcon='device-floppy' />
+								<@aButton href='jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${document_type_code}' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
+							</@formGroup>
+						</@tform>
+					</@boxBody>
+				</@box>
+			</@columns>
+			<@columns xl=9>	
+			<#if attribute_type_code != "listbox">
+			   <@box>
+					<@boxHeader title='#i18n{document.modify_document_type_attribute.manageRegularExpression.title}'>
+						<@tform method='post' action='jsp/admin/plugins/document/DoInsertRegularExpression.jsp'>
+							<@input type='hidden' name='attribute_id' value='${attribute.id}' />
+							<@formGroup formStyle='inline' labelFor='expression_id' labelKey='#i18n{document.modify_document_type_attribute.manageRegularExpression.labelInsert}'>
+								<@inputGroup>
+									<@select name='expression_id' items=regular_expression_to_add_list default_value='-1' />
+									<@inputGroupItem type='btn'>
+										<@button type='submit' title='#i18n{document.modify_document_type_attribute.manageRegularExpression.buttonInsert}' buttonIcon='plus' hideTitle=['all'] />
+									</@inputGroupItem>
+								</@inputGroup>
+							</@formGroup>
+						</@tform>
+					</@boxHeader>
+					<@boxBody>	
+						<@table>
+							<thead>
+								<@tr>
+									<@th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowTitle}</@th>
+									<@th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowInformationMessage}</@th>
+									<@th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowValidExemple}</@th>
+									<@th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowAction}</@th>
+								</@tr>
+							</thead>
+							<tbody>
+								<#list regular_expression_added_list as regular_expression>
+								<@tr>
+									<@td>${regular_expression.title}</@td>
+									<@td>${regular_expression.informationMessage}</@td>
+									<@td>${regular_expression.validExemple}</@td>
+									<@td>
+										<@tform type='inline' method='post' action='jsp/admin/plugins/document/DoDeleteRegularExpression.jsp'>
+											<@input type='hidden' name='attribute_id' value='${attribute.id}' />
+											<@input type='hidden' name='expression_id' value='${regular_expression.idExpression}' />
+											<@button type='submit' title='#i18n{document.modify_document_type_attribute.manageRegularExpression.titleDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all'] />
+										</@tform>
+									</@td>
+								</@tr>
+								</#list>
+							</tbody>
+						</@table>
+					</@boxBody>
+				</@box>
+			</#if>
+			</@columns>
+		</@row>
+	</@pageColumn>
+</@pageContainer>

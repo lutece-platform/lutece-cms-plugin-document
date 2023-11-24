@@ -1,27 +1,23 @@
-<@row>
-	<@columns>
-		<@box>
-			<@boxHeader title='#i18n{document.create_document_type.titleProperties}' />
-			<@boxBody>
-				<@tform method='post' action='jsp/admin/plugins/document/DoCreateDocumentType.jsp'>
-					<@formGroup labelFor='code' labelKey='#i18n{document.create_document_type.labelCode}' helpKey='#i18n{document.create_document_type.helpCode}' mandatory=true>
-						<@input type='text' name='code' id='code' maxlength=30 />
-					</@formGroup>
-					<@formGroup labelFor='name' labelKey='#i18n{document.create_document_type.labelName}' helpKey='#i18n{document.create_document_type.helpName}' mandatory=true>
-						<@input type='text' name='name' id='name' maxlength=100 />
-					</@formGroup>
-					<@formGroup labelFor='description' labelKey='#i18n{document.create_document_type.labelDescription}' helpKey='#i18n{document.create_document_type.helpDescription}' mandatory=true>
-						<@input type='text' name='description' id='description' />
-					</@formGroup>
-					<@formGroup labelFor='metadata' labelKey='#i18n{document.create_document_type.labelMetadata}' helpKey='#i18n{document.create_document_type.helpMetadata}' mandatory=true>
-						<@select name='metadata' items=metadata_handlers_list default_value='' />
-					</@formGroup>
-					<@formGroup>
-						<@button type='submit' title='#i18n{document.create_document_type.buttonSaveAndAddAttributes}' buttonIcon='save' />
-						<@aButton href='jsp/admin/plugins/document/ManageDocumentTypes.jsp?plugin_name=document' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
-					</@formGroup>
-				</@tform>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
+<@pageContainer>
+    <@pageColumn>
+		<@pageHeader title='#i18n{document.create_document_type.titleProperties}' />
+		<@tform method='post' action='jsp/admin/plugins/document/DoCreateDocumentType.jsp' boxed=true>
+			<@formGroup labelFor='code' labelKey='#i18n{document.create_document_type.labelCode}' helpKey='#i18n{document.create_document_type.helpCode}' mandatory=true>
+				<@input type='text' name='code' id='code' maxlength=30 />
+			</@formGroup>
+			<@formGroup labelFor='name' labelKey='#i18n{document.create_document_type.labelName}' helpKey='#i18n{document.create_document_type.helpName}' mandatory=true>
+				<@input type='text' name='name' id='name' maxlength=100 />
+			</@formGroup>
+			<@formGroup labelFor='description' labelKey='#i18n{document.create_document_type.labelDescription}' helpKey='#i18n{document.create_document_type.helpDescription}' mandatory=true>
+				<@input type='text' name='description' id='description' />
+			</@formGroup>
+			<@formGroup labelFor='metadata' labelKey='#i18n{document.create_document_type.labelMetadata}' helpKey='#i18n{document.create_document_type.helpMetadata}' mandatory=true>
+				<@select name='metadata' items=metadata_handlers_list default_value='' />
+			</@formGroup>
+			<@formGroup>
+				<@button type='submit' title='#i18n{document.create_document_type.buttonSaveAndAddAttributes}' buttonIcon='device-floppy' />
+				<@aButton href='jsp/admin/plugins/document/ManageDocumentTypes.jsp?plugin_name=document' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
+			</@formGroup>
+		</@tform>
+	</@pageColumn>
+</@pageContainer>

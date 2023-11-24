@@ -1,56 +1,62 @@
 <@pageContainer>
     <@pageColumn>
 		<@pageHeader title='#i18n{document.document_history.title} ${document.title}'>
-			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder-open' hideTitle=['xs','sm'] />
+			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder' hideTitle=['xs','sm'] />
 		</@pageHeader>
 		<@row>
 			<@columns xl=3>
-				<blockquote>
-					<p class="lead">${document.id}</span>&nbsp;${document.title}</p>
-				</blockquote>
-				<dl>
-					<dt>#i18n{document.preview_document.columnTitleType}</dt>
-					<dd>${document.type}</dd>
-					<#if document.state?has_content>
-						<dt>#i18n{document.preview_document.columnTitleState}</dt>
-						<dd>${document.state}</dd>
-					</#if> 
-					<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
-					<dd>${document.dateCreation}</dd> 
-					<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
-					<dd>${document.dateModification}</dd>
-				</dl>
-				<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
-				<#assign dateBegin="">
-				<#if document.dateValidityBegin?has_content>
-					<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
-				</#if>    
-				<#assign dateEnd="">
-				<#if document.dateValidityEnd?has_content>
-					<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
-				</#if>                        
-				<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
-				<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
-				<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
-				<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
-				<#if dateBegin?has_content && dateEnd?has_content>
-					<p><@icon style='calendar' /> ${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</p>
-				<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
-					<@alert color='warning'>#i18n{document.preview_document.labelDateValidityNotDefined}</@alert>
-				<#elseif dateBegin?has_content && !( dateEnd?has_content )>
-					<p><@icon style='calendar' /> ${labelBeginSince} ${dateBegin}</p>
-				<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
-					<p><@icon style='calendar' /> ${labelEndUntil} ${dateEnd}</p> 
-				</#if>
+				<@box>
+					<@boxHeader title='#${document.id}</span>&nbsp;${document.title}' />
+					<@boxBody>
+						<dl>
+							<dt>#i18n{document.preview_document.columnTitleType}</dt>
+							<dd>${document.type}</dd>
+							<#if document.state?has_content>
+								<dt>#i18n{document.preview_document.columnTitleState}</dt>
+								<dd>${document.state}</dd>
+							</#if> 
+							<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
+							<dd>${document.dateCreation}</dd> 
+							<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
+							<dd>${document.dateModification}</dd>
+							<dt>#i18n{document.preview_document.columnTitleDateValidity}</dt>
+							<#assign dateBegin="">
+							<#if document.dateValidityBegin?has_content>
+								<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
+							</#if>    
+							<#assign dateEnd="">
+							<#if document.dateValidityEnd?has_content>
+								<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
+							</#if>                        
+							<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
+							<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
+							<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
+							<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
+							<#if dateBegin?has_content && dateEnd?has_content>
+								<dd><@icon style='calendar' /> ${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</dd>
+							<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
+								<@alert color='warning'>#i18n{document.preview_document.labelDateValidityNotDefined}</@alert>
+							<#elseif dateBegin?has_content && !( dateEnd?has_content )>
+								<dd><@icon style='calendar' /> ${labelBeginSince} ${dateBegin}</dd>
+							<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
+								<dd><@icon style='calendar' /> ${labelEndUntil} ${dateEnd}</dd> 
+							</#if>
+						</dl>
+					</@boxBody>
+				</@box>
 			</@columns>
 			<@columns xl=9>
-				<@listGroup>
-					<#list events_list?reverse as event >
-						<@listGroupItem>
-							<@icon style='info-circle' />&nbsp;<em>${event.date}</em>&nbsp;-&nbsp;${event.description}
-						</@listGroupItem>
-					</#list>
-				</@listGroup>
+				<@box>
+					<@boxBody>
+						<@listGroup>
+							<#list events_list?reverse as event >
+								<@listGroupItem>
+									<@icon style='info-circle' />&nbsp;<em>${event.date}</em>&nbsp;-&nbsp;${event.description}
+								</@listGroupItem>
+							</#list>
+						</@listGroup>
+					</@boxBody>
+				</@box>
 			</@columns>
 		</@row>
 	</@pageColumn>

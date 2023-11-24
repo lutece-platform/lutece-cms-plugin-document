@@ -1,38 +1,36 @@
-<@row>
-	<@columns>
-		<@box>
-			<@boxHeader title='#i18n{document.manage_category.boxTitle}'>
-				<@tform method='post' action='jsp/admin/plugins/document/CreateCategory.jsp'>
-					<@button type='submit' title='#i18n{document.manage_category.buttonLabelCreate}' buttonIcon='plus-square' size='sm' hideTitle=['xs','sm'] />
-				</@tform>
-			</@boxHeader>
-			<@boxBody>
-				<@table>
-					<thead>
-						<@tr>
-							<@th>#i18n{document.manage_category.columnTitleName}</@th>
-							<@th>#i18n{document.manage_category.columnTitleDescription}</@th>
-							<@th>#i18n{document.manage_category.columnTitleCountLinkedDocuments}</@th>
-							<@th>#i18n{document.manage_category.columnTitleActions}</@th>
-						</@tr>
-					</thead>
-					<tbody>
-					<#if category_list?has_content >
-						<#list category_list as categoryDisplay >
-						<@tr>
-							<@td><img class="img-responsive img-thumbnail thumbnail-sm" src=${categoryDisplay.iconUrl} alt="${(categoryDisplay.category).name}" title="${(categoryDisplay.category).name}" style="max-width:50px;"> ${(categoryDisplay.category).name}</@td>
-							<@td>${(categoryDisplay.category).description!}</@td>
-							<@td>${categoryDisplay.countLinkedDocuments!}</@td>
-							<@td>
-								<@aButton href='jsp/admin/plugins/document/ModifyCategory.jsp?category_id=${(categoryDisplay.category).id}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' size='sm' hideTitle=['all'] />
-								<@aButton href='jsp/admin/plugins/document/RemoveCategory.jsp?category_id=${(categoryDisplay.category).id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all'] />
-							</@td>
-						</@tr>
-						</#list>
-					</#if>
-					</tbody>
-				</@table>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
+<@pageContainer>
+    <@pageColumn>
+		<@pageHeader title='#i18n{document.manage_category.boxTitle}'>
+			<@tform method='post' action='jsp/admin/plugins/document/CreateCategory.jsp'>
+				<@button type='submit' title='#i18n{document.manage_category.buttonLabelCreate}' buttonIcon='plus' hideTitle=['xs','sm'] />
+			</@tform>
+		</@pageHeader>
+		<@table>
+			<thead>
+				<@tr>
+					<@th>#i18n{document.manage_category.columnTitleName}</@th>
+					<@th>#i18n{document.manage_category.columnTitleDescription}</@th>
+					<@th>#i18n{document.manage_category.columnTitleCountLinkedDocuments}</@th>
+					<@th>#i18n{document.manage_category.columnTitleActions}</@th>
+				</@tr>
+			</thead>
+			<tbody>
+			<#if category_list?has_content >
+				<#list category_list as categoryDisplay>
+				<@tr>
+					<@td>
+						<img class="img-responsive img-thumbnail thumbnail-sm" src=${categoryDisplay.iconUrl} alt="${(categoryDisplay.category).name}" title="${(categoryDisplay.category).name}" style="max-width:50px;" /> ${(categoryDisplay.category).name}
+					</@td>
+					<@td>${(categoryDisplay.category).description!}</@td>
+					<@td>${categoryDisplay.countLinkedDocuments!}</@td>
+					<@td>
+						<@aButton href='jsp/admin/plugins/document/ModifyCategory.jsp?category_id=${(categoryDisplay.category).id}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' size='sm' hideTitle=['all'] />
+						<@aButton href='jsp/admin/plugins/document/RemoveCategory.jsp?category_id=${(categoryDisplay.category).id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all'] />
+					</@td>
+				</@tr>
+				</#list>
+			</#if>
+			</tbody>
+		</@table>
+	</@pageColumn>
+</@pageContainer>

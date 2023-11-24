@@ -30,7 +30,8 @@
 			<@columns xl=3>
 				<@box>
 					<@boxHeader title='#i18n{document.manage_documents.labelSpaces}'>
-						<#if space_actions_list?size != 0 >
+						<#if space_actions_list?size != 0>
+							<@btnGroup>
 							<#list space_actions_list as space_action>
 								<#if space_action.permission="DELETE">
 									<#assign btnClass = 'danger' />
@@ -39,6 +40,7 @@
 								</#if>
 								<@aButton href='${space_action.url}?id_space=${space.id}' title='${space_action.description}' class='btn-space-action' color='${btnClass}' buttonIcon='${space_action.iconUrl}' size='sm' hideTitle=['all'] />
 							</#list>
+							</@btnGroup>
 						</#if>
 					</@boxHeader>
 					<@boxBody>
@@ -155,7 +157,7 @@
 												#i18n{document.manage_documents.labelDocument}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='title' />
 												<@formGroup labelFor='selection' rows=2>
 													<@inputGroup>
-														<@select id='selection' name='selection' size='sm' disabled=true>
+														<@select id='selection' name='selection' disabled=true>
 															<option value="validate">#i18n{document.manage_document.validate}</option>
 															<option value="submit">#i18n{document.manage_document.submit}</option>
 															<option value="refuse">#i18n{document.manage_document.refuse}</option>
@@ -164,7 +166,7 @@
 															<option value="unarchive">#i18n{document.manage_document.unarchive}</option>
 														</@select>
 														<@inputGroupItem type='btn'>
-															<@button type='submit' title='#i18n{document.manage_documents.applyToSelection}' buttonIcon='check' hideTitle=['all'] size='sm' />
+															<@button type='submit' title='#i18n{document.manage_documents.applyToSelection}' buttonIcon='check' hideTitle=['all'] />
 														</@inputGroupItem>
 													</@inputGroup>
 												</@formGroup>

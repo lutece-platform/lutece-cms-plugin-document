@@ -1,27 +1,23 @@
-<@row>
-	<@columns>
-		<@box>
-			<@boxHeader title='#i18n{document.create_category.boxTitle}' />
-			<@boxBody>
-				<@tform method='post' action='jsp/admin/plugins/document/DoCreateCategory.jsp' enctype='multipart/form-data'>
-					<@formGroup labelFor='category_name' labelKey='#i18n{document.create_category.labelName}' mandatory=true>
-						<@input type='text' id='category_name' name='category_name' maxlength=100 />
-					</@formGroup>
-					<@formGroup labelFor='category_description' labelKey='#i18n{document.create_category.labelDescription}' mandatory=true>
-						<@input type='text' id='category_description' name='category_description' value='' maxlength=255 />
-					</@formGroup>
-					<@formGroup labelFor='workgroup_key' labelKey='#i18n{document.create_category.labelWorkgroup}'>
-						<@select name='workgroup_key' items=user_workgroup_list default_value='${selected_workgroup}' />
-					</@formGroup>
-					 <@formGroup labelFor='category_icon' labelKey='#i18n{document.create_category.labelIcon}'>
-						<@input type='file' id='category_icon' name='category_icon' value='' />
-					</@formGroup>
-					<@formGroup>
-						<@button type='submit' title='#i18n{document.create_category.buttonLabelCreate}' buttonIcon='plus' />
-						<@aButton href='jsp/admin/plugins/document/ManageCategory.jsp?plugin_name=document' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
-					</@formGroup>
-				</@tform>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
+<@pageContainer>
+    <@pageColumn>
+		<@pageHeader title='#i18n{document.create_category.boxTitle}' />
+			<@tform method='post' action='jsp/admin/plugins/document/DoCreateCategory.jsp' enctype='multipart/form-data' boxed=true>
+				<@formGroup labelFor='category_name' labelKey='#i18n{document.create_category.labelName}' mandatory=true>
+					<@input type='text' id='category_name' name='category_name' maxlength=100 />
+				</@formGroup>
+				<@formGroup labelFor='category_description' labelKey='#i18n{document.create_category.labelDescription}' mandatory=true>
+					<@input type='text' id='category_description' name='category_description' value='' maxlength=255 />
+				</@formGroup>
+				<@formGroup labelFor='workgroup_key' labelKey='#i18n{document.create_category.labelWorkgroup}'>
+					<@select name='workgroup_key' items=user_workgroup_list default_value='${selected_workgroup}' />
+				</@formGroup>
+				 <@formGroup labelFor='category_icon' labelKey='#i18n{document.create_category.labelIcon}'>
+					<@input type='file' id='category_icon' name='category_icon' value='' />
+				</@formGroup>
+				<@formGroup>
+					<@button type='submit' title='#i18n{document.create_category.buttonLabelCreate}' buttonIcon='device-floppy' />
+					<@aButton href='jsp/admin/plugins/document/ManageCategory.jsp?plugin_name=document' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
+				</@formGroup>
+			</@tform>
+	</@pageColumn>
+</@pageContainer>
