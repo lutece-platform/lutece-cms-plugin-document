@@ -1,20 +1,20 @@
 <#if !attribute.textValue?has_content>
 	<#assign helpKey = attribute.description />
 </#if>
-<@formGroup formStyle='inline'  labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey! mandatory=attribute.required>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey! mandatory=attribute.required>
 	<@row>
-		<@columns sm=8>
+		<@columns xl=8 class='mb-2'>
 			<@input type='file' name='${attribute.code}' id='${attribute.code}' />
 		</@columns>
-		<@columns sm=12>
+		<@columns xl=12>
 			<#if attribute.textValue?has_content>
 				<@row>
-					<@columns sm=8>
+					<@columns lg=8>
 						<@formGroup helpKey='#i18n{document.attributeType.image.deleteField}'>
-							<@checkBox labelFor='update_${attribute.code}' labelKey='#i18n{document.attributeType.image.updateField}' name='update_${attribute.code}' id='update_${attribute.code}' value='1' />
+							<@checkBox labelKey='#i18n{document.attributeType.image.updateField}' name='update_${attribute.code}' id='update_${attribute.code}' value='1' />
 						</@formGroup>
 					</@columns>
-					<@columns sm=4>
+					<@columns lg=4>
 						<#assign params = 'data-title="${attribute.textValue}"' />
 						<#if attribute.valueContentType?contains('image')>
 							<#assign params += ' data-lightbox="image-document"' />
@@ -25,10 +25,10 @@
 					</@columns>
 				</@row>
 			</#if>
-			<@formGroup formStyle='inline' >
-				<@checkBox labelFor='${attribute.code}_crop' labelKey='#i18n{document.attributeType.image.resize}' name='${attribute.code}_croppable' id='${attribute.code}_crop' />
+			<@formGroup>
+				<@checkBox labelKey='#i18n{document.attributeType.image.resize}' name='${attribute.code}_croppable' id='${attribute.code}_crop' />
 			</@formGroup>
-			<@formGroup formStyle='inline' labelKey='#i18n{document.attributeType.image.resize}' hideLabel=['all']>
+			<@formGroup labelKey='#i18n{document.attributeType.image.resize}' hideLabel=['all'] id='crop_group'>
 				<@inputGroup>
 					<@input type='text' name='${attribute.code}_width' id='${attribute.code}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' />
 					<@inputGroupItem type='text'>px</@inputGroupItem>
@@ -37,19 +37,27 @@
 		</@columns>
 	</@row>
 </@formGroup>
-<script type="text/javascript">
-$( function () {
-	$("#${attribute.code}_width").prop({disabled: true});
-	$("#${attribute.code}_width").addClass('disabled');
-	$('#${attribute.code}_crop').on('click', function () {
-		if ($(this).is(':checked')) {
-			$("#${attribute.code}_width").prop({disabled: false});
-			$("#${attribute.code}_width").toggleClass("disabled");
-		} else {
-			$("#${attribute.code}_width").val("");
-			$("#${attribute.code}_width").prop({disabled: true});
-			$("#${attribute.code}_width").toggleClass("disabled");
-		}
-	});
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var cropGroup = document.getElementById('crop_group');
+    var cropCheckbox = document.getElementById('${attribute.code}_crop');
+    var attributeCodeWidth = document.getElementById('${attribute.code}_width');
+
+    cropGroup.style.display = 'none';
+    attributeCodeWidth.disabled = true;
+    attributeCodeWidth.classList.add('disabled');
+
+    cropCheckbox.addEventListener('click', function() {
+        cropGroup.style.display = (cropCheckbox.checked) ? 'block' : 'none';
+
+        if (cropCheckbox.checked) {
+            attributeCodeWidth.disabled = false;
+            attributeCodeWidth.classList.toggle('disabled');
+        } else {
+            attributeCodeWidth.value = '';
+            attributeCodeWidth.disabled = true;
+            attributeCodeWidth.classList.toggle('disabled');
+        }
+    });
 });
 </script>

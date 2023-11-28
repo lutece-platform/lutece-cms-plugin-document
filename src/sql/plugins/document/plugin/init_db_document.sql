@@ -84,7 +84,7 @@ INSERT INTO document_space (id_space,id_parent,document_space_name,description,d
 --
 -- Table document_space_action
 --
-INSERT INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (1,'document.spaces.action.createSpace.name','document.spaces.action.createSpace.description','jsp/admin/plugins/document/CreateSpace.jsp','plus-circle','CREATE');
+INSERT INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (1,'document.spaces.action.createSpace.name','document.spaces.action.createSpace.description','jsp/admin/plugins/document/CreateSpace.jsp','plus','CREATE');
 INSERT INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (2,'document.spaces.action.deleteSpace.name','document.spaces.action.deleteSpace.description','jsp/admin/plugins/document/DeleteSpace.jsp','trash','DELETE');
 INSERT INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (3,'document.spaces.action.modifySpace.name','document.spaces.action.modifySpace.description','jsp/admin/plugins/document/ModifySpace.jsp','edit','MODIFY');
 INSERT INTO document_space_action (id_action, name_key, description_key, action_url, icon_url, action_permission) VALUES (4,'document.spaces.action.manageUsers.name','document.spaces.action.manageUsers.description','jsp/admin/plugins/document/ManageSpaceUsers.jsp','user','USERS');

@@ -227,14 +227,14 @@
 									<#list documents_list as document >
 									<@columns sm=6 class='document-row' params='data-document="${document.id} ${document.title}"'>
 										<div class="thumbnail" style="background-color:rgba(0,0,0,0.05); padding:10px; border-radius:4px; margin-bottom:15px;">
-											<img src="${document.thumbnail}&nocache" class="thumbnail" alt="${document.title}" title="${document.title} - ${document.type}" style="max-width:100%;" />
+											<img src="${document.thumbnail}" class="thumbnail" alt="${document.title}" title="${document.title} - ${document.type}" style="max-width:100%;" />
 											<div class="caption" style="margin-top:20px;">
-												<p>
+												<h3>
 													<@tag>${document.id}</@tag>
 													<strong title="${document.title}">
 														<#if document.title?length &gt; 18>${document.title?substring(0,18)}...<#else>${document.title}</#if>
 													</strong>
-												</p>
+												</h3>
 												<@btnGroup size='sm'>
 													<#list document.actions?sort_by("idAction") as action>
 														<#if action.url?has_content>
@@ -261,17 +261,17 @@
 					<@box>
 						<@boxHeader title='#i18n{document.manage_documents.childSpacesList}' />
 						<@boxBody>
-							<ul>
+							<@ul>
 								<#list child_spaces_list as child_space>
-								<li>
+								<@li>
 									<h4>
 										<@link href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${child_space.id}'>
 											<img src="${child_space.iconUrl}" alt="${child_space.description}" title="${child_space.description}"> ${child_space.name} <small>${child_space.description}</small>
 										</@link>
 									</h4>
-								</li>
+								</@li>
 								</#list>
-							</ul>
+							</@ul>
 						</@boxBody>
 					</@box>
 				</#if>
@@ -340,22 +340,6 @@ jQuery(function($) {
 		$( "#tree li a.btn-space-action" ).toggle() ;
 	});
 	*/
-	/****** Multiple selection ******/
-	$("#select_all").click( function(){
-		if( this.checked ){
-			$('input[type="checkbox"]').each( function() {this.checked = true;} );
-		} else {
-			$('input[type="checkbox"]').each(function() {this.checked = false;} );
-		}
-	});
-
-	$("input[type='checkbox']").click( function(){
-	if( $("input[type='checkbox']:checked").length > 0 ){
-		$("#selection").removeAttr("disabled");
-	} else {
-		$("#selection").attr("disabled","disabled");
-	}
-	});
 
 
 	/****** Document search ******/
@@ -383,6 +367,29 @@ jQuery(function($) {
 		});
 	});
 
+</script>
+
+<script>
+	/****** Multiple selection ******/
+	document.getElementById('select_all').addEventListener('click', function() {
+		var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+		checkboxes.forEach(function(checkbox) {
+			checkbox.checked = this.checked;
+		}, this);
+	});
+
+	document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+		checkbox.addEventListener('click', function() {
+			var selectedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+			var selectionButton = document.getElementById('selection');
+
+			if (selectedCheckboxes.length > 0) {
+				selectionButton.removeAttribute('disabled');
+			} else {
+				selectionButton.setAttribute('disabled', 'disabled');
+			}
+		});
+	});
 </script>
 
 <#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>

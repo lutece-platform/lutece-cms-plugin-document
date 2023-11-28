@@ -1,32 +1,38 @@
-<@formGroup formStyle='inline' labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' checked=attribute.required>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' checked=attribute.required>
 	<@inputGroup>
-	<@input type='file' name='${attribute.code}' id='${attribute.code}' />
-	<span class="input-group-addon">
-		<@checkBox labelFor='${attribute.code}_croppable' labelKey='#i18n{document.attributeType.image.resize}' name='${attribute.code}_croppable' id='crop' />
-	</span>
+		<@input type='file' name='${attribute.code}' id='${attribute.code}' />
+		<@inputGroupItem>
+			<@checkBox labelKey='#i18n{document.attributeType.image.resize}' name='${attribute.code}_croppable' id='crop' />
+		</@inputGroupItem>
 	</@inputGroup>
-	</@formGroup>
-	<@formGroup formStyle='' labelFor='${attribute.code}_width' labelKey='#i18n{document.attributeType.image.width}' id="crop_group">
-	<@inputGroup params='style="width:20%"'>
+</@formGroup>
+<@formGroup labelFor='${attribute.code}_width' labelKey='#i18n{document.attributeType.image.width}' id='crop_group'>
+	<@inputGroup>
 		<@input type='number' name='${attribute.code}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' id='${attribute.code}_width' />
-		<span class="input-group-addon">px<span>
+		<@inputGroupItem>px</@inputGroupItem>
 	</@inputGroup>
 </@formGroup>
 <script>
-$( function(){
-	$('#crop_group').toggle();
-	$("#${attribute.code}_width").prop({disabled: true});
-	$("#${attribute.code}_width").addClass('disabled');
-	$('#crop').on('click', function(){
-		$('#crop_group').toggle();
-		if ( $(this).is(':checked') ) {
-			$("#${attribute.code}_width").prop({disabled: false});
-			$("#${attribute.code}_width").toggleClass("disabled");
-		} else {
-			$("#${attribute.code}_width").val("");
-			$("#${attribute.code}_width").prop({disabled: true});
-			$("#${attribute.code}_width").toggleClass("disabled");
-		}
-	});
+document.addEventListener('DOMContentLoaded', function() {
+    var cropGroup = document.getElementById('crop_group');
+    var cropCheckbox = document.getElementById('crop');
+    var attributeCodeWidth = document.getElementById('${attribute.code}_width');
+
+    cropGroup.style.display = 'none';
+    attributeCodeWidth.disabled = true;
+    attributeCodeWidth.classList.add('disabled');
+
+    cropCheckbox.addEventListener('click', function() {
+        cropGroup.style.display = (cropCheckbox.checked) ? 'block' : 'none';
+
+        if (cropCheckbox.checked) {
+            attributeCodeWidth.disabled = false;
+            attributeCodeWidth.classList.toggle('disabled');
+        } else {
+            attributeCodeWidth.value = '';
+            attributeCodeWidth.disabled = true;
+            attributeCodeWidth.classList.toggle('disabled');
+        }
+    });
 });
 </script>

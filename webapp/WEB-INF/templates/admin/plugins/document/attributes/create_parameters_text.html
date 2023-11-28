@@ -4,7 +4,7 @@
 			<#assign value = values />
 		</#if>
 	</#list>
-	<@formGroup formStyle='inline' labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}'>
+	<@formGroup labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}'>
 		<@input type='text' name='${parameter.name}' tabIndex='${parameter_index + 5}' value=value!'' />
 	</@formGroup>
 </#list>

@@ -1,27 +1,41 @@
 <#list parameters as parameter>
 <#if parameter_index = 0>
-	<@formGroup formStyle='inline' labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}'>
+	<@formGroup labelFor='${parameter.name}' labelKey='${parameter.label}' helpKey='${parameter.description}'>
 		<#list parameter.defaultValue as values><#assign inputValue = values?if_exists /></#list>
-		<@input type='text' name='${parameter.name}' class='param' id='${parameter.name}' tabIndex='${parameter_index + 5}' value=inputValue />
+		<@input type='date' name='${parameter.name}' class='param' id='${parameter.name}' tabIndex='${parameter_index + 5}' value=inputValue />
 	</@formGroup>
-	<script>
-		<@getDatePickerBootstrap idField=parameter.name language=locale.language />
-	</script>
 </#if>
 <#if parameter_index = 1>
-	<@formGroup formStyle='inline' labelFor='${parameter.name}' labelKey='${parameter.label}'>
+	<@formGroup labelFor='${parameter.name}' labelKey='${parameter.label}'>
 		<@checkBox labelFor='${parameter.name}' labelKey='${parameter.description}' name='${parameter.name}' id='${parameter.name}' checked=parameter.defaultValue?has_content />
 	</@formGroup>
 	<script>
-		$(function() {
-			$('input[type="checkbox"]').on('click', function(){
-					if ( $('input[type="checkbox"]').is( ":checked" )){
-						$('.param').val( "${parameter.description}" ).attr("readonly","readonly").attr("readonly","readonly").toggleClass("readonly").toggleClass("disabled").attr("disabled","disabled");
-					} else {
-						$('.param').val("").toggleClass("readonly").toggleClass("disabled").removeAttr( "readonly" ).removeAttr( "disabled" );
-					}
-				});
-			});
+	  document.addEventListener('DOMContentLoaded', function () {
+		var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+		checkboxes.forEach(function (checkbox) {
+		  checkbox.addEventListener('click', function () {
+			var params = document.querySelectorAll('.param');
+
+			if (checkbox.checked) {
+			  params.forEach(function (param) {
+				param.value = "${parameter.description}";
+				param.readOnly = true;
+				param.classList.add('readonly', 'disabled');
+				param.disabled = true;
+			  });
+			} else {
+			  params.forEach(function (param) {
+				param.value = "";
+				param.readOnly = false;
+				param.classList.remove('readonly', 'disabled');
+				param.disabled = false;
+			  });
+			}
+		  });
+		});
+	  });
 	</script>
+
 </#if>
 </#list>

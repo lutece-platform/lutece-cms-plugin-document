@@ -1,6 +1,6 @@
-<@formGroup formStyle='inline' formStyle='inline' labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required>
 	<#if attribute.textValue?has_content>
 		<#assign value = attribute.textValue />
 	</#if>
-	<@input type='date' id='${attribute.code}' name='${attribute.code}' inputSize=10 value=value! />
+	<@input type='text' id='${attribute.code}' name='${attribute.code}' value=value! />
 </@formGroup>

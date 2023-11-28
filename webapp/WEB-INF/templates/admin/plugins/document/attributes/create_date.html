@@ -1,4 +1,4 @@
-<@formGroup formStyle='inline' labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required>
 	<#if (parameters.currentdate)?has_content>
 		<#list parameters.currentdate as currentdate>
 			<#assign inputValue = currentdate?if_exists />
@@ -10,5 +10,5 @@
 			</#list>
 		</#if>
 	</#if>
-	<@input type='date' id='${attribute.code}' name='${attribute.code}' inputSize=10 value=inputValue />
+	<@input type='text' id='${attribute.code}' name='${attribute.code}' value=inputValue />
 </@formGroup>
