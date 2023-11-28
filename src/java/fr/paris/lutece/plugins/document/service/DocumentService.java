@@ -611,7 +611,7 @@ public class DocumentService
 
         if ( ( strDateValidityEnd != null ) && !strDateValidityEnd.equals( "" ) )
         {
-            Date dateEnd = DateUtil.formatDateLongYear( strDateValidityEnd, locale );
+            Date dateEnd = DateUtil.parseIsoDate( strDateValidityEnd );
 
             if ( ( dateEnd == null ) )
             {
