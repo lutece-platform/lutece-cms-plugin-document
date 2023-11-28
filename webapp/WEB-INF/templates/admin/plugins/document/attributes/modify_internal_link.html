@@ -1,35 +1,54 @@
 <@formGroup formStyle='inline' labelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required>
 	<@input type='textarea' id='${attribute.code}' name='${attribute.code}' readonly=true rows=5 cols=60>${attribute.textValue}</@input> 
-		<@button type='button' params='onclick="javascript:linkservice${attribute.code}();return false;"' buttonIcon='link' color='warning' />
-		<!-- DOCUMENT-97: enable clearing internal link field. -->
-		<@button type='button' id='btnShowPreview_${attribute.code}' title='Link Service' buttonIcon='eye' hideTitle=['all'] />
-		<@button type='button' params='onclick="javascript:linkservice_clear${attribute.code}();return false;"' title='#i18n{document.attributeType.internallink.labelLinkServiceClear}' buttonIcon='trash' color='danger' hideTitle=['all'] />
-		<p id="show_preview_section_${attribute.code}">&nbsp;</p>
-		<div id="show_preview_${attribute.code}">&nbsp;</div>
+	<@button type='button' params='onclick="javascript:linkservice${attribute.code}();return false;"' buttonIcon='link' color='warning' />
+	<!-- DOCUMENT-97: enable clearing internal link field. -->
+	<@button type='button' id='btnShowPreview_${attribute.code}' title='Link Service' buttonIcon='eye' hideTitle=['all'] />
+	<@button type='button' params='onclick="javascript:linkservice_clear${attribute.code}();return false;"' title='#i18n{document.attributeType.internallink.labelLinkServiceClear}' buttonIcon='trash' color='danger' hideTitle=['all'] />
+	<p id="show_preview_section_${attribute.code}">&nbsp;</p>
+	<div id="show_preview_${attribute.code}">&nbsp;</div>
 </@formGroup>
 <script>
-// jQuery("img_linkservice_${attribute.code}").style.display = "inline";
-// DOCUMENT-97: enable clearing internal link field.
-// document.getElementById('img_linkservice_clear_${attribute.code}').style.display = "inline";
-$("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}").hover(function() {
-	$(this).css("cursor", "pointer");
-	}, function() { $(this).css("cursor", "auto");
-});
-function linkservice${attribute.code}(){
-$("#show_preview_${attribute.code}").html("&nbsp;");
-	var fen=window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=","#i18n{document.attributeType.internallink.labelLinkService}","toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
-	fen.focus();
-}
-// DOCUMENT-97: enable clearing internal link field.
-function linkservice_clear${attribute.code}() {
-$("#${attribute.code}").val("");
-	$("#show_preview_${attribute.code}").html("&nbsp;");
-}
-$(document).ready( function () {
-	$('#show_preview_${attribute.code}').toggle();
-	$('#btnShowPreview_${attribute.code}').click( function(){
-	$('#show_preview_${attribute.code}').html( $('#${attribute.code}').val() + '&nbsp;');
-	$('#show_preview_${attribute.code}').toggle();
+	// jQuery("img_linkservice_${attribute.code}").style.display = "inline";
+	// DOCUMENT-97: enable clearing internal link field.
+	// document.getElementById('img_linkservice_clear_${attribute.code}').style.display = "inline";
+	var elementsToHover = document.querySelectorAll("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}");
+	elementsToHover.forEach(function(element) {
+		element.addEventListener('mouseover', function() {
+		  element.style.cursor = "pointer";
+		});
+
+		element.addEventListener('mouseout', function() {
+		  element.style.cursor = "auto";
+		});
 	});
-});
+
+	function linkservice${attribute.code}() {
+		var showPreview = document.getElementById('show_preview_${attribute.code}');
+		showPreview.innerHTML = "&nbsp;";
+
+		var fen = window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=", "#i18n{document.attributeType.internallink.labelLinkService}", "toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
+		fen.focus();
+	}
+
+	// DOCUMENT-97: enable clearing internal link field.
+	function linkservice_clear${attribute.code}() {
+		var attributeCode = document.getElementById('${attribute.code}');
+		var showPreview = document.getElementById('show_preview_${attribute.code}');
+
+		attributeCode.value = "";
+		showPreview.innerHTML = "&nbsp;";
+	}
+	
+	document.addEventListener('DOMContentLoaded', function () {
+		var showPreview = document.getElementById('show_preview_${attribute.code}');
+		var btnShowPreview = document.getElementById('btnShowPreview_${attribute.code}');
+		var attributeCode = document.getElementById('${attribute.code}');
+
+		showPreview.style.display = 'none';
+
+		btnShowPreview.addEventListener('click', function () {
+		  showPreview.innerHTML = attributeCode.value + '&nbsp;';
+		  showPreview.style.display = (showPreview.style.display === 'none') ? 'block' : 'none';
+		});
+	  });
 </script>

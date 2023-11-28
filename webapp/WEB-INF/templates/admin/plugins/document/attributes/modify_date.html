@@ -2,5 +2,5 @@
 	<#if attribute.textValue?has_content>
 		<#assign value = attribute.textValue />
 	</#if>
-	<@input type='text' id='${attribute.code}' name='${attribute.code}' value=value! />
+	<@input type='date' id='${attribute.code}' name='${attribute.code}' value=value! />
 </@formGroup>

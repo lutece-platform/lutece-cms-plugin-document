@@ -7,25 +7,49 @@
 	<p id="show_preview_section_${attribute.code}" style="display: none;">&nbsp;</p>
 	<div id="show_preview_${attribute.code}">&nbsp;</div>
 	<script>
-		function linkservice${attribute.code}(){
-			jQuery("#show_preview_${attribute.code}").html("&nbsp;");
-			var fen = window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=","#i18n{document.attributeType.internallink.labelLinkService}","toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
+		function linkservice${attribute.code}() {
+			var showPreview = document.getElementById('show_preview_${attribute.code}');
+			showPreview.innerHTML = "&nbsp;";
+
+			var fen = window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=", "#i18n{document.attributeType.internallink.labelLinkService}", "toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
 			fen.focus();
 		}
 		// DOCUMENT-97: enable clearing internal link field.
 		function linkservice_clear${attribute.code}() {
-			jQuery("#${attribute.code}").val("");
-			jQuery("#show_preview_${attribute.code}").html("&nbsp;");
+			var attributeCode = document.getElementById('${attribute.code}');
+			var showPreview = document.getElementById('show_preview_${attribute.code}');
+
+			attributeCode.value = "";
+			showPreview.innerHTML = "&nbsp;";
+		}
+		
+		var imgElement = document.querySelector("#img_linkservice_${attribute.code}");
+		if (imgElement) {
+			imgElement.style.display = "inline";
 		}
 
-		jQuery("img_linkservice_${attribute.code}").css("display","inline");
+
 		// DOCUMENT-97: enable clearing internal link field.
-		jQuery("#img_linkservice_clear_${attribute.code}").css("display","inline");	
-		jQuery("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}").hover(function() {
-			$(this).css("cursor", "pointer");
-			}, function() {
-				$(this).css("cursor", "auto");
-				});
-		jQuery("show_preview_section_${attribute.code}").css("display","block");
+		var imgClearElement = document.querySelector("#img_linkservice_clear_${attribute.code}");
+		if (imgClearElement) {
+			imgClearElement.style.display = "inline";
+		}
+		
+		var elementsToHover = document.querySelectorAll("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}");
+
+		elementsToHover.forEach(function(element) {
+			element.addEventListener('mouseover', function() {
+				element.style.cursor = "pointer";
+			});
+
+			element.addEventListener('mouseout', function() {
+				element.style.cursor = "auto";
+			});
+		});
+		
+		var showPreviewSection = document.querySelector("#show_preview_section_${attribute.code}");
+		if (showPreviewSection) {
+			showPreviewSection.style.display = "block";
+		}
 	</script>
 </@formGroup>

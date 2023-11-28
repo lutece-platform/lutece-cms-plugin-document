@@ -58,7 +58,7 @@ public class DateManager extends DefaultManager
     private static final String TEMPLATE_CREATE_PARAMETERS_ATTRIBUTE = "admin/plugins/document/attributes/create_parameters_date.html";
     private static final String TEMPLATE_MODIFY_PARAMETERS_ATTRIBUTE = "admin/plugins/document/attributes/modify_parameters_date.html";
     private static final String PROPERTY_MESSAGE_ERROR_FORMAT_DATE = "document.message.errorDateFormat";
-    private static final String[] DATE_FORMAT = { "yyyy", "MM", "MM/yyyy", "dd/MM/yyyy" };
+    private static final String[] DATE_FORMAT = {"yyyy-MM-dd HH:mm:ss", "yyyy", "MM", "MM/yyyy", "dd/MM/yyyy" };
     private static final String CHECK_ON = "on";
 
     /**
