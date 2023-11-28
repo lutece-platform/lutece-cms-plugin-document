@@ -549,8 +549,8 @@ public class DocumentService
         String strDocumentTitle = mRequest.getParameter( PARAMETER_DOCUMENT_TITLE );
         String strDocumentSummary = mRequest.getParameter( PARAMETER_DOCUMENT_SUMMARY );
         String strDocumentComment = mRequest.getParameter( PARAMETER_DOCUMENT_COMMENT );
-        DateUtil.parseIsoDate(PARAMETER_VALIDITY_BEGIN);
-        DateUtil.parseIsoDate(PARAMETER_VALIDITY_END);
+        String strDateValidityEnd = mRequest.getParameter( PARAMETER_VALIDITY_END );
+        String strDateValidityBegin = mRequest.getParameter( PARAMETER_VALIDITY_BEGIN );
         String strMailingListId = mRequest.getParameter( PARAMETER_MAILING_LIST );
         int nMailingListId = IntegerUtils.convert( strMailingListId, 0 );
         String strPageTemplateDocumentId = mRequest.getParameter( PARAMETER_PAGE_TEMPLATE_DOCUMENT_ID );
@@ -587,13 +587,13 @@ public class DocumentService
                 return strAdminMessage;
             }
         }
-
+        
         Timestamp dateValidityBegin = null;
         Timestamp dateValidityEnd = null;
 
         if ( ( strDateValidityBegin != null ) && !strDateValidityBegin.equals( "" ) )
         {
-            Date dateBegin = DateUtil.formatDateLongYear( strDateValidityBegin, locale );
+            Date dateBegin = DateUtil.parseIsoDate( strDateValidityBegin );
 
             if ( ( dateBegin == null ) )
             {
