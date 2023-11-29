@@ -1,6 +1,6 @@
 <@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required>
 	<#if attribute.textValue?has_content>
-		<#assign value = attribute.textValue />
+		<#assign dateValue = attribute.textValue?datetime("yyyy-MM-dd HH:mm:ss") />
 	</#if>
-	<@input type='date' id='${attribute.code}' name='${attribute.code}' value=value! />
+	<@input type='date' id='${attribute.code}' name='${attribute.code}' value=dateValue! />
 </@formGroup>
