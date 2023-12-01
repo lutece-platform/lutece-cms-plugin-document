@@ -93,21 +93,21 @@ public class DublinCoreMetadata
      */
     public DublinCoreMetadata(  )
     {
-        _strTitle = AppPropertiesService.getProperty( PROPERTY_DEFAULT_TITLE );
-        _strCreator = AppPropertiesService.getProperty( PROPERTY_DEFAULT_CREATOR );
-        _strSubject = AppPropertiesService.getProperty( PROPERTY_DEFAULT_SUBJECT );
-        _strDescription = AppPropertiesService.getProperty( PROPERTY_DEFAULT_DESCRIPTION );
-        _strPublisher = AppPropertiesService.getProperty( PROPERTY_DEFAULT_PUBLISHER );
-        _strContributor = AppPropertiesService.getProperty( PROPERTY_DEFAULT_CONTRIBUTOR );
-        _strDate = AppPropertiesService.getProperty( PROPERTY_DEFAULT_DATE );
-        _strType = AppPropertiesService.getProperty( PROPERTY_DEFAULT_TYPE );
-        _strFormat = AppPropertiesService.getProperty( PROPERTY_DEFAULT_FORMAT );
-        _strIdentifier = AppPropertiesService.getProperty( PROPERTY_DEFAULT_IDENTIFIER );
-        _strSource = AppPropertiesService.getProperty( PROPERTY_DEFAULT_SOURCE );
-        _strLanguage = AppPropertiesService.getProperty( PROPERTY_DEFAULT_LANGUAGE );
-        _strRelation = AppPropertiesService.getProperty( PROPERTY_DEFAULT_RELATION );
-        _strCoverage = AppPropertiesService.getProperty( PROPERTY_DEFAULT_COVERAGE );
-        _strRights = AppPropertiesService.getProperty( PROPERTY_DEFAULT_RIGTHS );
+        _strTitle = AppPropertiesService.getProperty( PROPERTY_DEFAULT_TITLE ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_TITLE ) : "";
+        _strCreator = AppPropertiesService.getProperty( PROPERTY_DEFAULT_CREATOR ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_CREATOR ) : "";
+        _strSubject = AppPropertiesService.getProperty( PROPERTY_DEFAULT_SUBJECT ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_SUBJECT ) : "";
+        _strDescription = AppPropertiesService.getProperty( PROPERTY_DEFAULT_DESCRIPTION ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_DESCRIPTION ) : "";
+        _strPublisher = AppPropertiesService.getProperty( PROPERTY_DEFAULT_PUBLISHER ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_PUBLISHER ) : "";
+        _strContributor = AppPropertiesService.getProperty( PROPERTY_DEFAULT_CONTRIBUTOR ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_CONTRIBUTOR ) : "";
+        _strDate = AppPropertiesService.getProperty( PROPERTY_DEFAULT_DATE ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_DATE ) : "";
+        _strType = AppPropertiesService.getProperty( PROPERTY_DEFAULT_TYPE ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_TYPE ) : "";
+        _strFormat = AppPropertiesService.getProperty( PROPERTY_DEFAULT_FORMAT ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_FORMAT ) : "";
+        _strIdentifier = AppPropertiesService.getProperty( PROPERTY_DEFAULT_IDENTIFIER ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_IDENTIFIER ) : "";
+        _strSource = AppPropertiesService.getProperty( PROPERTY_DEFAULT_SOURCE ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_SOURCE ) : "";
+        _strLanguage = AppPropertiesService.getProperty( PROPERTY_DEFAULT_LANGUAGE ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_LANGUAGE ) : "";
+        _strRelation = AppPropertiesService.getProperty( PROPERTY_DEFAULT_RELATION ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_RELATION ) : "";
+        _strCoverage = AppPropertiesService.getProperty( PROPERTY_DEFAULT_COVERAGE ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_COVERAGE ) : "";
+        _strRights = AppPropertiesService.getProperty( PROPERTY_DEFAULT_RIGTHS ) != null ? AppPropertiesService.getProperty( PROPERTY_DEFAULT_RIGTHS ) : "";
     }
 
     /**
