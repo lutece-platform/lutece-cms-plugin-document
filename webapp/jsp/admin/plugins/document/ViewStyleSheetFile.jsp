@@ -14,7 +14,7 @@
     }
     catch( Exception e )
     {
-        System.out.println( e );
+        out.println( e );
     }
     out.clear(  );
     out = pageContext.pushBody(  );
