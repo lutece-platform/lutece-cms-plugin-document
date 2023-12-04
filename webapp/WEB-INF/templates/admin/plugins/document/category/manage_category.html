@@ -19,7 +19,10 @@
 				<#list category_list as categoryDisplay>
 				<@tr>
 					<@td>
-						<img class="img-responsive img-thumbnail thumbnail-sm" src=${categoryDisplay.iconUrl} alt="${(categoryDisplay.category).name}" title="${(categoryDisplay.category).name}" style="max-width:50px;" /> ${(categoryDisplay.category).name}
+						<#if categoryDisplay.iconUrl??>
+							<img class="img-responsive img-thumbnail thumbnail-sm" src=${categoryDisplay.iconUrl} alt="${(categoryDisplay.category).name}" title="${(categoryDisplay.category).name}" style="max-width:50px;" />
+						</#if>
+						${(categoryDisplay.category).name}
 					</@td>
 					<@td>${(categoryDisplay.category).description!}</@td>
 					<@td>${categoryDisplay.countLinkedDocuments!}</@td>

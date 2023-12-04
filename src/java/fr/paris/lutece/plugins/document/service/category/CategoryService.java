@@ -111,7 +111,14 @@ public class CategoryService implements ImageResourceProvider
         {
             CategoryDisplay categoryDisplay = _singleton.new CategoryDisplay(  );
             categoryDisplay.setCategory( category );
-            categoryDisplay.setIconUrl( getResourceImageCategory( category.getId(  ) ) );
+            if(category.getIconContent() != null)
+            {
+            	categoryDisplay.setIconUrl( getResourceImageCategory( categoryDisplay.getCategory(  ).getId(  ) ) );
+            }
+            else
+            {
+            	categoryDisplay.setIconUrl( null );
+            }
             categoryDisplay.setCountLinkedDocuments( CategoryHome.findCountIdDocuments( category.getId(  ) ) );
             categoryDisplay.setAssigned( false );
             listCategoryDisplay.add( categoryDisplay );
@@ -138,7 +145,14 @@ public class CategoryService implements ImageResourceProvider
         {
             CategoryDisplay categoryDisplay = _singleton.new CategoryDisplay(  );
             categoryDisplay.setCategory( category );
-            categoryDisplay.setIconUrl( getResourceImageCategory( category.getId(  ) ) );
+            if(category.getIconContent() != null)
+            {
+            	categoryDisplay.setIconUrl( getResourceImageCategory( categoryDisplay.getCategory(  ).getId(  ) ) );
+            }
+            else
+            {
+            	categoryDisplay.setIconUrl( null );
+            }
             categoryDisplay.setCountLinkedDocuments( CategoryHome.findCountIdDocuments( category.getId(  ) ) );
             categoryDisplay.setAssigned( false );
 
@@ -193,7 +207,14 @@ public class CategoryService implements ImageResourceProvider
         }
 
         categoryDisplay.setCategory( category );
-        categoryDisplay.setIconUrl( getResourceImageCategory( categoryDisplay.getCategory(  ).getId(  ) ) );
+        if(category.getIconContent() != null)
+        {
+        	categoryDisplay.setIconUrl( getResourceImageCategory( categoryDisplay.getCategory(  ).getId(  ) ) );
+        }
+        else
+        {
+        	categoryDisplay.setIconUrl( null );
+        }
         categoryDisplay.setCountLinkedDocuments( CategoryHome.findCountIdDocuments( 
                 categoryDisplay.getCategory(  ).getId(  ) ) );
         categoryDisplay.setAssigned( false );
