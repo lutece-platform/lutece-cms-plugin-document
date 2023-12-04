@@ -3,7 +3,12 @@
 	<#list category_list as categoryDisplay>
 	<li>
 		<#assign labelKey>
-			<img src=${categoryDisplay.iconUrl!} class="img-responsive img-thumbnail thumbnail-sm" alt="${categoryDisplay.category.name}" /> ${categoryDisplay.category.name}&nbsp;
+			<div>
+			<#if categoryDisplay.iconUrl??>
+				<img src=${categoryDisplay.iconUrl!} class="img-thumbnail thumbnail-sm" alt="${categoryDisplay.category.name}" />
+			</#if>
+			${categoryDisplay.category.name}&nbsp;
+		</div>
 		</#assign>
 		<@checkBox labelFor='category_id_${categoryDisplay?index}' labelKey=labelKey name='category_id' id='category_id_${categoryDisplay?index}' checked=categoryDisplay.assigned value='${categoryDisplay.category.id}' />
 	</li>

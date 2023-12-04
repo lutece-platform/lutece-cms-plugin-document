@@ -18,7 +18,9 @@
 				</@formGroup>
 				<@formGroup labelFor='category_icon' labelKey='#i18n{document.modify_category.labelIcon}'>
 					<@staticText>
-						<img src=${categoryDisplay.iconUrl} alt="#i18n{document.modify_category.altIcon}" class="img-thumbnail" /></label>
+					<#if categoryDisplay.iconUrl??>
+						<img src=${categoryDisplay.iconUrl} alt="#i18n{document.modify_category.altIcon}" class="img-thumbnail" />
+					</#if>
 					</@staticText>
 					<@input type='file' id='category_icon' name='category_icon' />
 				</@formGroup>
