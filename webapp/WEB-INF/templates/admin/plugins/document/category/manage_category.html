@@ -8,6 +8,7 @@
 		<@table>
 			<thead>
 				<@tr>
+					<@th>#i18n{document.modify_category.labelIcon}</@th>
 					<@th>#i18n{document.manage_category.columnTitleName}</@th>
 					<@th>#i18n{document.manage_category.columnTitleDescription}</@th>
 					<@th>#i18n{document.manage_category.columnTitleCountLinkedDocuments}</@th>
@@ -22,6 +23,8 @@
 						<#if categoryDisplay.iconUrl??>
 							<img class="img-responsive img-thumbnail thumbnail-sm" src=${categoryDisplay.iconUrl} alt="${(categoryDisplay.category).name}" title="${(categoryDisplay.category).name}" style="max-width:50px;" />
 						</#if>
+					</@td>
+					<@td>
 						${(categoryDisplay.category).name}
 					</@td>
 					<@td>${(categoryDisplay.category).description!}</@td>

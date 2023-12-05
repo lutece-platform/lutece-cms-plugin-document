@@ -1,61 +1,67 @@
-<@row>
-	<@columns xl=3>
-		<@box>
-			<@boxHeader title='#i18n{document.search_results.labelSearch}' />
-			<@boxBody>
-				<#if advanced_search??>
-					<#assign formAction = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true' />
-				<#else>
-					<#assign formAction = 'jsp/admin/plugins/document/DocumentSearch.jsp' />
-				</#if>
-				<@tform name='search' method='post' action=formAction>
-					<@input type='hidden' name='page' value='search' />
-					
-					<@formGroup labelFor='query' labelKey='#i18n{document.search_results.labelSearch}'>
-						<#if query??>
-							<#assign value = query />
+<@pageContainer>
+    <@pageColumn>
+		<@pageHeader title='#i18n{document.search_results.labelSearch}' />
+		<@row>
+			<@columns xl=3>
+				<@box>
+					<@boxHeader title='#i18n{document.search_results.labelSearch}' />
+					<@boxBody>
+						<#if advanced_search??>
+							<#assign formAction = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true' />
 						<#else>
-							<#assign value = '' />
+							<#assign formAction = 'jsp/admin/plugins/document/DocumentSearch.jsp' />
 						</#if>
-						<@input type='text' name='query' value=value />
-					</@formGroup>
-					
-					<#-- Number of documents per page selector -->
-					<@NbItemsPerPageSelectorCombo nb_items_per_page />
-					<#if advanced_search??>
-						<@formGroup labelKey='#i18n{document.advanced_search.limit}'>
-							<@checkBox labelFor='title' labelKey='#i18n{document.advanced_search.checkbox.title}' name='title' id='title' checked=title?? />
-							<@checkBox labelFor='summary' labelKey='#i18n{document.advanced_search.checkbox.summary}' name='summary' id='summary' checked=summary?? />
-						</@formGroup>
-						<@formGroup labelFor='date' labelKey='#i18n{document.advanced_search.checkbox.date}'>
-							<@inputGroup>
-								<#if date_query??>
-									<#assign value = date_query />
+						<@tform name='search' method='post' action=formAction>
+							<@input type='hidden' name='page' value='search' />
+							
+							<@formGroup labelFor='query' labelKey='#i18n{document.search_results.labelSearch}' rows=2>
+								<#if query??>
+									<#assign value = query />
 								<#else>
 									<#assign value = '' />
 								</#if>
-								<@input type='date' name='date' id='date' value = value />
-								<@inputGroupItem type='text'>
-									<@icon style='calendar' />
-								</@inputGroupItem>
-							</@inputGroup>
-						</@formGroup>
-						<@formGroup labelFor='document_type' labelKey='#i18n{document.advanced_search.list.type}'>
-							<@select name='document_type' default_value=selected_type items=document_type_list maxLength=175 />
-						</@formGroup>
-					<#else>
-						<@formGroup>
-							<#if query??>
-								<#assign aButtonUrl = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true&query=${query}' />
+								<@input type='text' name='query' value=value />
+							</@formGroup>
+							
+							<#-- Number of documents per page selector -->
+							<@NbItemsPerPageSelectorCombo nb_items_per_page />
+							<#if advanced_search??>
+								<@formGroup labelKey='#i18n{document.advanced_search.limit}' rows=2>
+									<@checkBox labelFor='title' labelKey='#i18n{document.advanced_search.checkbox.title}' name='title' id='title' checked=title?? />
+									<@checkBox labelFor='summary' labelKey='#i18n{document.advanced_search.checkbox.summary}' name='summary' id='summary' checked=summary?? />
+								</@formGroup>
+								<@formGroup labelFor='date' labelKey='#i18n{document.advanced_search.checkbox.date}' rows=2>
+									<@inputGroup>
+										<#if date_query??>
+											<#assign value = date_query />
+										<#else>
+											<#assign value = '' />
+										</#if>
+										<@input type='date' name='date' id='date' value = value />
+										<@inputGroupItem type='text'>
+											<@icon style='calendar' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+								<@formGroup labelFor='document_type' labelKey='#i18n{document.advanced_search.list.type}' rows=2>
+									<@select name='document_type' default_value=selected_type items=document_type_list maxLength=175 />
+								</@formGroup>
+								<@formGroup>
+									<@button type='submit' title='#i18n{document.search_results.buttonSearch}' buttonIcon='search' />
+								</@formGroup>
 							<#else>
-								<#assign aButtonUrl = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true' />
+								<@formGroup>
+									<#if query??>
+										<#assign aButtonUrl = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true&query=${query}' />
+									<#else>
+										<#assign aButtonUrl = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true' />
+									</#if>
+									<@aButton href=aButtonUrl buttonIcon='chevron-down' title='#i18n{document.manage_document_publishing.labelAdvancedSearch}' />
+									<@button type='submit' title='#i18n{document.search_results.buttonSearch}' buttonIcon='search' />
+								</@formGroup>
 							</#if>
-							<@aButton href=aButtonUrl buttonIcon='chevron-down' title='#i18n{document.manage_document_publishing.labelAdvancedSearch}' />
 						</@formGroup>
 					</#if>
-					<@formGroup>
-						<@button type='submit' title='#i18n{document.search_results.buttonSearch}' buttonIcon='search' />
-					</@formGroup>
 				</@tform>
 			</@boxBody>  
 		</@box>  
@@ -96,12 +102,54 @@
 		</@box>
 	</@columns>
 </@row>
+=======
+						</@tform>
+					</@boxBody>  
+				</@box>  
+			</@columns>  
+			<@columns xl=9>
+				<@box>
+					<@boxHeader title='#i18n{document.search_results.labelDocumentsList}' />
+					<@boxBody>
+						<#if error?has_content>
+							<@alert color='danger'>${error}</@alert>
+						</#if>
+						<#if results_list?has_content>
+							<@listGroup>
+								<#list results_list as result>
+								<@listGroupItem>	
+										<p class="lead clearfix">
+											<@link href='jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${result.id}' title='${result.title}'>${result.title}</@link>
+											<@aButton href='jsp/admin/plugins/document/ModifyDocument.jsp?id_document=${result.id}' title='#i18n{document.modify_document.buttonModify}' hideTitle=['all'] buttonIcon='pencil' size='sm' />
+										</p>
+										<p>#i18n{document.search_results.labelSummary} ${result.summary}</p>
+										<p><em>#i18n{document.search_results.labelType}: ${result.type} - #i18n{document.search_results.labelDate}: ${result.date}</em></p>
+										<p>
+											
+										</p>
+								</@listGroupItem>
+								</#list>
+							</@listGroup>
+							<@paginationAdmin paginator=paginator />
+						<#else>
+							<@alert color='warning'>
+								<@icon style='exclamation-triangle' /> 
+								<b>#i18n{document.manage_documents.noDocument}</b>
+							</@alert>
+						</#if>
+					</@boxBody>
+				</@box>
+			</@columns>
+		</@row>
+	</@pageColumn>
+</@pageContainer>
+>>>>>>> a5a0f53... LUT-26820: Improved search page display, moved the article type icon to a new column
 
 <#-- Freemarker macros -->
 
 <#-- Number of items per page selector - Combo Box implementation -->
 <#macro NbItemsPerPageSelectorCombo nb_items_per_page>
-<@formGroup labelFor='items_per_page' labelKey='#i18n{document.search_results.labelNbDocsPerPage}'>
+<@formGroup labelFor='items_per_page' labelKey='#i18n{document.search_results.labelNbDocsPerPage}' rows=2>
 	<@select name='items_per_page'>
 		<#list [ "10" , "20" , "50" , "100" ] as nb>
 			<option <#if nb_items_per_page = nb >selected="selected"</#if> value="${nb}">${nb}</option>
