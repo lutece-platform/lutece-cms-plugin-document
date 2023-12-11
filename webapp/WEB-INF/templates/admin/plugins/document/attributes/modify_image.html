@@ -59,5 +59,17 @@ document.addEventListener('DOMContentLoaded', function() {
             attributeCodeWidth.classList.toggle('disabled');
         }
     });
+
+    var updateCheckbox = document.getElementById('update_${attribute.code}');
+	var fileInput = document.getElementById('${attribute.code}');
+
+	fileInput.required = false;
+	updateCheckbox.addEventListener('change', function() {
+		if (updateCheckbox.checked) {
+			fileInput.required = true;
+		} else {
+			fileInput.required = false;
+		}
+	});
 });
 </script>
