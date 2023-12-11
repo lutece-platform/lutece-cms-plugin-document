@@ -14,7 +14,7 @@
     <@pageColumn>
 		<@pageHeader title='#i18n{document.add_document_type_attribute.pageTitle}' />
 		<@tform method='post' name='docTypeAttr' action='jsp/admin/plugins/document/DoAddDocumentTypeAttribute.jsp' boxed=true>
-			<@fieldSet legend='#i18n{document.add_document_type_attribute.titleAddAttribute} ${name!}'>
+			<@fieldSet legend='#i18n{document.add_document_type_attribute.titleAddAttribute} ${attribute_type_name}'>
 				<@formGroup labelFor='name' labelKey='#i18n{document.add_document_type_attribute.labelName}' helpKey='#i18n{document.add_document_type_attribute.helpName}' mandatory=true>
 					<@input type='text' name='name' id='name' value='${name}' />
 				</@formGroup>

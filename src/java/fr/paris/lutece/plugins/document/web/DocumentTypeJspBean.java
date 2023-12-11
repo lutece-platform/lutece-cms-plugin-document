@@ -111,6 +111,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
     private static final String MARK_ATTRIBUTE_TYPES_LIST = "attribute_types_list";
     private static final String MARK_DOCUMENT_TYPE_CODE = "document_type_code";
     private static final String MARK_ATTRIBUTE_TYPE_CODE = "attribute_type_code";
+    private static final String MARK_ATTRIBUTE_TYPE_NAME = "attribute_type_name";
     private static final String MARK_ATTRIBUTE_EXTRAS_PARAMETERS = "attribute_parameters";
     private static final String MARK_ATTRIBUTE = "attribute";
     private static final String MARK_METADATA_HANDLERS_LIST = "metadata_handlers_list";
@@ -342,6 +343,9 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
             _attribute = new DocumentAttribute(  );
             model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getCreateParametersFormHtml( getLocale(  ) ) );
         }
+
+        ReferenceList listAttributeTypes = AttributeTypeHome.getAttributeTypesList( getLocale(  ) );
+        model.put(MARK_ATTRIBUTE_TYPE_NAME, listAttributeTypes.toMap( ).get(strAttributeTypeCode) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADD_ATTRIBUTE, getLocale(  ), model );
 
