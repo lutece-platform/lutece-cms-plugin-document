@@ -15,3 +15,17 @@
 		<@checkBox labelKey='#i18n{document.attributeType.file.updateField}' name='update_${attribute.code}' id='update_${attribute.code}' value='1' />
 	</@formGroup>
 </#if>
+
+<script>
+	var updateCheckbox = document.getElementById('update_${attribute.code}');
+	var fileInput = document.getElementById('${attribute.code}');
+
+	fileInput.required = false;
+	updateCheckbox.addEventListener('change', function() {
+		if (updateCheckbox.checked) {
+			fileInput.required = true;
+		} else {
+			fileInput.required = false;
+		}
+	});
+</script>
