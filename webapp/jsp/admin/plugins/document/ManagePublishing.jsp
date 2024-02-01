@@ -6,3 +6,5 @@
 
 <% documentPublishing.init( request, documentPublishing.RIGHT_MANAGE_ADMIN_SITE ); %>
 <%= documentPublishing.getPublishingManagement( request ) %>
+
+<%@ include file="../../AdminFooter.jsp" %>
