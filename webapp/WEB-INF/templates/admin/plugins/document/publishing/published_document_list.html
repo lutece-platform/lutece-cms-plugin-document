@@ -11,7 +11,7 @@
 					<@inputGroup>
 						<@select name='document_order' default_value='${document_order}' size='xs' items=document_order_list />
 						<@inputGroupItem>
-							<@button type='submit' title='#i18n{document.published_document_list.labelChangeOrder}' hideTitle=['all'] buttonIcon='sort' size='sm' />
+							<@button type='submit' title='#i18n{document.published_document_list.labelChangeOrder}' hideTitle=['all'] buttonIcon='arrows-down-up' size='sm' />
 						</@inputGroupItem>
 					</@inputGroup>
 				</@formGroup>
@@ -24,7 +24,7 @@
 		<@tform method='post' name='unpublishDocument' action='jsp/admin/plugins/document/DoUnPublishingDocument.jsp'>
 			<@input type='hidden' name='id_document' value='${document_published.id}' />
 			<@input type='hidden' name='id_portlet' value='${portlet_id}' />
-			<@button type='submit' title='#i18n{document.published_document_list.buttonUnPublish}' hideTitle=['all'] buttonIcon='toggle-off' size='sm' />
+			<@button type='submit' title='#i18n{document.published_document_list.buttonUnPublish}' hideTitle=['all'] buttonIcon='stop' color='warning' size='sm' />
 		</@tform>
 		<@tform method='post' name='previewDocument' action='jsp/admin/plugins/document/PreviewDocument.jsp'>
 			<@input type='hidden' name='id_document' value='${document_published.id}' />

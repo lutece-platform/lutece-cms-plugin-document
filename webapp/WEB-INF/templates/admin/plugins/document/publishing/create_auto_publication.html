@@ -15,7 +15,10 @@
 </@row>
 
 <script>
-$(document).ready( function(){
-	$("section").removeClass("no-padding");
-});
+	document.addEventListener("DOMContentLoaded", function() {
+	  var sections = document.querySelectorAll("section");
+	  sections.forEach(function(section) {
+		section.classList.remove("no-padding");
+	  });
+	});
 </script>

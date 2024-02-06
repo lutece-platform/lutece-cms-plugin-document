@@ -7,7 +7,7 @@
             <@tform method='post' name='publishDocument' action='jsp/admin/plugins/document/DoPublishingDocument.jsp'>
                 <@input type='hidden' name='id_document' value='${document_published.id}' />
                 <@input type='hidden' name='id_portlet' value='${portlet_id}' />
-                <@button type='submit' title='#i18n{document.manage_document_publishing.buttonPublish}' buttonIcon='toggle-on' />
+                <@button type='submit' title='#i18n{document.manage_document_publishing.buttonPublish}' buttonIcon='play' color='success' />
             </@tform>
             </#if>
             <#if permission_assign?exists>

@@ -25,247 +25,239 @@
 </#macro>
 
 <#if document?exists>
-<@row>
-	<@columns>
-		<@box>
-			<@boxHeader title='#i18n{document.manage_document_publishing.labelPublishTitle}'>
-				<#list document.actions  as action >
-					<#if action.url?has_content>
-						<#assign aButtonClass>
-							<@setBtnAction action_nb=action.idAction />
-						</#assign>
-						<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' hideTitle=['all'] buttonIcon=action.iconUrl size='sm' color=aButtonClass?trim />
-					</#if>  
-				</#list>
-				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' hideTitle=['all'] buttonIcon='folder-open' size='sm' />
-			</@boxHeader>
-			<@boxBody>
-				<@row>
-					<@columns md=3>
-						<blockquote>
-							<p class="lead">${document.id} - ${document.title}</p>
-						</blockquote>
-						<dl>
-							<dt>#i18n{document.preview_document.columnTitleType}</dt>
-							<dd>${document.type}</dd>
-							<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
-							<#if document.state?has_content>
-								 <dt>#i18n{document.preview_document.columnTitleState}</dt>
-								 <dd>${document.state}</dd>
-							</#if> 
-							<dd>${document.dateCreation}</dd>
-							<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
-							<dd>${document.dateModification}</dd>
-						</dl>
-						<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
-						<#assign dateBegin="">
-						<#if document.dateValidityBegin?has_content>
-							<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
-						</#if>    
-						<#assign dateEnd="">
-						<#if document.dateValidityEnd?has_content>
-							<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
-						</#if>                        
-						<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
-						<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
-						<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
-						<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
-						<#if dateBegin?has_content && dateEnd?has_content>
-							<p><@icon style='calendar' />&nbsp;${labelBegin} <strong>${dateBegin}</strong> ${labelEnd} <strong>${dateEnd}</strong></p>
-						<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
-							<@alert color='warning'>
-								<@icon style='exclamation-triangle' />&nbsp;#i18n{document.preview_document.labelDateValidityNotDefined}
-							</@alert>
-						<#elseif dateBegin?has_content && !( dateEnd?has_content )>
-							<p><@icon style='calendar' />&nbsp;${labelBeginSince} ${dateBegin}</p>
-						<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
-							<p><@icon style='calendar' />&nbsp;${labelEndUntil} ${dateEnd}</p> 
-						</#if>
-					</@columns>
-					<@columns md=9>
-						<@tform method='post' action='jsp/admin/plugins/document/ManageDocumentPublishing.jsp'>
-							<@input type='hidden' name='id_document' value='${document.id}' />
-							<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{document.manage_document_publishing.labelSearchBy}' hideLabel=['all']>
-								<#if portlet_filter??>
-									<#assign value = portlet_filter.searchValue />
-								<#else>
-									<#assign value = '' />
-								</#if>
-								<@input type='text' name='portlet_filter_value' placeHolder='#i18n{document.manage_document_publishing.labelSearchBy}' value=value />
-							</@formGroup>
-							<@formGroup labelFor='portlet_filter_type' labelKey='#i18n{document.manage_document_publishing.labelSearchBy}'>
-								<@select name='portlet_filter_type' id='portlet_filter_type'>
-									<option value="page_id" <#if portlet_filter??  && portlet_filter.portletFilterType  = "page_id"> selected="selected" </#if>>#i18n{document.manage_document_publishing.labelSearchByIdPage}</option>
-									<option value="page_name" <#if !portlet_filter?? ||portlet_filter.portletFilterType = "page_name">selected="selected"</#if>>#i18n{document.manage_document_publishing.labelSearchByPageName}</option>
-									<option value="portlet_name"<#if portlet_filter??  && portlet_filter.portletFilterType  = "portlet_name">selected="selected"</#if>>#i18n{document.manage_document_publishing.labelSearchByPortletName}</option>
-								</@select>
-							</@formGroup>
-							<@formGroup labelFor='order_portlet' labelKey='#i18n{document.manage_document_publishing.labelOrder}'>
-								<#if portlet_filter_error??><@alert color='danger'>${portlet_filter_error}</@alert></#if>
-								<@select name='order_portlet'>
-									<option value="0" <#if !order_portlet?? || order_portlet?? && order_portlet = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelDateUpdatePortlet}</option>
-									<option value="1" <#if order_portlet?? && order_portlet = 1> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPageName}</option>
-									<option value="2" <#if order_portlet?? && order_portlet = 2> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPageId}</option>
-									<option value="3" <#if order_portlet?? && order_portlet = 3> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPortletName}</option>
-								</@select>
-							</@formGroup>
-							<@formGroup labelFor='order_portlet_asc' labelKey=''>
-								<@select name='order_portlet_asc'>
-									<option value="0" <#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelOrderDesc}</option>
-									<option value="1" <#if order_portlet_asc?? && order_portlet_asc = 1> selected="selected" </#if>>#i18n{document.manage_document_publishing.labelOrderAsc}</option>
-								</@select>
-							</@formGroup>
-							<@formGroup>
-								<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' />
-								<#if !portlet_filter?? || portlet_filter.displayLatestPortlets>
-									<@input type='hidden' name='is_display_latest_portlets' value='false' />
-								<#else>
-									<@button type='submit' title='Supprimer le filtre' buttonIcon='times' color='danger' />
-									<@input type='hidden' name='is_display_latest_portlets' value='true' />
-								</#if>
-							</@formGroup>
-						</@tform>
-					</@columns>
-				</@row>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
-
-<@row>
-	<@columns md=6>
-		<@box>
-			<#assign title>
-				#i18n{document.manage_document_publishing.labelAvailablePortlet}
-				<#if !portlet_filter?? || portlet_filter.displayLatestPortlets>(${label_display_latest_portlets})</#if>
-			</#assign>
-			<@boxHeader title=title />
-			<@boxBody>
-				<#if document_list_portlet_list?size &gt; 0 || document_portlet_list?size &gt; 0 >
-					<@tform name='assignDocument' method='post' action='jsp/admin/plugins/document/DoAssignedDocument.jsp'>
-						<@input type='hidden' name='id_document' value='${document.id}' />
-						<@input type='hidden' name='status" id="status' value='${status_published}' />
-						<@row>
-							<@columns>
-								<@tabs>
-									<@tabList>
-										<#if !portlet_filter?? ||portlet_filter.displayLatestPortlets>
-											<#assign document_list_portlet_active = true />
-										<#else>
-											<#assign document_list_portlet_active = false />
-										</#if>
-										<@tabLink active=document_list_portlet_active href='#document_list_portlet' title='#i18n{document.manage_document_publishing.labelAvailableDocumentListPortlet}' />
-										
-										<#if portlet_filter?? && !portlet_filter.displayLatestPortlets>
-											<#assign document_portlet_active = true />
-										<#else>
-											<#assign document_portlet_active = false />
-										</#if>
-										<@tabLink active=document_portlet_active href='#document_portlet' title='#i18n{document.manage_document_publishing.labelAvailableDocumentPortlet}' />
-									</@tabList> 
-									<@tabContent>
-										<@tabPanel id='document_list_portlet' active=document_list_portlet_active>
-											<#if document_list_portlet_list?size &gt; 0>
-												<@select name='document_list_portlet_ids' default_value='' multiple=10  items=document_list_portlet_list />
-											<#else>
-												<@alert color='danger'>#i18n{document.manage_document_publishing.messagePortletNotExist}</@alert>
-											</#if>
-										</@tabPanel>
-										<@tabPanel id='document_portlet' active=document_portlet_active>
-											<#if document_portlet_list?size &gt; 0>
-												<p class="lead">#i18n{document.manage_document_publishing.labelAvailableDocumentPortlet} <small>#i18n{document.manage_document_publishing.labelAvailableDocumentPortletComment} </small></p>
-												<@select name='document_portlet_ids' default_value='' multiple=10 items=document_portlet_list />
-											<#else>
-												<@alert color='danger'>#i18n{document.manage_document_publishing.messagePortletNotExist}</@alert>
-											</#if>
-										</@tabPanel>
-									</@tabContent>
-								</@tabs>
-							</@columns>
-						</@row>
-						<@row>
-							<@columns>
-								<#if permission_assign?exists>
-									<@button id='btnAssign' type='submit' title='#i18n{document.manage_document_publishing.buttonAssignedOnPortlet}' hideTitle=['xs','sm'] buttonIcon='link' />
-								</#if>	                                   		
-								<#if permission_publish?exists>
-									<@button type='submit' title='#i18n{document.manage_document_publishing.buttonAssignedAndPublisheOnPortlet}' hideTitle=['xs','sm'] buttonIcon='toggle-on' />
-								</#if>
-							</@columns>
-						</@row>
-					</@tform>
-				<#else>
-					<br>
-					<@alert color='danger'>
-						<@icon style='ban' />
-						<b>#i18n{document.manage_document_publishing.messagePortletNotExist}</b>
-					</@alert>
-				</#if>
-			</@boxBody>
-		</@box>
-	</@columns>
-	<@columns md=6>
-		<#if assigned_portlet_list?size &gt; 0 >
-			<@box>
-				<@boxHeader title='#i18n{document.manage_document_publishing.labelPublishedPortletList}' />
-				<@boxBody>
-					<@table>
-						<#list assigned_portlet_list as assigned_portlet_publication>
-							<@tr>
-								<@td><strong>&nbsp;<@tag color='info'>${assigned_portlet_publication.portlet.id}</@tag>&nbsp;${assigned_portlet_publication.portlet.name}</strong></@td>
-								<#if permission_publish?exists>
-									<@td>
-										<#if assigned_portlet_publication.publication.status == status_unpublished>
-											<@tform type='inline' method='post' name='publishing' action='jsp/admin/plugins/document/DoAssignedDocument.jsp'>
-												<@input type='hidden' name='id_portlet' value='${assigned_portlet_publication.portlet.id}' />
-												<@input type='hidden' name='id_document' value='${document.id}' />
-												<@input type='hidden' name='status' value='${status_published}' />
-												<@button type='submit' title='#i18n{document.manage_document_publishing.buttonPublish}' hideTitle=['all'] buttonIcon='toggle-off' size='sm' />
-											</@tform>
-										<#else>
-											<@tform type='inline' method='post' name='unpublishing' action='jsp/admin/plugins/document/DoUnAssignedDocument.jsp'>
-												<@input type='hidden' name='id_portlet' value='${assigned_portlet_publication.portlet.id}' />
-												<@input type='hidden' name='status' value='${assigned_portlet_publication.publication.status}' />	
-												<@input type='hidden' name='id_document' value='${document.id}' />
-												<@button type='submit' title='#i18n{document.manage_document_publishing.buttonUnPublish}' hideTitle=['all'] buttonIcon='toggle-on' size='sm' />
-											</@tform>
-										</#if>
-									</@td>
-								</#if>
-								<#if permission_assign?exists>
-									<@td>
-										<@tform type='inline' method='post' name='unassignDocument' action='jsp/admin/plugins/document/DoUnAssignedDocument.jsp'>
-											<@input type='hidden' name='id_document' value='${document.id}' />
-											<@input type='hidden' name='id_portlet' value='${assigned_portlet_publication.portlet.id}' />
-											<@input type='hidden' name='status' value='${status_unpublished}' />
-											<@button type='submit' title='#i18n{document.manage_document_publishing.labelUnAssigned}' hideTitle=['all'] buttonIcon='unlink' size='sm' />
-										</@tform>
-									</@td>
-									<@td>
-										<@tform type='inline' method='post' name='managePublishing' action='jsp/admin/plugins/document/ManagePublishing.jsp'>
-											<@input type='hidden' name='id_portlet' value='${assigned_portlet_publication.portlet.id}' />
-											<@button type='submit' title='#i18n{document.manage_document_publishing.labelManagePortlet}' hideTitle=['all'] buttonIcon='cog' size='sm' />
-										</@tform>
-									</@td>
-								</#if>
-							</@tr>
-						</#list>
-					</@table>
-				</@boxBody>
-			</@box>
-		<#else>	
-			<@box>
-				<@boxHeader title='#i18n{document.manage_document_publishing.labelPublishedPortletList}' />
-				<@boxBody>
+<@pageContainer>
+    <@pageColumn> 
+        <@pageHeader title='#i18n{document.manage_document_publishing.labelPublishTitle}'>
+			<#list document.actions  as action >
+				<#if action.url?has_content>
+					<#assign aButtonClass>
+						<@setBtnAction action_nb=action.idAction />
+					</#assign>
+					<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' hideTitle=['all'] buttonIcon=action.iconUrl size='sm' color=aButtonClass?trim />
+				</#if>  
+			</#list>
+			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' hideTitle=['all'] buttonIcon='folder-open' size='sm' />
+		</@pageHeader>
+		<@row>
+			<@columns lg=3>
+				<blockquote>
+					<p class="lead">${document.id} - ${document.title}</p>
+				</blockquote>
+				<dl>
+					<dt>#i18n{document.preview_document.columnTitleType}</dt>
+					<dd>${document.type}</dd>
+					<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
+					<#if document.state?has_content>
+						 <dt>#i18n{document.preview_document.columnTitleState}</dt>
+						 <dd>${document.state}</dd>
+					</#if> 
+					<dd>${document.dateCreation}</dd>
+					<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
+					<dd>${document.dateModification}</dd>
+				</dl>
+				<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
+				<#assign dateBegin="">
+				<#if document.dateValidityBegin?has_content>
+					<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
+				</#if>    
+				<#assign dateEnd="">
+				<#if document.dateValidityEnd?has_content>
+					<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
+				</#if>                        
+				<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
+				<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
+				<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
+				<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
+				<#if dateBegin?has_content && dateEnd?has_content>
+					<p><@icon style='calendar' />&nbsp;${labelBegin} <strong>${dateBegin}</strong> ${labelEnd} <strong>${dateEnd}</strong></p>
+				<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
 					<@alert color='warning'>
-						<@icon style='exclamation-triangle' />
-						<strong>#i18n{document.manage_document_publishing.messageDocumentNotAffectedOrPublished}</strong>
+						<@icon style='exclamation-triangle' />&nbsp;#i18n{document.preview_document.labelDateValidityNotDefined}
 					</@alert>
-				</@boxBody>
-			</@box>
-		</#if>
-	</@columns>
-</@row>
+				<#elseif dateBegin?has_content && !( dateEnd?has_content )>
+					<p><@icon style='calendar' />&nbsp;${labelBeginSince} ${dateBegin}</p>
+				<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
+					<p><@icon style='calendar' />&nbsp;${labelEndUntil} ${dateEnd}</p> 
+				</#if>
+			</@columns>
+			<@columns lg=9>
+				<@tform method='post' action='jsp/admin/plugins/document/ManageDocumentPublishing.jsp'>
+					<@input type='hidden' name='id_document' value='${document.id}' />
+					<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{document.manage_document_publishing.labelSearchBy}' hideLabel=['all']>
+						<#if portlet_filter??>
+							<#assign value = portlet_filter.searchValue />
+						<#else>
+							<#assign value = '' />
+						</#if>
+						<@input type='text' name='portlet_filter_value' placeHolder='#i18n{document.manage_document_publishing.labelSearchBy}' value=value />
+					</@formGroup>
+					<@formGroup labelFor='portlet_filter_type' labelKey='#i18n{document.manage_document_publishing.labelSearchBy}'>
+						<@select name='portlet_filter_type' id='portlet_filter_type'>
+							<option value="page_id" <#if portlet_filter??  && portlet_filter.portletFilterType  = "page_id"> selected="selected" </#if>>#i18n{document.manage_document_publishing.labelSearchByIdPage}</option>
+							<option value="page_name" <#if !portlet_filter?? ||portlet_filter.portletFilterType = "page_name">selected="selected"</#if>>#i18n{document.manage_document_publishing.labelSearchByPageName}</option>
+							<option value="portlet_name"<#if portlet_filter??  && portlet_filter.portletFilterType  = "portlet_name">selected="selected"</#if>>#i18n{document.manage_document_publishing.labelSearchByPortletName}</option>
+						</@select>
+					</@formGroup>
+					<@formGroup labelFor='order_portlet' labelKey='#i18n{document.manage_document_publishing.labelOrder}'>
+						<#if portlet_filter_error??><@alert color='danger'>${portlet_filter_error}</@alert></#if>
+						<@select name='order_portlet'>
+							<option value="0" <#if !order_portlet?? || order_portlet?? && order_portlet = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelDateUpdatePortlet}</option>
+							<option value="1" <#if order_portlet?? && order_portlet = 1> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPageName}</option>
+							<option value="2" <#if order_portlet?? && order_portlet = 2> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPageId}</option>
+							<option value="3" <#if order_portlet?? && order_portlet = 3> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPortletName}</option>
+						</@select>
+					</@formGroup>
+					<@formGroup labelFor='order_portlet_asc' labelKey=''>
+						<@select name='order_portlet_asc'>
+							<option value="0" <#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelOrderDesc}</option>
+							<option value="1" <#if order_portlet_asc?? && order_portlet_asc = 1> selected="selected" </#if>>#i18n{document.manage_document_publishing.labelOrderAsc}</option>
+						</@select>
+					</@formGroup>
+					<@formGroup>
+						<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' />
+						<#if !portlet_filter?? || portlet_filter.displayLatestPortlets>
+							<@input type='hidden' name='is_display_latest_portlets' value='false' />
+						<#else>
+							<@button type='submit' title='Supprimer le filtre' buttonIcon='times' color='danger' />
+							<@input type='hidden' name='is_display_latest_portlets' value='true' />
+						</#if>
+					</@formGroup>
+				</@tform>
+			</@columns>
+		</@row>
+
+		<@row>
+			<@columns lg=6>
+				<@box>
+					<#assign title>
+						#i18n{document.manage_document_publishing.labelAvailablePortlet}
+						<#if !portlet_filter?? || portlet_filter.displayLatestPortlets>(${label_display_latest_portlets})</#if>
+					</#assign>
+					<@boxHeader title=title />
+					<@boxBody>
+						<#if document_list_portlet_list?size &gt; 0 || document_portlet_list?size &gt; 0 >
+							<@tform name='assignDocument' method='post' action='jsp/admin/plugins/document/DoAssignedDocument.jsp'>
+								<@input type='hidden' name='id_document' value='${document.id}' />
+								<@input type='hidden' name='status" id="status' value='${status_published}' />
+								<@row>
+									<@columns>
+										<@tabs>
+											<@tabList>
+												<#if !portlet_filter?? ||portlet_filter.displayLatestPortlets>
+													<#assign document_list_portlet_active = true />
+												<#else>
+													<#assign document_list_portlet_active = false />
+												</#if>
+												<@tabLink active=document_list_portlet_active href='#document_list_portlet' title='#i18n{document.manage_document_publishing.labelAvailableDocumentListPortlet}' />
+												
+												<#if portlet_filter?? && !portlet_filter.displayLatestPortlets>
+													<#assign document_portlet_active = true />
+												<#else>
+													<#assign document_portlet_active = false />
+												</#if>
+												<@tabLink active=document_portlet_active href='#document_portlet' title='#i18n{document.manage_document_publishing.labelAvailableDocumentPortlet}' />
+											</@tabList> 
+											<@tabContent>
+												<@tabPanel id='document_list_portlet' active=document_list_portlet_active>
+													<#if document_list_portlet_list?size &gt; 0>
+														<@select name='document_list_portlet_ids' default_value='' multiple=10  items=document_list_portlet_list />
+													<#else>
+														<@alert color='danger'>#i18n{document.manage_document_publishing.messagePortletNotExist}</@alert>
+													</#if>
+												</@tabPanel>
+												<@tabPanel id='document_portlet' active=document_portlet_active>
+													<#if document_portlet_list?size &gt; 0>
+														<p class="lead">#i18n{document.manage_document_publishing.labelAvailableDocumentPortlet} <small>#i18n{document.manage_document_publishing.labelAvailableDocumentPortletComment} </small></p>
+														<@select name='document_portlet_ids' default_value='' multiple=10 items=document_portlet_list />
+													<#else>
+														<@alert color='danger'>#i18n{document.manage_document_publishing.messagePortletNotExist}</@alert>
+													</#if>
+												</@tabPanel>
+											</@tabContent>
+										</@tabs>
+									</@columns>
+								</@row>
+								<@row>
+									<@columns>
+										<#if permission_assign?exists>
+											<@button id='btnAssign' type='submit' title='#i18n{document.manage_document_publishing.buttonAssignedOnPortlet}' hideTitle=['xs','sm'] buttonIcon='link' />
+										</#if>	                                   		
+										<#if permission_publish?exists>
+											<@button type='submit' title='#i18n{document.manage_document_publishing.buttonAssignedAndPublisheOnPortlet}' hideTitle=['xs','sm'] buttonIcon='play' />
+										</#if>
+									</@columns>
+								</@row>
+							</@tform>
+						<#else>
+							<br>
+							<@alert color='danger'>
+								<@icon style='ban' />
+								<b>#i18n{document.manage_document_publishing.messagePortletNotExist}</b>
+							</@alert>
+						</#if>
+					</@boxBody>
+				</@box>
+			</@columns>
+			<@columns lg=6>
+				<#if assigned_portlet_list?size &gt; 0 >
+					<@box>
+						<@boxHeader title='#i18n{document.manage_document_publishing.labelPublishedPortletList}' />
+						<@boxBody>
+							<@table>
+								<#list assigned_portlet_list as assigned_portlet_publication>
+									<@tr>
+										<@td><strong>&nbsp;<@tag color='info'>${assigned_portlet_publication.portlet.id}</@tag>&nbsp;${assigned_portlet_publication.portlet.name}</strong></@td>
+										<@td params='style="display:flex;"'>
+											<#if permission_publish?exists>
+												<#if assigned_portlet_publication.publication.status == status_unpublished>
+													<@tform method='post' name='publishing' action='jsp/admin/plugins/document/DoAssignedDocument.jsp'>
+														<@input type='hidden' name='id_portlet' value='${assigned_portlet_publication.portlet.id}' />
+														<@input type='hidden' name='id_document' value='${document.id}' />
+														<@input type='hidden' name='status' value='${status_published}' />
+														<@button type='submit' title='#i18n{document.manage_document_publishing.buttonPublish}' hideTitle=['all'] buttonIcon='play' color='success' size='sm' />
+													</@tform>
+												<#else>
+													<@tform method='post' name='unpublishing' action='jsp/admin/plugins/document/DoUnAssignedDocument.jsp'>
+														<@input type='hidden' name='id_portlet' value='${assigned_portlet_publication.portlet.id}' />
+														<@input type='hidden' name='status' value='${assigned_portlet_publication.publication.status}' />	
+														<@input type='hidden' name='id_document' value='${document.id}' />
+														<@button type='submit' title='#i18n{document.manage_document_publishing.buttonUnPublish}' hideTitle=['all'] buttonIcon='stop' color='warning' size='sm' />
+													</@tform>
+												</#if>
+											</#if>
+											<#if permission_assign?exists>
+												<@tform class='ms-1' method='post' name='unassignDocument' action='jsp/admin/plugins/document/DoUnAssignedDocument.jsp'>
+													<@input type='hidden' name='id_document' value='${document.id}' />
+													<@input type='hidden' name='id_portlet' value='${assigned_portlet_publication.portlet.id}' />
+													<@input type='hidden' name='status' value='${status_unpublished}' />
+													<@button type='submit' title='#i18n{document.manage_document_publishing.labelUnAssigned}' hideTitle=['all'] buttonIcon='unlink' size='sm' />
+												</@tform>
+												<@tform class='ms-1' method='post' name='managePublishing' action='jsp/admin/plugins/document/ManagePublishing.jsp'>
+													<@input type='hidden' name='id_portlet' value='${assigned_portlet_publication.portlet.id}' />
+													<@button type='submit' title='#i18n{document.manage_document_publishing.labelManagePortlet}' hideTitle=['all'] buttonIcon='settings' size='sm' />
+												</@tform>
+											</#if>
+										</@td>
+									</@tr>
+								</#list>
+							</@table>
+						</@boxBody>
+					</@box>
+				<#else>	
+					<@box>
+						<@boxHeader title='#i18n{document.manage_document_publishing.labelPublishedPortletList}' />
+						<@boxBody>
+							<@alert color='warning'>
+								<@icon style='exclamation-triangle' />
+								<strong>#i18n{document.manage_document_publishing.messageDocumentNotAffectedOrPublished}</strong>
+							</@alert>
+						</@boxBody>
+					</@box>
+				</#if>
+			</@columns>
+		</@row>
+	</@pageColumn>
+</@pageContainer>
 </#if>
 
 <script type="text/javascript"> 
