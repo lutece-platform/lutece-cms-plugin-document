@@ -207,6 +207,7 @@ INSERT INTO document_type_attr_parameters (id_document_attr,parameter_name,id_li
 INSERT INTO document_type_attr_parameters (id_document_attr,parameter_name,id_list_parameter,parameter_value) VALUES (62,'value',0,'true');
 INSERT INTO document_type_attr_parameters (id_document_attr,parameter_name,id_list_parameter,parameter_value) VALUES (62,'items',0,'true');
 INSERT INTO document_type_attr_parameters (id_document_attr,parameter_name,id_list_parameter,parameter_value) VALUES (62,'items',1,'false');
+INSERT INTO document_type_attr_parameters (id_document_attr,parameter_name,id_list_parameter,parameter_value) VALUES (48,'extension',0,'pdf');
 
 --
 -- Dumping data for table document_view
