@@ -7,7 +7,7 @@
             <@tform method='post' name='publishDocument' action='jsp/admin/plugins/document/DoPublishingDocument.jsp'>
                 <@input type='hidden' name='id_document' value='${document_published.id}' />
                 <@input type='hidden' name='id_portlet' value='${portlet_id}' />
-                <@button type='submit' title='#i18n{document.manage_document_publishing.buttonPublish}' buttonIcon='play' color='success' />
+                <@button type='submit' title='#i18n{document.manage_document_publishing.buttonPublish}' buttonIcon='play' color='success' hideTitle=['all'] size='sm' />
             </@tform>
             </#if>
             <#if permission_assign?exists>
@@ -15,16 +15,16 @@
                 <@input type='hidden' name='id_document' value='${document_published.id}' />
                 <@input type='hidden' name='id_portlet' value='${portlet_id}' />
                 <@input type='hidden' name='status' value='${status_unpublished}' />	                                            
-                <@button type='submit' title='#i18n{document.manage_document_publishing.labelUnAssigned}' buttonIcon='unlink' />
+                <@button type='submit' title='#i18n{document.manage_document_publishing.labelUnAssigned}' buttonIcon='unlink' hideTitle=['all'] size='sm' />
             </@tform>
             </#if>        
             <@tform method='post' name='previewDocument' action='jsp/admin/plugins/document/PreviewDocument.jsp'>
                 <@input type='hidden' name='id_document' value='${document_published.id}' />
-                <@button type='submit' title='#i18n{document.published_document_list.labelPreview}' buttonIcon='eye' />
+                <@button type='submit' title='#i18n{document.published_document_list.labelPreview}' buttonIcon='eye' hideTitle=['all'] size='sm' />
             </@tform>
             <@tform method='post' name='manageDocument' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
                 <@input type='hidden' name='id_space_filter' value='${document_published.spaceId}' />
-                <@button type='submit' title='#i18n{document.published_document_list.labelManageDocument}' buttonIcon='folder-open' />
+                <@button type='submit' title='#i18n{document.published_document_list.labelManageDocument}' buttonIcon='folder-open' hideTitle=['all'] size='sm' />
             </@tform>
         </@td>
     </@tr>
