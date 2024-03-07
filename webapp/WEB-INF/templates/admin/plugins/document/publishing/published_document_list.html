@@ -2,24 +2,20 @@
 <@tr>
 	<@td><img src="${page_template_picture}" alt="" title=""></@td>            
 	<@td>${document_published.title}</@td>
-	<#if permission_publish?exists>
-		<@td>
-			<@tform type='inline' method='post' name='modifyOrderDocument' action='jsp/admin/plugins/document/DoModifyDocumentOrder.jsp'>
-				<@input type='hidden' name='id_document' value='${document_published.id}' />
-				<@input type='hidden' name='id_portlet' value='${portlet_id}' />
-				<@formGroup formStyle='inline'>
-					<@inputGroup>
-						<@select name='document_order' default_value='${document_order}' size='xs' items=document_order_list />
-						<@inputGroupItem>
-							<@button type='submit' title='#i18n{document.published_document_list.labelChangeOrder}' hideTitle=['all'] buttonIcon='arrows-down-up' size='sm' />
-						</@inputGroupItem>
-					</@inputGroup>
-				</@formGroup>
-			</@tform>
-		</@td>
-	<#else>
-		<@td></@td>
-	</#if>
+	<@td>
+		<@tform type='inline' method='post' name='modifyOrderDocument' action='jsp/admin/plugins/document/DoModifyDocumentOrder.jsp'>
+			<@input type='hidden' name='id_document' value='${document_published.id}' />
+			<@input type='hidden' name='id_portlet' value='${portlet_id}' />
+			<@formGroup formStyle='inline'>
+				<@inputGroup>
+					<@select name='document_order' default_value='${document_order}' size='xs' items=document_order_list />
+					<@inputGroupItem>
+						<@button type='submit' title='#i18n{document.published_document_list.labelChangeOrder}' hideTitle=['all'] buttonIcon='arrows-down-up' size='sm' />
+					</@inputGroupItem>
+				</@inputGroup>
+			</@formGroup>
+		</@tform>
+	</@td>
 	<@td>
 		<@tform method='post' name='unpublishDocument' action='jsp/admin/plugins/document/DoUnPublishingDocument.jsp'>
 			<@input type='hidden' name='id_document' value='${document_published.id}' />
