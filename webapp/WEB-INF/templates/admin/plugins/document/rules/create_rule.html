@@ -18,11 +18,14 @@
 </@row>
    
 <script language="javascript">
-$(".btn-select").click( function(){
+$(".btn-primary").click( function(){
 	var d = $(this).attr("data-space");
-	console.log( "d:" + d );
-	$("#rule_attribute_selected").val( d );
-	$("#createRule").attr("action","jsp/admin/plugins/document/SelectSpaceRule.jsp").submit();
+	if (typeof d !== 'undefined') {
+		$("#rule_attribute_selected").val( d );
+		$("#createRule").attr("action","jsp/admin/plugins/document/SelectSpaceRule.jsp").submit();
+	} else {
+		return true;
+	}
 });
 /*
 function selectSpace(select){
