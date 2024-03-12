@@ -293,3 +293,4 @@ INSERT INTO document_workflow_transition (id_state,id_action) VALUES (7,15);
 INSERT INTO document_workflow_transition (id_state,id_action) VALUES (7,16);
 INSERT INTO document_workflow_transition (id_state,id_action) VALUES (3,17);
 INSERT INTO document_workflow_transition (id_state,id_action) VALUES (3,18);
+INSERT INTO document_workflow_transition (id_state,id_action) VALUES (3,16);
