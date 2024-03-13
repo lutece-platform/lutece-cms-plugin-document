@@ -226,7 +226,7 @@
 									<@row>
 									<#list documents_list as document >
 									<@columns sm=6 class='document-row' params='data-document="${document.id} ${document.title}"'>
-										<div class="thumbnail" style="background-color:rgba(0,0,0,0.05); padding:10px; border-radius:4px; margin-bottom:15px;">
+										<div id="document_${document.id}" class="thumbnail" style="background-color:rgba(0,0,0,0.05); padding:10px; border-radius:4px; margin-bottom:15px;">
 											<img src="${document.thumbnail}" class="thumbnail" alt="${document.title}" title="${document.title} - ${document.type}" style="max-width:100%;" />
 											<div class="caption" style="margin-top:20px;">
 												<h3>
@@ -247,6 +247,7 @@
 												</@btnGroup>
 											</div>
 										</div>
+										<a href="#document_${document.id}"></a>
 									</@columns>
 									</#list>
 									</@row>
