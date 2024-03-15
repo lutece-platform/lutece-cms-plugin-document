@@ -157,19 +157,20 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public int newPrimaryKey( )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK );
-        daoUtil.executeQuery( );
-
         int nKey;
-
-        if ( !daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
         {
-            // if the table is empty
-            nKey = 1;
-        }
+            daoUtil.executeQuery( );
 
-        nKey = daoUtil.getInt( 1 ) + 1;
-        daoUtil.free( );
+            if ( !daoUtil.next( ) )
+            {
+                // if the table is empty
+                nKey = 1;
+            }
+
+            nKey = daoUtil.getInt( 1 ) + 1;
+            daoUtil.free( );
+        }
 
         return nKey;
     }
@@ -182,29 +183,31 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public synchronized void insert( Document document )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, document.getId( ) );
-        daoUtil.setString( 2, document.getCodeDocumentType( ) );
-        daoUtil.setString( 3, document.getTitle( ) );
-        daoUtil.setTimestamp( 4, document.getDateCreation( ) );
-        daoUtil.setTimestamp( 5, document.getDateModification( ) );
-        daoUtil.setString( 6, document.getXmlWorkingContent( ) );
-        daoUtil.setString( 7, document.getXmlValidatedContent( ) );
-        daoUtil.setInt( 8, document.getSpaceId( ) );
-        daoUtil.setInt( 9, document.getStateId( ) );
-        daoUtil.setString( 10, document.getSummary( ) );
-        daoUtil.setString( 11, document.getComment( ) );
-        daoUtil.setTimestamp( 12, document.getDateValidityBegin( ) );
-        daoUtil.setTimestamp( 13, document.getDateValidityEnd( ) );
-        daoUtil.setString( 14, document.getXmlMetadata( ) );
-        daoUtil.setInt( 15, document.getCreatorId( ) );
-        daoUtil.setInt( 16, document.getMailingListId( ) );
-        daoUtil.setInt( 17, document.getPageTemplateDocumentId( ) );
-        daoUtil.setBoolean( 18, document.isSkipPortlet( ) );
-        daoUtil.setBoolean( 19, document.isSkipCategories( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
+            daoUtil.setInt( 1, document.getId( ) );
+            daoUtil.setString( 2, document.getCodeDocumentType( ) );
+            daoUtil.setString( 3, document.getTitle( ) );
+            daoUtil.setTimestamp( 4, document.getDateCreation( ) );
+            daoUtil.setTimestamp( 5, document.getDateModification( ) );
+            daoUtil.setString( 6, document.getXmlWorkingContent( ) );
+            daoUtil.setString( 7, document.getXmlValidatedContent( ) );
+            daoUtil.setInt( 8, document.getSpaceId( ) );
+            daoUtil.setInt( 9, document.getStateId( ) );
+            daoUtil.setString( 10, document.getSummary( ) );
+            daoUtil.setString( 11, document.getComment( ) );
+            daoUtil.setTimestamp( 12, document.getDateValidityBegin( ) );
+            daoUtil.setTimestamp( 13, document.getDateValidityEnd( ) );
+            daoUtil.setString( 14, document.getXmlMetadata( ) );
+            daoUtil.setInt( 15, document.getCreatorId( ) );
+            daoUtil.setInt( 16, document.getMailingListId( ) );
+            daoUtil.setInt( 17, document.getPageTemplateDocumentId( ) );
+            daoUtil.setBoolean( 18, document.isSkipPortlet( ) );
+            daoUtil.setBoolean( 19, document.isSkipCategories( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
         insertAttributes( document );
         insertCategories( document.getCategories( ), document.getId( ) );
     }
@@ -234,30 +237,32 @@ public final class DocumentDAO implements IDocumentDAO
      */
     private void insertAttribute( int nDocumentId, DocumentAttribute attribute )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_ATTRIBUTE );
-        daoUtil.setInt( 1, nDocumentId );
-        daoUtil.setInt( 2, attribute.getId( ) );
-
-        if ( attribute.isBinary( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_ATTRIBUTE ) )
         {
-            // File attribute, save content type and data in the binary column
-            daoUtil.setString( 3, attribute.getTextValue( ) );
-            daoUtil.setBytes( 4, attribute.getBinaryValue( ) );
-            daoUtil.setString( 5, attribute.getValueContentType( ) );
+            daoUtil.setInt( 1, nDocumentId );
+            daoUtil.setInt( 2, attribute.getId( ) );
+
+            if ( attribute.isBinary( ) )
+            {
+                // File attribute, save content type and data in the binary column
+                daoUtil.setString( 3, attribute.getTextValue( ) );
+                daoUtil.setBytes( 4, attribute.getBinaryValue( ) );
+                daoUtil.setString( 5, attribute.getValueContentType( ) );
+            }
+            else
+            {
+                // Text attribute, no content type and save data in the text column
+                daoUtil.setString( 3, attribute.getTextValue( ) );
+
+                daoUtil.setBytes( 4, null );
+                daoUtil.setString( 5, StringUtils.EMPTY );
+            }
+
+            daoUtil.setBoolean( 6, false );
+
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
         }
-        else
-        {
-            // Text attribute, no content type and save data in the text column
-            daoUtil.setString( 3, attribute.getTextValue( ) );
-
-            daoUtil.setBytes( 4, null );
-            daoUtil.setString( 5, StringUtils.EMPTY );
-        }
-
-        daoUtil.setBoolean( 6, false );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
     }
 
     /**
@@ -295,41 +300,41 @@ public final class DocumentDAO implements IDocumentDAO
      */
     private Document loadDocument( int nDocumentId, boolean bBinaries )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
-        daoUtil.setInt( 1, nDocumentId );
-        daoUtil.executeQuery( );
-
         Document document = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT ) )
         {
-            document = new Document( );
-            document.setId( daoUtil.getInt( 1 ) );
-            document.setCodeDocumentType( daoUtil.getString( 2 ) );
-            document.setTitle( daoUtil.getString( 3 ) );
-            document.setDateCreation( daoUtil.getTimestamp( 4 ) );
-            document.setDateModification( daoUtil.getTimestamp( 5 ) );
-            document.setXmlWorkingContent( daoUtil.getString( 6 ) );
-            document.setXmlValidatedContent( daoUtil.getString( 7 ) );
-            document.setSpaceId( daoUtil.getInt( 8 ) );
-            document.setSpace( daoUtil.getString( 9 ) );
-            document.setStateId( daoUtil.getInt( 10 ) );
-            document.setStateKey( daoUtil.getString( 11 ) );
-            document.setType( daoUtil.getString( 12 ) );
-            document.setSummary( daoUtil.getString( 13 ) );
-            document.setComment( daoUtil.getString( 14 ) );
-            document.setDateValidityBegin( daoUtil.getTimestamp( 15 ) );
-            document.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
-            document.setXmlMetadata( daoUtil.getString( 17 ) );
-            document.setCreatorId( daoUtil.getInt( 18 ) );
-            document.setMailingListId( daoUtil.getInt( 19 ) );
-            document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
-            document.setSkipPortlet( daoUtil.getBoolean( 21 ) );
-            document.setSkipCategories( daoUtil.getBoolean( 22 ) );
+            daoUtil.setInt( 1, nDocumentId );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                document = new Document( );
+                document.setId( daoUtil.getInt( 1 ) );
+                document.setCodeDocumentType( daoUtil.getString( 2 ) );
+                document.setTitle( daoUtil.getString( 3 ) );
+                document.setDateCreation( daoUtil.getTimestamp( 4 ) );
+                document.setDateModification( daoUtil.getTimestamp( 5 ) );
+                document.setXmlWorkingContent( daoUtil.getString( 6 ) );
+                document.setXmlValidatedContent( daoUtil.getString( 7 ) );
+                document.setSpaceId( daoUtil.getInt( 8 ) );
+                document.setSpace( daoUtil.getString( 9 ) );
+                document.setStateId( daoUtil.getInt( 10 ) );
+                document.setStateKey( daoUtil.getString( 11 ) );
+                document.setType( daoUtil.getString( 12 ) );
+                document.setSummary( daoUtil.getString( 13 ) );
+                document.setComment( daoUtil.getString( 14 ) );
+                document.setDateValidityBegin( daoUtil.getTimestamp( 15 ) );
+                document.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
+                document.setXmlMetadata( daoUtil.getString( 17 ) );
+                document.setCreatorId( daoUtil.getInt( 18 ) );
+                document.setMailingListId( daoUtil.getInt( 19 ) );
+                document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
+                document.setSkipPortlet( daoUtil.getBoolean( 21 ) );
+                document.setSkipCategories( daoUtil.getBoolean( 22 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         if ( document != null )
         {
             if ( bBinaries )
@@ -363,22 +368,25 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public List<Document> loadFromSpaceId( int nSpaceId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_FROM_SPACE_ID );
-        daoUtil.setInt( 1, nSpaceId );
-        daoUtil.executeQuery( );
-
-        List<Document> list = new ArrayList<Document>( );
-
-        while ( daoUtil.next( ) )
+        List<Document> list;
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_FROM_SPACE_ID ) )
         {
-            Document document = new Document( );
-            document.setId( daoUtil.getInt( 1 ) );
-            document.setTitle( daoUtil.getString( 2 ) );
-            document.setSummary( daoUtil.getString( 3 ) );
-            list.add( document );
-        }
+            daoUtil.setInt( 1, nSpaceId );
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            list = new ArrayList<>( );
+
+            while ( daoUtil.next( ) )
+            {
+                Document document = new Document( );
+                document.setId( daoUtil.getInt( 1 ) );
+                document.setTitle( daoUtil.getString( 2 ) );
+                document.setSummary( daoUtil.getString( 3 ) );
+                list.add( document );
+            }
+
+            daoUtil.free( );
+        }
 
         for ( Document d : list )
         {
@@ -400,47 +408,49 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public void loadAttributes( Document document )
     {
-        List<DocumentAttribute> listAttributes = new ArrayList<DocumentAttribute>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ATTRIBUTES );
-        daoUtil.setInt( 1, document.getId( ) );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<DocumentAttribute> listAttributes = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ATTRIBUTES ) )
         {
-            DocumentAttribute attribute = new DocumentAttribute( );
-            attribute.setId( daoUtil.getInt( 1 ) );
-            attribute.setCode( daoUtil.getString( 2 ) );
-            attribute.setCodeAttributeType( daoUtil.getString( 3 ) );
-            attribute.setCodeDocumentType( daoUtil.getString( 4 ) );
-            attribute.setName( daoUtil.getString( 5 ) );
-            attribute.setDescription( daoUtil.getString( 6 ) );
-            attribute.setAttributeOrder( daoUtil.getInt( 7 ) );
-            attribute.setRequired( daoUtil.getInt( 8 ) != 0 );
-            attribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
+            daoUtil.setInt( 1, document.getId( ) );
+            daoUtil.executeQuery( );
 
-            String strContentType = daoUtil.getString( 11 );
-
-            if ( StringUtils.isNotBlank( strContentType ) )
+            while ( daoUtil.next( ) )
             {
-                // File attribute
-                attribute.setBinary( true );
-                attribute.setTextValue( daoUtil.getString( 10 ) );
-                attribute.setBinaryValue( daoUtil.getBytes( 12 ) );
-                attribute.setValueContentType( strContentType );
-            }
-            else
-            {
-                // Text attribute
-                attribute.setBinary( false );
-                attribute.setTextValue( daoUtil.getString( 10 ) );
-                attribute.setValueContentType( StringUtils.EMPTY );
+                DocumentAttribute attribute = new DocumentAttribute( );
+                attribute.setId( daoUtil.getInt( 1 ) );
+                attribute.setCode( daoUtil.getString( 2 ) );
+                attribute.setCodeAttributeType( daoUtil.getString( 3 ) );
+                attribute.setCodeDocumentType( daoUtil.getString( 4 ) );
+                attribute.setName( daoUtil.getString( 5 ) );
+                attribute.setDescription( daoUtil.getString( 6 ) );
+                attribute.setAttributeOrder( daoUtil.getInt( 7 ) );
+                attribute.setRequired( daoUtil.getInt( 8 ) != 0 );
+                attribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
+
+                String strContentType = daoUtil.getString( 11 );
+
+                if ( StringUtils.isNotBlank( strContentType ) )
+                {
+                    // File attribute
+                    attribute.setBinary( true );
+                    attribute.setTextValue( daoUtil.getString( 10 ) );
+                    attribute.setBinaryValue( daoUtil.getBytes( 12 ) );
+                    attribute.setValueContentType( strContentType );
+                }
+                else
+                {
+                    // Text attribute
+                    attribute.setBinary( false );
+                    attribute.setTextValue( daoUtil.getString( 10 ) );
+                    attribute.setValueContentType( StringUtils.EMPTY );
+                }
+
+                listAttributes.add( attribute );
             }
 
-            listAttributes.add( attribute );
+            document.setAttributes( listAttributes );
+            daoUtil.free( );
         }
-
-        document.setAttributes( listAttributes );
-        daoUtil.free( );
     }
 
     /**
@@ -453,47 +463,49 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public void loadAttributesWithoutBinaries( Document document, boolean bValidated )
     {
-        List<DocumentAttribute> listAttributes = new ArrayList<DocumentAttribute>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ATTRIBUTES_WITHOUT_BINARIES );
-        daoUtil.setInt( 1, document.getId( ) );
-        daoUtil.setBoolean( 2, bValidated );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<DocumentAttribute> listAttributes = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ATTRIBUTES_WITHOUT_BINARIES ) )
         {
-            DocumentAttribute attribute = new DocumentAttribute( );
-            attribute.setId( daoUtil.getInt( 1 ) );
-            attribute.setCode( daoUtil.getString( 2 ) );
-            attribute.setCodeAttributeType( daoUtil.getString( 3 ) );
-            attribute.setCodeDocumentType( daoUtil.getString( 4 ) );
-            attribute.setName( daoUtil.getString( 5 ) );
-            attribute.setDescription( daoUtil.getString( 6 ) );
-            attribute.setAttributeOrder( daoUtil.getInt( 7 ) );
-            attribute.setRequired( daoUtil.getInt( 8 ) != 0 );
-            attribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
+            daoUtil.setInt( 1, document.getId( ) );
+            daoUtil.setBoolean( 2, bValidated );
+            daoUtil.executeQuery( );
 
-            String strContentType = daoUtil.getString( 11 );
-
-            if ( StringUtils.isNotBlank( strContentType ) )
+            while ( daoUtil.next( ) )
             {
-                // File attribute
-                attribute.setBinary( true );
-                attribute.setTextValue( daoUtil.getString( 10 ) );
-                attribute.setValueContentType( strContentType );
-            }
-            else
-            {
-                // Text attribute
-                attribute.setBinary( false );
-                attribute.setTextValue( daoUtil.getString( 10 ) );
-                attribute.setValueContentType( StringUtils.EMPTY );
+                DocumentAttribute attribute = new DocumentAttribute( );
+                attribute.setId( daoUtil.getInt( 1 ) );
+                attribute.setCode( daoUtil.getString( 2 ) );
+                attribute.setCodeAttributeType( daoUtil.getString( 3 ) );
+                attribute.setCodeDocumentType( daoUtil.getString( 4 ) );
+                attribute.setName( daoUtil.getString( 5 ) );
+                attribute.setDescription( daoUtil.getString( 6 ) );
+                attribute.setAttributeOrder( daoUtil.getInt( 7 ) );
+                attribute.setRequired( daoUtil.getInt( 8 ) != 0 );
+                attribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
+
+                String strContentType = daoUtil.getString( 11 );
+
+                if ( StringUtils.isNotBlank( strContentType ) )
+                {
+                    // File attribute
+                    attribute.setBinary( true );
+                    attribute.setTextValue( daoUtil.getString( 10 ) );
+                    attribute.setValueContentType( strContentType );
+                }
+                else
+                {
+                    // Text attribute
+                    attribute.setBinary( false );
+                    attribute.setTextValue( daoUtil.getString( 10 ) );
+                    attribute.setValueContentType( StringUtils.EMPTY );
+                }
+
+                listAttributes.add( attribute );
             }
 
-            listAttributes.add( attribute );
+            document.setAttributes( listAttributes );
+            daoUtil.free( );
         }
-
-        document.setAttributes( listAttributes );
-        daoUtil.free( );
     }
 
     /**
@@ -504,18 +516,20 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public void delete( int nDocumentId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nDocumentId );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nDocumentId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
 
-        // Delete attributes
-        deleteAttributes( nDocumentId );
-        // Delete categories
-        deleteCategories( nDocumentId );
-        // Delete history
-        deleteHistory( nDocumentId );
+            // Delete attributes
+            deleteAttributes( nDocumentId );
+            // Delete categories
+            deleteCategories( nDocumentId );
+            // Delete history
+            deleteHistory( nDocumentId );
+        }
     }
 
     /**
@@ -526,12 +540,14 @@ public final class DocumentDAO implements IDocumentDAO
      */
     private void deleteAttributes( int nDocumentId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ATTRIBUTES );
-        daoUtil.setInt( 1, nDocumentId );
-        daoUtil.setBoolean( 2, false );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ATTRIBUTES ) )
+        {
+            daoUtil.setInt( 1, nDocumentId );
+            daoUtil.setBoolean( 2, false );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -542,12 +558,14 @@ public final class DocumentDAO implements IDocumentDAO
      */
     private void deleteValidatedAttributes( int nDocumentId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ATTRIBUTES );
-        daoUtil.setInt( 1, nDocumentId );
-        daoUtil.setBoolean( 2, true );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ATTRIBUTES ) )
+        {
+            daoUtil.setInt( 1, nDocumentId );
+            daoUtil.setBoolean( 2, true );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -560,12 +578,14 @@ public final class DocumentDAO implements IDocumentDAO
     {
         deleteValidatedAttributes( nDocumentId );
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_VALIDATE_ATTRIBUTES );
-        daoUtil.setBoolean( 1, true );
-        daoUtil.setInt( 2, nDocumentId );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_VALIDATE_ATTRIBUTES ) )
+        {
+            daoUtil.setBoolean( 1, true );
+            daoUtil.setInt( 2, nDocumentId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -576,11 +596,13 @@ public final class DocumentDAO implements IDocumentDAO
      */
     private void deleteHistory( int nDocumentId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_DOCUMENT_HISTORY );
-        daoUtil.setInt( 1, nDocumentId );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_DOCUMENT_HISTORY ) )
+        {
+            daoUtil.setInt( 1, nDocumentId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -593,37 +615,39 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public void store( Document document, boolean bUpdateContent )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setInt( 1, document.getId( ) );
-        daoUtil.setString( 2, document.getCodeDocumentType( ) );
-        daoUtil.setString( 3, document.getTitle( ) );
-        daoUtil.setTimestamp( 4, document.getDateCreation( ) );
-        daoUtil.setTimestamp( 5, document.getDateModification( ) );
-        daoUtil.setString( 6, document.getXmlWorkingContent( ) );
-        daoUtil.setString( 7, document.getXmlValidatedContent( ) );
-        daoUtil.setInt( 8, document.getSpaceId( ) );
-        daoUtil.setInt( 9, document.getStateId( ) );
-        daoUtil.setString( 10, document.getSummary( ) );
-        daoUtil.setString( 11, document.getComment( ) );
-        daoUtil.setTimestamp( 12, document.getDateValidityBegin( ) );
-        daoUtil.setTimestamp( 13, document.getDateValidityEnd( ) );
-        daoUtil.setString( 14, document.getXmlMetadata( ) );
-        daoUtil.setInt( 15, document.getCreatorId( ) );
-        daoUtil.setInt( 16, document.getMailingListId( ) );
-        daoUtil.setInt( 17, document.getPageTemplateDocumentId( ) );
-        daoUtil.setBoolean( 18, document.isSkipPortlet( ) );
-        daoUtil.setBoolean( 19, document.isSkipCategories( ) );
-        daoUtil.setInt( 20, document.getId( ) );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
-
-        if ( bUpdateContent )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
         {
-            deleteAttributes( document.getId( ) );
-            insertAttributes( document );
-            deleteCategories( document.getId( ) );
-            insertCategories( document.getCategories( ), document.getId( ) );
+            daoUtil.setInt( 1, document.getId( ) );
+            daoUtil.setString( 2, document.getCodeDocumentType( ) );
+            daoUtil.setString( 3, document.getTitle( ) );
+            daoUtil.setTimestamp( 4, document.getDateCreation( ) );
+            daoUtil.setTimestamp( 5, document.getDateModification( ) );
+            daoUtil.setString( 6, document.getXmlWorkingContent( ) );
+            daoUtil.setString( 7, document.getXmlValidatedContent( ) );
+            daoUtil.setInt( 8, document.getSpaceId( ) );
+            daoUtil.setInt( 9, document.getStateId( ) );
+            daoUtil.setString( 10, document.getSummary( ) );
+            daoUtil.setString( 11, document.getComment( ) );
+            daoUtil.setTimestamp( 12, document.getDateValidityBegin( ) );
+            daoUtil.setTimestamp( 13, document.getDateValidityEnd( ) );
+            daoUtil.setString( 14, document.getXmlMetadata( ) );
+            daoUtil.setInt( 15, document.getCreatorId( ) );
+            daoUtil.setInt( 16, document.getMailingListId( ) );
+            daoUtil.setInt( 17, document.getPageTemplateDocumentId( ) );
+            daoUtil.setBoolean( 18, document.isSkipPortlet( ) );
+            daoUtil.setBoolean( 19, document.isSkipCategories( ) );
+            daoUtil.setInt( 20, document.getId( ) );
+
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+
+            if ( bUpdateContent )
+            {
+                deleteAttributes( document.getId( ) );
+                insertAttributes( document );
+                deleteCategories( document.getId( ) );
+                insertCategories( document.getCategories( ), document.getId( ) );
+            }
         }
     }
 
@@ -636,17 +660,18 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public Collection<Integer> selectPrimaryKeysByFilter( DocumentFilter filter )
     {
-        Collection<Integer> listDocumentIds = new ArrayList<Integer>( );
-        DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_PRIMARY_KEY_BY_FILTER, filter );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        Collection<Integer> listDocumentIds = new ArrayList<>( );
+        try ( DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_PRIMARY_KEY_BY_FILTER, filter ) )
         {
-            listDocumentIds.add( daoUtil.getInt( 1 ) );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                listDocumentIds.add( daoUtil.getInt( 1 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listDocumentIds;
     }
 
@@ -659,8 +684,9 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public List<Document> selectByFilter( DocumentFilter filter )
     {
-        List<Document> listDocuments = new ArrayList<Document>( );
-        DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER, filter );
+        List<Document> listDocuments = new ArrayList<>( );
+        try ( DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER, filter ) )
+        {
         daoUtil.executeQuery( );
 
         while ( daoUtil.next( ) )
@@ -711,6 +737,7 @@ public final class DocumentDAO implements IDocumentDAO
         }
 
         daoUtil.free( );
+        }
 
         return listDocuments;
     }
@@ -822,54 +849,56 @@ public final class DocumentDAO implements IDocumentDAO
         strSQL += SQL_ORDER_BY_LAST_MODIFICATION;
         AppLogService.debug( "Sql query filter : " + strSQL );
 
-        DAOUtil daoUtil = new DAOUtil( strSQL );
-        int nIndex = 1;
-
-        if ( filter.containsDocumentTypeCriteria( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( strSQL ) )
         {
-            daoUtil.setString( nIndex, filter.getCodeDocumentType( ) );
-            AppLogService.debug( "Param" + nIndex + " (getCodeDocumentType) = " + filter.getCodeDocumentType( ) );
-            nIndex++;
-        }
+            int nIndex = 1;
 
-        if ( filter.containsSpaceCriteria( ) )
-        {
-            daoUtil.setInt( nIndex, filter.getIdSpace( ) );
-            AppLogService.debug( "Param" + nIndex + " (getIdSpace) = " + filter.getIdSpace( ) );
-            nIndex++;
-        }
-
-        if ( filter.containsStateCriteria( ) )
-        {
-            daoUtil.setInt( nIndex, filter.getIdState( ) );
-            AppLogService.debug( "Param" + nIndex + " (getIdState) = " + filter.getIdState( ) );
-            nIndex++;
-        }
-
-        if ( filter.containsCategoriesCriteria( ) )
-        {
-            for ( int nCategoryId : filter.getCategoriesId( ) )
+            if ( filter.containsDocumentTypeCriteria( ) )
             {
-                if ( nCategoryId > 0 )
+                daoUtil.setString( nIndex, filter.getCodeDocumentType( ) );
+                AppLogService.debug( "Param" + nIndex + " (getCodeDocumentType) = " + filter.getCodeDocumentType( ) );
+                nIndex++;
+            }
+
+            if ( filter.containsSpaceCriteria( ) )
+            {
+                daoUtil.setInt( nIndex, filter.getIdSpace( ) );
+                AppLogService.debug( "Param" + nIndex + " (getIdSpace) = " + filter.getIdSpace( ) );
+                nIndex++;
+            }
+
+            if ( filter.containsStateCriteria( ) )
+            {
+                daoUtil.setInt( nIndex, filter.getIdState( ) );
+                AppLogService.debug( "Param" + nIndex + " (getIdState) = " + filter.getIdState( ) );
+                nIndex++;
+            }
+
+            if ( filter.containsCategoriesCriteria( ) )
+            {
+                for ( int nCategoryId : filter.getCategoriesId( ) )
                 {
-                    daoUtil.setInt( nIndex, nCategoryId );
-                    AppLogService.debug( "Param" + nIndex + " (getCategoriesId) = " + nCategoryId );
+                    if ( nCategoryId > 0 )
+                    {
+                        daoUtil.setInt( nIndex, nCategoryId );
+                        AppLogService.debug( "Param" + nIndex + " (getCategoriesId) = " + nCategoryId );
+                        nIndex++;
+                    }
+                }
+            }
+
+            if ( filter.containsIdsCriteria( ) )
+            {
+                for ( int nId : filter.getIds( ) )
+                {
+                    daoUtil.setInt( nIndex, nId );
+                    AppLogService.debug( "Param" + nIndex + " (getIds) = " + nId );
                     nIndex++;
                 }
             }
-        }
 
-        if ( filter.containsIdsCriteria( ) )
-        {
-            for ( int nId : filter.getIds( ) )
-            {
-                daoUtil.setInt( nIndex, nId );
-                AppLogService.debug( "Param" + nIndex + " (getIds) = " + nId );
-                nIndex++;
-            }
+            return daoUtil;
         }
-
-        return daoUtil;
     }
 
     /**
@@ -881,52 +910,54 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public List<Document> selectByRelatedCategories( Document document )
     {
-        List<Document> listDocument = new ArrayList<Document>( );
+        List<Document> listDocument = new ArrayList<>( );
 
         if ( ( document == null ) || ( document.getId( ) <= 0 ) )
         {
             return listDocument;
         }
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_RELATED_CATEGORY );
-        daoUtil.setInt( 1, document.getId( ) );
-        daoUtil.executeQuery( );
-
-        Document returnDocument = null;
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_RELATED_CATEGORY ) )
         {
-            returnDocument = new Document( );
-            returnDocument.setId( daoUtil.getInt( 1 ) );
-            returnDocument.setCodeDocumentType( daoUtil.getString( 2 ) );
-            returnDocument.setTitle( daoUtil.getString( 3 ) );
-            returnDocument.setDateCreation( daoUtil.getTimestamp( 4 ) );
-            returnDocument.setDateModification( daoUtil.getTimestamp( 5 ) );
-            returnDocument.setXmlWorkingContent( daoUtil.getString( 6 ) );
-            returnDocument.setXmlValidatedContent( daoUtil.getString( 7 ) );
-            returnDocument.setSpaceId( daoUtil.getInt( 8 ) );
-            returnDocument.setSpace( daoUtil.getString( 9 ) );
-            returnDocument.setStateId( daoUtil.getInt( 10 ) );
-            returnDocument.setStateKey( daoUtil.getString( 11 ) );
-            returnDocument.setType( daoUtil.getString( 12 ) );
-            returnDocument.setSummary( daoUtil.getString( 13 ) );
-            returnDocument.setComment( daoUtil.getString( 14 ) );
-            returnDocument.setDateValidityBegin( daoUtil.getTimestamp( 15 ) );
-            returnDocument.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
-            returnDocument.setXmlMetadata( daoUtil.getString( 17 ) );
-            returnDocument.setCreatorId( daoUtil.getInt( 18 ) );
-            returnDocument.setMailingListId( daoUtil.getInt( 19 ) );
-            returnDocument.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
-            returnDocument.setSkipPortlet( daoUtil.getBoolean( 21 ) );
-            returnDocument.setSkipCategories( daoUtil.getBoolean( 22 ) );
+            daoUtil.setInt( 1, document.getId( ) );
+            daoUtil.executeQuery( );
 
-            listDocument.add( returnDocument );
+            Document returnDocument = null;
 
-            loadAttributes( document );
-            document.setCategories( selectCategories( document.getId( ) ) );
+            while ( daoUtil.next( ) )
+            {
+                returnDocument = new Document( );
+                returnDocument.setId( daoUtil.getInt( 1 ) );
+                returnDocument.setCodeDocumentType( daoUtil.getString( 2 ) );
+                returnDocument.setTitle( daoUtil.getString( 3 ) );
+                returnDocument.setDateCreation( daoUtil.getTimestamp( 4 ) );
+                returnDocument.setDateModification( daoUtil.getTimestamp( 5 ) );
+                returnDocument.setXmlWorkingContent( daoUtil.getString( 6 ) );
+                returnDocument.setXmlValidatedContent( daoUtil.getString( 7 ) );
+                returnDocument.setSpaceId( daoUtil.getInt( 8 ) );
+                returnDocument.setSpace( daoUtil.getString( 9 ) );
+                returnDocument.setStateId( daoUtil.getInt( 10 ) );
+                returnDocument.setStateKey( daoUtil.getString( 11 ) );
+                returnDocument.setType( daoUtil.getString( 12 ) );
+                returnDocument.setSummary( daoUtil.getString( 13 ) );
+                returnDocument.setComment( daoUtil.getString( 14 ) );
+                returnDocument.setDateValidityBegin( daoUtil.getTimestamp( 15 ) );
+                returnDocument.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
+                returnDocument.setXmlMetadata( daoUtil.getString( 17 ) );
+                returnDocument.setCreatorId( daoUtil.getInt( 18 ) );
+                returnDocument.setMailingListId( daoUtil.getInt( 19 ) );
+                returnDocument.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
+                returnDocument.setSkipPortlet( daoUtil.getBoolean( 21 ) );
+                returnDocument.setSkipCategories( daoUtil.getBoolean( 22 ) );
+
+                listDocument.add( returnDocument );
+
+                loadAttributes( document );
+                document.setCategories( selectCategories( document.getId( ) ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
 
         return listDocument;
     }
@@ -940,22 +971,23 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public DocumentResource loadResource( int nDocumentId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOCUMENT_RESOURCE );
-        daoUtil.setInt( 1, nDocumentId );
-        daoUtil.executeQuery( );
-
         DocumentResource resource = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOCUMENT_RESOURCE ) )
         {
-            resource = new DocumentResource( );
-            resource.setContent( daoUtil.getBytes( 1 ) );
-            resource.setContentType( daoUtil.getString( 2 ) );
-            resource.setName( daoUtil.getString( 3 ) );
+            daoUtil.setInt( 1, nDocumentId );
+            daoUtil.executeQuery( );
+
+
+            if ( daoUtil.next( ) )
+            {
+                resource = new DocumentResource( );
+                resource.setContent( daoUtil.getBytes( 1 ) );
+                resource.setContentType( daoUtil.getString( 2 ) );
+                resource.setName( daoUtil.getString( 3 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return resource;
     }
 
@@ -972,24 +1004,24 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public DocumentResource loadSpecificResource( int nDocumentId, int nAttributeId, boolean bValidated )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOCUMENT_SPECIFIC_RESOURCE );
-        daoUtil.setInt( 1, nDocumentId );
-        daoUtil.setInt( 2, nAttributeId );
-        daoUtil.setBoolean( 3, bValidated );
-        daoUtil.executeQuery( );
-
         DocumentResource resource = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOCUMENT_SPECIFIC_RESOURCE ) )
         {
-            resource = new DocumentResource( );
-            resource.setContent( daoUtil.getBytes( 1 ) );
-            resource.setContentType( daoUtil.getString( 2 ) );
-            resource.setName( daoUtil.getString( 3 ) );
+            daoUtil.setInt( 1, nDocumentId );
+            daoUtil.setInt( 2, nAttributeId );
+            daoUtil.setBoolean( 3, bValidated );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                resource = new DocumentResource( );
+                resource.setContent( daoUtil.getBytes( 1 ) );
+                resource.setContentType( daoUtil.getString( 2 ) );
+                resource.setName( daoUtil.getString( 3 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return resource;
     }
 
@@ -1000,19 +1032,20 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public Collection<Integer> selectAllPrimaryKeys( )
     {
-        Collection<Integer> listPrimaryKeys = new ArrayList<Integer>( );
+        Collection<Integer> listPrimaryKeys = new ArrayList<>( );
         String strSQL = SQL_QUERY_SELECT_PRIMARY_KEYS;
 
-        DAOUtil daoUtil = new DAOUtil( strSQL );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( strSQL ) )
         {
-            listPrimaryKeys.add( daoUtil.getInt( 1 ) );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                listPrimaryKeys.add( daoUtil.getInt( 1 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listPrimaryKeys;
     }
 
@@ -1024,44 +1057,44 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public List<Document> selectAll( )
     {
-        List<Document> listDocuments = new ArrayList<Document>( );
-        String strSQL = SQL_QUERY_SELECT_BY_FILTER;
-
-        DAOUtil daoUtil = new DAOUtil( strSQL );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<Document> listDocuments = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_FILTER ) )
         {
-            Document document = new Document( );
-            document.setId( daoUtil.getInt( 1 ) );
-            document.setCodeDocumentType( daoUtil.getString( 2 ) );
-            document.setTitle( daoUtil.getString( 3 ) );
-            document.setDateCreation( daoUtil.getTimestamp( 4 ) );
-            document.setDateModification( daoUtil.getTimestamp( 5 ) );
-            document.setXmlWorkingContent( daoUtil.getString( 6 ) );
-            document.setXmlValidatedContent( daoUtil.getString( 7 ) );
-            document.setSpaceId( daoUtil.getInt( 8 ) );
-            document.setSpace( daoUtil.getString( 9 ) );
-            document.setStateId( daoUtil.getInt( 10 ) );
-            document.setStateKey( daoUtil.getString( 11 ) );
-            document.setType( daoUtil.getString( 12 ) );
-            document.setSummary( daoUtil.getString( 13 ) );
-            document.setComment( daoUtil.getString( 14 ) );
-            document.setDateValidityBegin( daoUtil.getTimestamp( 15 ) );
-            document.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
-            document.setXmlMetadata( daoUtil.getString( 17 ) );
-            document.setCreatorId( daoUtil.getInt( 18 ) );
-            document.setMailingListId( daoUtil.getInt( 19 ) );
-            document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
-            document.setSkipPortlet( daoUtil.getBoolean( 21 ) );
-            document.setSkipCategories( daoUtil.getBoolean( 22 ) );
+            daoUtil.executeQuery( );
 
-            loadAttributes( document );
-            document.setCategories( selectCategories( document.getId( ) ) );
-            listDocuments.add( document );
+            while ( daoUtil.next( ) )
+            {
+                Document document = new Document( );
+                document.setId( daoUtil.getInt( 1 ) );
+                document.setCodeDocumentType( daoUtil.getString( 2 ) );
+                document.setTitle( daoUtil.getString( 3 ) );
+                document.setDateCreation( daoUtil.getTimestamp( 4 ) );
+                document.setDateModification( daoUtil.getTimestamp( 5 ) );
+                document.setXmlWorkingContent( daoUtil.getString( 6 ) );
+                document.setXmlValidatedContent( daoUtil.getString( 7 ) );
+                document.setSpaceId( daoUtil.getInt( 8 ) );
+                document.setSpace( daoUtil.getString( 9 ) );
+                document.setStateId( daoUtil.getInt( 10 ) );
+                document.setStateKey( daoUtil.getString( 11 ) );
+                document.setType( daoUtil.getString( 12 ) );
+                document.setSummary( daoUtil.getString( 13 ) );
+                document.setComment( daoUtil.getString( 14 ) );
+                document.setDateValidityBegin( daoUtil.getTimestamp( 15 ) );
+                document.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
+                document.setXmlMetadata( daoUtil.getString( 17 ) );
+                document.setCreatorId( daoUtil.getInt( 18 ) );
+                document.setMailingListId( daoUtil.getInt( 19 ) );
+                document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
+                document.setSkipPortlet( daoUtil.getBoolean( 21 ) );
+                document.setSkipCategories( daoUtil.getBoolean( 22 ) );
+
+                loadAttributes( document );
+                document.setCategories( selectCategories( document.getId( ) ) );
+                listDocuments.add( document );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
 
         return listDocuments;
     }
@@ -1075,19 +1108,19 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public String getPageTemplateDocumentPath( int nIdPageTemplateDocument )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PAGE_TEMPLATE_PATH );
-        daoUtil.setInt( 1, nIdPageTemplateDocument );
-        daoUtil.executeQuery( );
-
         String strPageTemplatePath = "";
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PAGE_TEMPLATE_PATH ) )
         {
-            strPageTemplatePath = daoUtil.getString( 1 );
+            daoUtil.setInt( 1, nIdPageTemplateDocument );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                strPageTemplatePath = daoUtil.getString( 1 );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return strPageTemplatePath;
     }
 
@@ -1101,27 +1134,28 @@ public final class DocumentDAO implements IDocumentDAO
     private List<Category> selectCategories( int nIdDocument )
     {
         int nParam;
-        List<Category> listCategory = new ArrayList<Category>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_CATEGORY );
-        daoUtil.setInt( 1, nIdDocument );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<Category> listCategory = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_CATEGORY ) )
         {
-            nParam = 0;
+            daoUtil.setInt( 1, nIdDocument );
+            daoUtil.executeQuery( );
 
-            Category category = new Category( );
-            category.setId( daoUtil.getInt( ++nParam ) );
-            category.setName( daoUtil.getString( ++nParam ) );
-            category.setDescription( daoUtil.getString( ++nParam ) );
-            category.setIconContent( daoUtil.getBytes( ++nParam ) );
-            category.setIconMimeType( daoUtil.getString( ++nParam ) );
+            while ( daoUtil.next( ) )
+            {
+                nParam = 0;
 
-            listCategory.add( category );
+                Category category = new Category( );
+                category.setId( daoUtil.getInt( ++nParam ) );
+                category.setName( daoUtil.getString( ++nParam ) );
+                category.setDescription( daoUtil.getString( ++nParam ) );
+                category.setIconContent( daoUtil.getBytes( ++nParam ) );
+                category.setIconMimeType( daoUtil.getString( ++nParam ) );
+
+                listCategory.add( category );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listCategory;
     }
 
@@ -1138,16 +1172,18 @@ public final class DocumentDAO implements IDocumentDAO
     {
         if ( listCategory != null )
         {
-            DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_LINK_CATEGORY_DOCUMENT );
-
-            for ( Category category : listCategory )
+            try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_LINK_CATEGORY_DOCUMENT ) )
             {
-                daoUtil.setInt( 1, category.getId( ) );
-                daoUtil.setInt( 2, nIdDocument );
-                daoUtil.executeUpdate( );
-            }
 
-            daoUtil.free( );
+                for ( Category category : listCategory )
+                {
+                    daoUtil.setInt( 1, category.getId( ) );
+                    daoUtil.setInt( 2, nIdDocument );
+                    daoUtil.executeUpdate( );
+                }
+
+                daoUtil.free( );
+            }
         }
     }
 
@@ -1160,10 +1196,12 @@ public final class DocumentDAO implements IDocumentDAO
     private void deleteCategories( int nIdDocument )
     {
         int nParam = 0;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_LINKS_DOCUMENT );
-        daoUtil.setInt( ++nParam, nIdDocument );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_LINKS_DOCUMENT ) )
+        {
+            daoUtil.setInt( ++nParam, nIdDocument );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -1176,20 +1214,21 @@ public final class DocumentDAO implements IDocumentDAO
     public Document loadLastModifiedAttributes( int nIdDocument )
     {
         Document document = null;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_LAST_MODIFIED );
-        daoUtil.setInt( 1, nIdDocument );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_LAST_MODIFIED ) )
         {
-            document = new Document( );
-            document.setId( nIdDocument );
-            document.setCodeDocumentType( daoUtil.getString( 1 ) );
-            document.setDateModification( daoUtil.getTimestamp( 2 ) );
+            daoUtil.setInt( 1, nIdDocument );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                document = new Document( );
+                document.setId( nIdDocument );
+                document.setCodeDocumentType( daoUtil.getString( 1 ) );
+                document.setDateModification( daoUtil.getTimestamp( 2 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return document;
     }
 
@@ -1202,42 +1241,42 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public Document loadLastModifiedDocumentFromUser( String strUserName )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_LAST_MODIFIED_DOCUMENT_FROM_USER );
-        daoUtil.setString( 1, strUserName );
-        daoUtil.executeQuery( );
-
         Document document = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_LAST_MODIFIED_DOCUMENT_FROM_USER ) )
         {
-            int nIndex = 1;
-            document = new Document( );
-            document.setId( daoUtil.getInt( nIndex++ ) );
-            document.setCodeDocumentType( daoUtil.getString( nIndex++ ) );
-            document.setTitle( daoUtil.getString( nIndex++ ) );
-            document.setDateCreation( daoUtil.getTimestamp( nIndex++ ) );
-            document.setDateModification( daoUtil.getTimestamp( nIndex++ ) );
-            document.setXmlWorkingContent( daoUtil.getString( nIndex++ ) );
-            document.setXmlValidatedContent( daoUtil.getString( nIndex++ ) );
-            document.setSpaceId( daoUtil.getInt( nIndex++ ) );
-            document.setSpace( daoUtil.getString( nIndex++ ) );
-            document.setStateId( daoUtil.getInt( nIndex++ ) );
-            document.setStateKey( daoUtil.getString( nIndex++ ) );
-            document.setType( daoUtil.getString( nIndex++ ) );
-            document.setSummary( daoUtil.getString( nIndex++ ) );
-            document.setComment( daoUtil.getString( nIndex++ ) );
-            document.setDateValidityBegin( daoUtil.getTimestamp( nIndex++ ) );
-            document.setDateValidityEnd( daoUtil.getTimestamp( nIndex++ ) );
-            document.setXmlMetadata( daoUtil.getString( nIndex++ ) );
-            document.setCreatorId( daoUtil.getInt( nIndex++ ) );
-            document.setMailingListId( daoUtil.getInt( nIndex++ ) );
-            document.setPageTemplateDocumentId( daoUtil.getInt( nIndex++ ) );
-            document.setSkipPortlet( daoUtil.getBoolean( nIndex++ ) );
-            document.setSkipCategories( daoUtil.getBoolean( nIndex++ ) );
+            daoUtil.setString( 1, strUserName );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                int nIndex = 1;
+                document = new Document( );
+                document.setId( daoUtil.getInt( nIndex++ ) );
+                document.setCodeDocumentType( daoUtil.getString( nIndex++ ) );
+                document.setTitle( daoUtil.getString( nIndex++ ) );
+                document.setDateCreation( daoUtil.getTimestamp( nIndex++ ) );
+                document.setDateModification( daoUtil.getTimestamp( nIndex++ ) );
+                document.setXmlWorkingContent( daoUtil.getString( nIndex++ ) );
+                document.setXmlValidatedContent( daoUtil.getString( nIndex++ ) );
+                document.setSpaceId( daoUtil.getInt( nIndex++ ) );
+                document.setSpace( daoUtil.getString( nIndex++ ) );
+                document.setStateId( daoUtil.getInt( nIndex++ ) );
+                document.setStateKey( daoUtil.getString( nIndex++ ) );
+                document.setType( daoUtil.getString( nIndex++ ) );
+                document.setSummary( daoUtil.getString( nIndex++ ) );
+                document.setComment( daoUtil.getString( nIndex++ ) );
+                document.setDateValidityBegin( daoUtil.getTimestamp( nIndex++ ) );
+                document.setDateValidityEnd( daoUtil.getTimestamp( nIndex++ ) );
+                document.setXmlMetadata( daoUtil.getString( nIndex++ ) );
+                document.setCreatorId( daoUtil.getInt( nIndex++ ) );
+                document.setMailingListId( daoUtil.getInt( nIndex++ ) );
+                document.setPageTemplateDocumentId( daoUtil.getInt( nIndex++ ) );
+                document.setSkipPortlet( daoUtil.getBoolean( nIndex++ ) );
+                document.setSkipCategories( daoUtil.getBoolean( nIndex++ ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return document;
     }
 
@@ -1248,41 +1287,41 @@ public final class DocumentDAO implements IDocumentDAO
      */
     public Document loadLastPublishedDocument( )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_LAST_PUBLISHED_DOCUMENT );
-        daoUtil.executeQuery( );
-
         Document document = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_LAST_PUBLISHED_DOCUMENT ) )
         {
-            int nIndex = 1;
-            document = new Document( );
-            document.setId( daoUtil.getInt( nIndex++ ) );
-            document.setCodeDocumentType( daoUtil.getString( nIndex++ ) );
-            document.setTitle( daoUtil.getString( nIndex++ ) );
-            document.setDateCreation( daoUtil.getTimestamp( nIndex++ ) );
-            document.setDateModification( daoUtil.getTimestamp( nIndex++ ) );
-            document.setXmlWorkingContent( daoUtil.getString( nIndex++ ) );
-            document.setXmlValidatedContent( daoUtil.getString( nIndex++ ) );
-            document.setSpaceId( daoUtil.getInt( nIndex++ ) );
-            document.setSpace( daoUtil.getString( nIndex++ ) );
-            document.setStateId( daoUtil.getInt( nIndex++ ) );
-            document.setStateKey( daoUtil.getString( nIndex++ ) );
-            document.setType( daoUtil.getString( nIndex++ ) );
-            document.setSummary( daoUtil.getString( nIndex++ ) );
-            document.setComment( daoUtil.getString( nIndex++ ) );
-            document.setDateValidityBegin( daoUtil.getTimestamp( nIndex++ ) );
-            document.setDateValidityEnd( daoUtil.getTimestamp( nIndex++ ) );
-            document.setXmlMetadata( daoUtil.getString( nIndex++ ) );
-            document.setCreatorId( daoUtil.getInt( nIndex++ ) );
-            document.setMailingListId( daoUtil.getInt( nIndex++ ) );
-            document.setPageTemplateDocumentId( daoUtil.getInt( nIndex++ ) );
-            document.setSkipPortlet( daoUtil.getBoolean( nIndex++ ) );
-            document.setSkipCategories( daoUtil.getBoolean( nIndex++ ) );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                int nIndex = 1;
+                document = new Document( );
+                document.setId( daoUtil.getInt( nIndex++ ) );
+                document.setCodeDocumentType( daoUtil.getString( nIndex++ ) );
+                document.setTitle( daoUtil.getString( nIndex++ ) );
+                document.setDateCreation( daoUtil.getTimestamp( nIndex++ ) );
+                document.setDateModification( daoUtil.getTimestamp( nIndex++ ) );
+                document.setXmlWorkingContent( daoUtil.getString( nIndex++ ) );
+                document.setXmlValidatedContent( daoUtil.getString( nIndex++ ) );
+                document.setSpaceId( daoUtil.getInt( nIndex++ ) );
+                document.setSpace( daoUtil.getString( nIndex++ ) );
+                document.setStateId( daoUtil.getInt( nIndex++ ) );
+                document.setStateKey( daoUtil.getString( nIndex++ ) );
+                document.setType( daoUtil.getString( nIndex++ ) );
+                document.setSummary( daoUtil.getString( nIndex++ ) );
+                document.setComment( daoUtil.getString( nIndex++ ) );
+                document.setDateValidityBegin( daoUtil.getTimestamp( nIndex++ ) );
+                document.setDateValidityEnd( daoUtil.getTimestamp( nIndex++ ) );
+                document.setXmlMetadata( daoUtil.getString( nIndex++ ) );
+                document.setCreatorId( daoUtil.getInt( nIndex++ ) );
+                document.setMailingListId( daoUtil.getInt( nIndex++ ) );
+                document.setPageTemplateDocumentId( daoUtil.getInt( nIndex++ ) );
+                document.setSkipPortlet( daoUtil.getBoolean( nIndex++ ) );
+                document.setSkipCategories( daoUtil.getBoolean( nIndex++ ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return document;
     }
 }

@@ -61,21 +61,21 @@ public final class RuleDAO implements IRuleDAO
      */
     private int newPrimaryKey( )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK );
-        daoUtil.executeQuery( );
-
         int nKey;
-
-        if ( !daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
         {
-            // if the table is empty
-            nKey = 1;
+            daoUtil.executeQuery( );
+
+            if ( !daoUtil.next( ) )
+            {
+                // if the table is empty
+                nKey = 1;
+            }
+
+            nKey = daoUtil.getInt( 1 ) + 1;
+
+            daoUtil.free( );
         }
-
-        nKey = daoUtil.getInt( 1 ) + 1;
-
-        daoUtil.free( );
-
         return nKey;
     }
 
@@ -87,14 +87,15 @@ public final class RuleDAO implements IRuleDAO
      */
     public synchronized void insert( Rule rule )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        rule.setId( newPrimaryKey( ) );
-        daoUtil.setInt( 1, rule.getId( ) );
-        daoUtil.setString( 2, rule.getRuleTypeId( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
+            rule.setId( newPrimaryKey( ) );
+            daoUtil.setInt( 1, rule.getId( ) );
+            daoUtil.setString( 2, rule.getRuleTypeId( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
-
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
         // Rule attributes
         insertAttributes( rule );
     }
@@ -112,13 +113,15 @@ public final class RuleDAO implements IRuleDAO
         for ( int i = 0; i < attributes.length; i++ )
         {
             String strAttributeValue = rule.getAttribute( attributes [i] );
-            DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_ATTRIBUTE );
+            try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_ATTRIBUTE ) )
+            {
             daoUtil.setInt( 1, rule.getId( ) );
             daoUtil.setString( 2, attributes [i] );
             daoUtil.setString( 3, strAttributeValue );
 
             daoUtil.executeUpdate( );
             daoUtil.free( );
+            }
         }
     }
 
@@ -134,21 +137,22 @@ public final class RuleDAO implements IRuleDAO
     public Rule load( int nRuleId, IRuleTypesSet ruleTypesSet )
     {
         Rule rule = null;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
-        daoUtil.setInt( 1, nRuleId );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT ) )
         {
-            String strRuleTypeId = daoUtil.getString( 2 );
-            rule = ruleTypesSet.newInstance( strRuleTypeId );
-            rule.setId( nRuleId );
-            rule.setRuleTypeId( strRuleTypeId );
-            loadAttributes( rule );
+            daoUtil.setInt( 1, nRuleId );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                String strRuleTypeId = daoUtil.getString( 2 );
+                rule = ruleTypesSet.newInstance( strRuleTypeId );
+                rule.setId( nRuleId );
+                rule.setRuleTypeId( strRuleTypeId );
+                loadAttributes( rule );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return rule;
     }
 
@@ -160,16 +164,18 @@ public final class RuleDAO implements IRuleDAO
      */
     private void loadAttributes( Rule rule )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ATTRIBUTES );
-        daoUtil.setInt( 1, rule.getId( ) );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ATTRIBUTES ) )
         {
-            rule.setAttribute( daoUtil.getString( 1 ), daoUtil.getString( 2 ) );
-        }
+            daoUtil.setInt( 1, rule.getId( ) );
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            while ( daoUtil.next( ) )
+            {
+                rule.setAttribute( daoUtil.getString( 1 ), daoUtil.getString( 2 ) );
+            }
+
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -182,11 +188,13 @@ public final class RuleDAO implements IRuleDAO
     {
         deleteAttributes( nRuleId );
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nRuleId );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nRuleId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -197,11 +205,13 @@ public final class RuleDAO implements IRuleDAO
      */
     private void deleteAttributes( int nRuleId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ATTRIBUTES );
-        daoUtil.setInt( 1, nRuleId );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ATTRIBUTES ) )
+        {
+            daoUtil.setInt( 1, nRuleId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -226,19 +236,20 @@ public final class RuleDAO implements IRuleDAO
      */
     public List<Rule> selectRuleList( IRuleTypesSet ruleTypesSet )
     {
-        List<Rule> listRules = new ArrayList<Rule>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<Rule> listRules = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL ) )
         {
-            int nRuleId = daoUtil.getInt( 1 );
-            Rule rule = load( nRuleId, ruleTypesSet );
-            listRules.add( rule );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                int nRuleId = daoUtil.getInt( 1 );
+                Rule rule = load( nRuleId, ruleTypesSet );
+                listRules.add( rule );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listRules;
     }
 
@@ -253,21 +264,23 @@ public final class RuleDAO implements IRuleDAO
      */
     public List<Rule> selectRuleListByRuleTypeKey( String strRuleTypeKey, IRuleTypesSet ruleTypesSet )
     {
-        List<Rule> listRules = new ArrayList<Rule>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_RULE_TYPE_KEY );
-        daoUtil.setString( 1, strRuleTypeKey );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<Rule> listRules = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_RULE_TYPE_KEY ) )
         {
-            Rule rule = ruleTypesSet.newInstance( strRuleTypeKey );
-            rule.setId( daoUtil.getInt( 1 ) );
-            rule.setRuleTypeId( strRuleTypeKey );
-            loadAttributes( rule );
-            listRules.add( rule );
-        }
+            daoUtil.setString( 1, strRuleTypeKey );
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            while ( daoUtil.next( ) )
+            {
+                Rule rule = ruleTypesSet.newInstance( strRuleTypeKey );
+                rule.setId( daoUtil.getInt( 1 ) );
+                rule.setRuleTypeId( strRuleTypeKey );
+                loadAttributes( rule );
+                listRules.add( rule );
+            }
+
+            daoUtil.free( );
+        }
 
         return listRules;
     }

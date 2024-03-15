@@ -56,22 +56,22 @@ public class DocumentStateDAO implements IDocumentStateDAO
      */
     public DocumentState load( int nDocumentStateId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
-        daoUtil.setInt( 1, nDocumentStateId );
-        daoUtil.executeQuery( );
-
         DocumentState documentState = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT ) )
         {
-            documentState = new DocumentState( );
-            documentState.setId( daoUtil.getInt( 1 ) );
-            documentState.setNameKey( daoUtil.getString( 2 ) );
-            documentState.setDescriptionKey( daoUtil.getString( 3 ) );
+            daoUtil.setInt( 1, nDocumentStateId );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                documentState = new DocumentState( );
+                documentState.setId( daoUtil.getInt( 1 ) );
+                documentState.setNameKey( daoUtil.getString( 2 ) );
+                documentState.setDescriptionKey( daoUtil.getString( 3 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return documentState;
     }
 
@@ -85,20 +85,21 @@ public class DocumentStateDAO implements IDocumentStateDAO
     public ReferenceList selectDocumentStatesList( Locale locale )
     {
         ReferenceList list = new ReferenceList( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL ) )
         {
-            DocumentState state = new DocumentState( );
-            state.setLocale( locale );
-            state.setId( daoUtil.getInt( 1 ) );
-            state.setNameKey( daoUtil.getString( 2 ) );
-            list.addItem( state.getId( ), state.getName( ) );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                DocumentState state = new DocumentState( );
+                state.setLocale( locale );
+                state.setId( daoUtil.getInt( 1 ) );
+                state.setNameKey( daoUtil.getString( 2 ) );
+                list.addItem( state.getId( ), state.getName( ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return list;
     }
 }

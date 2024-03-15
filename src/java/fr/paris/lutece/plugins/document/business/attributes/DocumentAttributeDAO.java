@@ -78,21 +78,21 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     private int newPrimaryKey( )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK );
-        daoUtil.executeQuery( );
-
         int nKey;
-
-        if ( !daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
         {
-            // if the table is empty
-            nKey = 1;
+            daoUtil.executeQuery( );
+
+            if ( !daoUtil.next( ) )
+            {
+                // if the table is empty
+                nKey = 1;
+            }
+
+            nKey = daoUtil.getInt( 1 ) + 1;
+
+            daoUtil.free( );
         }
-
-        nKey = daoUtil.getInt( 1 ) + 1;
-
-        daoUtil.free( );
-
         return nKey;
     }
 
@@ -104,20 +104,22 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     public synchronized void insert( DocumentAttribute documentAttribute )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        documentAttribute.setId( newPrimaryKey( ) );
-        daoUtil.setInt( 1, documentAttribute.getId( ) );
-        daoUtil.setString( 2, documentAttribute.getCodeDocumentType( ) );
-        daoUtil.setString( 3, documentAttribute.getCodeAttributeType( ) );
-        daoUtil.setString( 4, documentAttribute.getCode( ) );
-        daoUtil.setString( 5, documentAttribute.getName( ) );
-        daoUtil.setString( 6, documentAttribute.getDescription( ) );
-        daoUtil.setInt( 7, documentAttribute.getAttributeOrder( ) );
-        daoUtil.setInt( 8, documentAttribute.isRequired( ) ? 1 : 0 );
-        daoUtil.setInt( 9, documentAttribute.isSearchable( ) ? 1 : 0 );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
+            documentAttribute.setId( newPrimaryKey( ) );
+            daoUtil.setInt( 1, documentAttribute.getId( ) );
+            daoUtil.setString( 2, documentAttribute.getCodeDocumentType( ) );
+            daoUtil.setString( 3, documentAttribute.getCodeAttributeType( ) );
+            daoUtil.setString( 4, documentAttribute.getCode( ) );
+            daoUtil.setString( 5, documentAttribute.getName( ) );
+            daoUtil.setString( 6, documentAttribute.getDescription( ) );
+            daoUtil.setInt( 7, documentAttribute.getAttributeOrder( ) );
+            daoUtil.setInt( 8, documentAttribute.isRequired( ) ? 1 : 0 );
+            daoUtil.setInt( 9, documentAttribute.isSearchable( ) ? 1 : 0 );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
         // Insert parameters
         insertAttributeParameters( documentAttribute );
     }
@@ -132,26 +134,27 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
     public DocumentAttribute load( int nAttributeId )
     {
         DocumentAttribute documentAttribute = null;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ATTRIBUTE );
-        daoUtil.setInt( 1, nAttributeId );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ATTRIBUTE ) )
         {
-            documentAttribute = new DocumentAttribute( );
-            documentAttribute.setId( daoUtil.getInt( 1 ) );
-            documentAttribute.setCodeDocumentType( daoUtil.getString( 2 ) );
-            documentAttribute.setCodeAttributeType( daoUtil.getString( 3 ) );
-            documentAttribute.setCode( daoUtil.getString( 4 ) );
-            documentAttribute.setName( daoUtil.getString( 5 ) );
-            documentAttribute.setDescription( daoUtil.getString( 6 ) );
-            documentAttribute.setAttributeOrder( daoUtil.getInt( 7 ) );
-            documentAttribute.setRequired( daoUtil.getInt( 8 ) != 0 );
-            documentAttribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
+            daoUtil.setInt( 1, nAttributeId );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                documentAttribute = new DocumentAttribute( );
+                documentAttribute.setId( daoUtil.getInt( 1 ) );
+                documentAttribute.setCodeDocumentType( daoUtil.getString( 2 ) );
+                documentAttribute.setCodeAttributeType( daoUtil.getString( 3 ) );
+                documentAttribute.setCode( daoUtil.getString( 4 ) );
+                documentAttribute.setName( daoUtil.getString( 5 ) );
+                documentAttribute.setDescription( daoUtil.getString( 6 ) );
+                documentAttribute.setAttributeOrder( daoUtil.getInt( 7 ) );
+                documentAttribute.setRequired( daoUtil.getInt( 8 ) != 0 );
+                documentAttribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return documentAttribute;
     }
 
@@ -163,11 +166,13 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     public void delete( int nAttributeId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nAttributeId );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nAttributeId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
         deleteParameters( nAttributeId );
         deleteRegularExpressions( nAttributeId );
     }
@@ -180,11 +185,13 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     private void deleteParameters( int nAttributeId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_PARAMETERS_VALUES );
-        daoUtil.setInt( 1, nAttributeId );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_PARAMETERS_VALUES ) )
+        {
+            daoUtil.setInt( 1, nAttributeId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -197,12 +204,14 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     private void deleteParameter( int nAttributeId, String strParameterName )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_PARAMETER_VALUES );
-        daoUtil.setInt( 1, nAttributeId );
-        daoUtil.setString( 2, strParameterName );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_PARAMETER_VALUES ) )
+        {
+            daoUtil.setInt( 1, nAttributeId );
+            daoUtil.setString( 2, strParameterName );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -213,21 +222,22 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     public void store( DocumentAttribute documentAttribute )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setInt( 1, documentAttribute.getId( ) );
-        daoUtil.setString( 2, documentAttribute.getCodeDocumentType( ) );
-        daoUtil.setString( 3, documentAttribute.getCodeAttributeType( ) );
-        daoUtil.setString( 4, documentAttribute.getCode( ) );
-        daoUtil.setString( 5, documentAttribute.getName( ) );
-        daoUtil.setString( 6, documentAttribute.getDescription( ) );
-        daoUtil.setInt( 7, documentAttribute.getAttributeOrder( ) );
-        daoUtil.setInt( 8, documentAttribute.isRequired( ) ? 1 : 0 );
-        daoUtil.setInt( 9, documentAttribute.isSearchable( ) ? 1 : 0 );
-        daoUtil.setInt( 10, documentAttribute.getId( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
+        {
+            daoUtil.setInt( 1, documentAttribute.getId( ) );
+            daoUtil.setString( 2, documentAttribute.getCodeDocumentType( ) );
+            daoUtil.setString( 3, documentAttribute.getCodeAttributeType( ) );
+            daoUtil.setString( 4, documentAttribute.getCode( ) );
+            daoUtil.setString( 5, documentAttribute.getName( ) );
+            daoUtil.setString( 6, documentAttribute.getDescription( ) );
+            daoUtil.setInt( 7, documentAttribute.getAttributeOrder( ) );
+            daoUtil.setInt( 8, documentAttribute.isRequired( ) ? 1 : 0 );
+            daoUtil.setInt( 9, documentAttribute.isSearchable( ) ? 1 : 0 );
+            daoUtil.setInt( 10, documentAttribute.getId( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
-
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
         // Update parameters
         deleteParameters( documentAttribute.getId( ) );
         insertAttributeParameters( documentAttribute );
@@ -241,30 +251,32 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     public void selectAttributesByDocumentType( DocumentType documentType )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ATTRIBUTES );
-        daoUtil.setString( 1, documentType.getCode( ) );
-        daoUtil.executeQuery( );
-
-        int nOrder = 1;
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ATTRIBUTES ) )
         {
-            DocumentAttribute documentAttribute = new DocumentAttribute( );
-            documentAttribute.setId( daoUtil.getInt( 1 ) );
-            documentAttribute.setCodeDocumentType( daoUtil.getString( 2 ) );
-            documentAttribute.setCodeAttributeType( daoUtil.getString( 3 ) );
-            documentAttribute.setCode( daoUtil.getString( 4 ) );
-            documentAttribute.setName( daoUtil.getString( 5 ) );
-            documentAttribute.setDescription( daoUtil.getString( 6 ) );
-            documentAttribute.setAttributeOrder( nOrder );
-            documentAttribute.setRequired( daoUtil.getInt( 8 ) != 0 );
-            documentAttribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
+            daoUtil.setString( 1, documentType.getCode( ) );
+            daoUtil.executeQuery( );
 
-            documentType.addAttribute( documentAttribute );
-            nOrder++;
+            int nOrder = 1;
+
+            while ( daoUtil.next( ) )
+            {
+                DocumentAttribute documentAttribute = new DocumentAttribute( );
+                documentAttribute.setId( daoUtil.getInt( 1 ) );
+                documentAttribute.setCodeDocumentType( daoUtil.getString( 2 ) );
+                documentAttribute.setCodeAttributeType( daoUtil.getString( 3 ) );
+                documentAttribute.setCode( daoUtil.getString( 4 ) );
+                documentAttribute.setName( daoUtil.getString( 5 ) );
+                documentAttribute.setDescription( daoUtil.getString( 6 ) );
+                documentAttribute.setAttributeOrder( nOrder );
+                documentAttribute.setRequired( daoUtil.getInt( 8 ) != 0 );
+                documentAttribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
+
+                documentType.addAttribute( documentAttribute );
+                nOrder++;
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
     }
 
     /**
@@ -276,28 +288,29 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     public List<DocumentAttribute> selectAllAttributesOfDocumentType( String codeDocumentType )
     {
-        List<DocumentAttribute> listDocumentAttributes = new ArrayList<DocumentAttribute>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ATTRIBUTES_OF_DOCUMENT_TYPE );
-        daoUtil.setString( 1, codeDocumentType );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<DocumentAttribute> listDocumentAttributes = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ATTRIBUTES_OF_DOCUMENT_TYPE ) )
         {
-            DocumentAttribute documentAttribute = new DocumentAttribute( );
-            documentAttribute.setId( daoUtil.getInt( 1 ) );
-            documentAttribute.setCodeDocumentType( daoUtil.getString( 2 ) );
-            documentAttribute.setCodeAttributeType( daoUtil.getString( 3 ) );
-            documentAttribute.setCode( daoUtil.getString( 4 ) );
-            documentAttribute.setName( daoUtil.getString( 5 ) );
-            documentAttribute.setDescription( daoUtil.getString( 6 ) );
-            documentAttribute.setAttributeOrder( daoUtil.getInt( 7 ) );
-            documentAttribute.setRequired( daoUtil.getInt( 8 ) != 0 );
-            documentAttribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
-            listDocumentAttributes.add( documentAttribute );
+            daoUtil.setString( 1, codeDocumentType );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                DocumentAttribute documentAttribute = new DocumentAttribute( );
+                documentAttribute.setId( daoUtil.getInt( 1 ) );
+                documentAttribute.setCodeDocumentType( daoUtil.getString( 2 ) );
+                documentAttribute.setCodeAttributeType( daoUtil.getString( 3 ) );
+                documentAttribute.setCode( daoUtil.getString( 4 ) );
+                documentAttribute.setName( daoUtil.getString( 5 ) );
+                documentAttribute.setDescription( daoUtil.getString( 6 ) );
+                documentAttribute.setAttributeOrder( daoUtil.getInt( 7 ) );
+                documentAttribute.setRequired( daoUtil.getInt( 8 ) != 0 );
+                documentAttribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
+                listDocumentAttributes.add( documentAttribute );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listDocumentAttributes;
     }
 
@@ -312,14 +325,16 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
 
             for ( String value : parameter.getValueList( ) )
             {
-                DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_PARAMETER_VALUES );
-                daoUtil.setInt( 1, documentAttribute.getId( ) );
-                daoUtil.setString( 2, parameter.getName( ) );
-                daoUtil.setInt( 3, i++ );
-                daoUtil.setString( 4, value );
+                try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_PARAMETER_VALUES ) )
+                {
+                    daoUtil.setInt( 1, documentAttribute.getId( ) );
+                    daoUtil.setString( 2, parameter.getName( ) );
+                    daoUtil.setInt( 3, i++ );
+                    daoUtil.setString( 4, value );
 
-                daoUtil.executeUpdate( );
-                daoUtil.free( );
+                    daoUtil.executeUpdate( );
+                    daoUtil.free( );
+                }
             }
         }
     }
@@ -333,21 +348,22 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     public List<AttributeTypeParameter> selectAttributeParametersValues( int nAttributeId )
     {
-        ArrayList<AttributeTypeParameter> listParameters = new ArrayList<AttributeTypeParameter>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PARAMETERS );
-        daoUtil.setInt( 1, nAttributeId );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        ArrayList<AttributeTypeParameter> listParameters = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PARAMETERS ) )
         {
-            AttributeTypeParameter parameter = new AttributeTypeParameter( );
-            parameter.setName( daoUtil.getString( 1 ) );
-            parameter.setValueList( getAttributeParameterValues( nAttributeId, parameter.getName( ) ) );
-            listParameters.add( parameter );
+            daoUtil.setInt( 1, nAttributeId );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                AttributeTypeParameter parameter = new AttributeTypeParameter( );
+                parameter.setName( daoUtil.getString( 1 ) );
+                parameter.setValueList( getAttributeParameterValues( nAttributeId, parameter.getName( ) ) );
+                listParameters.add( parameter );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listParameters;
     }
 
@@ -362,19 +378,20 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     public List<String> getAttributeParameterValues( int nAttributeId, String strParameterName )
     {
-        List<String> listValues = new ArrayList<String>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PARAMETER_VALUES );
-        daoUtil.setInt( 1, nAttributeId );
-        daoUtil.setString( 2, strParameterName );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<String> listValues = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PARAMETER_VALUES ) )
         {
-            listValues.add( daoUtil.getString( 1 ) );
+            daoUtil.setInt( 1, nAttributeId );
+            daoUtil.setString( 2, strParameterName );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                listValues.add( daoUtil.getString( 1 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listValues;
     }
 
@@ -388,11 +405,13 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     public void insertRegularExpression( int nIdAttribute, int nIdExpression )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_REGULAR_EXPRESSION );
-        daoUtil.setInt( 1, nIdAttribute );
-        daoUtil.setInt( 2, nIdExpression );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_REGULAR_EXPRESSION ) )
+        {
+            daoUtil.setInt( 1, nIdAttribute );
+            daoUtil.setInt( 2, nIdExpression );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -405,11 +424,13 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     public void deleteRegularExpression( int nIdAttribute, int nIdExpression )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_REGULAR_EXPRESSION );
-        daoUtil.setInt( 1, nIdAttribute );
-        daoUtil.setInt( 2, nIdExpression );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_REGULAR_EXPRESSION ) )
+        {
+            daoUtil.setInt( 1, nIdAttribute );
+            daoUtil.setInt( 2, nIdExpression );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -420,10 +441,12 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     private void deleteRegularExpressions( int nIdAttribute )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_REGULAR_EXPRESSIONS );
-        daoUtil.setInt( 1, nIdAttribute );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_REGULAR_EXPRESSIONS ) )
+        {
+            daoUtil.setInt( 1, nIdAttribute );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -435,19 +458,20 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      */
     public Collection<Integer> selectListRegularExpressionKeyByIdAttribute( int nIdAttribute )
     {
-        Collection<Integer> colRegularExpression = new ArrayList<Integer>( );
+        Collection<Integer> colRegularExpression = new ArrayList<>( );
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_REGULAR_EXPRESSION_BY_ID_ATTRIBUTE );
-        daoUtil.setInt( 1, nIdAttribute );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_REGULAR_EXPRESSION_BY_ID_ATTRIBUTE ) )
         {
-            colRegularExpression.add( daoUtil.getInt( 1 ) );
+            daoUtil.setInt( 1, nIdAttribute );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                colRegularExpression.add( daoUtil.getInt( 1 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return colRegularExpression;
     }
 }

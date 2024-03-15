@@ -54,23 +54,24 @@ public class SpaceActionDAO implements ISpaceActionDAO
     public List<SpaceAction> selectActions( )
     {
         List<SpaceAction> listActions = new ArrayList<SpaceAction>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIONS );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIONS ) )
         {
-            SpaceAction action = new SpaceAction( );
-            action.setNameKey( daoUtil.getString( 1 ) );
-            action.setDescriptionKey( daoUtil.getString( 2 ) );
-            action.setUrl( daoUtil.getString( 3 ) );
-            action.setIconUrl( daoUtil.getString( 4 ) );
-            action.setPermission( daoUtil.getString( 5 ) );
+            daoUtil.executeQuery( );
 
-            listActions.add( action );
+            while ( daoUtil.next( ) )
+            {
+                SpaceAction action = new SpaceAction( );
+                action.setNameKey( daoUtil.getString( 1 ) );
+                action.setDescriptionKey( daoUtil.getString( 2 ) );
+                action.setUrl( daoUtil.getString( 3 ) );
+                action.setIconUrl( daoUtil.getString( 4 ) );
+                action.setPermission( daoUtil.getString( 5 ) );
+
+                listActions.add( action );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listActions;
     }
 }

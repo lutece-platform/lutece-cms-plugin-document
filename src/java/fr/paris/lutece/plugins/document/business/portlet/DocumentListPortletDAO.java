@@ -79,14 +79,16 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
     {
         DocumentListPortlet p = (DocumentListPortlet) portlet;
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, p.getId( ) );
-        daoUtil.setString( 2, p.getDocumentTypeCode( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
+            daoUtil.setInt( 1, p.getId( ) );
+            daoUtil.setString( 2, p.getDocumentTypeCode( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
 
-        insertCategory( portlet );
+            insertCategory( portlet );
+        }
     }
 
     /**
@@ -101,17 +103,18 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
 
         if ( p.getIdCategory( ) != null )
         {
-            DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CATEGORY_PORTLET );
-
-            for ( int nIdCategory : p.getIdCategory( ) )
+            try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CATEGORY_PORTLET ) )
             {
-                daoUtil.setInt( 1, p.getId( ) );
-                daoUtil.setInt( 2, nIdCategory );
+                for ( int nIdCategory : p.getIdCategory( ) )
+                {
+                    daoUtil.setInt( 1, p.getId( ) );
+                    daoUtil.setInt( 2, nIdCategory );
 
-                daoUtil.executeUpdate( );
+                    daoUtil.executeUpdate( );
+                }
+
+                daoUtil.free( );
             }
-
-            daoUtil.free( );
         }
     }
 
@@ -123,15 +126,19 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
      */
     public void delete( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
 
-        daoUtil = new DAOUtil( SQL_QUERY_DELETE_PUBLISHED_DOCUMENT_PORTLET );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_PUBLISHED_DOCUMENT_PORTLET ) )
+        {
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
 
         deleteCategories( nPortletId );
         deleteAutoPublication( nPortletId );
@@ -145,10 +152,12 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
      */
     private void deleteCategories( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_CATEGORY_PORTLET );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_CATEGORY_PORTLET ) )
+        {
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -159,10 +168,12 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
      */
     private void deleteAutoPublication( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_AUTO_PUBLICATION_PORTLET );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_AUTO_PUBLICATION_PORTLET ) )
+        {
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -174,23 +185,25 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
      */
     public Portlet load( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery( );
-
-        DocumentListPortlet portlet = new DocumentListPortlet( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT ) )
         {
-            portlet.setId( daoUtil.getInt( 1 ) );
-            portlet.setDocumentTypeCode( daoUtil.getString( 2 ) );
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeQuery( );
+
+            DocumentListPortlet portlet = new DocumentListPortlet( );
+
+            if ( daoUtil.next( ) )
+            {
+                portlet.setId( daoUtil.getInt( 1 ) );
+                portlet.setDocumentTypeCode( daoUtil.getString( 2 ) );
+            }
+
+            daoUtil.free( );
+
+            portlet.setIdCategory( loadCategories( nPortletId ) );
+
+            return portlet;
         }
-
-        daoUtil.free( );
-
-        portlet.setIdCategory( loadCategories( nPortletId ) );
-
-        return portlet;
     }
 
     /**
@@ -201,28 +214,30 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
      */
     private int [ ] loadCategories( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CATEGORY_PORTLET );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery( );
-
-        Collection<Integer> nListIdCategory = new ArrayList<Integer>( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CATEGORY_PORTLET ) )
         {
-            nListIdCategory.add( daoUtil.getInt( 1 ) );
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeQuery( );
+
+            Collection<Integer> nListIdCategory = new ArrayList<>( );
+
+            while ( daoUtil.next( ) )
+            {
+                nListIdCategory.add( daoUtil.getInt( 1 ) );
+            }
+
+            daoUtil.free( );
+
+            int[] nArrayIdCategory = new int[nListIdCategory.size( )];
+            int i = 0;
+
+            for ( Integer nIdCategory : nListIdCategory )
+            {
+                nArrayIdCategory[i++] = nIdCategory.intValue( );
+            }
+
+            return nArrayIdCategory;
         }
-
-        daoUtil.free( );
-
-        int [ ] nArrayIdCategory = new int [ nListIdCategory.size( )];
-        int i = 0;
-
-        for ( Integer nIdCategory : nListIdCategory )
-        {
-            nArrayIdCategory [i++] = nIdCategory.intValue( );
-        }
-
-        return nArrayIdCategory;
     }
 
     /**
@@ -234,15 +249,16 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
     public void store( Portlet portlet )
     {
         DocumentListPortlet p = (DocumentListPortlet) portlet;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setInt( 1, p.getId( ) );
-        daoUtil.setString( 2, p.getDocumentTypeCode( ) );
-        daoUtil.setInt( 3, p.getId( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
+        {
+            daoUtil.setInt( 1, p.getId( ) );
+            daoUtil.setString( 2, p.getDocumentTypeCode( ) );
+            daoUtil.setInt( 3, p.getId( ) );
 
-        daoUtil.executeUpdate( );
+            daoUtil.executeUpdate( );
 
-        daoUtil.free( );
-
+            daoUtil.free( );
+        }
         deleteCategories( p.getId( ) );
         insertCategory( p );
     }
@@ -273,48 +289,47 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
         }
 
         strSQl.append( pOrder.getSQLOrderBy( ) );
-
-        DAOUtil daoUtil = new DAOUtil( strSQl.toString( ) );
-
-        daoUtil.setInt( 1, nDocumentId );
-        daoUtil.setString( 2, strCodeDocumentType );
-        daoUtil.setInt( 3, nDocumentId );
-
-        if ( strFilter != null )
+        ReferenceList list = new ReferenceList( );
+        try ( DAOUtil daoUtil = new DAOUtil( strSQl.toString( ) ) )
         {
-            if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_NAME ) )
+            daoUtil.setInt( 1, nDocumentId );
+            daoUtil.setString( 2, strCodeDocumentType );
+            daoUtil.setInt( 3, nDocumentId );
+
+            if ( strFilter != null )
             {
-                for ( int i = 0; i < pFilter.getPageName( ).length; i++ )
+                if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_NAME ) )
                 {
-                    daoUtil.setString( i + 4, "%" + pFilter.getPageName( ) [i] + "%" );
-                }
-            }
-            else
-                if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PORTLET_NAME ) )
-                {
-                    for ( int i = 0; i < pFilter.getPortletName( ).length; i++ )
+                    for ( int i = 0; i < pFilter.getPageName( ).length; i++ )
                     {
-                        daoUtil.setString( i + 4, "%" + pFilter.getPortletName( ) [i] + "%" );
+                        daoUtil.setString( i + 4, "%" + pFilter.getPageName( )[i] + "%" );
                     }
                 }
                 else
-                    if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_ID ) )
+                    if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PORTLET_NAME ) )
                     {
-                        daoUtil.setInt( 4, pFilter.getIdPage( ) );
+                        for ( int i = 0; i < pFilter.getPortletName( ).length; i++ )
+                        {
+                            daoUtil.setString( i + 4, "%" + pFilter.getPortletName( )[i] + "%" );
+                        }
                     }
+                    else
+                        if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_ID ) )
+                        {
+                            daoUtil.setInt( 4, pFilter.getIdPage( ) );
+                        }
+            }
+
+            daoUtil.executeQuery( );
+
+
+            while ( daoUtil.next( ) )
+            {
+                list.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.executeQuery( );
-
-        ReferenceList list = new ReferenceList( );
-
-        while ( daoUtil.next( ) )
-        {
-            list.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
-        }
-
-        daoUtil.free( );
-
         return list;
     }
 
@@ -328,18 +343,18 @@ public final class DocumentListPortletDAO implements IDocumentListPortletDAO
     public boolean checkIsAliasPortlet( int nPortletId )
     {
         boolean bIsAlias = false;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CHECK_IS_ALIAS );
-
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CHECK_IS_ALIAS ) )
         {
-            bIsAlias = true;
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                bIsAlias = true;
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return bIsAlias;
     }
 }
