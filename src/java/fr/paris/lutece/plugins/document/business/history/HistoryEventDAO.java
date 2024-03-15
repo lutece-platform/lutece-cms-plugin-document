@@ -58,16 +58,18 @@ public final class HistoryEventDAO implements IHistoryEventDAO
      */
     public void insert( HistoryEvent historyEvent )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, historyEvent.getIdDocument( ) );
-        daoUtil.setTimestamp( 2, historyEvent.getDate( ) );
-        daoUtil.setString( 3, historyEvent.getEventUser( ) );
-        daoUtil.setString( 4, historyEvent.getEventMessageKey( ) );
-        daoUtil.setString( 5, historyEvent.getDocumentStateKey( ) );
-        daoUtil.setString( 6, historyEvent.getSpace( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
+            daoUtil.setInt( 1, historyEvent.getIdDocument( ) );
+            daoUtil.setTimestamp( 2, historyEvent.getDate( ) );
+            daoUtil.setString( 3, historyEvent.getEventUser( ) );
+            daoUtil.setString( 4, historyEvent.getEventMessageKey( ) );
+            daoUtil.setString( 5, historyEvent.getDocumentStateKey( ) );
+            daoUtil.setString( 6, historyEvent.getSpace( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -78,11 +80,13 @@ public final class HistoryEventDAO implements IHistoryEventDAO
      */
     public void delete( int nDocumentId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nDocumentId );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nDocumentId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -94,26 +98,27 @@ public final class HistoryEventDAO implements IHistoryEventDAO
      */
     public List<HistoryEvent> selectEventListByDocument( int nDocumentId )
     {
-        List<HistoryEvent> listHistoryEvents = new ArrayList<HistoryEvent>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DOCUMENT );
-        daoUtil.setInt( 1, nDocumentId );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<HistoryEvent> listHistoryEvents = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DOCUMENT ) )
         {
-            HistoryEvent event = new HistoryEvent( );
-            event.setIdDocument( daoUtil.getInt( 1 ) );
-            event.setDate( daoUtil.getTimestamp( 2 ) );
-            event.setEventUser( daoUtil.getString( 3 ) );
-            event.setEventMessageKey( daoUtil.getString( 4 ) );
-            event.setDocumentStateKey( daoUtil.getString( 5 ) );
-            event.setSpace( daoUtil.getString( 6 ) );
+            daoUtil.setInt( 1, nDocumentId );
+            daoUtil.executeQuery( );
 
-            listHistoryEvents.add( event );
+            while ( daoUtil.next( ) )
+            {
+                HistoryEvent event = new HistoryEvent( );
+                event.setIdDocument( daoUtil.getInt( 1 ) );
+                event.setDate( daoUtil.getTimestamp( 2 ) );
+                event.setEventUser( daoUtil.getString( 3 ) );
+                event.setEventMessageKey( daoUtil.getString( 4 ) );
+                event.setDocumentStateKey( daoUtil.getString( 5 ) );
+                event.setSpace( daoUtil.getString( 6 ) );
+
+                listHistoryEvents.add( event );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listHistoryEvents;
     }
 
@@ -126,26 +131,27 @@ public final class HistoryEventDAO implements IHistoryEventDAO
      */
     public Collection<HistoryEvent> selectEventListByUser( String strUserId )
     {
-        Collection<HistoryEvent> listHistoryEvents = new ArrayList<HistoryEvent>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_USER );
-        daoUtil.setString( 1, strUserId );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        Collection<HistoryEvent> listHistoryEvents = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_USER ) )
         {
-            HistoryEvent event = new HistoryEvent( );
-            event.setIdDocument( daoUtil.getInt( 1 ) );
-            event.setDate( daoUtil.getTimestamp( 2 ) );
-            event.setEventUser( daoUtil.getString( 3 ) );
-            event.setEventMessageKey( daoUtil.getString( 4 ) );
-            event.setDocumentStateKey( daoUtil.getString( 5 ) );
-            event.setSpace( daoUtil.getString( 6 ) );
+            daoUtil.setString( 1, strUserId );
+            daoUtil.executeQuery( );
 
-            listHistoryEvents.add( event );
+            while ( daoUtil.next( ) )
+            {
+                HistoryEvent event = new HistoryEvent( );
+                event.setIdDocument( daoUtil.getInt( 1 ) );
+                event.setDate( daoUtil.getTimestamp( 2 ) );
+                event.setEventUser( daoUtil.getString( 3 ) );
+                event.setEventMessageKey( daoUtil.getString( 4 ) );
+                event.setDocumentStateKey( daoUtil.getString( 5 ) );
+                event.setSpace( daoUtil.getString( 6 ) );
+
+                listHistoryEvents.add( event );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listHistoryEvents;
     }
 }

@@ -66,11 +66,13 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      */
     public void delete( int nPortletId, int nSpaceId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.setInt( 2, nSpaceId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.setInt( 2, nSpaceId );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -81,10 +83,12 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      */
     public void deleteAllSpaces( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ALL_SPACES );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ALL_SPACES ) )
+        {
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -95,12 +99,14 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      */
     public void insert( DocumentAutoPublication documentAutoPublication )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, documentAutoPublication.getIdPortlet( ) );
-        daoUtil.setInt( 2, documentAutoPublication.getIdSpace( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
+            daoUtil.setInt( 1, documentAutoPublication.getIdPortlet( ) );
+            daoUtil.setInt( 2, documentAutoPublication.getIdSpace( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -114,22 +120,23 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      */
     public DocumentAutoPublication load( int nPortletId, int nSpaceId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PRIMARY_KEY );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.setInt( 2, nSpaceId );
-        daoUtil.executeQuery( );
-
         DocumentAutoPublication documentAutoPublication = null;
 
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PRIMARY_KEY ) )
         {
-            documentAutoPublication = new DocumentAutoPublication( );
-            documentAutoPublication.setIdPortlet( daoUtil.getInt( 1 ) );
-            documentAutoPublication.setIdSpace( daoUtil.getInt( 2 ) );
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.setInt( 2, nSpaceId );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                documentAutoPublication = new DocumentAutoPublication( );
+                documentAutoPublication.setIdPortlet( daoUtil.getInt( 1 ) );
+                documentAutoPublication.setIdSpace( daoUtil.getInt( 2 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return documentAutoPublication;
     }
 
@@ -140,21 +147,21 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      */
     public Collection<DocumentAutoPublication> load( )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL );
-        daoUtil.executeQuery( );
-
-        Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<DocumentAutoPublication>( );
-
-        while ( daoUtil.next( ) )
+        Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL ) )
         {
-            DocumentAutoPublication documentAutoPublication = new DocumentAutoPublication( );
-            documentAutoPublication.setIdPortlet( daoUtil.getInt( 1 ) );
-            documentAutoPublication.setIdSpace( daoUtil.getInt( 2 ) );
-            listDocumentAutoPublication.add( documentAutoPublication );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                DocumentAutoPublication documentAutoPublication = new DocumentAutoPublication( );
+                documentAutoPublication.setIdPortlet( daoUtil.getInt( 1 ) );
+                documentAutoPublication.setIdSpace( daoUtil.getInt( 2 ) );
+                listDocumentAutoPublication.add( documentAutoPublication );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listDocumentAutoPublication;
     }
 
@@ -167,22 +174,22 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      */
     public Collection<DocumentAutoPublication> selectByPortletId( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PORTLET_ID );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery( );
-
-        Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<DocumentAutoPublication>( );
-
-        while ( daoUtil.next( ) )
+        Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PORTLET_ID ) )
         {
-            DocumentAutoPublication documentAutoPublication = new DocumentAutoPublication( );
-            documentAutoPublication.setIdPortlet( nPortletId );
-            documentAutoPublication.setIdSpace( daoUtil.getInt( 1 ) );
-            listDocumentAutoPublication.add( documentAutoPublication );
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                DocumentAutoPublication documentAutoPublication = new DocumentAutoPublication( );
+                documentAutoPublication.setIdPortlet( nPortletId );
+                documentAutoPublication.setIdSpace( daoUtil.getInt( 1 ) );
+                listDocumentAutoPublication.add( documentAutoPublication );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listDocumentAutoPublication;
     }
 
@@ -195,22 +202,22 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      */
     public Collection<DocumentAutoPublication> selectBySpaceId( int nSpaceId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_SPACE_ID );
-        daoUtil.setInt( 1, nSpaceId );
-        daoUtil.executeQuery( );
-
-        Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<DocumentAutoPublication>( );
-
-        while ( daoUtil.next( ) )
+        Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_SPACE_ID ) )
         {
-            DocumentAutoPublication documentAutoPublication = new DocumentAutoPublication( );
-            documentAutoPublication.setIdPortlet( daoUtil.getInt( 1 ) );
-            documentAutoPublication.setIdSpace( nSpaceId );
-            listDocumentAutoPublication.add( documentAutoPublication );
+            daoUtil.setInt( 1, nSpaceId );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                DocumentAutoPublication documentAutoPublication = new DocumentAutoPublication( );
+                documentAutoPublication.setIdPortlet( daoUtil.getInt( 1 ) );
+                documentAutoPublication.setIdSpace( nSpaceId );
+                listDocumentAutoPublication.add( documentAutoPublication );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listDocumentAutoPublication;
     }
 

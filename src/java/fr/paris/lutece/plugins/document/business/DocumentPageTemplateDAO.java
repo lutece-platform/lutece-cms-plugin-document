@@ -62,21 +62,21 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      */
     int newPrimaryKey( )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK );
-        daoUtil.executeQuery( );
-
         int nKey;
-
-        if ( !daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
         {
-            // if the table is empty
-            nKey = 1;
+            daoUtil.executeQuery( );
+
+            if ( !daoUtil.next( ) )
+            {
+                // if the table is empty
+                nKey = 1;
+            }
+
+            nKey = daoUtil.getInt( 1 ) + 1;
+
+            daoUtil.free( );
         }
-
-        nKey = daoUtil.getInt( 1 ) + 1;
-
-        daoUtil.free( );
-
         return nKey;
     }
 
@@ -88,17 +88,19 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      */
     public synchronized void insert( DocumentPageTemplate documentPageTemplate )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
 
-        documentPageTemplate.setId( newPrimaryKey( ) );
+            documentPageTemplate.setId( newPrimaryKey( ) );
 
-        daoUtil.setInt( 1, documentPageTemplate.getId( ) );
-        daoUtil.setString( 2, documentPageTemplate.getDescription( ) );
-        daoUtil.setString( 3, documentPageTemplate.getFile( ) );
-        daoUtil.setString( 4, documentPageTemplate.getPicture( ) );
+            daoUtil.setInt( 1, documentPageTemplate.getId( ) );
+            daoUtil.setString( 2, documentPageTemplate.getDescription( ) );
+            daoUtil.setString( 3, documentPageTemplate.getFile( ) );
+            daoUtil.setString( 4, documentPageTemplate.getPicture( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -111,22 +113,23 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
     public DocumentPageTemplate load( int nPageTemplateId )
     {
         DocumentPageTemplate documentPageTemplate = null;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
-        daoUtil.setInt( 1, nPageTemplateId );
-
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT ) )
         {
-            documentPageTemplate = new DocumentPageTemplate( );
-            documentPageTemplate.setId( daoUtil.getInt( 1 ) );
-            documentPageTemplate.setDescription( daoUtil.getString( 2 ) );
-            documentPageTemplate.setFile( daoUtil.getString( 3 ) );
-            documentPageTemplate.setPicture( daoUtil.getString( 4 ) );
+            daoUtil.setInt( 1, nPageTemplateId );
+
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                documentPageTemplate = new DocumentPageTemplate( );
+                documentPageTemplate.setId( daoUtil.getInt( 1 ) );
+                documentPageTemplate.setDescription( daoUtil.getString( 2 ) );
+                documentPageTemplate.setFile( daoUtil.getString( 3 ) );
+                documentPageTemplate.setPicture( daoUtil.getString( 4 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return documentPageTemplate;
     }
 
@@ -138,10 +141,12 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      */
     public void delete( int nPageTemplateId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nPageTemplateId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nPageTemplateId );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -152,16 +157,18 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      */
     public void store( DocumentPageTemplate documentPageTemplate )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
+        {
 
-        daoUtil.setInt( 1, documentPageTemplate.getId( ) );
-        daoUtil.setString( 2, documentPageTemplate.getDescription( ) );
-        daoUtil.setString( 3, documentPageTemplate.getFile( ) );
-        daoUtil.setString( 4, documentPageTemplate.getPicture( ) );
-        daoUtil.setInt( 5, documentPageTemplate.getId( ) );
+            daoUtil.setInt( 1, documentPageTemplate.getId( ) );
+            daoUtil.setString( 2, documentPageTemplate.getDescription( ) );
+            daoUtil.setString( 3, documentPageTemplate.getFile( ) );
+            daoUtil.setString( 4, documentPageTemplate.getPicture( ) );
+            daoUtil.setInt( 5, documentPageTemplate.getId( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -171,23 +178,24 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      */
     public List<DocumentPageTemplate> selectPageTemplatesList( )
     {
-        List<DocumentPageTemplate> listDocumentPageTemplates = new ArrayList<DocumentPageTemplate>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<DocumentPageTemplate> listDocumentPageTemplates = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL ) )
         {
-            DocumentPageTemplate documentPageTemplate = new DocumentPageTemplate( );
+            daoUtil.executeQuery( );
 
-            documentPageTemplate.setId( daoUtil.getInt( 1 ) );
-            documentPageTemplate.setDescription( daoUtil.getString( 2 ) );
-            documentPageTemplate.setFile( daoUtil.getString( 3 ) );
-            documentPageTemplate.setPicture( daoUtil.getString( 4 ) );
-            listDocumentPageTemplates.add( documentPageTemplate );
+            while ( daoUtil.next( ) )
+            {
+                DocumentPageTemplate documentPageTemplate = new DocumentPageTemplate( );
+
+                documentPageTemplate.setId( daoUtil.getInt( 1 ) );
+                documentPageTemplate.setDescription( daoUtil.getString( 2 ) );
+                documentPageTemplate.setFile( daoUtil.getString( 3 ) );
+                documentPageTemplate.setPicture( daoUtil.getString( 4 ) );
+                listDocumentPageTemplates.add( documentPageTemplate );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listDocumentPageTemplates;
     }
 }

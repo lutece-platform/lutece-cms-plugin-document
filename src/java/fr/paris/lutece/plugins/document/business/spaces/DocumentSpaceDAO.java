@@ -81,21 +81,21 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      */
     private int newPrimaryKey( )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK );
-        daoUtil.executeQuery( );
-
         int nKey;
-
-        if ( !daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
         {
-            // if the table is empty
-            nKey = 1;
+            daoUtil.executeQuery( );
+
+            if ( !daoUtil.next( ) )
+            {
+                // if the table is empty
+                nKey = 1;
+            }
+
+            nKey = daoUtil.getInt( 1 ) + 1;
+
+            daoUtil.free( );
         }
-
-        nKey = daoUtil.getInt( 1 ) + 1;
-
-        daoUtil.free( );
-
         return nKey;
     }
 
@@ -107,19 +107,20 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      */
     public synchronized void insert( DocumentSpace space )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        space.setId( newPrimaryKey( ) );
-        daoUtil.setInt( 1, space.getId( ) );
-        daoUtil.setInt( 2, space.getIdParent( ) );
-        daoUtil.setString( 3, space.getName( ) );
-        daoUtil.setString( 4, space.getDescription( ) );
-        daoUtil.setString( 5, space.getViewType( ) );
-        daoUtil.setInt( 6, space.getIdIcon( ) );
-        daoUtil.setInt( 7, space.isDocumentCreationAllowed( ) ? 1 : 0 );
-        daoUtil.setString( 8, space.getWorkgroup( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
-
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
+            space.setId( newPrimaryKey( ) );
+            daoUtil.setInt( 1, space.getId( ) );
+            daoUtil.setInt( 2, space.getIdParent( ) );
+            daoUtil.setString( 3, space.getName( ) );
+            daoUtil.setString( 4, space.getDescription( ) );
+            daoUtil.setString( 5, space.getViewType( ) );
+            daoUtil.setInt( 6, space.getIdIcon( ) );
+            daoUtil.setInt( 7, space.isDocumentCreationAllowed( ) ? 1 : 0 );
+            daoUtil.setString( 8, space.getWorkgroup( ) );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
         // insert allowed document types
         insertAllowedDocumenTypes( space );
     }
@@ -136,12 +137,14 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
 
         for ( int i = 0; i < doctypes.length; i++ )
         {
-            DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_DOCUMENT_TYPE );
-            daoUtil.setInt( 1, space.getId( ) );
-            daoUtil.setString( 2, doctypes [i] );
+            try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_DOCUMENT_TYPE ) )
+            {
+                daoUtil.setInt( 1, space.getId( ) );
+                daoUtil.setString( 2, doctypes[i] );
 
-            daoUtil.executeUpdate( );
-            daoUtil.free( );
+                daoUtil.executeUpdate( );
+                daoUtil.free( );
+            }
         }
     }
 
@@ -154,28 +157,28 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      */
     public DocumentSpace load( int nDocumentSpaceId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
-        daoUtil.setInt( 1, nDocumentSpaceId );
-        daoUtil.executeQuery( );
-
         DocumentSpace space = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT ) )
         {
-            space = new DocumentSpace( );
-            space.setId( daoUtil.getInt( 1 ) );
-            space.setIdParent( daoUtil.getInt( 2 ) );
-            space.setName( daoUtil.getString( 3 ) );
-            space.setDescription( daoUtil.getString( 4 ) );
-            space.setViewType( daoUtil.getString( 5 ) );
-            space.setIdIcon( daoUtil.getInt( 6 ) );
-            space.setIconUrl( daoUtil.getString( 7 ) );
-            space.setDocumentCreationAllowed( daoUtil.getInt( 8 ) != 0 );
-            space.setWorkgroup( daoUtil.getString( 9 ) );
+            daoUtil.setInt( 1, nDocumentSpaceId );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                space = new DocumentSpace( );
+                space.setId( daoUtil.getInt( 1 ) );
+                space.setIdParent( daoUtil.getInt( 2 ) );
+                space.setName( daoUtil.getString( 3 ) );
+                space.setDescription( daoUtil.getString( 4 ) );
+                space.setViewType( daoUtil.getString( 5 ) );
+                space.setIdIcon( daoUtil.getInt( 6 ) );
+                space.setIconUrl( daoUtil.getString( 7 ) );
+                space.setDocumentCreationAllowed( daoUtil.getInt( 8 ) != 0 );
+                space.setWorkgroup( daoUtil.getString( 9 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         if ( space != null )
         {
             loadAllowedDocumentTypes( space );
@@ -192,16 +195,18 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      */
     private void loadAllowedDocumentTypes( DocumentSpace space )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOCUMENT_TYPE );
-        daoUtil.setInt( 1, space.getId( ) );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOCUMENT_TYPE ) )
         {
-            space.addAllowedDocumentType( daoUtil.getString( 1 ) );
-        }
+            daoUtil.setInt( 1, space.getId( ) );
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            while ( daoUtil.next( ) )
+            {
+                space.addAllowedDocumentType( daoUtil.getString( 1 ) );
+            }
+
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -212,11 +217,13 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      */
     public void delete( int nSpaceId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nSpaceId );
-        daoUtil.executeUpdate( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nSpaceId );
+            daoUtil.executeUpdate( );
 
-        daoUtil.free( );
+            daoUtil.free( );
+        }
         deleteAllowedDocumentTypes( nSpaceId );
     }
 
@@ -228,11 +235,13 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      */
     private void deleteAllowedDocumentTypes( int nSpaceId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_DOCUMENT_TYPE );
-        daoUtil.setInt( 1, nSpaceId );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_DOCUMENT_TYPE ) )
+        {
+            daoUtil.setInt( 1, nSpaceId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -243,7 +252,8 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      */
     public void store( DocumentSpace space )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
+        {
         daoUtil.setInt( 1, space.getId( ) );
         daoUtil.setInt( 2, space.getIdParent( ) );
         daoUtil.setString( 3, space.getName( ) );
@@ -256,7 +266,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
-
+}
         deleteAllowedDocumentTypes( space.getId( ) );
         insertAllowedDocumenTypes( space );
     }
@@ -272,7 +282,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      */
     public List<DocumentSpace> selectChilds( int nSpaceId, String strCodeType )
     {
-        List<DocumentSpace> listDocumentSpaces = new ArrayList<DocumentSpace>( );
+        List<DocumentSpace> listDocumentSpaces = new ArrayList<>( );
         DAOUtil daoUtil = null;
 
         if ( strCodeType != null )
@@ -318,32 +328,32 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      */
     public List<DocumentSpace> selectSpacesAllowingDocumentCreationByDocumentType( String strCodeType, int createDocumentIsAllowed )
     {
-        List<DocumentSpace> listDocumentSpaces = new ArrayList<DocumentSpace>( );
-        DAOUtil daoUtil = null;
+        List<DocumentSpace> listDocumentSpaces = new ArrayList<>( );
 
-        daoUtil = new DAOUtil( SQL_QUERY_SELECT_SPACES_WITH_DOCUMENT_CREATION_IS_ALLOWED_BY_CODE_TYPE );
-        daoUtil.setString( 1, strCodeType );
-        daoUtil.setInt( 2, createDocumentIsAllowed );
-
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_SPACES_WITH_DOCUMENT_CREATION_IS_ALLOWED_BY_CODE_TYPE ) )
         {
-            DocumentSpace space = new DocumentSpace( );
-            space.setId( daoUtil.getInt( 1 ) );
-            space.setIdParent( daoUtil.getInt( 2 ) );
-            space.setName( daoUtil.getString( 3 ) );
-            space.setDescription( daoUtil.getString( 4 ) );
-            space.setViewType( daoUtil.getString( 5 ) );
-            space.setIdIcon( daoUtil.getInt( 6 ) );
-            space.setIconUrl( daoUtil.getString( 7 ) );
-            space.setDocumentCreationAllowed( daoUtil.getInt( 8 ) != 0 );
-            space.setWorkgroup( daoUtil.getString( 9 ) );
-            listDocumentSpaces.add( space );
+            daoUtil.setString( 1, strCodeType );
+            daoUtil.setInt( 2, createDocumentIsAllowed );
+
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                DocumentSpace space = new DocumentSpace( );
+                space.setId( daoUtil.getInt( 1 ) );
+                space.setIdParent( daoUtil.getInt( 2 ) );
+                space.setName( daoUtil.getString( 3 ) );
+                space.setDescription( daoUtil.getString( 4 ) );
+                space.setViewType( daoUtil.getString( 5 ) );
+                space.setIdIcon( daoUtil.getInt( 6 ) );
+                space.setIconUrl( daoUtil.getString( 7 ) );
+                space.setDocumentCreationAllowed( daoUtil.getInt( 8 ) != 0 );
+                space.setWorkgroup( daoUtil.getString( 9 ) );
+                listDocumentSpaces.add( space );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listDocumentSpaces;
     }
 
@@ -355,20 +365,21 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
     public ReferenceList getDocumentSpaceList( )
     {
         ReferenceList list = new ReferenceList( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL ) )
         {
-            DocumentSpace space = new DocumentSpace( );
-            space.setId( daoUtil.getInt( 1 ) );
-            space.setName( daoUtil.getString( 3 ) );
+            daoUtil.executeQuery( );
 
-            list.addItem( space.getId( ), space.getName( ) );
+            while ( daoUtil.next( ) )
+            {
+                DocumentSpace space = new DocumentSpace( );
+                space.setId( daoUtil.getInt( 1 ) );
+                space.setName( daoUtil.getString( 3 ) );
+
+                list.addItem( space.getId( ), space.getName( ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return list;
     }
 
@@ -382,18 +393,19 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
     public ReferenceList getViewTypeList( Locale locale )
     {
         ReferenceList list = new ReferenceList( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_VIEWTYPE );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_VIEWTYPE ) )
         {
-            String strCodeView = daoUtil.getString( 1 );
-            String strViewNameKey = daoUtil.getString( 2 );
-            list.addItem( strCodeView, I18nService.getLocalizedString( strViewNameKey, locale ) );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                String strCodeView = daoUtil.getString( 1 );
+                String strViewNameKey = daoUtil.getString( 2 );
+                list.addItem( strCodeView, I18nService.getLocalizedString( strViewNameKey, locale ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return list;
     }
 
@@ -405,18 +417,19 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
     public ReferenceList getIconsList( )
     {
         ReferenceList list = new ReferenceList( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ICONS );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ICONS ) )
         {
-            int nIconId = daoUtil.getInt( 1 );
-            String strIconUrl = daoUtil.getString( 2 );
-            list.addItem( nIconId, strIconUrl );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                int nIconId = daoUtil.getInt( 1 );
+                String strIconUrl = daoUtil.getString( 2 );
+                list.addItem( nIconId, strIconUrl );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return list;
     }
 
@@ -427,27 +440,28 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      */
     public List<DocumentSpace> selectAll( )
     {
-        List<DocumentSpace> listDocumentSpaces = new ArrayList<DocumentSpace>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<DocumentSpace> listDocumentSpaces = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL ) )
         {
-            DocumentSpace space = new DocumentSpace( );
-            space.setId( daoUtil.getInt( 1 ) );
-            space.setIdParent( daoUtil.getInt( 2 ) );
-            space.setName( daoUtil.getString( 3 ) );
-            space.setDescription( daoUtil.getString( 4 ) );
-            space.setViewType( daoUtil.getString( 5 ) );
-            space.setIdIcon( daoUtil.getInt( 6 ) );
-            space.setIconUrl( daoUtil.getString( 7 ) );
-            space.setDocumentCreationAllowed( daoUtil.getInt( 8 ) != 0 );
-            space.setWorkgroup( daoUtil.getString( 9 ) );
-            listDocumentSpaces.add( space );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                DocumentSpace space = new DocumentSpace( );
+                space.setId( daoUtil.getInt( 1 ) );
+                space.setIdParent( daoUtil.getInt( 2 ) );
+                space.setName( daoUtil.getString( 3 ) );
+                space.setDescription( daoUtil.getString( 4 ) );
+                space.setViewType( daoUtil.getString( 5 ) );
+                space.setIdIcon( daoUtil.getInt( 6 ) );
+                space.setIconUrl( daoUtil.getString( 7 ) );
+                space.setDocumentCreationAllowed( daoUtil.getInt( 8 ) != 0 );
+                space.setWorkgroup( daoUtil.getString( 9 ) );
+                listDocumentSpaces.add( space );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listDocumentSpaces;
     }
 
@@ -461,17 +475,18 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
     public ReferenceList getAllowedDocumentTypes( int nSpaceId )
     {
         ReferenceList list = new ReferenceList( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_SPACE_DOCUMENT_TYPE );
-        daoUtil.setInt( 1, nSpaceId );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_SPACE_DOCUMENT_TYPE ) )
         {
-            list.addItem( daoUtil.getString( 1 ), daoUtil.getString( 2 ) );
+            daoUtil.setInt( 1, nSpaceId );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                list.addItem( daoUtil.getString( 1 ), daoUtil.getString( 2 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return list;
     }
 }

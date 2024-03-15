@@ -58,33 +58,34 @@ public class DocumentActionDAO implements IDocumentActionDAO
      */
     public DocumentAction load( int nIdAction )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY );
-        daoUtil.setInt( 1, nIdAction );
-        daoUtil.executeQuery( );
-
         DocumentAction action = null;
-        DocumentState finishState = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY ) )
         {
-            action = new DocumentAction( );
-            action.setIdAction( daoUtil.getInt( 1 ) );
-            action.setNameKey( daoUtil.getString( 2 ) );
-            action.setDescriptionKey( daoUtil.getString( 3 ) );
-            action.setUrl( daoUtil.getString( 4 ) );
-            action.setIconUrl( daoUtil.getString( 5 ) );
-            action.setPermission( daoUtil.getString( 6 ) );
+            daoUtil.setInt( 1, nIdAction );
+            daoUtil.executeQuery( );
 
-            if ( daoUtil.getObject( 7 ) != null )
+            DocumentState finishState = null;
+
+            if ( daoUtil.next( ) )
             {
-                finishState = new DocumentState( );
-                finishState.setId( daoUtil.getInt( 7 ) );
-                action.setFinishDocumentState( finishState );
+                action = new DocumentAction( );
+                action.setIdAction( daoUtil.getInt( 1 ) );
+                action.setNameKey( daoUtil.getString( 2 ) );
+                action.setDescriptionKey( daoUtil.getString( 3 ) );
+                action.setUrl( daoUtil.getString( 4 ) );
+                action.setIconUrl( daoUtil.getString( 5 ) );
+                action.setPermission( daoUtil.getString( 6 ) );
+
+                if ( daoUtil.getObject( 7 ) != null )
+                {
+                    finishState = new DocumentState( );
+                    finishState.setId( daoUtil.getInt( 7 ) );
+                    action.setFinishDocumentState( finishState );
+                }
             }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return action;
     }
 
@@ -97,26 +98,27 @@ public class DocumentActionDAO implements IDocumentActionDAO
      */
     public List<DocumentAction> selectActions( Document document )
     {
-        List<DocumentAction> listActions = new ArrayList<DocumentAction>( );
+        List<DocumentAction> listActions = new ArrayList<>( );
         DocumentAction action = null;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIONS );
-        daoUtil.setInt( 1, document.getStateId( ) );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIONS ) )
         {
-            action = new DocumentAction( );
-            action.setIdAction( daoUtil.getInt( 1 ) );
-            action.setNameKey( daoUtil.getString( 2 ) );
-            action.setDescriptionKey( daoUtil.getString( 3 ) );
-            action.setUrl( daoUtil.getString( 4 ) );
-            action.setIconUrl( daoUtil.getString( 5 ) );
-            action.setPermission( daoUtil.getString( 6 ) );
-            listActions.add( action );
+            daoUtil.setInt( 1, document.getStateId( ) );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                action = new DocumentAction( );
+                action.setIdAction( daoUtil.getInt( 1 ) );
+                action.setNameKey( daoUtil.getString( 2 ) );
+                action.setDescriptionKey( daoUtil.getString( 3 ) );
+                action.setUrl( daoUtil.getString( 4 ) );
+                action.setIconUrl( daoUtil.getString( 5 ) );
+                action.setPermission( daoUtil.getString( 6 ) );
+                listActions.add( action );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return listActions;
     }
 }
