@@ -62,20 +62,20 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      */
     public int newPrimaryKey( )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK );
-        daoUtil.executeQuery( );
-
         int nKey;
-
-        if ( !daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
         {
-            // if the table is empty
-            nKey = 1;
+            daoUtil.executeQuery( );
+
+            if ( !daoUtil.next( ) )
+            {
+                // if the table is empty
+                nKey = 1;
+            }
+
+            nKey = daoUtil.getInt( 1 ) + 1;
+            daoUtil.free( );
         }
-
-        nKey = daoUtil.getInt( 1 ) + 1;
-        daoUtil.free( );
-
         return nKey;
     }
 
@@ -86,16 +86,18 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      */
     public synchronized void insert( IndexerAction indexerAction )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 2, indexerAction.getIdDocument( ) );
-        daoUtil.setInt( 3, indexerAction.getIdTask( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
+            daoUtil.setInt( 2, indexerAction.getIdDocument( ) );
+            daoUtil.setInt( 3, indexerAction.getIdTask( ) );
 
-        indexerAction.setIdAction( newPrimaryKey( ) );
-        daoUtil.setInt( 1, indexerAction.getIdAction( ) );
+            indexerAction.setIdAction( newPrimaryKey( ) );
+            daoUtil.setInt( 1, indexerAction.getIdAction( ) );
 
-        daoUtil.executeUpdate( );
+            daoUtil.executeUpdate( );
 
-        daoUtil.free( );
+            daoUtil.free( );
+        }
     }
 
     /*
@@ -107,20 +109,21 @@ public final class IndexerActionDAO implements IIndexerActionDAO
     {
         IndexerAction indexerAction = null;
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY );
-        daoUtil.setInt( 1, nId );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY ) )
         {
-            indexerAction = new IndexerAction( );
-            indexerAction.setIdAction( daoUtil.getInt( 1 ) );
-            indexerAction.setIdDocument( daoUtil.getInt( 2 ) );
-            indexerAction.setIdTask( daoUtil.getInt( 3 ) );
+            daoUtil.setInt( 1, nId );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                indexerAction = new IndexerAction( );
+                indexerAction.setIdAction( daoUtil.getInt( 1 ) );
+                indexerAction.setIdDocument( daoUtil.getInt( 2 ) );
+                indexerAction.setIdTask( daoUtil.getInt( 3 ) );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-
         return indexerAction;
     }
 
@@ -131,10 +134,12 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      */
     public void delete( int nId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nId );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /*
@@ -144,9 +149,11 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      */
     public void deleteAll( )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ALL );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ALL ) )
+        {
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /*
@@ -156,15 +163,17 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      */
     public void store( IndexerAction indexerAction )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setInt( 1, indexerAction.getIdAction( ) );
-        daoUtil.setInt( 2, indexerAction.getIdDocument( ) );
-        daoUtil.setInt( 3, indexerAction.getIdTask( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
+        {
+            daoUtil.setInt( 1, indexerAction.getIdAction( ) );
+            daoUtil.setInt( 2, indexerAction.getIdDocument( ) );
+            daoUtil.setInt( 3, indexerAction.getIdTask( ) );
 
-        daoUtil.setInt( 4, indexerAction.getIdAction( ) );
+            daoUtil.setInt( 4, indexerAction.getIdAction( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /*
@@ -174,9 +183,9 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      */
     public List<IndexerAction> selectList( IndexerActionFilter filter )
     {
-        List<IndexerAction> indexerActionList = new ArrayList<IndexerAction>( );
+        List<IndexerAction> indexerActionList = new ArrayList<>( );
         IndexerAction indexerAction = null;
-        List<String> listStrFilter = new ArrayList<String>( );
+        List<String> listStrFilter = new ArrayList<>( );
 
         if ( filter.containsIdTask( ) )
         {
@@ -185,30 +194,31 @@ public final class IndexerActionDAO implements IIndexerActionDAO
 
         String strSQL = buildRequestWithFilter( SQL_QUERY_SELECT, listStrFilter, null );
 
-        DAOUtil daoUtil = new DAOUtil( strSQL );
-
-        int nIndex = 1;
-
-        if ( filter.containsIdTask( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( strSQL ) )
         {
-            daoUtil.setInt( nIndex, filter.getIdTask( ) );
-            nIndex++;
+
+            int nIndex = 1;
+
+            if ( filter.containsIdTask( ) )
+            {
+                daoUtil.setInt( nIndex, filter.getIdTask( ) );
+                nIndex++;
+            }
+
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                indexerAction = new IndexerAction( );
+                indexerAction.setIdAction( daoUtil.getInt( 1 ) );
+                indexerAction.setIdDocument( daoUtil.getInt( 2 ) );
+                indexerAction.setIdTask( daoUtil.getInt( 3 ) );
+
+                indexerActionList.add( indexerAction );
+            }
+
+            daoUtil.free( );
         }
-
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
-        {
-            indexerAction = new IndexerAction( );
-            indexerAction.setIdAction( daoUtil.getInt( 1 ) );
-            indexerAction.setIdDocument( daoUtil.getInt( 2 ) );
-            indexerAction.setIdTask( daoUtil.getInt( 3 ) );
-
-            indexerActionList.add( indexerAction );
-        }
-
-        daoUtil.free( );
-
         return indexerActionList;
     }
 
