@@ -1,0 +1,1 @@
+INSERT INTO document_workflow_transition (id_state,id_action) VALUES (3,16);
