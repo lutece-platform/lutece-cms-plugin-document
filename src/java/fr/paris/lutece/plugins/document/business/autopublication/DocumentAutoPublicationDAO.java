@@ -71,7 +71,6 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
             daoUtil.setInt( 1, nPortletId );
             daoUtil.setInt( 2, nSpaceId );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -87,7 +86,6 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
         {
             daoUtil.setInt( 1, nPortletId );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -105,7 +103,6 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
             daoUtil.setInt( 2, documentAutoPublication.getIdSpace( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -134,8 +131,6 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
                 documentAutoPublication.setIdPortlet( daoUtil.getInt( 1 ) );
                 documentAutoPublication.setIdSpace( daoUtil.getInt( 2 ) );
             }
-
-            daoUtil.free( );
         }
         return documentAutoPublication;
     }
@@ -159,8 +154,6 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
                 documentAutoPublication.setIdSpace( daoUtil.getInt( 2 ) );
                 listDocumentAutoPublication.add( documentAutoPublication );
             }
-
-            daoUtil.free( );
         }
         return listDocumentAutoPublication;
     }
@@ -187,8 +180,6 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
                 documentAutoPublication.setIdSpace( daoUtil.getInt( 1 ) );
                 listDocumentAutoPublication.add( documentAutoPublication );
             }
-
-            daoUtil.free( );
         }
         return listDocumentAutoPublication;
     }
@@ -215,8 +206,6 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
                 documentAutoPublication.setIdSpace( nSpaceId );
                 listDocumentAutoPublication.add( documentAutoPublication );
             }
-
-            daoUtil.free( );
         }
         return listDocumentAutoPublication;
     }

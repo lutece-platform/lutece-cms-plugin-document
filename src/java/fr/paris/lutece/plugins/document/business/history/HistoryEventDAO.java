@@ -68,7 +68,6 @@ public final class HistoryEventDAO implements IHistoryEventDAO
             daoUtil.setString( 6, historyEvent.getSpace( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -85,7 +84,6 @@ public final class HistoryEventDAO implements IHistoryEventDAO
             daoUtil.setInt( 1, nDocumentId );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -116,8 +114,6 @@ public final class HistoryEventDAO implements IHistoryEventDAO
 
                 listHistoryEvents.add( event );
             }
-
-            daoUtil.free( );
         }
         return listHistoryEvents;
     }
@@ -149,8 +145,6 @@ public final class HistoryEventDAO implements IHistoryEventDAO
 
                 listHistoryEvents.add( event );
             }
-
-            daoUtil.free( );
         }
         return listHistoryEvents;
     }

@@ -90,8 +90,6 @@ public final class CategoryDAO implements ICategoryDAO
 
                 listCategory.add( category );
             }
-
-            daoUtil.free( );
         }
         return listCategory;
     }
@@ -115,7 +113,6 @@ public final class CategoryDAO implements ICategoryDAO
             daoUtil.setString( ++nParam, category.getWorkgroup( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -135,8 +132,6 @@ public final class CategoryDAO implements ICategoryDAO
             {
                 nNewPrimaryKey = daoUtil.getInt( 1 );
             }
-
-            daoUtil.free( );
         }
         return ++nNewPrimaryKey;
     }
@@ -169,8 +164,6 @@ public final class CategoryDAO implements ICategoryDAO
                 category.setIconMimeType( daoUtil.getString( ++nParam ) );
                 category.setWorkgroup( daoUtil.getString( ++nParam ) );
             }
-
-            daoUtil.free( );
         }
         return category;
     }
@@ -188,7 +181,6 @@ public final class CategoryDAO implements ICategoryDAO
         {
             daoUtil.setInt( ++nParam, nIdCategory );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -211,7 +203,6 @@ public final class CategoryDAO implements ICategoryDAO
             daoUtil.setInt( ++nParam, category.getId( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -245,8 +236,6 @@ public final class CategoryDAO implements ICategoryDAO
 
                 listCategory.add( category );
             }
-
-            daoUtil.free( );
         }
         return listCategory;
     }
@@ -267,7 +256,6 @@ public final class CategoryDAO implements ICategoryDAO
             daoUtil.setInt( ++nParam, nIdDocument );
             daoUtil.setInt( ++nParam, nIdCategory );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -290,8 +278,6 @@ public final class CategoryDAO implements ICategoryDAO
             {
                 listIdDocument.add( daoUtil.getInt( 1 ) );
             }
-
-            daoUtil.free( );
 
             // Convert ArrayList to Int[]
             int[] arrayIdDocument = new int[listIdDocument.size( )];
@@ -318,7 +304,6 @@ public final class CategoryDAO implements ICategoryDAO
         {
             daoUtil.setInt( ++nParam, nIdCategory );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -341,8 +326,6 @@ public final class CategoryDAO implements ICategoryDAO
             {
                 nCountDocumentsId = daoUtil.getInt( 1 );
             }
-
-            daoUtil.free( );
         }
         return nCountDocumentsId;
     }
@@ -369,9 +352,6 @@ public final class CategoryDAO implements ICategoryDAO
                 image.setImage( daoUtil.getBytes( 1 ) );
                 image.setMimeType( daoUtil.getString( 2 ) );
             }
-
-            daoUtil.free( );
-
             return image;
         }
     }

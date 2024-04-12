@@ -74,7 +74,6 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
             daoUtil.setString( 6, documentType.getMetadataHandler( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -107,7 +106,6 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
                 DocumentAttributeHome.setDocumentTypeAttributes( documentType );
             }
 
-            daoUtil.free( );
         }
         return documentType;
     }
@@ -125,7 +123,6 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
             daoUtil.setString( 1, strCode );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -148,7 +145,6 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
             daoUtil.setString( 7, documentType.getOldCode( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -176,8 +172,6 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
 
                 listDocumentTypes.add( documentType );
             }
-
-            daoUtil.free( );
         }
         return listDocumentTypes;
     }
@@ -201,10 +195,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
                 documentType.setName( daoUtil.getString( 2 ) );
                 listDocumentTypes.addItem( documentType.getCode( ), documentType.getName( ) );
             }
-
-            daoUtil.free( );
         }
-
         return listDocumentTypes;
     }
 
@@ -223,7 +214,6 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
             daoUtil.executeQuery( );
 
             bCheck = daoUtil.next( );
-            daoUtil.free( );
         }
         return bCheck;
     }
@@ -249,7 +239,6 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
             daoUtil.setInt( 1, nOrderAttribute2 );
             daoUtil.setInt( 2, nIdAttribute2 );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -269,7 +258,6 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
             daoUtil.setString( 2, strCodeType );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -289,7 +277,6 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
             daoUtil.setString( 2, strCodeType );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 }

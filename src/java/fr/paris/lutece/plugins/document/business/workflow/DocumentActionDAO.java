@@ -83,8 +83,6 @@ public class DocumentActionDAO implements IDocumentActionDAO
                     action.setFinishDocumentState( finishState );
                 }
             }
-
-            daoUtil.free( );
         }
         return action;
     }
@@ -116,8 +114,6 @@ public class DocumentActionDAO implements IDocumentActionDAO
                 action.setPermission( daoUtil.getString( 6 ) );
                 listActions.add( action );
             }
-
-            daoUtil.free( );
         }
         return listActions;
     }

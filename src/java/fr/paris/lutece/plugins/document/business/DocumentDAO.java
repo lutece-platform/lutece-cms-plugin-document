@@ -169,7 +169,6 @@ public final class DocumentDAO implements IDocumentDAO
             }
 
             nKey = daoUtil.getInt( 1 ) + 1;
-            daoUtil.free( );
         }
 
         return nKey;
@@ -206,7 +205,6 @@ public final class DocumentDAO implements IDocumentDAO
             daoUtil.setBoolean( 19, document.isSkipCategories( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
         insertAttributes( document );
         insertCategories( document.getCategories( ), document.getId( ) );
@@ -261,7 +259,6 @@ public final class DocumentDAO implements IDocumentDAO
             daoUtil.setBoolean( 6, false );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -333,7 +330,6 @@ public final class DocumentDAO implements IDocumentDAO
                 document.setSkipCategories( daoUtil.getBoolean( 22 ) );
             }
 
-            daoUtil.free( );
         }
         if ( document != null )
         {
@@ -385,7 +381,6 @@ public final class DocumentDAO implements IDocumentDAO
                 list.add( document );
             }
 
-            daoUtil.free( );
         }
 
         for ( Document d : list )
@@ -449,7 +444,6 @@ public final class DocumentDAO implements IDocumentDAO
             }
 
             document.setAttributes( listAttributes );
-            daoUtil.free( );
         }
     }
 
@@ -504,7 +498,6 @@ public final class DocumentDAO implements IDocumentDAO
             }
 
             document.setAttributes( listAttributes );
-            daoUtil.free( );
         }
     }
 
@@ -521,7 +514,6 @@ public final class DocumentDAO implements IDocumentDAO
             daoUtil.setInt( 1, nDocumentId );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
 
             // Delete attributes
             deleteAttributes( nDocumentId );
@@ -546,7 +538,6 @@ public final class DocumentDAO implements IDocumentDAO
             daoUtil.setBoolean( 2, false );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -564,7 +555,6 @@ public final class DocumentDAO implements IDocumentDAO
             daoUtil.setBoolean( 2, true );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -584,7 +574,6 @@ public final class DocumentDAO implements IDocumentDAO
             daoUtil.setInt( 2, nDocumentId );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -601,7 +590,6 @@ public final class DocumentDAO implements IDocumentDAO
             daoUtil.setInt( 1, nDocumentId );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -639,7 +627,6 @@ public final class DocumentDAO implements IDocumentDAO
             daoUtil.setInt( 20, document.getId( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
 
             if ( bUpdateContent )
             {
@@ -670,7 +657,6 @@ public final class DocumentDAO implements IDocumentDAO
                 listDocumentIds.add( daoUtil.getInt( 1 ) );
             }
 
-            daoUtil.free( );
         }
         return listDocumentIds;
     }
@@ -736,7 +722,6 @@ public final class DocumentDAO implements IDocumentDAO
             listDocuments.add( document );
         }
 
-        daoUtil.free( );
         }
 
         return listDocuments;
@@ -956,7 +941,6 @@ public final class DocumentDAO implements IDocumentDAO
                 document.setCategories( selectCategories( document.getId( ) ) );
             }
 
-            daoUtil.free( );
         }
 
         return listDocument;
@@ -985,8 +969,6 @@ public final class DocumentDAO implements IDocumentDAO
                 resource.setContentType( daoUtil.getString( 2 ) );
                 resource.setName( daoUtil.getString( 3 ) );
             }
-
-            daoUtil.free( );
         }
         return resource;
     }
@@ -1019,8 +1001,6 @@ public final class DocumentDAO implements IDocumentDAO
                 resource.setContentType( daoUtil.getString( 2 ) );
                 resource.setName( daoUtil.getString( 3 ) );
             }
-
-            daoUtil.free( );
         }
         return resource;
     }
@@ -1043,8 +1023,6 @@ public final class DocumentDAO implements IDocumentDAO
             {
                 listPrimaryKeys.add( daoUtil.getInt( 1 ) );
             }
-
-            daoUtil.free( );
         }
         return listPrimaryKeys;
     }
@@ -1092,8 +1070,6 @@ public final class DocumentDAO implements IDocumentDAO
                 document.setCategories( selectCategories( document.getId( ) ) );
                 listDocuments.add( document );
             }
-
-            daoUtil.free( );
         }
 
         return listDocuments;
@@ -1118,8 +1094,6 @@ public final class DocumentDAO implements IDocumentDAO
             {
                 strPageTemplatePath = daoUtil.getString( 1 );
             }
-
-            daoUtil.free( );
         }
         return strPageTemplatePath;
     }
@@ -1153,8 +1127,6 @@ public final class DocumentDAO implements IDocumentDAO
 
                 listCategory.add( category );
             }
-
-            daoUtil.free( );
         }
         return listCategory;
     }
@@ -1181,8 +1153,6 @@ public final class DocumentDAO implements IDocumentDAO
                     daoUtil.setInt( 2, nIdDocument );
                     daoUtil.executeUpdate( );
                 }
-
-                daoUtil.free( );
             }
         }
     }
@@ -1200,7 +1170,7 @@ public final class DocumentDAO implements IDocumentDAO
         {
             daoUtil.setInt( ++nParam, nIdDocument );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
+
         }
     }
 
@@ -1226,8 +1196,6 @@ public final class DocumentDAO implements IDocumentDAO
                 document.setCodeDocumentType( daoUtil.getString( 1 ) );
                 document.setDateModification( daoUtil.getTimestamp( 2 ) );
             }
-
-            daoUtil.free( );
         }
         return document;
     }
@@ -1274,8 +1242,6 @@ public final class DocumentDAO implements IDocumentDAO
                 document.setSkipPortlet( daoUtil.getBoolean( nIndex++ ) );
                 document.setSkipCategories( daoUtil.getBoolean( nIndex++ ) );
             }
-
-            daoUtil.free( );
         }
         return document;
     }
@@ -1319,8 +1285,6 @@ public final class DocumentDAO implements IDocumentDAO
                 document.setSkipPortlet( daoUtil.getBoolean( nIndex++ ) );
                 document.setSkipCategories( daoUtil.getBoolean( nIndex++ ) );
             }
-
-            daoUtil.free( );
         }
         return document;
     }

@@ -71,7 +71,6 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
             daoUtil.setString( 4, documentAttributeType.getClassName( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -98,8 +97,6 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
                 documentAttributeType.setDescriptionKey( daoUtil.getString( 3 ) );
                 documentAttributeType.setClassName( daoUtil.getString( 4 ) );
             }
-
-            daoUtil.free( );
         }
         return documentAttributeType;
     }
@@ -117,7 +114,6 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
             daoUtil.setString( 1, documentAttributeType.getCode( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -138,7 +134,6 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
             daoUtil.setString( 5, documentAttributeType.getCode( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -164,8 +159,6 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
 
                 listDocumentAttributeTypes.add( documentAttributeType );
             }
-
-            daoUtil.free( );
         }
         return listDocumentAttributeTypes;
     }
@@ -192,8 +185,6 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
                documentAttributeType.setNameKey( daoUtil.getString( 2 ) );
                listAttributeTypes.addItem( documentAttributeType.getCode( ), documentAttributeType.getName( ) );
            }
-
-           daoUtil.free( );
        }
         return listAttributeTypes;
     }
@@ -217,8 +208,6 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
             {
                 listAttributeManagers.addItem( daoUtil.getString( 1 ), daoUtil.getString( 2 ) );
             }
-
-            daoUtil.free( );
         }
         return listAttributeManagers;
     }
@@ -261,8 +250,6 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
 
                 listAttributeTypeParameters.add( attributeTypeParameter );
             }
-
-            daoUtil.free( );
         }
         return listAttributeTypeParameters;
     }

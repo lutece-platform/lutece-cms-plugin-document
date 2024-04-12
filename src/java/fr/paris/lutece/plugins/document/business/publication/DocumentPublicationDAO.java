@@ -77,7 +77,6 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
             daoUtil.setTimestamp( 5, new Timestamp( documentPublication.getDatePublishing( ).getTime( ) ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -98,7 +97,6 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
             daoUtil.setInt( 5, documentPublication.getDocumentId( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -117,7 +115,6 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
             daoUtil.setInt( 1, nPortletId );
             daoUtil.setInt( 2, nDocumentId );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -133,7 +130,6 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
         {
             daoUtil.setInt( 1, nPortletId );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -149,7 +145,6 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
         {
             daoUtil.setInt( 1, nDocumentId );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -183,8 +178,6 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
                 documentPublication.setStatus( daoUtil.getInt( 2 ) );
                 documentPublication.setDatePublishing( daoUtil.getTimestamp( 3 ) );
             }
-
-            daoUtil.free( );
         }
         return documentPublication;
     }
@@ -201,22 +194,20 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
         Collection<DocumentPublication> listDocumentPublication = new ArrayList<>( );
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PORTLET_ID ) )
         {
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery( );
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeQuery( );
 
-        while ( daoUtil.next( ) )
-        {
-            DocumentPublication documentPublication = new DocumentPublication( );
-            documentPublication.setPortletId( nPortletId );
-            documentPublication.setDocumentId( daoUtil.getInt( 1 ) );
-            documentPublication.setDocumentOrder( daoUtil.getInt( 2 ) );
-            documentPublication.setStatus( daoUtil.getInt( 3 ) );
-            documentPublication.setDatePublishing( daoUtil.getTimestamp( 4 ) );
-            listDocumentPublication.add( documentPublication );
+            while ( daoUtil.next( ) )
+            {
+                DocumentPublication documentPublication = new DocumentPublication( );
+                documentPublication.setPortletId( nPortletId );
+                documentPublication.setDocumentId( daoUtil.getInt( 1 ) );
+                documentPublication.setDocumentOrder( daoUtil.getInt( 2 ) );
+                documentPublication.setStatus( daoUtil.getInt( 3 ) );
+                documentPublication.setDatePublishing( daoUtil.getTimestamp( 4 ) );
+                listDocumentPublication.add( documentPublication );
+            }
         }
-
-        daoUtil.free( );
-}
         return listDocumentPublication;
     }
 
@@ -245,8 +236,6 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
                 documentPublication.setDatePublishing( daoUtil.getTimestamp( 4 ) );
                 listDocumentPublication.add( documentPublication );
             }
-
-            daoUtil.free( );
         }
         return listDocumentPublication;
     }
@@ -279,8 +268,6 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
                 documentPublication.setDatePublishing( daoUtil.getTimestamp( 3 ) );
                 listDocumentPublication.add( documentPublication );
             }
-
-            daoUtil.free( );
         }
         return listDocumentPublication;
     }
@@ -313,8 +300,6 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
                 documentPublication.setDatePublishing( daoUtil.getTimestamp( 3 ) );
                 listDocumentPublication.add( documentPublication );
             }
-
-            daoUtil.free( );
         }
         return listDocumentPublication;
     }
@@ -347,8 +332,6 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
                 documentPublication.setDatePublishing( daoUtil.getTimestamp( 4 ) );
                 listDocumentPublication.add( documentPublication );
             }
-
-            daoUtil.free( );
         }
         return listDocumentPublication;
     }
@@ -372,8 +355,6 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
             {
                 nOrder = daoUtil.getInt( 1 );
             }
-
-            daoUtil.free( );
         }
         return nOrder;
     }
@@ -406,8 +387,6 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
             {
                 nResult = daoUtil.getInt( 1 );
             }
-
-            daoUtil.free( );
         }
         return nResult;
     }

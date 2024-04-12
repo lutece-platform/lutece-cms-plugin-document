@@ -69,8 +69,6 @@ public class SpaceActionDAO implements ISpaceActionDAO
 
                 listActions.add( action );
             }
-
-            daoUtil.free( );
         }
         return listActions;
     }

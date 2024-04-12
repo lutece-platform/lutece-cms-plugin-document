@@ -74,7 +74,6 @@ public final class IndexerActionDAO implements IIndexerActionDAO
             }
 
             nKey = daoUtil.getInt( 1 ) + 1;
-            daoUtil.free( );
         }
         return nKey;
     }
@@ -95,8 +94,6 @@ public final class IndexerActionDAO implements IIndexerActionDAO
             daoUtil.setInt( 1, indexerAction.getIdAction( ) );
 
             daoUtil.executeUpdate( );
-
-            daoUtil.free( );
         }
     }
 
@@ -121,8 +118,6 @@ public final class IndexerActionDAO implements IIndexerActionDAO
                 indexerAction.setIdDocument( daoUtil.getInt( 2 ) );
                 indexerAction.setIdTask( daoUtil.getInt( 3 ) );
             }
-
-            daoUtil.free( );
         }
         return indexerAction;
     }
@@ -138,7 +133,6 @@ public final class IndexerActionDAO implements IIndexerActionDAO
         {
             daoUtil.setInt( 1, nId );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -152,7 +146,6 @@ public final class IndexerActionDAO implements IIndexerActionDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ALL ) )
         {
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -172,7 +165,6 @@ public final class IndexerActionDAO implements IIndexerActionDAO
             daoUtil.setInt( 4, indexerAction.getIdAction( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -216,8 +208,6 @@ public final class IndexerActionDAO implements IIndexerActionDAO
 
                 indexerActionList.add( indexerAction );
             }
-
-            daoUtil.free( );
         }
         return indexerActionList;
     }

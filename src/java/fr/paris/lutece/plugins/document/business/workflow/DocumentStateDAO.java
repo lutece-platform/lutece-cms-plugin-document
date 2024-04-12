@@ -69,8 +69,6 @@ public class DocumentStateDAO implements IDocumentStateDAO
                 documentState.setNameKey( daoUtil.getString( 2 ) );
                 documentState.setDescriptionKey( daoUtil.getString( 3 ) );
             }
-
-            daoUtil.free( );
         }
         return documentState;
     }
@@ -97,8 +95,6 @@ public class DocumentStateDAO implements IDocumentStateDAO
                 state.setNameKey( daoUtil.getString( 2 ) );
                 list.addItem( state.getId( ), state.getName( ) );
             }
-
-            daoUtil.free( );
         }
         return list;
     }

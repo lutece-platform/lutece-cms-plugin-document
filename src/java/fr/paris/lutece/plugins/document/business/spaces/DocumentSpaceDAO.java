@@ -93,8 +93,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
             }
 
             nKey = daoUtil.getInt( 1 ) + 1;
-
-            daoUtil.free( );
         }
         return nKey;
     }
@@ -119,7 +117,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
             daoUtil.setInt( 7, space.isDocumentCreationAllowed( ) ? 1 : 0 );
             daoUtil.setString( 8, space.getWorkgroup( ) );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
         // insert allowed document types
         insertAllowedDocumenTypes( space );
@@ -143,7 +140,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
                 daoUtil.setString( 2, doctypes[i] );
 
                 daoUtil.executeUpdate( );
-                daoUtil.free( );
             }
         }
     }
@@ -176,8 +172,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
                 space.setDocumentCreationAllowed( daoUtil.getInt( 8 ) != 0 );
                 space.setWorkgroup( daoUtil.getString( 9 ) );
             }
-
-            daoUtil.free( );
         }
         if ( space != null )
         {
@@ -204,8 +198,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
             {
                 space.addAllowedDocumentType( daoUtil.getString( 1 ) );
             }
-
-            daoUtil.free( );
         }
     }
 
@@ -221,8 +213,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
         {
             daoUtil.setInt( 1, nSpaceId );
             daoUtil.executeUpdate( );
-
-            daoUtil.free( );
         }
         deleteAllowedDocumentTypes( nSpaceId );
     }
@@ -240,7 +230,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
             daoUtil.setInt( 1, nSpaceId );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -254,19 +243,18 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
         {
-        daoUtil.setInt( 1, space.getId( ) );
-        daoUtil.setInt( 2, space.getIdParent( ) );
-        daoUtil.setString( 3, space.getName( ) );
-        daoUtil.setString( 4, space.getDescription( ) );
-        daoUtil.setString( 5, space.getViewType( ) );
-        daoUtil.setInt( 6, space.getIdIcon( ) );
-        daoUtil.setInt( 7, space.isDocumentCreationAllowed( ) ? 1 : 0 );
-        daoUtil.setString( 8, space.getWorkgroup( ) );
-        daoUtil.setInt( 9, space.getId( ) );
+            daoUtil.setInt( 1, space.getId( ) );
+            daoUtil.setInt( 2, space.getIdParent( ) );
+            daoUtil.setString( 3, space.getName( ) );
+            daoUtil.setString( 4, space.getDescription( ) );
+            daoUtil.setString( 5, space.getViewType( ) );
+            daoUtil.setInt( 6, space.getIdIcon( ) );
+            daoUtil.setInt( 7, space.isDocumentCreationAllowed( ) ? 1 : 0 );
+            daoUtil.setString( 8, space.getWorkgroup( ) );
+            daoUtil.setInt( 9, space.getId( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
-}
+            daoUtil.executeUpdate( );
+        }
         deleteAllowedDocumentTypes( space.getId( ) );
         insertAllowedDocumenTypes( space );
     }
@@ -283,8 +271,40 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
     public List<DocumentSpace> selectChilds( int nSpaceId, String strCodeType )
     {
         List<DocumentSpace> listDocumentSpaces = new ArrayList<>( );
-        DAOUtil daoUtil = null;
 
+        try (DAOUtil daoUtil = initSelectChildDAOUtil(nSpaceId, strCodeType))
+        {
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                DocumentSpace space = new DocumentSpace( );
+                space.setId( daoUtil.getInt( 1 ) );
+                space.setIdParent( daoUtil.getInt( 2 ) );
+                space.setName( daoUtil.getString( 3 ) );
+                space.setDescription( daoUtil.getString( 4 ) );
+                space.setViewType( daoUtil.getString( 5 ) );
+                space.setIdIcon( daoUtil.getInt( 6 ) );
+                space.setIconUrl( daoUtil.getString( 7 ) );
+                space.setDocumentCreationAllowed( daoUtil.getInt( 8 ) != 0 );
+                space.setWorkgroup( daoUtil.getString( 9 ) );
+                listDocumentSpaces.add( space );
+            }
+        }
+        return listDocumentSpaces;
+    }
+
+    /**
+     * Select the right daoUtil.
+     *
+     * @param strCodeType
+     *            the document type filter if needed (null if not)
+     * @param nSpaceId
+     *            The space identifier
+     * @return the right daoUtil.
+     */
+    private DAOUtil initSelectChildDAOUtil(int nSpaceId, String strCodeType) {
+        DAOUtil daoUtil =null;
         if ( strCodeType != null )
         {
             daoUtil = new DAOUtil( SQL_QUERY_SELECT_CHILDS_BY_CODE_TYPE );
@@ -296,27 +316,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
             daoUtil = new DAOUtil( SQL_QUERY_SELECT_CHILDS );
             daoUtil.setInt( 1, nSpaceId );
         }
-
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
-        {
-            DocumentSpace space = new DocumentSpace( );
-            space.setId( daoUtil.getInt( 1 ) );
-            space.setIdParent( daoUtil.getInt( 2 ) );
-            space.setName( daoUtil.getString( 3 ) );
-            space.setDescription( daoUtil.getString( 4 ) );
-            space.setViewType( daoUtil.getString( 5 ) );
-            space.setIdIcon( daoUtil.getInt( 6 ) );
-            space.setIconUrl( daoUtil.getString( 7 ) );
-            space.setDocumentCreationAllowed( daoUtil.getInt( 8 ) != 0 );
-            space.setWorkgroup( daoUtil.getString( 9 ) );
-            listDocumentSpaces.add( space );
-        }
-
-        daoUtil.free( );
-
-        return listDocumentSpaces;
+        return daoUtil;
     }
 
     /**
@@ -351,8 +351,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
                 space.setWorkgroup( daoUtil.getString( 9 ) );
                 listDocumentSpaces.add( space );
             }
-
-            daoUtil.free( );
         }
         return listDocumentSpaces;
     }
@@ -377,8 +375,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
 
                 list.addItem( space.getId( ), space.getName( ) );
             }
-
-            daoUtil.free( );
         }
         return list;
     }
@@ -403,8 +399,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
                 String strViewNameKey = daoUtil.getString( 2 );
                 list.addItem( strCodeView, I18nService.getLocalizedString( strViewNameKey, locale ) );
             }
-
-            daoUtil.free( );
         }
         return list;
     }
@@ -427,8 +421,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
                 String strIconUrl = daoUtil.getString( 2 );
                 list.addItem( nIconId, strIconUrl );
             }
-
-            daoUtil.free( );
         }
         return list;
     }
@@ -459,8 +451,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
                 space.setWorkgroup( daoUtil.getString( 9 ) );
                 listDocumentSpaces.add( space );
             }
-
-            daoUtil.free( );
         }
         return listDocumentSpaces;
     }
@@ -484,8 +474,6 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
             {
                 list.addItem( daoUtil.getString( 1 ), daoUtil.getString( 2 ) );
             }
-
-            daoUtil.free( );
         }
         return list;
     }
