@@ -73,8 +73,6 @@ public final class RuleDAO implements IRuleDAO
             }
 
             nKey = daoUtil.getInt( 1 ) + 1;
-
-            daoUtil.free( );
         }
         return nKey;
     }
@@ -94,7 +92,6 @@ public final class RuleDAO implements IRuleDAO
             daoUtil.setString( 2, rule.getRuleTypeId( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
         // Rule attributes
         insertAttributes( rule );
@@ -115,12 +112,11 @@ public final class RuleDAO implements IRuleDAO
             String strAttributeValue = rule.getAttribute( attributes [i] );
             try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_ATTRIBUTE ) )
             {
-            daoUtil.setInt( 1, rule.getId( ) );
-            daoUtil.setString( 2, attributes [i] );
-            daoUtil.setString( 3, strAttributeValue );
+                daoUtil.setInt( 1, rule.getId( ) );
+                daoUtil.setString( 2, attributes[i] );
+                daoUtil.setString( 3, strAttributeValue );
 
-            daoUtil.executeUpdate( );
-            daoUtil.free( );
+                daoUtil.executeUpdate( );
             }
         }
     }
@@ -150,8 +146,6 @@ public final class RuleDAO implements IRuleDAO
                 rule.setRuleTypeId( strRuleTypeId );
                 loadAttributes( rule );
             }
-
-            daoUtil.free( );
         }
         return rule;
     }
@@ -173,8 +167,6 @@ public final class RuleDAO implements IRuleDAO
             {
                 rule.setAttribute( daoUtil.getString( 1 ), daoUtil.getString( 2 ) );
             }
-
-            daoUtil.free( );
         }
     }
 
@@ -193,7 +185,6 @@ public final class RuleDAO implements IRuleDAO
             daoUtil.setInt( 1, nRuleId );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -210,7 +201,7 @@ public final class RuleDAO implements IRuleDAO
             daoUtil.setInt( 1, nRuleId );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
+            daoUtil.executeUpdate( );
         }
     }
 
@@ -247,8 +238,6 @@ public final class RuleDAO implements IRuleDAO
                 Rule rule = load( nRuleId, ruleTypesSet );
                 listRules.add( rule );
             }
-
-            daoUtil.free( );
         }
         return listRules;
     }
@@ -278,8 +267,6 @@ public final class RuleDAO implements IRuleDAO
                 loadAttributes( rule );
                 listRules.add( rule );
             }
-
-            daoUtil.free( );
         }
 
         return listRules;

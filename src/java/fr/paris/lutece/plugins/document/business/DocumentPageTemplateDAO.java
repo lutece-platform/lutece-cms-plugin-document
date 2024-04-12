@@ -75,7 +75,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
 
             nKey = daoUtil.getInt( 1 ) + 1;
 
-            daoUtil.free( );
+
         }
         return nKey;
     }
@@ -99,7 +99,6 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
             daoUtil.setString( 4, documentPageTemplate.getPicture( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -128,7 +127,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
                 documentPageTemplate.setPicture( daoUtil.getString( 4 ) );
             }
 
-            daoUtil.free( );
+
         }
         return documentPageTemplate;
     }
@@ -145,7 +144,6 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
         {
             daoUtil.setInt( 1, nPageTemplateId );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -167,7 +165,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
             daoUtil.setInt( 5, documentPageTemplate.getId( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
+
         }
     }
 
@@ -193,8 +191,6 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
                 documentPageTemplate.setPicture( daoUtil.getString( 4 ) );
                 listDocumentPageTemplates.add( documentPageTemplate );
             }
-
-            daoUtil.free( );
         }
         return listDocumentPageTemplates;
     }

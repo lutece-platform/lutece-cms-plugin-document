@@ -90,8 +90,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
             }
 
             nKey = daoUtil.getInt( 1 ) + 1;
-
-            daoUtil.free( );
         }
         return nKey;
     }
@@ -118,7 +116,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
             daoUtil.setInt( 9, documentAttribute.isSearchable( ) ? 1 : 0 );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
         // Insert parameters
         insertAttributeParameters( documentAttribute );
@@ -152,8 +149,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
                 documentAttribute.setRequired( daoUtil.getInt( 8 ) != 0 );
                 documentAttribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
             }
-
-            daoUtil.free( );
         }
         return documentAttribute;
     }
@@ -171,7 +166,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
             daoUtil.setInt( 1, nAttributeId );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
         deleteParameters( nAttributeId );
         deleteRegularExpressions( nAttributeId );
@@ -190,7 +184,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
             daoUtil.setInt( 1, nAttributeId );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -210,7 +203,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
             daoUtil.setString( 2, strParameterName );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -236,7 +228,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
             daoUtil.setInt( 10, documentAttribute.getId( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
         // Update parameters
         deleteParameters( documentAttribute.getId( ) );
@@ -274,8 +265,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
                 documentType.addAttribute( documentAttribute );
                 nOrder++;
             }
-
-            daoUtil.free( );
         }
     }
 
@@ -308,8 +297,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
                 documentAttribute.setSearchable( daoUtil.getInt( 9 ) != 0 );
                 listDocumentAttributes.add( documentAttribute );
             }
-
-            daoUtil.free( );
         }
         return listDocumentAttributes;
     }
@@ -333,7 +320,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
                     daoUtil.setString( 4, value );
 
                     daoUtil.executeUpdate( );
-                    daoUtil.free( );
                 }
             }
         }
@@ -361,8 +347,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
                 parameter.setValueList( getAttributeParameterValues( nAttributeId, parameter.getName( ) ) );
                 listParameters.add( parameter );
             }
-
-            daoUtil.free( );
         }
         return listParameters;
     }
@@ -389,8 +373,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
             {
                 listValues.add( daoUtil.getString( 1 ) );
             }
-
-            daoUtil.free( );
         }
         return listValues;
     }
@@ -410,7 +392,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
             daoUtil.setInt( 1, nIdAttribute );
             daoUtil.setInt( 2, nIdExpression );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -429,7 +410,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
             daoUtil.setInt( 1, nIdAttribute );
             daoUtil.setInt( 2, nIdExpression );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -445,7 +425,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
         {
             daoUtil.setInt( 1, nIdAttribute );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -469,8 +448,6 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
             {
                 colRegularExpression.add( daoUtil.getInt( 1 ) );
             }
-
-            daoUtil.free( );
         }
         return colRegularExpression;
     }
