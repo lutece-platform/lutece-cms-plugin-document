@@ -213,6 +213,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String JSP_ARCHIVE_DOCUMENT = "DoArchiveDocument.jsp";
     private static final String JSP_DO_REMOVE_SELECTION = "jsp/admin/plugins/document/DoRemoveSelection.jsp";
     private static final String JSP_DO_ARCHIVE_SELECTION = "DoArchiveSelection.jsp";
+    private static final String JSP_DOCUMENTS_PUBLISHING = "ManageDocumentPublishing.jsp";
 
     // Messages
     private static final String MESSAGE_CONFIRM_DELETE = "document.message.confirmDeleteDocument";
@@ -1960,7 +1961,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private void saveReferer( HttpServletRequest request )
     {
         String strFromUrl = request.getParameter( PARAMETER_FROM_URL );
-
+        String documentId = request.getParameter("id_document");
         if ( StringUtils.isNotBlank( strFromUrl ) )
         {
             _strSavedReferer = strFromUrl.replace( CONSTANT_AND_HTML, CONSTANT_AND );
@@ -1974,9 +1975,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             {
                 _strSavedReferer = strAdminMenuUrl;
             }
-            else if ( StringUtils.contains( strReferer, _strFeatureUrl ) )
+            else if ( StringUtils.contains( strReferer, _strFeatureUrl ) ||  StringUtils.contains( strReferer, JSP_DOCUMENTS_PUBLISHING ))
             {
-                _strSavedReferer = _strFeatureUrl;
+                _strSavedReferer = _strFeatureUrl + "#document_" + documentId;
             }
         }
     }
