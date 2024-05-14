@@ -1,6 +1,6 @@
 <#if attribute.textValue?has_content>
 	<#assign helpKey>
-		<@link href='servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true' title='preview'>
+		<@link href='servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true&nocache' title='preview'>
 			<img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumblist-medium mt-2">
 		</@link>
 	</#assign>

@@ -19,7 +19,7 @@
 						<#if attribute.valueContentType?contains('image')>
 							<#assign params += ' data-lightbox="image-document"' />
 						</#if>
-						<@link href='servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true' params=params>
+						<@link href='servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true&nocache' params=params>
 						   <img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumbnail thumblist-lg pull-right clearfix" style="max-width:100%;" />
 						</@link>
 					</@columns>
