@@ -60,49 +60,6 @@
 									<@button type='submit' title='#i18n{document.search_results.buttonSearch}' buttonIcon='search' />
 								</@formGroup>
 							</#if>
-						</@formGroup>
-					</#if>
-				</@tform>
-			</@boxBody>  
-		</@box>  
-	</@columns>  
-	<@columns xl=9>
-		<@box>
-			<@boxHeader title='#i18n{document.search_results.labelDocumentsList}' />
-			<@boxBody>
-				<#if error?has_content>
-					<@alert color='danger'>${error} </@alert>
-				</#if>
-				<#if results_list?has_content>
-					<@listGroup>
-						<#list results_list as result>
-						<@listGroupItem>	
-							<blockquote>
-								<p class="lead clearfix">
-									<@link href='jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${result.id}' title='${result.title}'>${result.title}</@link>
-									<@aButton href='jsp/admin/plugins/document/ModifyDocument.jsp?id_document=${result.id}' title='${result.title}' buttonIcon='pencil' />
-								</p>
-								<p>#i18n{document.search_results.labelSummary} ${result.summary}</p>
-								<p><em>#i18n{document.search_results.labelType}: ${result.type} - #i18n{document.search_results.labelDate}: ${result.date}</em></p>
-								<p>
-									
-								</p>
-							</blockquote>
-						</@listGroupItem>
-						</#list>
-					</@listGroup>
-					<@paginationAdmin paginator=paginator />
-				<#else>
-					<@alert color='warning'>
-						<@icon style='exclamation-triangle' /> 
-						<b>#i18n{document.manage_documents.noDocument}</b>
-					</@alert>
-				</#if>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
-=======
 						</@tform>
 					</@boxBody>  
 				</@box>  
@@ -117,7 +74,7 @@
 						<#if results_list?has_content>
 							<@listGroup>
 								<#list results_list as result>
-								<@listGroupItem>	
+									<@listGroupItem>
 										<p class="lead clearfix">
 											<@link href='jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${result.id}' title='${result.title}'>${result.title}</@link>
 											<@aButton href='jsp/admin/plugins/document/ModifyDocument.jsp?id_document=${result.id}' title='#i18n{document.modify_document.buttonModify}' hideTitle=['all'] buttonIcon='pencil' size='sm' />
@@ -127,7 +84,7 @@
 										<p>
 											
 										</p>
-								</@listGroupItem>
+									</@listGroupItem>
 								</#list>
 							</@listGroup>
 							<@paginationAdmin paginator=paginator />
@@ -143,7 +100,6 @@
 		</@row>
 	</@pageColumn>
 </@pageContainer>
->>>>>>> a5a0f53... LUT-26820: Improved search page display, moved the article type icon to a new column
 
 <#-- Freemarker macros -->
 
