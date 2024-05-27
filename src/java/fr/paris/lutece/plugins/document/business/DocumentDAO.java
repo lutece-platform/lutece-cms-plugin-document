@@ -834,56 +834,53 @@ public final class DocumentDAO implements IDocumentDAO
         strSQL += SQL_ORDER_BY_LAST_MODIFICATION;
         AppLogService.debug( "Sql query filter : " + strSQL );
 
-        try ( DAOUtil daoUtil = new DAOUtil( strSQL ) )
+        DAOUtil daoUtil = new DAOUtil( strSQL );
+        int nIndex = 1;
+
+        if ( filter.containsDocumentTypeCriteria( ) )
         {
-            int nIndex = 1;
+            daoUtil.setString( nIndex, filter.getCodeDocumentType( ) );
+            AppLogService.debug( "Param" + nIndex + " (getCodeDocumentType) = " + filter.getCodeDocumentType( ) );
+            nIndex++;
+        }
 
-            if ( filter.containsDocumentTypeCriteria( ) )
-            {
-                daoUtil.setString( nIndex, filter.getCodeDocumentType( ) );
-                AppLogService.debug( "Param" + nIndex + " (getCodeDocumentType) = " + filter.getCodeDocumentType( ) );
-                nIndex++;
-            }
+        if ( filter.containsSpaceCriteria( ) )
+        {
+            daoUtil.setInt( nIndex, filter.getIdSpace( ) );
+            AppLogService.debug( "Param" + nIndex + " (getIdSpace) = " + filter.getIdSpace( ) );
+            nIndex++;
+        }
 
-            if ( filter.containsSpaceCriteria( ) )
-            {
-                daoUtil.setInt( nIndex, filter.getIdSpace( ) );
-                AppLogService.debug( "Param" + nIndex + " (getIdSpace) = " + filter.getIdSpace( ) );
-                nIndex++;
-            }
+        if ( filter.containsStateCriteria( ) )
+        {
+            daoUtil.setInt( nIndex, filter.getIdState( ) );
+            AppLogService.debug( "Param" + nIndex + " (getIdState) = " + filter.getIdState( ) );
+            nIndex++;
+        }
 
-            if ( filter.containsStateCriteria( ) )
+        if ( filter.containsCategoriesCriteria( ) )
+        {
+            for ( int nCategoryId : filter.getCategoriesId( ) )
             {
-                daoUtil.setInt( nIndex, filter.getIdState( ) );
-                AppLogService.debug( "Param" + nIndex + " (getIdState) = " + filter.getIdState( ) );
-                nIndex++;
-            }
-
-            if ( filter.containsCategoriesCriteria( ) )
-            {
-                for ( int nCategoryId : filter.getCategoriesId( ) )
+                if ( nCategoryId > 0 )
                 {
-                    if ( nCategoryId > 0 )
-                    {
-                        daoUtil.setInt( nIndex, nCategoryId );
-                        AppLogService.debug( "Param" + nIndex + " (getCategoriesId) = " + nCategoryId );
-                        nIndex++;
-                    }
-                }
-            }
-
-            if ( filter.containsIdsCriteria( ) )
-            {
-                for ( int nId : filter.getIds( ) )
-                {
-                    daoUtil.setInt( nIndex, nId );
-                    AppLogService.debug( "Param" + nIndex + " (getIds) = " + nId );
+                    daoUtil.setInt( nIndex, nCategoryId );
+                    AppLogService.debug( "Param" + nIndex + " (getCategoriesId) = " + nCategoryId );
                     nIndex++;
                 }
             }
-
-            return daoUtil;
         }
+
+        if ( filter.containsIdsCriteria( ) )
+        {
+            for ( int nId : filter.getIds( ) )
+            {
+                daoUtil.setInt( nIndex, nId );
+                AppLogService.debug( "Param" + nIndex + " (getIds) = " + nId );
+                nIndex++;
+            }
+        }
+        return daoUtil;
     }
 
     /**
