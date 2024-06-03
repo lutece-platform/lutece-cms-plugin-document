@@ -3,7 +3,7 @@
 		<@box>
 			<@boxHeader title='#i18n{document.select_space_rule.title}' />
             <@boxBody>
-				<@tform name='formSelect' method='get' action='jsp/admin/plugins/document/DoSelectSpace.jsp'>
+				<@tform id="spacesBrowser" name='formSelect' method='get' action='jsp/admin/plugins/document/DoSelectSpace.jsp'>
 					<@formGroup labelKey='#i18n{document.move_space.labelMove}'>
 						${spaces_browser}
 					</@formGroup>
