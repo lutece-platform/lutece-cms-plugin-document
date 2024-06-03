@@ -49,7 +49,7 @@
 						</@div>
 					</@columns>
 					<@columns md=9>
-						<@tform name='formMove' method='get' action='jsp/admin/plugins/document/DoMoveDocument.jsp' enctype='multipart/form-data'>
+						<@tform id="spacesBrowser" name='formMove' method='get' action='jsp/admin/plugins/document/DoMoveDocument.jsp' enctype='multipart/form-data'>
 							<@input type='hidden' name='id_document' value='${document.id}' />
 							${spaces_browser}
 						</@tform>
