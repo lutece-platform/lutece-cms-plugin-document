@@ -42,6 +42,7 @@ import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.service.resource.ExtendableResourceActionHit;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import java.io.IOException;
@@ -142,11 +143,10 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException the servlet Exception
      * @throws IOException the io exception
      */
     protected void processRequest( HttpServletRequest request, HttpServletResponse response )
-        throws ServletException, IOException
+        throws IOException
     {
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         int nDocumentId = IntegerUtils.convert( strDocumentId );
@@ -223,27 +223,35 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
     /** Handles the HTTP <code>GET</code> method.
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException the servlet Exception
-     * @throws IOException the io exception
      */
     @Override
     protected void doGet( HttpServletRequest request, HttpServletResponse response )
-        throws ServletException, IOException
     {
-        processRequest( request, response );
+        try
+        {
+            processRequest( request, response );
+        }
+        catch( Exception e )
+        {
+            AppLogService.error( e.getMessage( ), e );
+        }
     }
 
     /** Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException the servlet Exception
-     * @throws IOException the io exception
      */
     @Override
     protected void doPost( HttpServletRequest request, HttpServletResponse response )
-        throws ServletException, IOException
     {
-        processRequest( request, response );
+        try
+        {
+            processRequest( request, response );
+        }
+        catch( Exception e )
+        {
+            AppLogService.error( e.getMessage( ), e );
+        }
     }
 
     /** Returns a short description of the servlet.
