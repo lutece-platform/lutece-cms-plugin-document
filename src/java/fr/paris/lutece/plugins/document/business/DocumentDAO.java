@@ -648,15 +648,59 @@ public final class DocumentDAO implements IDocumentDAO
     public Collection<Integer> selectPrimaryKeysByFilter( DocumentFilter filter )
     {
         Collection<Integer> listDocumentIds = new ArrayList<>( );
-        try ( DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_PRIMARY_KEY_BY_FILTER, filter ) )
+        try ( DAOUtil daoUtil = new DAOUtil( buildQueryFromFilter( filter ) ) )
         {
+            int nIndex = 1;
+
+            if ( filter.containsDocumentTypeCriteria( ) )
+            {
+                daoUtil.setString( nIndex, filter.getCodeDocumentType( ) );
+                AppLogService.debug( "Param" + nIndex + " (getCodeDocumentType) = " + filter.getCodeDocumentType( ) );
+                nIndex++;
+            }
+
+            if ( filter.containsSpaceCriteria( ) )
+            {
+                daoUtil.setInt( nIndex, filter.getIdSpace( ) );
+                AppLogService.debug( "Param" + nIndex + " (getIdSpace) = " + filter.getIdSpace( ) );
+                nIndex++;
+            }
+
+            if ( filter.containsStateCriteria( ) )
+            {
+                daoUtil.setInt( nIndex, filter.getIdState( ) );
+                AppLogService.debug( "Param" + nIndex + " (getIdState) = " + filter.getIdState( ) );
+                nIndex++;
+            }
+
+            if ( filter.containsCategoriesCriteria( ) )
+            {
+                for ( int nCategoryId : filter.getCategoriesId( ) )
+                {
+                    if ( nCategoryId > 0 )
+                    {
+                        daoUtil.setInt( nIndex, nCategoryId );
+                        AppLogService.debug( "Param" + nIndex + " (getCategoriesId) = " + nCategoryId );
+                        nIndex++;
+                    }
+                }
+            }
+
+            if ( filter.containsIdsCriteria( ) )
+            {
+                for ( int nId : filter.getIds( ) )
+                {
+                    daoUtil.setInt( nIndex, nId );
+                    AppLogService.debug( "Param" + nIndex + " (getIds) = " + nId );
+                    nIndex++;
+                }
+            }
             daoUtil.executeQuery( );
 
             while ( daoUtil.next( ) )
             {
                 listDocumentIds.add( daoUtil.getInt( 1 ) );
             }
-
         }
         return listDocumentIds;
     }
@@ -671,216 +715,177 @@ public final class DocumentDAO implements IDocumentDAO
     public List<Document> selectByFilter( DocumentFilter filter )
     {
         List<Document> listDocuments = new ArrayList<>( );
-        try ( DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER, filter ) )
+        try ( DAOUtil daoUtil = new DAOUtil( buildQueryFromFilter( filter ) ) )
         {
-        daoUtil.executeQuery( );
+            int nIndex = 1;
 
-        while ( daoUtil.next( ) )
-        {
-            Document document = new Document( );
-            document.setId( daoUtil.getInt( 1 ) );
-            document.setCodeDocumentType( daoUtil.getString( 2 ) );
-            document.setTitle( daoUtil.getString( 3 ) );
-            document.setDateCreation( daoUtil.getTimestamp( 4 ) );
-            document.setDateModification( daoUtil.getTimestamp( 5 ) );
-            document.setXmlWorkingContent( daoUtil.getString( 6 ) );
-            document.setXmlValidatedContent( daoUtil.getString( 7 ) );
-            document.setSpaceId( daoUtil.getInt( 8 ) );
-            document.setSpace( daoUtil.getString( 9 ) );
-            document.setStateId( daoUtil.getInt( 10 ) );
-            document.setStateKey( daoUtil.getString( 11 ) );
-            document.setType( daoUtil.getString( 12 ) );
-            document.setSummary( daoUtil.getString( 13 ) );
-            document.setComment( daoUtil.getString( 14 ) );
-            document.setDateValidityBegin( daoUtil.getTimestamp( 15 ) );
-            document.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
-            document.setXmlMetadata( daoUtil.getString( 17 ) );
-            document.setCreatorId( daoUtil.getInt( 18 ) );
-            document.setMailingListId( daoUtil.getInt( 19 ) );
-            document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
-            document.setSkipPortlet( daoUtil.getBoolean( 21 ) );
-            document.setSkipCategories( daoUtil.getBoolean( 22 ) );
-
-            if ( filter.getLoadBinaries( ) )
+            if ( filter.containsDocumentTypeCriteria( ) )
             {
-                loadAttributes( document );
+                daoUtil.setString( nIndex, filter.getCodeDocumentType( ) );
+                AppLogService.debug( "Param" + nIndex + " (getCodeDocumentType) = " + filter.getCodeDocumentType( ) );
+                nIndex++;
             }
-            else
+
+            if ( filter.containsSpaceCriteria( ) )
             {
-                if ( document.getStateId( ) == DocumentState.STATE_VALIDATE )
+                daoUtil.setInt( nIndex, filter.getIdSpace( ) );
+                AppLogService.debug( "Param" + nIndex + " (getIdSpace) = " + filter.getIdSpace( ) );
+                nIndex++;
+            }
+
+            if ( filter.containsStateCriteria( ) )
+            {
+                daoUtil.setInt( nIndex, filter.getIdState( ) );
+                AppLogService.debug( "Param" + nIndex + " (getIdState) = " + filter.getIdState( ) );
+                nIndex++;
+            }
+
+            if ( filter.containsCategoriesCriteria( ) )
+            {
+                for ( int nCategoryId : filter.getCategoriesId( ) )
                 {
-                    loadAttributesWithoutBinaries( document, true );
+                    if ( nCategoryId > 0 )
+                    {
+                        daoUtil.setInt( nIndex, nCategoryId );
+                        AppLogService.debug( "Param" + nIndex + " (getCategoriesId) = " + nCategoryId );
+                        nIndex++;
+                    }
+                }
+            }
+
+            if ( filter.containsIdsCriteria( ) )
+            {
+                for ( int nId : filter.getIds( ) )
+                {
+                    daoUtil.setInt( nIndex, nId );
+                    AppLogService.debug( "Param" + nIndex + " (getIds) = " + nId );
+                    nIndex++;
+                }
+            }
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                Document document = new Document( );
+                document.setId( daoUtil.getInt( 1 ) );
+                document.setCodeDocumentType( daoUtil.getString( 2 ) );
+                document.setTitle( daoUtil.getString( 3 ) );
+                document.setDateCreation( daoUtil.getTimestamp( 4 ) );
+                document.setDateModification( daoUtil.getTimestamp( 5 ) );
+                document.setXmlWorkingContent( daoUtil.getString( 6 ) );
+                document.setXmlValidatedContent( daoUtil.getString( 7 ) );
+                document.setSpaceId( daoUtil.getInt( 8 ) );
+                document.setSpace( daoUtil.getString( 9 ) );
+                document.setStateId( daoUtil.getInt( 10 ) );
+                document.setStateKey( daoUtil.getString( 11 ) );
+                document.setType( daoUtil.getString( 12 ) );
+                document.setSummary( daoUtil.getString( 13 ) );
+                document.setComment( daoUtil.getString( 14 ) );
+                document.setDateValidityBegin( daoUtil.getTimestamp( 15 ) );
+                document.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
+                document.setXmlMetadata( daoUtil.getString( 17 ) );
+                document.setCreatorId( daoUtil.getInt( 18 ) );
+                document.setMailingListId( daoUtil.getInt( 19 ) );
+                document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
+                document.setSkipPortlet( daoUtil.getBoolean( 21 ) );
+                document.setSkipCategories( daoUtil.getBoolean( 22 ) );
+
+                if ( filter.getLoadBinaries( ) )
+                {
+                    loadAttributes( document );
                 }
                 else
                 {
-                    loadAttributesWithoutBinaries( document, false );
+                    loadAttributesWithoutBinaries( document, document.getStateId( ) == DocumentState.STATE_VALIDATE );
                 }
+
+                document.setCategories( selectCategories( document.getId( ) ) );
+
+                listDocuments.add( document );
             }
-
-            document.setCategories( selectCategories( document.getId( ) ) );
-
-            listDocuments.add( document );
         }
-
-        }
-
         return listDocuments;
     }
 
     /**
-     * Return a dao initialized with the specified filter
-     * 
-     * @param strQuerySelect
-     *            the query
+     *  Build the sql query from the filter.
      * @param filter
-     *            the DocumentFilter object
-     * @return the DaoUtil
+     *      The DocumentFilter Object
+     * @return sql request
      */
-    private DAOUtil getDaoFromFilter( String strQuerySelect, DocumentFilter filter )
-    {
-        String strSQL = strQuerySelect;
-        StringBuilder sbWhere = new StringBuilder( StringUtils.EMPTY );
-        sbWhere.append( ( ( filter.containsDocumentTypeCriteria( ) ) ? SQL_FILTER_DOCUMENT_TYPE : "" ) );
+    private String buildQueryFromFilter( DocumentFilter filter ){
+        String strSQL = SQL_QUERY_SELECT_BY_FILTER;
+        List<String> wherePart = new ArrayList<>( );
 
+        if ( filter.containsDocumentTypeCriteria( ) ){
+            wherePart.add( SQL_FILTER_DOCUMENT_TYPE );
+        }
         if ( filter.containsSpaceCriteria( ) )
         {
-            sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( SQL_FILTER_SPACE );
+            wherePart.add( SQL_FILTER_SPACE );
         }
-
         if ( filter.containsStateCriteria( ) )
         {
-            sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( SQL_FILTER_STATE );
+            wherePart.add( SQL_FILTER_STATE );
         }
-
         if ( filter.containsCategoriesCriteria( ) )
         {
-            StringBuilder sbCategories = new StringBuilder( SQL_FILTER_CATEGORIES_BEGIN );
-
-            int i = 0;
-
+            List<String> filterCategories = new ArrayList<>( );
             for ( int nCategoryId : filter.getCategoriesId( ) )
             {
                 if ( nCategoryId > 0 )
                 {
-                    sbCategories.append( SQL_FILTER_CATEGORIES );
+                    filterCategories.add( SQL_FILTER_CATEGORIES );
                 }
                 else
                 {
-                    sbCategories.append( SQL_FILTER_CATEGORIES_NULL );
+                    filterCategories.add( SQL_FILTER_CATEGORIES_NULL );
                 }
-
-                if ( ( i + 1 ) < filter.getCategoriesId( ).length )
-                {
-                    sbCategories.append( SQL_FILTER_CATEGORIES_OR );
-                }
-
-                i++;
             }
-
-            sbCategories.append( SQL_FILTER_CATEGORIES_END );
-            sbWhere.append( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ).append( sbCategories.toString( ) );
+            wherePart.add( SQL_FILTER_CATEGORIES_BEGIN + StringUtils.join( filterCategories, SQL_FILTER_CATEGORIES_OR ) + SQL_FILTER_CATEGORIES_END );
         }
-
         if ( filter.containsIdsCriteria( ) )
         {
-            StringBuilder sbIds = new StringBuilder( SQL_FILTER_ID_BEGIN );
+            List<String> filterIds = new ArrayList<>( );
 
             for ( int i = 0; i < filter.getIds( ).length; i++ )
             {
-                sbIds.append( SQL_FILTER_ID );
-
-                if ( ( i + 1 ) < filter.getIds( ).length )
-                {
-                    sbIds.append( SQL_FILTER_ID_OR );
-                }
+                filterIds.add( SQL_FILTER_ID );
             }
-
-            sbIds.append( SQL_FILTER_ID_END );
-            sbWhere.append( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ).append( sbIds.toString( ) );
+            wherePart.add( SQL_FILTER_ID_BEGIN + StringUtils.join( filterIds, SQL_FILTER_ID_OR ) + SQL_FILTER_ID_END );
         }
 
         if ( BooleanUtils.isFalse( filter.isPublished( ) ) )
         {
-            sbWhere.append( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY )
-                    .append( "a.id_document NOT IN (SELECT DISTINCT id_document FROM document_published) " );
+            wherePart.add( "a.id_document NOT IN (SELECT DISTINCT id_document FROM document_published) " );
         }
 
         if ( StringUtils.isNotBlank( filter.getDateMin( ) ) && StringUtils.isNotBlank( filter.getDateMax( ) ) )
         {
-            sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.date_modification < " )
-                    .append( "'" + filter.getDateMax( ) + "'" ).append( SQL_FILTER_AND ).append( "a.date_modification > " )
-                    .append( "'" + filter.getDateMin( ) + "'" );
+            wherePart.add( "a.date_modification < "+ "'" + filter.getDateMax( ) + "'" + SQL_FILTER_AND + "a.date_modification > " + "'" + filter.getDateMin( ) + "'" );
         }
         else
+        {
             if ( StringUtils.isNotBlank( filter.getDateMin( ) ) )
             {
-                sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.date_modification > " )
-                        .append( "'" + filter.getDateMin( ) + "'" );
+                wherePart.add( "a.date_modification > " + "'" + filter.getDateMin( ) + "'" );
             }
             else
+            {
                 if ( StringUtils.isNotBlank( filter.getDateMax( ) ) )
                 {
-                    sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.date_modification <= " )
-                            .append( "'" + filter.getDateMax( ) + "'" );
+                    wherePart.add("a.date_modification <= " + "'" + filter.getDateMax( ) + "'" );
                 }
-
-        String strWhere = sbWhere.toString( );
-
-        if ( sbWhere.length( ) != 0 )
-        {
-            strSQL += ( SQL_FILTER_WHERE_CLAUSE + strWhere );
+            }
         }
-
+        if ( ! wherePart.isEmpty() )
+        {
+            strSQL += ( SQL_FILTER_WHERE_CLAUSE + StringUtils.join(wherePart, SQL_FILTER_AND) );
+        }
         strSQL += SQL_ORDER_BY_LAST_MODIFICATION;
         AppLogService.debug( "Sql query filter : " + strSQL );
 
-        DAOUtil daoUtil = new DAOUtil( strSQL );
-        int nIndex = 1;
-
-        if ( filter.containsDocumentTypeCriteria( ) )
-        {
-            daoUtil.setString( nIndex, filter.getCodeDocumentType( ) );
-            AppLogService.debug( "Param" + nIndex + " (getCodeDocumentType) = " + filter.getCodeDocumentType( ) );
-            nIndex++;
-        }
-
-        if ( filter.containsSpaceCriteria( ) )
-        {
-            daoUtil.setInt( nIndex, filter.getIdSpace( ) );
-            AppLogService.debug( "Param" + nIndex + " (getIdSpace) = " + filter.getIdSpace( ) );
-            nIndex++;
-        }
-
-        if ( filter.containsStateCriteria( ) )
-        {
-            daoUtil.setInt( nIndex, filter.getIdState( ) );
-            AppLogService.debug( "Param" + nIndex + " (getIdState) = " + filter.getIdState( ) );
-            nIndex++;
-        }
-
-        if ( filter.containsCategoriesCriteria( ) )
-        {
-            for ( int nCategoryId : filter.getCategoriesId( ) )
-            {
-                if ( nCategoryId > 0 )
-                {
-                    daoUtil.setInt( nIndex, nCategoryId );
-                    AppLogService.debug( "Param" + nIndex + " (getCategoriesId) = " + nCategoryId );
-                    nIndex++;
-                }
-            }
-        }
-
-        if ( filter.containsIdsCriteria( ) )
-        {
-            for ( int nId : filter.getIds( ) )
-            {
-                daoUtil.setInt( nIndex, nId );
-                AppLogService.debug( "Param" + nIndex + " (getIds) = " + nId );
-                nIndex++;
-            }
-        }
-        return daoUtil;
+        return strSQL;
     }
 
     /**
