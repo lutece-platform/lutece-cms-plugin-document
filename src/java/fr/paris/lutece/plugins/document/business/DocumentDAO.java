@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.document.business;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.category.Category;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
-import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -655,21 +654,18 @@ public final class DocumentDAO implements IDocumentDAO
             if ( filter.containsDocumentTypeCriteria( ) )
             {
                 daoUtil.setString( nIndex, filter.getCodeDocumentType( ) );
-                AppLogService.debug( "Param" + nIndex + " (getCodeDocumentType) = " + filter.getCodeDocumentType( ) );
                 nIndex++;
             }
 
             if ( filter.containsSpaceCriteria( ) )
             {
                 daoUtil.setInt( nIndex, filter.getIdSpace( ) );
-                AppLogService.debug( "Param" + nIndex + " (getIdSpace) = " + filter.getIdSpace( ) );
                 nIndex++;
             }
 
             if ( filter.containsStateCriteria( ) )
             {
                 daoUtil.setInt( nIndex, filter.getIdState( ) );
-                AppLogService.debug( "Param" + nIndex + " (getIdState) = " + filter.getIdState( ) );
                 nIndex++;
             }
 
@@ -680,7 +676,6 @@ public final class DocumentDAO implements IDocumentDAO
                     if ( nCategoryId > 0 )
                     {
                         daoUtil.setInt( nIndex, nCategoryId );
-                        AppLogService.debug( "Param" + nIndex + " (getCategoriesId) = " + nCategoryId );
                         nIndex++;
                     }
                 }
@@ -691,7 +686,6 @@ public final class DocumentDAO implements IDocumentDAO
                 for ( int nId : filter.getIds( ) )
                 {
                     daoUtil.setInt( nIndex, nId );
-                    AppLogService.debug( "Param" + nIndex + " (getIds) = " + nId );
                     nIndex++;
                 }
             }
@@ -722,21 +716,18 @@ public final class DocumentDAO implements IDocumentDAO
             if ( filter.containsDocumentTypeCriteria( ) )
             {
                 daoUtil.setString( nIndex, filter.getCodeDocumentType( ) );
-                AppLogService.debug( "Param" + nIndex + " (getCodeDocumentType) = " + filter.getCodeDocumentType( ) );
                 nIndex++;
             }
 
             if ( filter.containsSpaceCriteria( ) )
             {
                 daoUtil.setInt( nIndex, filter.getIdSpace( ) );
-                AppLogService.debug( "Param" + nIndex + " (getIdSpace) = " + filter.getIdSpace( ) );
                 nIndex++;
             }
 
             if ( filter.containsStateCriteria( ) )
             {
                 daoUtil.setInt( nIndex, filter.getIdState( ) );
-                AppLogService.debug( "Param" + nIndex + " (getIdState) = " + filter.getIdState( ) );
                 nIndex++;
             }
 
@@ -747,7 +738,6 @@ public final class DocumentDAO implements IDocumentDAO
                     if ( nCategoryId > 0 )
                     {
                         daoUtil.setInt( nIndex, nCategoryId );
-                        AppLogService.debug( "Param" + nIndex + " (getCategoriesId) = " + nCategoryId );
                         nIndex++;
                     }
                 }
@@ -758,7 +748,6 @@ public final class DocumentDAO implements IDocumentDAO
                 for ( int nId : filter.getIds( ) )
                 {
                     daoUtil.setInt( nIndex, nId );
-                    AppLogService.debug( "Param" + nIndex + " (getIds) = " + nId );
                     nIndex++;
                 }
             }
@@ -883,7 +872,6 @@ public final class DocumentDAO implements IDocumentDAO
             strSQL += ( SQL_FILTER_WHERE_CLAUSE + StringUtils.join(wherePart, SQL_FILTER_AND) );
         }
         strSQL += SQL_ORDER_BY_LAST_MODIFICATION;
-        AppLogService.debug( "Sql query filter : " + strSQL );
 
         return strSQL;
     }
