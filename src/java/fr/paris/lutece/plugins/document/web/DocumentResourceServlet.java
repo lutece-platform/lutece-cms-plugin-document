@@ -42,13 +42,12 @@ import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.service.resource.ExtendableResourceActionHit;
-import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -223,6 +222,7 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
     /** Handles the HTTP <code>GET</code> method.
      * @param request servlet request
      * @param response servlet response
+     * @throws AppException the app exception
      */
     @Override
     protected void doGet( HttpServletRequest request, HttpServletResponse response )
@@ -231,15 +231,16 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
         {
             processRequest( request, response );
         }
-        catch( Exception e )
+        catch( IOException e )
         {
-            AppLogService.error( e.getMessage( ), e );
+            throw new AppException( "Error while getting a resources", e );
         }
     }
 
     /** Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response
+     * @throws AppException the app exception
      */
     @Override
     protected void doPost( HttpServletRequest request, HttpServletResponse response )
@@ -248,9 +249,9 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
         {
             processRequest( request, response );
         }
-        catch( Exception e )
+        catch( IOException e )
         {
-            AppLogService.error( e.getMessage( ), e );
+            throw new AppException( "Error while getting a resources", e );
         }
     }
 
