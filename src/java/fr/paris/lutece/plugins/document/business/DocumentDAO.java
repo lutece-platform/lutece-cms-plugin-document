@@ -649,46 +649,8 @@ public final class DocumentDAO implements IDocumentDAO
         Collection<Integer> listDocumentIds = new ArrayList<>( );
         try ( DAOUtil daoUtil = new DAOUtil( buildQueryFromFilter( filter ) ) )
         {
-            int nIndex = 1;
+            prepareStatement( filter, daoUtil );
 
-            if ( filter.containsDocumentTypeCriteria( ) )
-            {
-                daoUtil.setString( nIndex, filter.getCodeDocumentType( ) );
-                nIndex++;
-            }
-
-            if ( filter.containsSpaceCriteria( ) )
-            {
-                daoUtil.setInt( nIndex, filter.getIdSpace( ) );
-                nIndex++;
-            }
-
-            if ( filter.containsStateCriteria( ) )
-            {
-                daoUtil.setInt( nIndex, filter.getIdState( ) );
-                nIndex++;
-            }
-
-            if ( filter.containsCategoriesCriteria( ) )
-            {
-                for ( int nCategoryId : filter.getCategoriesId( ) )
-                {
-                    if ( nCategoryId > 0 )
-                    {
-                        daoUtil.setInt( nIndex, nCategoryId );
-                        nIndex++;
-                    }
-                }
-            }
-
-            if ( filter.containsIdsCriteria( ) )
-            {
-                for ( int nId : filter.getIds( ) )
-                {
-                    daoUtil.setInt( nIndex, nId );
-                    nIndex++;
-                }
-            }
             daoUtil.executeQuery( );
 
             while ( daoUtil.next( ) )
@@ -711,46 +673,8 @@ public final class DocumentDAO implements IDocumentDAO
         List<Document> listDocuments = new ArrayList<>( );
         try ( DAOUtil daoUtil = new DAOUtil( buildQueryFromFilter( filter ) ) )
         {
-            int nIndex = 1;
+            prepareStatement( filter, daoUtil );
 
-            if ( filter.containsDocumentTypeCriteria( ) )
-            {
-                daoUtil.setString( nIndex, filter.getCodeDocumentType( ) );
-                nIndex++;
-            }
-
-            if ( filter.containsSpaceCriteria( ) )
-            {
-                daoUtil.setInt( nIndex, filter.getIdSpace( ) );
-                nIndex++;
-            }
-
-            if ( filter.containsStateCriteria( ) )
-            {
-                daoUtil.setInt( nIndex, filter.getIdState( ) );
-                nIndex++;
-            }
-
-            if ( filter.containsCategoriesCriteria( ) )
-            {
-                for ( int nCategoryId : filter.getCategoriesId( ) )
-                {
-                    if ( nCategoryId > 0 )
-                    {
-                        daoUtil.setInt( nIndex, nCategoryId );
-                        nIndex++;
-                    }
-                }
-            }
-
-            if ( filter.containsIdsCriteria( ) )
-            {
-                for ( int nId : filter.getIds( ) )
-                {
-                    daoUtil.setInt( nIndex, nId );
-                    nIndex++;
-                }
-            }
             daoUtil.executeQuery( );
 
             while ( daoUtil.next( ) )
@@ -794,6 +718,69 @@ public final class DocumentDAO implements IDocumentDAO
             }
         }
         return listDocuments;
+    }
+
+    /**
+     * Prepare the SQL Request
+     * @param filter the filters to be applied
+     */
+    private static void prepareStatement( DocumentFilter filter, DAOUtil daoUtil )
+    {
+        int nIndex = 1;
+
+        if ( filter.containsDocumentTypeCriteria( ) )
+        {
+            daoUtil.setString( nIndex, filter.getCodeDocumentType( ) );
+            nIndex++;
+        }
+
+        if ( filter.containsSpaceCriteria( ) )
+        {
+            daoUtil.setInt( nIndex, filter.getIdSpace( ) );
+            nIndex++;
+        }
+
+        if ( filter.containsStateCriteria( ) )
+        {
+            daoUtil.setInt( nIndex, filter.getIdState( ) );
+            nIndex++;
+        }
+
+        if ( filter.containsCategoriesCriteria( ) )
+        {
+            for ( int nCategoryId : filter.getCategoriesId( ) )
+            {
+                if ( nCategoryId > 0 )
+                {
+                    daoUtil.setInt( nIndex, nCategoryId );
+                    nIndex++;
+                }
+            }
+        }
+
+        if ( filter.containsIdsCriteria( ) )
+        {
+            for ( int nId : filter.getIds( ) )
+            {
+                daoUtil.setInt( nIndex, nId );
+                nIndex++;
+            }
+        }
+
+        //These are condition the same condition from line 872 to 889, they are preventing SQL injections
+        if (StringUtils.isNotBlank( filter.getDateMin( ) ) && StringUtils.isNotBlank( filter.getDateMax( ) )){
+            daoUtil.setString( nIndex, filter.getDateMax( ) );
+            nIndex++;
+            daoUtil.setString( nIndex, filter.getDateMin( ) );
+        }else{
+            if ( StringUtils.isNotBlank( filter.getDateMin( ) ) ){
+                daoUtil.setString( nIndex, filter.getDateMin( ) );
+            }else{
+                if (StringUtils.isNotBlank( filter.getDateMax( ) )){
+                    daoUtil.setString( nIndex, filter.getDateMax( ) );
+                }
+            }
+        }
     }
 
     /**
@@ -851,19 +838,19 @@ public final class DocumentDAO implements IDocumentDAO
 
         if ( StringUtils.isNotBlank( filter.getDateMin( ) ) && StringUtils.isNotBlank( filter.getDateMax( ) ) )
         {
-            wherePart.add( "a.date_modification < "+ "'" + filter.getDateMax( ) + "'" + SQL_FILTER_AND + "a.date_modification > " + "'" + filter.getDateMin( ) + "'" );
+            wherePart.add( "a.date_modification < ? " + SQL_FILTER_AND+" a.date_modification > ?" );
         }
         else
         {
             if ( StringUtils.isNotBlank( filter.getDateMin( ) ) )
             {
-                wherePart.add( "a.date_modification > " + "'" + filter.getDateMin( ) + "'" );
+                wherePart.add( "a.date_modification > ?" );
             }
             else
             {
                 if ( StringUtils.isNotBlank( filter.getDateMax( ) ) )
                 {
-                    wherePart.add("a.date_modification <= " + "'" + filter.getDateMax( ) + "'" );
+                    wherePart.add("a.date_modification <= ?" );
                 }
             }
         }
