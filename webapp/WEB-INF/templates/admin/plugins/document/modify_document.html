@@ -73,7 +73,7 @@
 									<@checkBox labelFor='document_skip_categories' labelKey='#i18n{document.modify_document.labelSkipCategories}' name='document_skip_categories' id='document_skip_categories' checked=document.skipCategories />
 								</@formGroup>
 								<@formGroup labelFor='document_comment' labelKey='#i18n{document.create_document.labelDocumentComment}' helpKey='#i18n{document.create_document.helpDocumentComment}' rows=2>
-									<@input type='textarea' type='text' name='document_comment' id='document_comment' rows=2>${document.comment}</@input>
+									<@input type='textarea' type='text' name='document_comment' id='document_comment' rows=2 value=document.comment! />
 								</@formGroup>
 							</@fieldSet>
 						</@boxBody>
