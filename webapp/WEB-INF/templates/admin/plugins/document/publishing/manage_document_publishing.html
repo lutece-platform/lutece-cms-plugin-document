@@ -38,93 +38,95 @@
 			</#list>
 			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' hideTitle=['all'] buttonIcon='folder-open' size='sm' />
 		</@pageHeader>
-		<@row>
-			<@columns lg=3>
-				<blockquote>
-					<p class="lead">${document.id} - ${document.title}</p>
-				</blockquote>
-				<dl>
-					<dt>#i18n{document.preview_document.columnTitleType}</dt>
-					<dd>${document.type}</dd>
-					<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
-					<#if document.state?has_content>
-						 <dt>#i18n{document.preview_document.columnTitleState}</dt>
-						 <dd>${document.state}</dd>
-					</#if> 
-					<dd>${document.dateCreation}</dd>
-					<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
-					<dd>${document.dateModification}</dd>
-				</dl>
-				<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
-				<#assign dateBegin="">
-				<#if document.dateValidityBegin?has_content>
-					<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
-				</#if>    
-				<#assign dateEnd="">
-				<#if document.dateValidityEnd?has_content>
-					<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
-				</#if>                        
-				<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
-				<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
-				<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
-				<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
-				<#if dateBegin?has_content && dateEnd?has_content>
-					<p><@icon style='calendar' />&nbsp;${labelBegin} <strong>${dateBegin}</strong> ${labelEnd} <strong>${dateEnd}</strong></p>
-				<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
-					<@alert color='warning'>
+		<@box>
+			<@boxBody>
+				<@row>
+					<@columns lg=3>
+						<h2>${document.id} - ${document.title}</h2>
+						<dl>
+							<dt>#i18n{document.preview_document.columnTitleType}</dt>
+							<dd>${document.type}</dd>
+							<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
+							<#if document.state?has_content>
+								<dt>#i18n{document.preview_document.columnTitleState}</dt>
+								<dd>${document.state}</dd>
+							</#if> 
+							<dd>${document.dateCreation}</dd>
+							<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
+							<dd>${document.dateModification}</dd>
+						</dl>
+						<h4>#i18n{document.preview_document.columnTitleDateValidity} fdsfds</h4>
+						<#assign dateBegin="">
+						<#if document.dateValidityBegin?has_content>
+						<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
+						</#if>    
+						<#assign dateEnd="">
+						<#if document.dateValidityEnd?has_content>
+						<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
+						</#if>                        
+						<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
+						<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
+						<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
+						<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
+						<#if dateBegin?has_content && dateEnd?has_content>
+						<p><@icon style='calendar' />&nbsp;${labelBegin} <strong>${dateBegin}</strong> ${labelEnd} <strong>${dateEnd}</strong></p>
+						<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
+						<@alert color='warning'>
 						<@icon style='exclamation-triangle' />&nbsp;#i18n{document.preview_document.labelDateValidityNotDefined}
-					</@alert>
-				<#elseif dateBegin?has_content && !( dateEnd?has_content )>
-					<p><@icon style='calendar' />&nbsp;${labelBeginSince} ${dateBegin}</p>
-				<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
-					<p><@icon style='calendar' />&nbsp;${labelEndUntil} ${dateEnd}</p> 
-				</#if>
-			</@columns>
-			<@columns lg=9>
-				<@tform method='post' action='jsp/admin/plugins/document/ManageDocumentPublishing.jsp'>
-					<@input type='hidden' name='id_document' value='${document.id}' />
-					<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{document.manage_document_publishing.labelSearchBy}' hideLabel=['all']>
-						<#if portlet_filter??>
-							<#assign value = portlet_filter.searchValue />
-						<#else>
-							<#assign value = '' />
+						</@alert>
+						<#elseif dateBegin?has_content && !( dateEnd?has_content )>
+						<p><@icon style='calendar' />&nbsp;${labelBeginSince} ${dateBegin}</p>
+						<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
+						<p><@icon style='calendar' />&nbsp;${labelEndUntil} ${dateEnd}</p> 
 						</#if>
-						<@input type='text' name='portlet_filter_value' placeHolder='#i18n{document.manage_document_publishing.labelSearchBy}' value=value />
-					</@formGroup>
-					<@formGroup labelFor='portlet_filter_type' labelKey='#i18n{document.manage_document_publishing.labelSearchBy}'>
-						<@select name='portlet_filter_type' id='portlet_filter_type'>
-							<option value="page_id" <#if portlet_filter??  && portlet_filter.portletFilterType  = "page_id"> selected="selected" </#if>>#i18n{document.manage_document_publishing.labelSearchByIdPage}</option>
-							<option value="page_name" <#if !portlet_filter?? ||portlet_filter.portletFilterType = "page_name">selected="selected"</#if>>#i18n{document.manage_document_publishing.labelSearchByPageName}</option>
-							<option value="portlet_name"<#if portlet_filter??  && portlet_filter.portletFilterType  = "portlet_name">selected="selected"</#if>>#i18n{document.manage_document_publishing.labelSearchByPortletName}</option>
-						</@select>
-					</@formGroup>
-					<@formGroup labelFor='order_portlet' labelKey='#i18n{document.manage_document_publishing.labelOrder}'>
-						<#if portlet_filter_error??><@alert color='danger'>${portlet_filter_error}</@alert></#if>
-						<@select name='order_portlet'>
-							<option value="0" <#if !order_portlet?? || order_portlet?? && order_portlet = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelDateUpdatePortlet}</option>
-							<option value="1" <#if order_portlet?? && order_portlet = 1> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPageName}</option>
-							<option value="2" <#if order_portlet?? && order_portlet = 2> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPageId}</option>
-							<option value="3" <#if order_portlet?? && order_portlet = 3> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPortletName}</option>
-						</@select>
-					</@formGroup>
-					<@formGroup labelFor='order_portlet_asc' labelKey=''>
-						<@select name='order_portlet_asc'>
-							<option value="0" <#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelOrderDesc}</option>
-							<option value="1" <#if order_portlet_asc?? && order_portlet_asc = 1> selected="selected" </#if>>#i18n{document.manage_document_publishing.labelOrderAsc}</option>
-						</@select>
-					</@formGroup>
-					<@formGroup>
-						<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' />
-						<#if !portlet_filter?? || portlet_filter.displayLatestPortlets>
-							<@input type='hidden' name='is_display_latest_portlets' value='false' />
-						<#else>
-							<@button type='submit' title='Supprimer le filtre' buttonIcon='times' color='danger' />
-							<@input type='hidden' name='is_display_latest_portlets' value='true' />
-						</#if>
-					</@formGroup>
-				</@tform>
-			</@columns>
-		</@row>
+					</@columns>
+					<@columns lg=9>
+						<@tform method='post' action='jsp/admin/plugins/document/ManageDocumentPublishing.jsp'>
+							<@input type='hidden' name='id_document' value='${document.id}' />
+							<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{document.manage_document_publishing.labelSearchBy}' hideLabel=['all']>
+								<#if portlet_filter??>
+									<#assign value = portlet_filter.searchValue />
+								<#else>
+									<#assign value = '' />
+								</#if>
+								<@input type='text' name='portlet_filter_value' placeHolder='#i18n{document.manage_document_publishing.labelSearchBy}' value=value />
+							</@formGroup>
+							<@formGroup labelFor='portlet_filter_type' labelKey='#i18n{document.manage_document_publishing.labelSearchBy}'>
+								<@select name='portlet_filter_type' id='portlet_filter_type'>
+									<option value="page_id" <#if portlet_filter??  && portlet_filter.portletFilterType  = "page_id"> selected="selected" </#if>>#i18n{document.manage_document_publishing.labelSearchByIdPage}</option>
+									<option value="page_name" <#if !portlet_filter?? || portlet_filter.portletFilterType = "page_name">selected="selected"</#if>>#i18n{document.manage_document_publishing.labelSearchByPageName}</option>
+									<option value="portlet_name"<#if portlet_filter?? && portlet_filter.portletFilterType  = "portlet_name">selected="selected"</#if>>#i18n{document.manage_document_publishing.labelSearchByPortletName}</option>
+								</@select>
+							</@formGroup>
+							<@formGroup labelFor='order_portlet' labelKey='#i18n{document.manage_document_publishing.labelOrder}'>
+								<#if portlet_filter_error??><@alert color='danger'>${portlet_filter_error}</@alert></#if>
+								<@select name='order_portlet'>
+									<option value="0" <#if !order_portlet?? || order_portlet?? && order_portlet = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelDateUpdatePortlet}</option>
+									<option value="1" <#if order_portlet?? && order_portlet = 1> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPageName}</option>
+									<option value="2" <#if order_portlet?? && order_portlet = 2> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPageId}</option>
+									<option value="3" <#if order_portlet?? && order_portlet = 3> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelPortletName}</option>
+								</@select>
+							</@formGroup>
+							<@formGroup labelFor='order_portlet_asc' labelKey=''>
+								<@select name='order_portlet_asc'>
+									<option value="0" <#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0> selected="selected" </#if> >#i18n{document.manage_document_publishing.labelOrderDesc}</option>
+									<option value="1" <#if order_portlet_asc?? && order_portlet_asc = 1> selected="selected" </#if>>#i18n{document.manage_document_publishing.labelOrderAsc}</option>
+								</@select>
+							</@formGroup>
+							<@formGroup>
+								<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' />
+								<#if !portlet_filter?? || portlet_filter.displayLatestPortlets>
+									<@input type='hidden' name='is_display_latest_portlets' value='false' />
+								<#else>
+									<@button type='submit' title='Supprimer le filtre' buttonIcon='times' color='danger' />
+									<@input type='hidden' name='is_display_latest_portlets' value='true' />
+								</#if>
+							</@formGroup>
+						</@tform>
+					</@columns>
+				</@row>
+			</@boxBody>
+		</@box>
 
 		<@row>
 			<@columns lg=6>
