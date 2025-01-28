@@ -117,7 +117,7 @@
 							
 						<#if space.documentCreationAllowed >
 							<#if document_types_list?has_content>
-								<@tform method='post' name='CreateDocument' action='jsp/admin/plugins/document/CreateDocument.jsp'>
+								<@tform method='get' name='CreateDocument' action='jsp/admin/plugins/document/CreateDocument.jsp'>
 									<@formGroup labelFor='document_type_code' labelKey='#i18n{document.manage_documents.labelCreate}'>
 										<@inputGroup>
 											<@select name='document_type_code' default_value='' items=document_types_list />
