@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset document:init_db_document.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES ('file','document.attributeType.file.name','document.attributeType.file.description','fr.paris.lutece.plugins.document.service.attributes.FileManager');
 INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES ('image','document.attributeType.image.name','document.attributeType.image.description','fr.paris.lutece.plugins.document.service.attributes.ImageFileManager');
 INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES ('listbox','document.attributeType.listbox.name','document.attributeType.listbox.description','fr.paris.lutece.plugins.document.service.attributes.ListBoxManager');

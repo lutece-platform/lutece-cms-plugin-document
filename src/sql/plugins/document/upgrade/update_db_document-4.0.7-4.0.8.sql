@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset document:update_db_document-4.0.7-4.0.8.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 -- This will update the default stylesheets. If you have changed one, you must back it up
 -- and merge with the changes from this version.
 -- changes:

@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset document:update_db_document-4.0.9-4.2.0.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 UPDATE document_space_action SET icon_url='plus-circle' WHERE id_action=1;
 UPDATE document_space_action SET icon_url='trash' WHERE id_action=2;
 UPDATE document_space_action SET icon_url='edit' WHERE id_action=3;

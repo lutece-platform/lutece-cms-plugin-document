@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset document:update_db_document-2.0.19-2.1.5.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 --
 -- Table document_content
 --
