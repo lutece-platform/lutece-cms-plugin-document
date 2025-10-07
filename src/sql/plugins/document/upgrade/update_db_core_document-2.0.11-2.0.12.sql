@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset document:update_db_core_document-2.0.11-2.0.12.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 INSERT INTO core_portlet_type(id_portlet_type,name,url_creation,url_update,home_class,plugin_name,url_docreate,create_script,create_specific,create_specific_form,url_domodify,modify_script,modify_specific,modify_specific_form) 
 VALUES ('DOCUMENT_LIST_PORTLET','document.portlet.documentListPortlet.name','plugins/document/CreateDocumentListPortlet.jsp','plugins/document/ModifyDocumentListPortlet.jsp','fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome','document','plugins/document/DoCreateDocumentListPortlet.jsp','/admin/portlet/script_create_portlet.html','/admin/plugins/document/portlet/document_list_portlet_type.html','','plugins/document/DoModifyDocumentListPortlet.jsp','/admin/portlet/script_modify_portlet.html','/admin/plugins/document/portlet/document_list_portlet_type.html','');
 

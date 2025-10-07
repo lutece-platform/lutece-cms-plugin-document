@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset document:update_db_document-2.0.18-2.0.19.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 --
 -- Table structure for table document_indexer_action
 --

@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset document:update_db_core_document-3.1.1-3.1.2.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 INSERT INTO core_style (id_style, description_style, id_portlet_type, id_portal_component) VALUES (1710,'Type Article Extend','DOCUMENT_LIST_PORTLET',0);
 INSERT INTO core_style (id_style, description_style, id_portlet_type, id_portal_component) VALUES (1711,'Type PDF Extend','DOCUMENT_LIST_PORTLET',0);
 

@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset document:update_db_document-2.0.11-2.0.12.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 ALTER TABLE document_category ADD COLUMN workgroup_key varchar(50) default NULL;
 
 ALTER TABLE document_space ADD COLUMN workgroup_key varchar(50) default NULL;

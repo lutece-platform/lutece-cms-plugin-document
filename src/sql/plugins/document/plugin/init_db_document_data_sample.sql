@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset document:init_db_document_data_sample.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 --
 -- Dumping data for table `document`
 --

@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset document:update_db_document-2.2.3-3.0.0.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 
 --
 -- Dumping data for table `document_workflow_action`

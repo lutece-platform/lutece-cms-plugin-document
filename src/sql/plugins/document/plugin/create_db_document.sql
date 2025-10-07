@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset document:create_db_document.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 --
 -- Structure for table document
 --
