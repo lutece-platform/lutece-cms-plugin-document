@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.business.spaces;
 
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ import java.util.List;
 /**
  * SpaceActionDAO
  */
+@ApplicationScoped
 public class SpaceActionDAO implements ISpaceActionDAO
 {
     private static final String SQL_QUERY_SELECT_ACTIONS = "SELECT a.name_key, a.description_key, a.action_url, a.icon_url, a.action_permission "
@@ -51,6 +53,7 @@ public class SpaceActionDAO implements ISpaceActionDAO
      * 
      * @return The Collection of actions
      */
+    @Override
     public List<SpaceAction> selectActions( )
     {
         List<SpaceAction> listActions = new ArrayList<SpaceAction>( );

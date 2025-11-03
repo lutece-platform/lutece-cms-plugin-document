@@ -37,7 +37,6 @@ import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentResource;
 import fr.paris.lutece.plugins.document.service.DocumentEvent;
-import fr.paris.lutece.plugins.document.service.DocumentEventListener;
 import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
@@ -48,15 +47,23 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 /**
  * Servlet serving document file resources
  */
-public class DocumentResourceServlet extends HttpServlet implements DocumentEventListener
+@ApplicationScoped
+@Named("document.documentResourceServlet")
+public class DocumentResourceServlet extends HttpServlet
 {
     private static final long serialVersionUID = -7512201287826936428L;
     private static final String PARAMETER_DOCUMENT_ID = "id";
@@ -73,7 +80,7 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
             DEFAULT_EXPIRES_DELAY );
     private static final Long LONG_DELAY_IN_MILLISECOND = Long.parseLong( STRING_DELAY_IN_SECOND ) * 1000;
     private static final ResourceServletCache _cache = new ResourceServletCache(  );
-
+    
     /**
      * Processes request HTTP <code>GET if-modified-since</code> methods
      * @param request The HTTP request
@@ -94,7 +101,7 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
 
             ResourceValueObject resource = _cache.get( strKey );
 
-            if ( _cache.isCacheEnable(  ) && ( _cache.get( strKey ) != null ) )
+            if ( _cache!=null && _cache.isCacheEnable(  ) && ( _cache.get( strKey ) != null ) )
             {
                 return resource.getLastModified(  );
             }
@@ -125,7 +132,7 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
      */
     public static void putInCache( int nDocumentId, int nAttributeId )
     {
-        if ( !_cache.isCacheEnable(  ) )
+        if (  _cache==null || !_cache.isCacheEnable(  ) )
         {
             return;
         }
@@ -158,7 +165,7 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
         String strCacheKey = getCacheKey( nDocumentId, nAttributeId );
         ResourceValueObject res;
 
-        if ( !bWorkingContent && _cache.isCacheEnable(  ) && ( _cache.get( strCacheKey ) != null ) )
+        if ( !bWorkingContent &&  _cache!=null && _cache.isCacheEnable(  ) && ( _cache.get( strCacheKey ) != null ) )
         {
             res = _cache.get( strCacheKey );
         }
@@ -173,7 +180,7 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
 
             res = new ResourceValueObject( resource );
 
-            if ( _cache.isCacheEnable(  ) && !bWorkingContent )
+            if (  _cache!=null && _cache.isCacheEnable(  ) && !bWorkingContent )
             {
                 Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
                 long lLastModified = document.getDateModification(  ).getTime(  );
@@ -183,8 +190,8 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
         }
 
         ExtendableResourceActionHit.getInstance(  )
-                                   .notifyActionOnResource( strDocumentId, Document.PROPERTY_RESOURCE_TYPE,
-            ExtendableResourceActionHit.ACTION_DOWNLOAD );
+        .notifyActionOnResource( strDocumentId, Document.PROPERTY_RESOURCE_TYPE,
+        ExtendableResourceActionHit.ACTION_DOWNLOAD );
 
         ResourceEnhancer.doDownloadResourceAddOn( request, PROPERTY_RESOURCE_TYPE, nDocumentId );
 
@@ -326,13 +333,37 @@ public class DocumentResourceServlet extends HttpServlet implements DocumentEven
     }
 
     /**
+     * Observe document events via CDI
+     * @param event The document event
+     * @throws DocumentException if error occurs
+     */
+    public void onDocumentEvent(@Observes DocumentEvent event) throws DocumentException
+    {
+        processDocumentEvent(event);
+    }
+    
+    /**
      * {@inheritDoc }
      */
-    @Override
     public void processDocumentEvent( DocumentEvent event )
         throws DocumentException
     {
         String strKeyPattern = KEY_DOC_BEGIN + event.getDocument(  ).getId(  ) + KEY_ITEM_CLOSE;
         _cache.removeFromKeyPattern( strKeyPattern );
+    }
+    
+	/**
+     * This method observes the initialization of the {@link ApplicationScoped} context.
+     * It ensures that this CDI beans are instantiated at the application startup.
+     *
+     * <p>This method is triggered automatically by CDI when the {@link ApplicationScoped} context is initialized,
+     * which typically occurs during the startup of the application server.</p>
+     *
+     * @param context the {@link ServletContext} that is initialized. This parameter is observed
+     *                and injected automatically by CDI when the {@link ApplicationScoped} context is initialized.
+     */
+    public void initializedService(@Observes @Initialized(ApplicationScoped.class) ServletContext context) 
+    {
+        // This method is intentionally left empty to trigger CDI bean instantiation
     }
 }

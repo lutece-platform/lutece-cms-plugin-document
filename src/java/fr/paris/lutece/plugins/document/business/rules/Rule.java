@@ -40,7 +40,7 @@ import fr.paris.lutece.portal.service.i18n.Localizable;
 
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Interface of rules that can be applied on documents by the RuleEngine

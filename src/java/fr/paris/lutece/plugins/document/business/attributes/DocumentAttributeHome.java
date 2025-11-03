@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.document.business.attributes;
 
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.Collection;
 import java.util.List;
@@ -47,7 +47,7 @@ import java.util.Locale;
 public final class DocumentAttributeHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentAttributeDAO _dao = SpringContextService.getBean( "document.documentAttributeDAO" );
+    private static IDocumentAttributeDAO _dao = CDI.current( ).select( IDocumentAttributeDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated

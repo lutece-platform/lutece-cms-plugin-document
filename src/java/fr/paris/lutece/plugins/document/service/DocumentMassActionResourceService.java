@@ -66,6 +66,7 @@ public class DocumentMassActionResourceService extends ResourceIdService
     /**
      * Initializes the service
      */
+    @Override
     public void register(  )
     {
         ResourceType rt = new ResourceType(  );
@@ -88,6 +89,7 @@ public class DocumentMassActionResourceService extends ResourceIdService
      * @param locale The current locale
      * @return The Title of a given resource
      */
+    @Override
     public String getTitle( String strId, Locale locale )
     {
         DocumentType type = DocumentTypeHome.findByPrimaryKey( strId );

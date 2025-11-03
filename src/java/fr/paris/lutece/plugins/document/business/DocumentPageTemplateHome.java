@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.business;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ import java.util.List;
 public final class DocumentPageTemplateHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentPageTemplateDAO _dao = SpringContextService.getBean( "document.documentPageTemplateDAO" );
+    private static IDocumentPageTemplateDAO _dao =  CDI.current( ).select( IDocumentPageTemplateDAO.class ).get( );
 
     /** Creates a new instance of DocumentPageTemplateHome */
     private DocumentPageTemplateHome( )

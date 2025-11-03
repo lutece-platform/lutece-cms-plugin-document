@@ -34,7 +34,6 @@
 package fr.paris.lutece.plugins.document.service.autoarchiving;
 
 import fr.paris.lutece.plugins.document.business.Document;
-import fr.paris.lutece.plugins.document.business.autopublication.DocumentAutoPublication;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.plugins.document.service.DocumentException;
@@ -43,28 +42,40 @@ import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 
 /**
  *
  * AutoArchiving Service
  */
+@ApplicationScoped
+@Named( "document.AutoArchivingService" )
 public class AutoArchivingService
 {
-    private static AutoArchivingService _singleton;
 
-    /**
-     * Get the unique instance of AutoArchivingService
-     * @return The unique AutoArchivingService instance
+	@Inject
+	private DocumentListPortletHome _documentListPortletHome;
+	
+	/**
+     * Returns the unique instance of the {@link AutoArchivingService} service.
+     * 
+     * <p>This method is deprecated and is provided for backward compatibility only. 
+     * For new code, use dependency injection with {@code @Inject} to obtain the 
+     * {@link AutoArchivingService} instance instead.</p>
+     * 
+     * @return The unique instance of {@link AutoArchivingService}.
+     * 
+     * @deprecated Use {@code @Inject} to obtain the {@link AutoArchivingService} 
+     * instance. This method will be removed in future versions.
      */
+    @Deprecated( since = "8.0", forRemoval = true )
     public static AutoArchivingService getInstance(  )
     {
-        if ( _singleton == null )
-        {
-            _singleton = new AutoArchivingService(  );
-        }
-
-        return _singleton;
+    	return CDI.current( ).select( AutoArchivingService.class ).get( );
     }
 
     /**
@@ -73,7 +84,6 @@ public class AutoArchivingService
      */
     public void init(  )
     {
-        DocumentAutoPublication.init(  );
     }
 
     /**
@@ -88,9 +98,9 @@ public class AutoArchivingService
 
         long lDuration = System.currentTimeMillis(  );
 
-        for ( Portlet portlet : PortletHome.findByType( DocumentListPortletHome.getInstance(  ).getPortletTypeId(  ) ) )
+        for ( Portlet portlet : PortletHome.findByType( _documentListPortletHome.getPortletTypeId(  ) ) )
         {
-            for ( Document document : PublishingService.getInstance(  )
+            for ( Document document :  CDI.current( ).select( PublishingService.class ).get( )
                                                        .getPublishedDocumentsByPortletId( portlet.getId(  ) ) )
             {
                 if ( document.isOutOfDate(  ) )
@@ -100,7 +110,7 @@ public class AutoArchivingService
 
                     try
                     {
-                        DocumentService.getInstance(  ).archiveDocument( document, null, DocumentState.STATE_ARCHIVED );
+                    	CDI.current( ).select( DocumentService.class ).get( ).archiveDocument( document, null, DocumentState.STATE_ARCHIVED );
                     }
                     catch ( DocumentException e )
                     {

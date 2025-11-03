@@ -42,34 +42,25 @@ import fr.paris.lutece.plugins.document.modules.metadatadublincore.business.Dubl
 import fr.paris.lutece.plugins.document.service.docsearch.DocSearchServiceTest;
 import fr.paris.lutece.plugins.document.web.DocumentJspBeanTest;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
- * This class is the main test suite for the package fr.paris.lutece.plugins.document
+ * Main test suite for the Document plugin
  */
-public final class AllTests
+@Suite
+@SelectClasses({
+    DocumentTest.class,
+    DocumentTypeTest.class,
+    HistoryTest.class,
+    DocumentSpaceTest.class,
+    DocumentRulesTest.class,
+    DublinCoreMetadataTest.class,
+    DocumentJspBeanTest.class,
+    DocSearchServiceTest.class
+})
+public class AllTests
 {
-    /**
-     * A set of tests
-     * @return Test the tests
-     */
-    public static Test suite(  )
-    {
-        TestSuite suite = new TestSuite( "*** Tests Plugin Document " );
 
-        //$JUnit-BEGIN$
-        suite.addTest( new TestSuite( DocumentTest.class ) );
-        suite.addTest( new TestSuite( DocumentTypeTest.class ) );
-        suite.addTest( new TestSuite( HistoryTest.class ) );
-        suite.addTest( new TestSuite( DocumentSpaceTest.class ) );
-        suite.addTest( new TestSuite( DocumentRulesTest.class ) );
-        suite.addTest( new TestSuite( DublinCoreMetadataTest.class ) );
-        suite.addTest( new TestSuite( DocumentJspBeanTest.class ) );
-        suite.addTest( new TestSuite( DocSearchServiceTest.class ) );
-
-        //$JUnit-END$
-        return suite;
-    }
 }
+

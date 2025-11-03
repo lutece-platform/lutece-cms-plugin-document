@@ -33,27 +33,23 @@
  */
 package fr.paris.lutece.plugins.document.service;
 
-import fr.paris.lutece.plugins.document.service.autopublication.AutoPublicationService;
-import fr.paris.lutece.plugins.document.service.rules.RuleEngine;
 import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
 
 import java.io.Serializable;
-
 
 /**
  * DocumentPlugin
  */
 public class DocumentPlugin extends PluginDefaultImplementation implements Serializable
 {
-    public static final String PLUGIN_NAME = "document";
-    private static final long serialVersionUID = -3298585464051062753L;
+	public static final String PLUGIN_NAME = "document";
+	private static final long serialVersionUID = - 3298585464051062753L;
 
-    public void init(  )
-    {
-        // Initialize the rule engine
-        RuleEngine.getInstance(  ).init(  );
-
-        //Initialize the DocumentAutoPublication RemovalListener :
-        AutoPublicationService.getInstance(  ).init(  );
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void init( )
+	{
+	}
 }

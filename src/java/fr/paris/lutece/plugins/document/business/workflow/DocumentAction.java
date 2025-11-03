@@ -109,6 +109,7 @@ public class DocumentAction implements Localizable, RBACAction
      * @param locale
      *            The current locale
      */
+    @Override
     public void setLocale( Locale locale )
     {
         _locale = locale;
@@ -223,6 +224,7 @@ public class DocumentAction implements Localizable, RBACAction
      * 
      * @return The permission
      */
+    @Override
     public String getPermission( )
     {
         return _strPermission;

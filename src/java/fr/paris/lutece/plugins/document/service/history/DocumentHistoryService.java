@@ -36,93 +36,141 @@ package fr.paris.lutece.plugins.document.service.history;
 import fr.paris.lutece.plugins.document.business.history.HistoryEvent;
 import fr.paris.lutece.plugins.document.business.history.HistoryEventHome;
 import fr.paris.lutece.plugins.document.service.DocumentEvent;
-import fr.paris.lutece.plugins.document.service.DocumentEventListener;
 import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Named;
+import jakarta.servlet.ServletContext;
 
 import java.sql.Timestamp;
-
 
 /**
  * This service logs document changes history
  */
-public class DocumentHistoryService implements DocumentEventListener
+@ApplicationScoped
+@Named( "document.DocumentHistoryService" )
+public class DocumentHistoryService
 {
-    private static final String PROPERTY_MESSAGE_DOCUMENT_CREATED = "document.history.message.documentCreated";
-    private static final String PROPERTY_MESSAGE_DOCUMENT_STATE_MODIFIED = "document.history.message.documentStateModified";
-    private static final String PROPERTY_MESSAGE_DOCUMENT_MODIFIED = "document.history.message.documentModified";
-    private static final String PROPERTY_MESSAGE_DOCUMENT_MOVED = "document.history.message.documentMoved";
-    private static DocumentHistoryService _singleton = new DocumentHistoryService(  );
+	private static final String PROPERTY_MESSAGE_DOCUMENT_CREATED = "document.history.message.documentCreated";
+	private static final String PROPERTY_MESSAGE_DOCUMENT_STATE_MODIFIED = "document.history.message.documentStateModified";
+	private static final String PROPERTY_MESSAGE_DOCUMENT_MODIFIED = "document.history.message.documentModified";
+	private static final String PROPERTY_MESSAGE_DOCUMENT_MOVED = "document.history.message.documentMoved";
 
-    /** Creates a new instance of WorkflowEngine */
-    private DocumentHistoryService(  )
-    {
-    }
+	/** Creates a new instance of WorkflowEngine */
+	public DocumentHistoryService( )
+	{
+	}
+
+	/**
+	 * Returns the unique instance of the {@link DocumentHistoryService} service.
+	 * 
+	 * <p>
+	 * This method is deprecated and is provided for backward compatibility only.
+	 * For new code, use dependency injection with {@code @Inject} to obtain the
+	 * {@link DocumentHistoryService} instance instead.
+	 * </p>
+	 * 
+	 * @return The unique instance of {@link DocumentHistoryService}.
+	 * 
+	 * @deprecated Use {@code @Inject} to obtain the {@link DocumentHistoryService}
+	 *             instance. This method will be removed in future versions.
+	 */
+	@Deprecated( since = "8.0", forRemoval = true )
+	public static DocumentHistoryService getInstance( )
+	{
+		return CDI.current( ).select( DocumentHistoryService.class ).get( );
+	}
 
     /**
-     * Returns the unique instance of the service
-     * @return The unique instance of the service
+     * Observe document events via CDI
+     * @param event The document event
+     * @throws DocumentException if error occurs
      */
-    public static DocumentHistoryService getInstance(  )
+    public void onDocumentEvent(@Observes DocumentEvent event) throws DocumentException
     {
-        return _singleton;
+        processDocumentEvent(event);
     }
+    
+	/**
+	 * Process a document event
+	 * 
+	 * @param event The event to process
+	 * @throws DocumentException Exception occurs when error in event or rule
+	 */
+	public void processDocumentEvent( DocumentEvent event )
+			throws DocumentException
+	{
+		try
+		{
+			HistoryEvent historyEvent = new HistoryEvent( );
+			historyEvent.setDate( new Timestamp( new java.util.Date( ).getTime( ) ) );
 
-    /**
-     * Process a document event
-     * @param event The event to process
-     * @throws DocumentException Exception occurs when error in event or rule
-     */
-    public void processDocumentEvent( DocumentEvent event )
-        throws DocumentException
-    {
-        try
-        {
-            HistoryEvent historyEvent = new HistoryEvent(  );
-            historyEvent.setDate( new Timestamp( new java.util.Date(  ).getTime(  ) ) );
+			String strUser = ( event.getUser( ) != null ) ? event.getUser( ).getAccessCode( ) : ""; // TODO : reconsider
+			historyEvent.setEventUser( strUser );
+			historyEvent.setIdDocument( event.getDocument( ).getId( ) );
+			historyEvent.setDocumentStateKey( event.getDocument( ).getStateKey( ) );
+			historyEvent.setSpace( event.getDocument( ).getSpace( ) );
 
-            String strUser = ( event.getUser(  ) != null ) ? event.getUser(  ).getAccessCode(  ) : ""; // TODO : reconsider
-            historyEvent.setEventUser( strUser );
-            historyEvent.setIdDocument( event.getDocument(  ).getId(  ) );
-            historyEvent.setDocumentStateKey( event.getDocument(  ).getStateKey(  ) );
-            historyEvent.setSpace( event.getDocument(  ).getSpace(  ) );
+			String strMessageKey;
 
-            String strMessageKey;
+			switch( event.getEventType( ) )
+			{
+				case DocumentEvent.DOCUMENT_CREATED :
+					strMessageKey = PROPERTY_MESSAGE_DOCUMENT_CREATED;
 
-            switch ( event.getEventType(  ) )
-            {
-                case DocumentEvent.DOCUMENT_CREATED:
-                    strMessageKey = PROPERTY_MESSAGE_DOCUMENT_CREATED;
+					break;
 
-                    break;
+				case DocumentEvent.DOCUMENT_CONTENT_MODIFIED :
+					strMessageKey = PROPERTY_MESSAGE_DOCUMENT_MODIFIED;
 
-                case DocumentEvent.DOCUMENT_CONTENT_MODIFIED:
-                    strMessageKey = PROPERTY_MESSAGE_DOCUMENT_MODIFIED;
+					break;
 
-                    break;
+				case DocumentEvent.DOCUMENT_STATE_CHANGED :
+					strMessageKey = PROPERTY_MESSAGE_DOCUMENT_STATE_MODIFIED;
 
-                case DocumentEvent.DOCUMENT_STATE_CHANGED:
-                    strMessageKey = PROPERTY_MESSAGE_DOCUMENT_STATE_MODIFIED;
+					break;
 
-                    break;
+				case DocumentEvent.DOCUMENT_MOVED :
+					strMessageKey = PROPERTY_MESSAGE_DOCUMENT_MOVED;
 
-                case DocumentEvent.DOCUMENT_MOVED:
-                    strMessageKey = PROPERTY_MESSAGE_DOCUMENT_MOVED;
+					break;
 
-                    break;
+				default :
+					strMessageKey = PROPERTY_MESSAGE_DOCUMENT_MODIFIED;
 
-                default:
-                    strMessageKey = PROPERTY_MESSAGE_DOCUMENT_MODIFIED;
+					break;
+			}
 
-                    break;
-            }
+			historyEvent.setEventMessageKey( strMessageKey );
+			HistoryEventHome.create( historyEvent );
+		}
+		catch( Exception e )
+		{
+			AppLogService.error( "Error in History even : " + e.getMessage( ), e );
+		}
+	}
 
-            historyEvent.setEventMessageKey( strMessageKey );
-            HistoryEventHome.create( historyEvent );
-        }
-        catch ( Exception e )
-        {
-            AppLogService.error( "Error in History even : " + e.getMessage(  ), e );
-        }
-    }
+	/**
+	 * This method observes the initialization of the {@link ApplicationScoped}
+	 * context.
+	 * It ensures that this CDI beans are instantiated at the application startup.
+	 *
+	 * <p>
+	 * This method is triggered automatically by CDI when the
+	 * {@link ApplicationScoped} context is initialized,
+	 * which typically occurs during the startup of the application server.
+	 * </p>
+	 *
+	 * @param context the {@link ServletContext} that is initialized. This parameter
+	 *                is observed
+	 *                and injected automatically by CDI when the
+	 *                {@link ApplicationScoped} context is initialized.
+	 */
+	public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context )
+	{
+		// This method is intentionally left empty to trigger CDI bean instantiation
+	}
 }

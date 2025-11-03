@@ -33,8 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.business.rules;
 
-import fr.paris.lutece.plugins.document.business.rules.Rule;
-import fr.paris.lutece.plugins.document.business.rules.RuleHome;
+import org.junit.jupiter.api.Test;
 import fr.paris.lutece.test.LuteceTestCase;
 
 import java.util.Locale;
@@ -45,6 +44,7 @@ import java.util.Locale;
  */
 public class DocumentRulesTest extends LuteceTestCase
 {
+	@Test
     public void testBusiness(  )
     {
         // Initialize an object

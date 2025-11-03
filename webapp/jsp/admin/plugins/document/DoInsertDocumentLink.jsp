@@ -1,4 +1,5 @@
 <jsp:include page="../../insert/InsertServiceHeader.jsp" />
-<jsp:useBean id="documentServiceJspBean" scope="session" class="fr.paris.lutece.plugins.document.web.DocumentServiceJspBean" />
 
-<% response.sendRedirect( documentServiceJspBean.doInsertUrl( request ) );%>
+<%@page import="fr.paris.lutece.plugins.document.web.DocumentServiceJspBean"%>
+
+${ documentServiceJspBean.doInsertUrl( pageContext.request ) }

@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.business;
 
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ import java.util.List;
 /**
  * This class provides Data Access methods for DocumentPageTemplate objects
  */
+@ApplicationScoped
 public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
 {
     // Constants
@@ -86,6 +88,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      * @param documentPageTemplate
      *            The Instance of the object DocumentPageTemplate
      */
+    @Override
     public synchronized void insert( DocumentPageTemplate documentPageTemplate )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
@@ -109,6 +112,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      *            The indentifier of the object DocumentPageTemplate
      * @return The Instance of the object PageTemplate
      */
+    @Override
     public DocumentPageTemplate load( int nPageTemplateId )
     {
         DocumentPageTemplate documentPageTemplate = null;
@@ -138,6 +142,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      * @param nPageTemplateId
      *            The indentifier of the object PageTemplate
      */
+    @Override
     public void delete( int nPageTemplateId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -153,6 +158,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      * @param documentPageTemplate
      *            The instance of the PageTemplate to update
      */
+    @Override
     public void store( DocumentPageTemplate documentPageTemplate )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
@@ -174,6 +180,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      * 
      * @return A list of PageTemplates objects
      */
+    @Override
     public List<DocumentPageTemplate> selectPageTemplatesList( )
     {
         List<DocumentPageTemplate> listDocumentPageTemplates = new ArrayList<>( );

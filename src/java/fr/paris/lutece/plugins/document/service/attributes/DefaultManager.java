@@ -38,7 +38,6 @@ import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeHome;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttributeHome;
-import fr.paris.lutece.plugins.document.business.attributes.IMapProvider;
 import fr.paris.lutece.plugins.document.business.attributes.MapProviderManager;
 import fr.paris.lutece.plugins.document.service.AttributeManager;
 import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
@@ -49,8 +48,8 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 
 import org.apache.commons.lang3.StringUtils;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
@@ -60,7 +59,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
@@ -115,6 +114,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getCreateFormHtml( DocumentAttribute attribute, Locale locale, String strBaseUrl )
     {
         if ( attribute.getCodeAttributeType(  ).equals( "geoloc" ) )
@@ -136,6 +136,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getModifyFormHtml( DocumentAttribute attribute, Document document, Locale locale, String strBaseUrl )
     {
         Map<String, Object> model = new HashMap<String, Object>(  );
@@ -194,6 +195,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getCreateParametersFormHtml( Locale locale )
     {
         return getCreateParametersFormHtml( null, locale );
@@ -202,6 +204,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getCreateParametersFormHtml( List<AttributeTypeParameter> listParameters, Locale locale )
     {
         return getCreateParametersFormHtml( listParameters, locale, null );
@@ -241,6 +244,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getModifyParametersFormHtml( Locale locale, int nAttributeId )
     {
         return getModifyParametersFormHtml( locale, nAttributeId, null );
@@ -271,6 +275,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<AttributeTypeParameter> getExtraParameters( Locale locale )
     {
         return AttributeTypeHome.getAttributeTypeParameterList( getAttributeTypeCode(  ), locale );
@@ -279,6 +284,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<AttributeTypeParameter> getExtraParametersValues( Locale locale, int nAttributeId )
     {
         List<AttributeTypeParameter> listParameters = getExtraParameters( locale );
@@ -295,6 +301,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setAttributeTypeCode( String strCode )
     {
         _strAttributeTypeCode = strCode;
@@ -303,6 +310,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getAttributeTypeCode(  )
     {
         return _strAttributeTypeCode;
@@ -311,6 +319,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public String validateValue( int nAttributeId, String strValue, Locale locale )
     {
         // Regular expression validation
@@ -340,6 +349,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public String validateValueParameters( List<AttributeTypeParameter> listParameters, Locale locale )
     {
         return null;
@@ -348,6 +358,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getAttributeXmlValue( Document document, DocumentAttribute attribute )
     {
         return attribute.getTextValue(  );
@@ -367,6 +378,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean canBeUsedAsThumbnail(  )
     {
         return false;
@@ -375,6 +387,7 @@ public abstract class DefaultManager implements AttributeManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<AttributeTypeParameter> getValueParameters( HttpServletRequest request, Locale locale )
     {
         return null;

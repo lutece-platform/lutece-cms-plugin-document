@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.document.business.workflow;
 
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ import java.util.List;
 /**
  * This class porvides Data Access methods for DocumentActionDAO objects
  */
+@ApplicationScoped
 public class DocumentActionDAO implements IDocumentActionDAO
 {
     private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT a.id_action,a.name_key, a.description_key, a.action_url, a.icon_url, a.action_permission, a.id_finish_state "
@@ -56,6 +58,7 @@ public class DocumentActionDAO implements IDocumentActionDAO
      *            The identifier of the action
      * @return the instance of action
      */
+    @Override
     public DocumentAction load( int nIdAction )
     {
         DocumentAction action = null;
@@ -94,6 +97,7 @@ public class DocumentActionDAO implements IDocumentActionDAO
      * @param document
      *            The document to add available actions
      */
+    @Override
     public List<DocumentAction> selectActions( Document document )
     {
         List<DocumentAction> listActions = new ArrayList<>( );

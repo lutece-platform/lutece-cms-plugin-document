@@ -2,9 +2,9 @@
 
 <jsp:include page="../../AdminHeader.jsp" />
 
-<jsp:useBean id="documentSearch" scope="session" class="fr.paris.lutece.plugins.document.web.docsearch.DocSearchJspBean" />
+<%@page import="fr.paris.lutece.plugins.document.web.DocumentJspBean"%>
 
-<% documentSearch.init( request, fr.paris.lutece.plugins.document.web.DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT ); %>
-<%= documentSearch.getSearch( request ) %>
+${ docSearchJspBean.init( pageContext.request, DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT ) }
+${ docSearchJspBean.getSearch( pageContext.request ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

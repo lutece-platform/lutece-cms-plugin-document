@@ -46,6 +46,10 @@ import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,22 +59,36 @@ import java.util.Collection;
  *
  * AutoPublication Service
  */
+@ApplicationScoped
+@Named("document.AutoPublicationService")
 public class AutoPublicationService
 {
-    private static AutoPublicationService _singleton;
-
-    /**
-     * Get the auto publication service instance
-     * @return The instance of the auto publication service
+	
+	@Inject
+	private PublishingService _publishingService;
+	
+	@Inject
+	private DocumentListPortletHome _documentListPortletHome;
+	
+	@Inject
+	private DocumentPortletHome _documentPortletHome;
+	
+	/**
+     * Returns the unique instance of the {@link AutoPublicationService} service.
+     * 
+     * <p>This method is deprecated and is provided for backward compatibility only. 
+     * For new code, use dependency injection with {@code @Inject} to obtain the 
+     * {@link AutoPublicationService} instance instead.</p>
+     * 
+     * @return The unique instance of {@link AutoPublicationService}.
+     * 
+     * @deprecated Use {@code @Inject} to obtain the {@link AutoPublicationService} 
+     * instance. This method will be removed in future versions.
      */
-    public static AutoPublicationService getInstance(  )
+    @Deprecated( since = "8.0", forRemoval = true )
+	public static AutoPublicationService getInstance(  )
     {
-        if ( _singleton == null )
-        {
-            _singleton = new AutoPublicationService(  );
-        }
-
-        return _singleton;
+    	return CDI.current( ).select( AutoPublicationService.class ).get( );
     }
 
     /**
@@ -79,7 +97,6 @@ public class AutoPublicationService
      */
     public void init(  )
     {
-        DocumentAutoPublication.init(  );
     }
 
     /**
@@ -101,10 +118,9 @@ public class AutoPublicationService
             {
                 sbLogs.append( "\r\nPublishing Document " + document.getId(  ) + " : '" + document.getTitle(  ) +
                     "'...\r\n" );
-                PublishingService.getInstance(  ).assign( document.getId(  ), documentAutoPublication.getIdPortlet(  ) );
-                PublishingService.getInstance(  ).publish( document.getId(  ), documentAutoPublication.getIdPortlet(  ) );
-                PublishingService.getInstance(  )
-                                 .changeDocumentOrder( document.getId(  ), documentAutoPublication.getIdPortlet(  ), 1 ); //Set new published document at the first place 
+                _publishingService.assign( document.getId(  ), documentAutoPublication.getIdPortlet(  ) );
+                _publishingService.publish( document.getId(  ), documentAutoPublication.getIdPortlet(  ) );
+                _publishingService.changeDocumentOrder( document.getId(  ), documentAutoPublication.getIdPortlet(  ), 1 ); //Set new published document at the first place 
             }
         }
 
@@ -135,14 +151,14 @@ public class AutoPublicationService
         String documentTypeCode = null;
         int[] arrayCategories = null;
 
-        if ( DocumentListPortletHome.getInstance(  ).getPortletTypeId(  ).equals( portlet.getPortletTypeId(  ) ) ) //equivalent to : if(portlet instanceof DocumentPortlet)
+        if ( _documentListPortletHome.getPortletTypeId(  ).equals( portlet.getPortletTypeId(  ) ) ) //equivalent to : if(portlet instanceof DocumentPortlet)
         {
             DocumentListPortlet documentListPortlet = (DocumentListPortlet) portlet;
             documentTypeCode = documentListPortlet.getDocumentTypeCode(  );
             arrayCategories = documentListPortlet.getIdCategory(  );
         }
 
-        if ( DocumentPortletHome.getInstance(  ).getPortletTypeId(  ).equals( portlet.getPortletTypeId(  ) ) )
+        if ( _documentPortletHome.getPortletTypeId(  ).equals( portlet.getPortletTypeId(  ) ) )
         {
             DocumentPortlet documentPortlet = (DocumentPortlet) portlet;
             documentTypeCode = documentPortlet.getDocumentTypeCode(  );
@@ -163,7 +179,7 @@ public class AutoPublicationService
         for ( Document document : DocumentHome.findByFilter( documentFilter, null ) )
         {
             if ( document.isValid(  ) &&
-                    !PublishingService.getInstance(  ).isPublished( document.getId(  ), nPortletId ) ) //isValid = Check the publication period
+                    !_publishingService.isPublished( document.getId(  ), nPortletId ) ) //isValid = Check the publication period
             {
                 listPublishableDocuments.add( document );
             }
@@ -179,10 +195,9 @@ public class AutoPublicationService
      * @param nSpaceId the identifier of the space
      * @return number of documents
      */
-    public static int findCountByPortletAndSpace( int nPortletId, int nSpaceId )
+    public int findCountByPortletAndSpace( int nPortletId, int nSpaceId )
     {
-        Collection<Document> listDocuments = PublishingService.getInstance(  )
-                                                              .getPublishedDocumentsByPortletId( nPortletId );
+        Collection<Document> listDocuments = _publishingService.getPublishedDocumentsByPortletId( nPortletId );
         int nCount = 0;
 
         for ( Document document : listDocuments )

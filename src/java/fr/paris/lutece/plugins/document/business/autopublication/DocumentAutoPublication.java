@@ -33,31 +33,16 @@
  */
 package fr.paris.lutece.plugins.document.business.autopublication;
 
-import fr.paris.lutece.plugins.document.service.spaces.SpaceRemovalListenerService;
-
 /**
  * This class represents business objects DocumentAutoPublication
  *
  */
 public class DocumentAutoPublication
 {
-    private static DocumentAutoPublicationDocumentSpaceRemovalListener _listenerDocumentSpace;
+	
     private int _nIdPortlet;
     private int _nIdSpace;
-
-    /**
-     * Initialize the DocumentAutoPublication
-     */
-    public static void init( )
-    {
-        // Create removal listeners and register them
-        if ( _listenerDocumentSpace == null )
-        {
-            _listenerDocumentSpace = new DocumentAutoPublicationDocumentSpaceRemovalListener( );
-            SpaceRemovalListenerService.getService( ).registerListener( _listenerDocumentSpace );
-        }
-    }
-
+    
     /**
      * @return the _nIdPortlet
      */

@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Default implementation of a rule
@@ -60,6 +60,7 @@ public abstract class AbstractRule implements Rule
      *
      * @return The IdRule
      */
+    @Override
     public int getId( )
     {
         return _nIdRule;
@@ -71,6 +72,7 @@ public abstract class AbstractRule implements Rule
      * @param nIdRule
      *            The IdRule
      */
+    @Override
     public void setId( int nIdRule )
     {
         _nIdRule = nIdRule;
@@ -81,6 +83,7 @@ public abstract class AbstractRule implements Rule
      *
      * @return The IdRuleType
      */
+    @Override
     public String getRuleTypeId( )
     {
         return _strIdRuleType;
@@ -92,6 +95,7 @@ public abstract class AbstractRule implements Rule
      * @param strIdRuleType
      *            The IdRuleType
      */
+    @Override
     public void setRuleTypeId( String strIdRuleType )
     {
         _strIdRuleType = strIdRuleType;
@@ -103,6 +107,7 @@ public abstract class AbstractRule implements Rule
      * @param locale
      *            The locale
      */
+    @Override
     public void setLocale( Locale locale )
     {
         _locale = locale;
@@ -126,6 +131,7 @@ public abstract class AbstractRule implements Rule
      * @param strAttributeValue
      *            the value of the attribute
      */
+    @Override
     public void setAttribute( String strAttributeName, String strAttributeValue )
     {
         _mapAttributes.put( strAttributeName, strAttributeValue );
@@ -138,6 +144,7 @@ public abstract class AbstractRule implements Rule
      *            name of the attribute
      * @return the value of the attribute
      */
+    @Override
     public String getAttribute( String strAttributeName )
     {
         return _mapAttributes.get( strAttributeName );
@@ -149,6 +156,7 @@ public abstract class AbstractRule implements Rule
      * @param request
      *            The request
      */
+    @Override
     public void readAttributes( HttpServletRequest request )
     {
         String strRuleTypeId = request.getParameter( PARAMETER_RULE_TYPE_ID );
@@ -178,6 +186,7 @@ public abstract class AbstractRule implements Rule
      * 
      * @return The the current user
      */
+    @Override
     public AdminUser getUser( )
     {
         return _user;
@@ -190,6 +199,7 @@ public abstract class AbstractRule implements Rule
      *            the current user
      *
      */
+    @Override
     public void setUser( AdminUser user )
     {
         _user = user;

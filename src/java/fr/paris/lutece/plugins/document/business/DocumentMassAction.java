@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.document.business;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 
 /**
- * This class represents the business object DocumentType
+ *
  */
 public class DocumentMassAction implements RBACResource
 {

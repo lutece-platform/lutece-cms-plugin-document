@@ -33,9 +33,8 @@
  */
 package fr.paris.lutece.plugins.document.business;
 
-import fr.paris.lutece.plugins.document.business.Document;
-import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
+import org.junit.jupiter.api.Test;
 import fr.paris.lutece.test.LuteceTestCase;
 
 import java.sql.Timestamp;
@@ -80,6 +79,7 @@ public class DocumentTest extends LuteceTestCase
     private final static int CreatorId1 = 1;
     private final static int CreatorId2 = 2;
 
+    @Test
     public void testBusiness(  )
     {
         // Initialize an object

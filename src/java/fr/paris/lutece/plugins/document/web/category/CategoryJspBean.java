@@ -33,7 +33,11 @@
  */
 package fr.paris.lutece.plugins.document.web.category;
 
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+
 import fr.paris.lutece.plugins.document.business.category.Category;
+
 import fr.paris.lutece.plugins.document.business.category.CategoryHome;
 import fr.paris.lutece.plugins.document.service.category.CategoryService;
 import fr.paris.lutece.plugins.document.service.category.CategoryService.CategoryDisplay;
@@ -42,322 +46,359 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.upload.MultipartItem;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.web.admin.AdminFeaturesPageJspBean;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
+import fr.paris.lutece.portal.web.util.IPager;
+import fr.paris.lutece.portal.web.util.Pager;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class provides the user interface to manage Lutece group features (
  * manage, create, modify, remove )
  */
+@SessionScoped
+@Named
 public class CategoryJspBean extends AdminFeaturesPageJspBean
 {
-    // Right
-    public static final String RIGHT_CATEGORY_MANAGEMENT = "DOCUMENT_CATEGORY_MANAGEMENT";
+	// Right
+	public static final String RIGHT_CATEGORY_MANAGEMENT = "DOCUMENT_CATEGORY_MANAGEMENT";
 
-    /**
-     * Generated serial version UID
-     */
-    private static final long serialVersionUID = -3587422846030414228L;
+	/**
+	 * Generated serial version UID
+	 */
+	private static final long serialVersionUID = - 3587422846030414228L;
 
-    //Constants
-    private static final String REGEX_ID = "^[\\d]+$";
-    private static final int ERROR_ID_CATEGORY = -1;
+	// Constants
+	private static final String REGEX_ID = "^[\\d]+$";
+	private static final int ERROR_ID_CATEGORY = - 1;
 
-    // JSP
-    private static final String JSP_URL_REMOVE_CATEGORY = "jsp/admin/plugins/document/DoRemoveCategory.jsp";
+	// JSP
+	private static final String JSP_URL_REMOVE_CATEGORY = "jsp/admin/plugins/document/DoRemoveCategory.jsp";
+	private static final String JSP_URL_MANAGE_CATEGORY = "jsp/admin/plugins/document/ManageCategory.jsp";
 
-    //Markers
-    private static final String MARK_CATEGORY_LIST = "category_list";
-    private static final String MARK_CATEGORY_DISPLAY = "categoryDisplay";
-    private static final String MARK_USER_WORKGROUP_LIST = "user_workgroup_list";
-    private static final String MARK_WORKGROUP_SELECTED = "selected_workgroup";
+	// Markers
+	private static final String MARK_CATEGORY_LIST = "category_list";
+	private static final String MARK_CATEGORY_DISPLAY = "categoryDisplay";
+	private static final String MARK_USER_WORKGROUP_LIST = "user_workgroup_list";
+	private static final String MARK_WORKGROUP_SELECTED = "selected_workgroup";
 
-    // Parameters
-    private static final String PARAMETER_CATEGORY_ID = "category_id";
-    private static final String PARAMETER_CATEGORY_NAME = "category_name";
-    private static final String PARAMETER_CATEGORY_DESCRIPTION = "category_description";
-    private static final String PARAMETER_CATEGORY_UPDATE_ICON = "update_icon";
-    private static final String PARAMETER_IMAGE_CONTENT = "category_icon";
-    private static final String PARAMETER_WORKGROUP_KEY = "workgroup_key";
+	// Parameters
+	private static final String PARAMETER_CATEGORY_ID = "category_id";
+	private static final String PARAMETER_CATEGORY_NAME = "category_name";
+	private static final String PARAMETER_CATEGORY_DESCRIPTION = "category_description";
+	private static final String PARAMETER_CATEGORY_UPDATE_ICON = "update_icon";
+	private static final String PARAMETER_IMAGE_CONTENT = "category_icon";
+	private static final String PARAMETER_WORKGROUP_KEY = "workgroup_key";
 
-    // Templates
-    private static final String TEMPLATE_MANAGE_CATEGORY = "admin/plugins/document/category/manage_category.html";
-    private static final String TEMPLATE_CREATE_CATEGORY = "admin/plugins/document/category/create_category.html";
-    private static final String TEMPLATE_MODIFY_CATEGORY = "admin/plugins/document/category/modify_category.html";
+	// Templates
+	private static final String TEMPLATE_MANAGE_CATEGORY = "admin/plugins/document/category/manage_category.html";
+	private static final String TEMPLATE_CREATE_CATEGORY = "admin/plugins/document/category/create_category.html";
+	private static final String TEMPLATE_MODIFY_CATEGORY = "admin/plugins/document/category/modify_category.html";
 
-    // Properties
-    private static final String PROPERTY_PAGE_TITLE_CREATE_CATEGORY = "document.create_category.pageTitle";
-    private static final String PROPERTY_PAGE_TITLE_MODIFY_CATEGORY = "document.modify_category.pageTitle";
+	// Properties
+	private static final String PROPERTY_PAGE_TITLE_CREATE_CATEGORY = "document.create_category.pageTitle";
+	private static final String PROPERTY_PAGE_TITLE_MODIFY_CATEGORY = "document.modify_category.pageTitle";
 
-    // Message
-    private static final String MESSAGE_CATEGORY_EXIST = "document.message.categoryExist";
-    private static final String MESSAGE_CATEGORY_IS_LINKED = "document.message.categoryIsLinked";
-    private static final String MESSAGE_CATEGORY_ERROR = "document.message.categoryError";
-    private static final String MESSAGE_CONFIRM_REMOVE_CATEGORY = "document.message.confirmRemoveCategory";
+	// Message
+	private static final String MESSAGE_CATEGORY_EXIST = "document.message.categoryExist";
+	private static final String MESSAGE_CATEGORY_IS_LINKED = "document.message.categoryIsLinked";
+	private static final String MESSAGE_CATEGORY_ERROR = "document.message.categoryError";
+	private static final String MESSAGE_CONFIRM_REMOVE_CATEGORY = "document.message.confirmRemoveCategory";
 
-    /**
-     * Creates a new CategoryJspBean object.
-     */
-    public CategoryJspBean(  )
-    {
-    }
+	@Inject
+	private CategoryService _categoryService;
 
-    /**
-     * Returns Category management form
-     * @param request The Http request
-     * @return Html form
-     */
-    public String getManageCategory( HttpServletRequest request )
-    {
-        setPageTitleProperty( null );
+	@Inject
+	private Models _model;
 
-        AdminUser user = getUser(  );
+	@Inject
+	@Pager( listBookmark = MARK_CATEGORY_LIST )
+	private IPager < CategoryDisplay, Void > _pager;
 
-        HashMap<String, Collection<CategoryDisplay>> model = new HashMap<String, Collection<CategoryDisplay>>(  );
-        model.put( MARK_CATEGORY_LIST, CategoryService.getAllCategoriesDisplay( user ) );
+	/**
+	 * Creates a new CategoryJspBean object.
+	 */
+	public CategoryJspBean( )
+	{
+	}
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_CATEGORY, getLocale(  ), model );
+	/**
+	 * Returns Category management form
+	 * 
+	 * @param request The Http request
+	 * @return Html form
+	 */
+	public String getManageCategory( HttpServletRequest request )
+	{
+		setPageTitleProperty( null );
 
-        return getAdminPage( template.getHtml(  ) );
-    }
+		AdminUser user = getUser( );
 
-    /**
-     * Insert a new Category
-     * @param request The HTTP request
-     * @return String The html code page
-     */
-    public String getCreateCategory( HttpServletRequest request )
-    {
-        setPageTitleProperty( PROPERTY_PAGE_TITLE_CREATE_CATEGORY );
+		addPaginatorToModel( request, _categoryService.getAllCategoriesDisplay( user ), _model );
+		// _model.put( MARK_CATEGORY_LIST, _categoryService.getAllCategoriesDisplay(
+		// user ) );
+		
+		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_CATEGORY, getLocale( ), _model );
 
-        AdminUser user = getUser(  );
-        ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( user, getLocale(  ) );
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
+		return getAdminPage( template.getHtml( ) );
+	}
 
-        //LUTECE-890 : the first workgroup will be selected by default
-        if ( !refListWorkGroups.isEmpty(  ) )
-        {
-            model.put( MARK_WORKGROUP_SELECTED, refListWorkGroups.get( 0 ).getCode(  ) );
-        }
+	/**
+	 * Add Paginator to model map
+	 * 
+	 * @param request        The request
+	 * @param listIdPersonne list of categories id
+	 **/
+	private void addPaginatorToModel( HttpServletRequest request, Collection < CategoryDisplay > listCategories,
+			Models model )
+	{
+		UrlItem url = new UrlItem( JSP_URL_MANAGE_CATEGORY );
+		String strUrl = url.getUrl( );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_CATEGORY, getLocale(  ), model );
+		_pager.withBaseUrl( strUrl )
+				.withListItem( listCategories.stream( ).collect( Collectors.toList( ) ) )
+				.populateModels( request, model, request.getLocale( ) );
+	}
 
-        return getAdminPage( template.getHtml(  ) );
-    }
+	/**
+	 * Insert a new Category
+	 * 
+	 * @param request The HTTP request
+	 * @return String The html code page
+	 */
+	public String getCreateCategory( HttpServletRequest request )
+	{
+		setPageTitleProperty( PROPERTY_PAGE_TITLE_CREATE_CATEGORY );
 
-    /**
-     * Create Category
-     * @param request The HTTP request
-     * @return String The url page
-     */
-    public String doCreateCategory( HttpServletRequest request )
-    {
-        Category category = new Category(  );
-        String strCategoryName = request.getParameter( PARAMETER_CATEGORY_NAME ).trim(  );
-        String strCategoryDescription = request.getParameter( PARAMETER_CATEGORY_DESCRIPTION ).trim(  );
-        String strWorkgroup = request.getParameter( PARAMETER_WORKGROUP_KEY );
+		AdminUser user = getUser( );
+		ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( user, getLocale( ) );
 
-        MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
-        FileItem item = mRequest.getFile( PARAMETER_IMAGE_CONTENT );
+		_model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
 
-        // Mandatory field
-        if ( ( strCategoryName.length(  ) == 0 ) || ( strCategoryDescription.length(  ) == 0 ) )
-        {
-            return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
-        }
+		// LUTECE-890 : the first workgroup will be selected by default
+		if( ! refListWorkGroups.isEmpty( ) )
+		{
+			_model.put( MARK_WORKGROUP_SELECTED, refListWorkGroups.get( 0 ).getCode( ) );
+		}
 
-        // check if category exist
-        if ( CategoryHome.findByName( strCategoryName ).size(  ) > 0 )
-        {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_EXIST, AdminMessage.TYPE_STOP );
-        }
+		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_CATEGORY, getLocale( ), _model );
 
-        category.setName( strCategoryName );
-        category.setDescription( strCategoryDescription );
+		return getAdminPage( template.getHtml( ) );
+	}
 
-        byte[] bytes = item.get(  );
+	/**
+	 * Create Category
+	 * 
+	 * @param request The HTTP request
+	 * @return String The url page
+	 */
+	public String doCreateCategory( HttpServletRequest request )
+	{
+		Category category = new Category( );
+		String strCategoryName = request.getParameter( PARAMETER_CATEGORY_NAME ).trim( );
+		String strCategoryDescription = request.getParameter( PARAMETER_CATEGORY_DESCRIPTION ).trim( );
+		String strWorkgroup = request.getParameter( PARAMETER_WORKGROUP_KEY );
 
-        category.setIconContent( bytes );
-        category.setIconMimeType( item.getContentType(  ) );
-        category.setWorkgroup( strWorkgroup );
-        CategoryHome.create( category );
+		MultipartHttpServletRequest mRequest = ( MultipartHttpServletRequest ) request;
+		MultipartItem item = mRequest.getFile( PARAMETER_IMAGE_CONTENT );
 
-        return getHomeUrl( request );
-    }
+		// Mandatory field
+		if( ( strCategoryName.length( ) == 0 ) || ( strCategoryDescription.length( ) == 0 ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
+		}
 
-    /**
-     * Returns Category modification form
-     * @param request The HTTP request
-     * @return String The html code page
-     */
-    public String getModifyCategory( HttpServletRequest request )
-    {
-        setPageTitleProperty( PROPERTY_PAGE_TITLE_MODIFY_CATEGORY );
+		// check if category exist
+		if( CategoryHome.findByName( strCategoryName ).size( ) > 0 )
+		{
+			return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_EXIST, AdminMessage.TYPE_STOP );
+		}
 
-        AdminUser user = getUser(  );
-        ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( user, getLocale(  ) );
-        int nIdCategory = checkCategoryId( request );
+		category.setName( strCategoryName );
+		category.setDescription( strCategoryDescription );
 
-        if ( nIdCategory == ERROR_ID_CATEGORY )
-        {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_ERROR, AdminMessage.TYPE_ERROR );
-        }
+		byte [ ] bytes = item.get( );
 
-        CategoryDisplay categoryDisplay = CategoryService.getCategoryDisplay( nIdCategory );
+		category.setIconContent( bytes );
+		category.setIconMimeType( item.getContentType( ) );
+		category.setWorkgroup( strWorkgroup );
+		CategoryHome.create( category );
 
-        if ( categoryDisplay == null )
-        {
-            return getManageCategory( request );
-        }
+		return getHomeUrl( request );
+	}
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
+	/**
+	 * Returns Category modification form
+	 * 
+	 * @param request The HTTP request
+	 * @return String The html code page
+	 */
+	public String getModifyCategory( HttpServletRequest request )
+	{
+		setPageTitleProperty( PROPERTY_PAGE_TITLE_MODIFY_CATEGORY );
 
-        model.put( MARK_CATEGORY_DISPLAY, categoryDisplay );
-        model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
+		AdminUser user = getUser( );
+		ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( user, getLocale( ) );
+		int nIdCategory = checkCategoryId( request );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_CATEGORY, getLocale(  ), model );
+		if( nIdCategory == ERROR_ID_CATEGORY )
+		{
+			return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_ERROR, AdminMessage.TYPE_ERROR );
+		}
 
-        return getAdminPage( template.getHtml(  ) );
-    }
+		CategoryDisplay categoryDisplay = _categoryService.getCategoryDisplay( nIdCategory );
 
-    /**
-     * Modify Category
-     * @param request The HTTP request
-     * @return String The url page
-     */
-    public String doModifyCategory( HttpServletRequest request )
-    {
-        Category category = null;
-        String strCategoryName = request.getParameter( PARAMETER_CATEGORY_NAME ).trim(  );
-        String strCategoryDescription = request.getParameter( PARAMETER_CATEGORY_DESCRIPTION ).trim(  );
-        String strCategoryUpdateIcon = request.getParameter( PARAMETER_CATEGORY_UPDATE_ICON );
-        String strWorkgroup = request.getParameter( PARAMETER_WORKGROUP_KEY );
+		if( categoryDisplay == null )
+		{
+			return getManageCategory( request );
+		}
 
-        int nIdCategory = checkCategoryId( request );
+		_model.put( MARK_CATEGORY_DISPLAY, categoryDisplay );
+		_model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
 
-        if ( nIdCategory == ERROR_ID_CATEGORY )
-        {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_ERROR, AdminMessage.TYPE_ERROR );
-        }
+		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_CATEGORY, getLocale( ), _model );
 
-        // Mandatory field
-        if ( ( strCategoryName.length(  ) == 0 ) || ( strCategoryDescription.length(  ) == 0 ) )
-        {
-            return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
-        }
+		return getAdminPage( template.getHtml( ) );
+	}
 
-        // check if category exist
-        Collection<Category> categoriesList = CategoryHome.findByName( strCategoryName );
+	/**
+	 * Modify Category
+	 * 
+	 * @param request The HTTP request
+	 * @return String The url page
+	 */
+	public String doModifyCategory( HttpServletRequest request )
+	{
+		Category category = null;
+		String strCategoryName = request.getParameter( PARAMETER_CATEGORY_NAME ).trim( );
+		String strCategoryDescription = request.getParameter( PARAMETER_CATEGORY_DESCRIPTION ).trim( );
+		String strCategoryUpdateIcon = request.getParameter( PARAMETER_CATEGORY_UPDATE_ICON );
+		String strWorkgroup = request.getParameter( PARAMETER_WORKGROUP_KEY );
 
-        if ( !categoriesList.isEmpty(  ) && ( categoriesList.iterator(  ).next(  ).getId(  ) != nIdCategory ) )
-        {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_EXIST, AdminMessage.TYPE_STOP );
-        }
+		int nIdCategory = checkCategoryId( request );
 
-        category = CategoryHome.find( nIdCategory );
-        category.setName( strCategoryName );
-        category.setDescription( strCategoryDescription );
+		if( nIdCategory == ERROR_ID_CATEGORY )
+		{
+			return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_ERROR, AdminMessage.TYPE_ERROR );
+		}
 
-        if ( strCategoryUpdateIcon != null )
-        {
-            MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
-            FileItem item = mRequest.getFile( PARAMETER_IMAGE_CONTENT );
+		// Mandatory field
+		if( ( strCategoryName.length( ) == 0 ) || ( strCategoryDescription.length( ) == 0 ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
+		}
 
-            byte[] bytes = item.get(  );
-            category.setIconContent( bytes );
-            category.setIconMimeType( item.getContentType(  ) );
-        }
+		// check if category exist
+		Collection < Category > categoriesList = CategoryHome.findByName( strCategoryName );
 
-        category.setWorkgroup( strWorkgroup );
+		if( ! categoriesList.isEmpty( ) && ( categoriesList.iterator( ).next( ).getId( ) != nIdCategory ) )
+		{
+			return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_EXIST, AdminMessage.TYPE_STOP );
+		}
 
-        CategoryHome.update( category );
+		category = CategoryHome.find( nIdCategory );
+		category.setName( strCategoryName );
+		category.setDescription( strCategoryDescription );
 
-        return getHomeUrl( request );
-    }
+		if( strCategoryUpdateIcon != null )
+		{
+			MultipartHttpServletRequest mRequest = ( MultipartHttpServletRequest ) request;
+			MultipartItem item = mRequest.getFile( PARAMETER_IMAGE_CONTENT );
 
-    /**
-     * Returns the page of confirmation for deleting a workgroup
-     *
-     * @param request The Http Request
-     * @return the confirmation url
-     */
-    public String getConfirmRemoveCategory( HttpServletRequest request )
-    {
-        int nIdCategory = checkCategoryId( request );
+			byte [ ] bytes = item.get( );
+			category.setIconContent( bytes );
+			category.setIconMimeType( item.getContentType( ) );
+		}
 
-        if ( nIdCategory == ERROR_ID_CATEGORY )
-        {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_ERROR, AdminMessage.TYPE_ERROR );
-        }
+		category.setWorkgroup( strWorkgroup );
 
-        // Test if the category is assigned
-        if ( CategoryHome.findCountIdDocuments( nIdCategory ) > 0 )
-        {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_IS_LINKED, AdminMessage.TYPE_STOP );
-        }
+		CategoryHome.update( category );
 
-        UrlItem url = new UrlItem( JSP_URL_REMOVE_CATEGORY );
-        url.addParameter( PARAMETER_CATEGORY_ID, Integer.toString( nIdCategory ) );
+		return getHomeUrl( request );
+	}
 
-        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_CATEGORY, url.getUrl(  ),
-            AdminMessage.TYPE_CONFIRMATION );
-    }
+	/**
+	 * Returns the page of confirmation for deleting a workgroup
+	 *
+	 * @param request The Http Request
+	 * @return the confirmation url
+	 */
+	public String getConfirmRemoveCategory( HttpServletRequest request )
+	{
+		int nIdCategory = checkCategoryId( request );
 
-    /**
-     * Perform the deletion
-     * @param request The HTTP request
-     * @return The URL to go after performing the action
-     */
-    public String doRemoveCategory( HttpServletRequest request )
-    {
-        int nIdCategory = checkCategoryId( request );
+		if( nIdCategory == ERROR_ID_CATEGORY )
+		{
+			return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_ERROR, AdminMessage.TYPE_ERROR );
+		}
 
-        if ( nIdCategory == ERROR_ID_CATEGORY )
-        {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_ERROR, AdminMessage.TYPE_ERROR );
-        }
+		// Test if the category is assigned
+		if( CategoryHome.findCountIdDocuments( nIdCategory ) > 0 )
+		{
+			return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_IS_LINKED, AdminMessage.TYPE_STOP );
+		}
 
-        // Test if the category is assigned
-        if ( CategoryHome.findCountIdDocuments( nIdCategory ) > 0 )
-        {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_IS_LINKED, AdminMessage.TYPE_STOP );
-        }
+		UrlItem url = new UrlItem( JSP_URL_REMOVE_CATEGORY );
+		url.addParameter( PARAMETER_CATEGORY_ID, Integer.toString( nIdCategory ) );
 
-        CategoryHome.remove( nIdCategory );
+		return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_CATEGORY, url.getUrl( ),
+				AdminMessage.TYPE_CONFIRMATION );
+	}
 
-        return getHomeUrl( request );
-    }
+	/**
+	 * Perform the deletion
+	 * 
+	 * @param request The HTTP request
+	 * @return The URL to go after performing the action
+	 */
+	public String doRemoveCategory( HttpServletRequest request )
+	{
+		int nIdCategory = checkCategoryId( request );
 
-    /**
-     *
-     * @param request The http request
-     * @return id of category, ERROR_ID_CATEGORY else
-     */
-    private int checkCategoryId( HttpServletRequest request )
-    {
-        String strCategoryId = request.getParameter( PARAMETER_CATEGORY_ID );
+		if( nIdCategory == ERROR_ID_CATEGORY )
+		{
+			return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_ERROR, AdminMessage.TYPE_ERROR );
+		}
 
-        if ( StringUtils.isBlank( strCategoryId ) || !strCategoryId.matches( REGEX_ID ) )
-        {
-            return ERROR_ID_CATEGORY;
-        }
+		// Test if the category is assigned
+		if( CategoryHome.findCountIdDocuments( nIdCategory ) > 0 )
+		{
+			return AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_IS_LINKED, AdminMessage.TYPE_STOP );
+		}
 
-        return IntegerUtils.convert( strCategoryId );
-    }
+		CategoryHome.remove( nIdCategory );
+
+		return getHomeUrl( request );
+	}
+
+	/**
+	 *
+	 * @param request The http request
+	 * @return id of category, ERROR_ID_CATEGORY else
+	 */
+	private int checkCategoryId( HttpServletRequest request )
+	{
+		String strCategoryId = request.getParameter( PARAMETER_CATEGORY_ID );
+
+		if( StringUtils.isBlank( strCategoryId ) || ! strCategoryId.matches( REGEX_ID ) )
+		{
+			return ERROR_ID_CATEGORY;
+		}
+
+		return IntegerUtils.convert( strCategoryId );
+	}
 }

@@ -51,6 +51,7 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.insert.InsertServiceJspBean;
 import fr.paris.lutece.portal.web.insert.InsertServiceSelectionBean;
@@ -66,13 +67,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
  * This class provides the user interface to insert a link to a document
  *
  */
+@SessionScoped
+@Named
 public class DocumentServiceJspBean extends InsertServiceJspBean implements InsertServiceSelectionBean
 {
     private static final long serialVersionUID = 2694692453596836769L;
@@ -120,7 +127,15 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
     private AdminUser _user;
     private String _input;
     private String _strTypeFilter;
-
+    
+    @Inject
+    private Models _model;
+    
+    @Inject
+    private PublishingService _publishingService;
+    
+    private static DocumentListPortletHome _portletHome = CDI.current( ).select( DocumentListPortletHome.class ).get( );
+    
     /**
      * Initialize data
      *
@@ -182,11 +197,11 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
 
         listPages = PageHome.getChildPages( nPageId );
 
-        Map<String, Object> model = getDefaultModel(  );
+        getDefaultModel(  );
 
-        model.put( MARK_PAGES_LIST, listPages );
+        _model.put( MARK_PAGES_LIST, listPages );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_PAGE, _user.getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_PAGE, _user.getLocale(  ), _model );
 
         return template.getHtml(  );
     }
@@ -260,7 +275,7 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
 
         for ( Portlet portlet : listPortletsAll )
         {
-            if ( portlet.getPortletTypeId(  ).equals( DocumentListPortletHome.getInstance(  ).getPortletTypeId(  ) ) )
+            if ( portlet.getPortletTypeId(  ).equals( _portletHome.getPortletTypeId(  ) ) )
             {
                 if ( StringUtils.isNotBlank( getTypeFilter(  ) ) )
                 {
@@ -280,11 +295,11 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
 
         listPortletsAll.clear(  );
 
-        Map<String, Object> model = getDefaultModel(  );
+        getDefaultModel(  );
 
-        model.put( MARK_PORTLETS_LIST, listPortlets );
+        _model.put( MARK_PORTLETS_LIST, listPortlets );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_PORTLET, _user.getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_PORTLET, _user.getLocale(  ), _model );
 
         return template.getHtml(  );
     }
@@ -352,15 +367,14 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
         }
 
         int nPortletId = IntegerUtils.convert( strPortletId );
-        Collection<Document> listDocuments = PublishingService.getInstance(  )
-                                                              .getPublishedDocumentsByPortletId( nPortletId );
+        Collection<Document> listDocuments = _publishingService.getPublishedDocumentsByPortletId( nPortletId );
 
-        Map<String, Object> model = getDefaultModel(  );
+        getDefaultModel(  );
 
-        model.put( MARK_DOCUMENTS_LIST, listDocuments );
-        model.put( MARK_PORTLET_ID, nPortletId );
+        _model.put( MARK_DOCUMENTS_LIST, listDocuments );
+        _model.put( MARK_PORTLET_ID, nPortletId );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_DOCUMENT, _user.getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_DOCUMENT, _user.getLocale(  ), _model );
 
         return template.getHtml(  );
     }
@@ -428,12 +442,9 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
      *
      * @return The default model
      */
-    private Map<String, Object> getDefaultModel(  )
+    private void getDefaultModel(  )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put( MARK_INPUT, _input );
-        model.put( MARK_TYPE_FILTER, getTypeFilter(  ) );
-
-        return model;
+        _model.put( MARK_INPUT, _input );
+        _model.put( MARK_TYPE_FILTER, getTypeFilter(  ) );
     }
 }

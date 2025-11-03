@@ -33,8 +33,8 @@
  */
 package fr.paris.lutece.plugins.document.business;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.Collection;
 
@@ -44,7 +44,7 @@ import java.util.Collection;
 public final class DocumentTypeHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentTypeDAO _dao = SpringContextService.getBean( "document.documentTypeDAO" );
+    private static IDocumentTypeDAO _dao =  CDI.current( ).select( IDocumentTypeDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated

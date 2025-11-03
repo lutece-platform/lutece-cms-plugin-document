@@ -34,10 +34,16 @@
 package fr.paris.lutece.plugins.document.service.rules;
 
 import fr.paris.lutece.plugins.document.business.rules.Rule;
+
 import fr.paris.lutece.plugins.document.business.rules.RuleHome;
 import fr.paris.lutece.plugins.document.service.DocumentEvent;
-import fr.paris.lutece.plugins.document.service.DocumentEventListener;
 import fr.paris.lutece.plugins.document.service.DocumentException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Named;
+import jakarta.servlet.ServletContext;
 
 import java.util.Locale;
 
@@ -45,24 +51,34 @@ import java.util.Locale;
 /**
  * Rule engine. Executes rules on every document event.
  */
-public class RuleEngine implements DocumentEventListener
+@ApplicationScoped
+@Named("document.RuleEngine")
+public class RuleEngine
 {
-    private static RuleEngine _singleton = new RuleEngine(  );
 
     /**
      * Creates a new instance of RuleEngine
      */
-    private RuleEngine(  )
+    public RuleEngine(  )
     {
     }
 
     /**
-     * Gets the unique instance
-     * @return The unique instance
+     * Returns the unique instance of the {@link RuleEngine} service.
+     * 
+     * <p>This method is deprecated and is provided for backward compatibility only. 
+     * For new code, use dependency injection with {@code @Inject} to obtain the 
+     * {@link RuleEngine} instance instead.</p>
+     * 
+     * @return The unique instance of {@link RuleEngine}.
+     * 
+     * @deprecated Use {@code @Inject} to obtain the {@link RuleEngine} 
+     * instance. This method will be removed in future versions.
      */
+    @Deprecated( since = "8.0", forRemoval = true )
     public static RuleEngine getInstance(  )
     {
-        return _singleton;
+        return CDI.current( ).select( RuleEngine.class ).get( );
     }
 
     /**
@@ -78,6 +94,16 @@ public class RuleEngine implements DocumentEventListener
     }
 
     /**
+     * Observe document events via CDI
+     * @param event The document event
+     * @throws DocumentException if error occurs
+     */
+    public void onDocumentEvent(@Observes DocumentEvent event) throws DocumentException
+    {
+        processDocumentEvent(event);
+    }
+    
+    /**
      * Process a document event
      * @param event The event to process
      * @throws DocumentException raise when error occurs in event or rule
@@ -89,5 +115,20 @@ public class RuleEngine implements DocumentEventListener
         {
             rule.apply( event );
         }
+    }
+    
+	/**
+     * This method observes the initialization of the {@link ApplicationScoped} context.
+     * It ensures that this CDI beans are instantiated at the application startup.
+     *
+     * <p>This method is triggered automatically by CDI when the {@link ApplicationScoped} context is initialized,
+     * which typically occurs during the startup of the application server.</p>
+     *
+     * @param context the {@link ServletContext} that is initialized. This parameter is observed
+     *                and injected automatically by CDI when the {@link ApplicationScoped} context is initialized.
+     */
+    public void initializedService(@Observes @Initialized(ApplicationScoped.class) ServletContext context) 
+    {
+        // This method is intentionally left empty to trigger CDI bean instantiation
     }
 }

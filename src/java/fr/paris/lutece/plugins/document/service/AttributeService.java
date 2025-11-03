@@ -37,6 +37,13 @@ import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeHome;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Named;
+import jakarta.servlet.ServletContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,34 +52,40 @@ import java.util.Map;
 /**
  * Attribute Service
  */
+@ApplicationScoped
+@Named( "document.AttributeService" )
 public class AttributeService
 {
-    private static AttributeService _singleton;
+
     private static Map<String, AttributeManager> _mapManagers = new HashMap<String, AttributeManager>(  );
 
     /** Creates a new instance of AttributeService */
-    private AttributeService(  )
+    public AttributeService(  )
     {
     }
-
+    
     /**
-     * Get the unique instance of the service
-     * @return The instance of the attribute service
+     * Returns the unique instance of the {@link AttributeService} service.
+     * 
+     * <p>This method is deprecated and is provided for backward compatibility only. 
+     * For new code, use dependency injection with {@code @Inject} to obtain the 
+     * {@link AttributeService} instance instead.</p>
+     * 
+     * @return The unique instance of {@link AttributeService}.
+     * 
+     * @deprecated Use {@code @Inject} to obtain the {@link AttributeService} 
+     * instance. This method will be removed in future versions.
      */
+    @Deprecated( since = "8.0", forRemoval = true )
     public static synchronized AttributeService getInstance(  )
     {
-        if ( _singleton == null )
-        {
-            _singleton = new AttributeService(  );
-            _singleton.init(  );
-        }
-
-        return _singleton;
+    	return CDI.current( ).select( AttributeService.class ).get( );
     }
 
     /**
      * Initializes the service
      */
+    @PostConstruct
     private void init(  )
     {
         ReferenceList listManagers = AttributeTypeHome.getAttributeManagersList(  );
@@ -111,5 +124,20 @@ public class AttributeService
     public AttributeManager getManager( String strAttributeType )
     {
         return _mapManagers.get( strAttributeType );
+    }
+    
+	/**
+     * This method observes the initialization of the {@link ApplicationScoped} context.
+     * It ensures that this CDI beans are instantiated at the application startup.
+     *
+     * <p>This method is triggered automatically by CDI when the {@link ApplicationScoped} context is initialized,
+     * which typically occurs during the startup of the application server.</p>
+     *
+     * @param context the {@link ServletContext} that is initialized. This parameter is observed
+     *                and injected automatically by CDI when the {@link ApplicationScoped} context is initialized.
+     */
+    public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context ) 
+    {
+        // This method is intentionally left empty to trigger CDI bean instantiation
     }
 }

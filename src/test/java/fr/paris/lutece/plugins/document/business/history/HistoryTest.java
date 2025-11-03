@@ -33,8 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.business.history;
 
-import fr.paris.lutece.plugins.document.business.history.HistoryEvent;
-import fr.paris.lutece.plugins.document.business.history.HistoryEventHome;
+import org.junit.jupiter.api.Test;
 import fr.paris.lutece.test.LuteceTestCase;
 
 import java.sql.Timestamp;
@@ -53,6 +52,7 @@ public class HistoryTest extends LuteceTestCase
     private final static String DOCUMENTSTATEKEY1 = "JUnit DocumentStateKey 1";
     private final static String DOCUMENTSPACE1 = "JUnit DocumentSpace 1";
 
+    @Test
     public void testBusiness(  )
     {
         // Initialize an event

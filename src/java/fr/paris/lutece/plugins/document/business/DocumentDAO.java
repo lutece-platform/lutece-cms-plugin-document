@@ -37,6 +37,7 @@ import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.category.Category;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +49,7 @@ import java.util.List;
 /**
  * This class provides Data Access methods for Document objects
  */
+@ApplicationScoped
 public final class DocumentDAO implements IDocumentDAO
 {
     // Documents queries
@@ -154,6 +156,7 @@ public final class DocumentDAO implements IDocumentDAO
      * 
      * @return The new primary key
      */
+    @Override
     public int newPrimaryKey( )
     {
         int nKey;
@@ -179,6 +182,7 @@ public final class DocumentDAO implements IDocumentDAO
      * @param document
      *            The document object
      */
+    @Override
     public synchronized void insert( Document document )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
@@ -268,6 +272,7 @@ public final class DocumentDAO implements IDocumentDAO
      *            The identifier of Document
      * @return the instance of the Document
      */
+    @Override
     public Document load( int nDocumentId )
     {
         return loadDocument( nDocumentId, true );
@@ -280,6 +285,7 @@ public final class DocumentDAO implements IDocumentDAO
      *            The identifier of Document
      * @return the instance of the Document
      */
+    @Override
     public Document loadWithoutBinaries( int nDocumentId )
     {
         return loadDocument( nDocumentId, false );
@@ -361,6 +367,7 @@ public final class DocumentDAO implements IDocumentDAO
      *            The id of the document space
      * @return the instance of the Document
      */
+    @Override
     public List<Document> loadFromSpaceId( int nSpaceId )
     {
         List<Document> list;
@@ -400,6 +407,7 @@ public final class DocumentDAO implements IDocumentDAO
      * @param document
      *            Document object
      */
+    @Override
     public void loadAttributes( Document document )
     {
         List<DocumentAttribute> listAttributes = new ArrayList<>( );
@@ -454,6 +462,7 @@ public final class DocumentDAO implements IDocumentDAO
      * @param bValidated
      *            true if the content of the document must be validated, false otherwise
      */
+    @Override
     public void loadAttributesWithoutBinaries( Document document, boolean bValidated )
     {
         List<DocumentAttribute> listAttributes = new ArrayList<>( );
@@ -506,6 +515,7 @@ public final class DocumentDAO implements IDocumentDAO
      * @param nDocumentId
      *            the document identifier
      */
+    @Override
     public void delete( int nDocumentId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -563,6 +573,7 @@ public final class DocumentDAO implements IDocumentDAO
      * @param nDocumentId
      *            The Document identifier
      */
+    @Override
     public void validateAttributes( int nDocumentId )
     {
         deleteValidatedAttributes( nDocumentId );
@@ -600,6 +611,7 @@ public final class DocumentDAO implements IDocumentDAO
      * @param bUpdateContent
      *            the boolean
      */
+    @Override
     public void store( Document document, boolean bUpdateContent )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
@@ -644,6 +656,7 @@ public final class DocumentDAO implements IDocumentDAO
      * @param filter
      *            The DocumentFilter Object
      */
+    @Override
     public Collection<Integer> selectPrimaryKeysByFilter( DocumentFilter filter )
     {
         Collection<Integer> listDocumentIds = new ArrayList<>( );
@@ -668,6 +681,7 @@ public final class DocumentDAO implements IDocumentDAO
      * @param filter
      *            The DocumentFilter Object
      */
+    @Override
     public List<Document> selectByFilter( DocumentFilter filter )
     {
         List<Document> listDocuments = new ArrayList<>( );
@@ -870,6 +884,7 @@ public final class DocumentDAO implements IDocumentDAO
      *            The document with the categories
      * @return The Collection of the Documents
      */
+    @Override
     public List<Document> selectByRelatedCategories( Document document )
     {
         List<Document> listDocument = new ArrayList<>( );
@@ -930,6 +945,7 @@ public final class DocumentDAO implements IDocumentDAO
      *            The Document Id
      * @return the instance of the DocumentResource
      */
+    @Override
     public DocumentResource loadResource( int nDocumentId )
     {
         DocumentResource resource = null;
@@ -961,6 +977,7 @@ public final class DocumentDAO implements IDocumentDAO
      *            true if we want the validated resource
      * @return the instance of the DocumentResource
      */
+    @Override
     public DocumentResource loadSpecificResource( int nDocumentId, int nAttributeId, boolean bValidated )
     {
         DocumentResource resource = null;
@@ -987,6 +1004,7 @@ public final class DocumentDAO implements IDocumentDAO
      * 
      * @return A collection of Integer
      */
+    @Override
     public Collection<Integer> selectAllPrimaryKeys( )
     {
         Collection<Integer> listPrimaryKeys = new ArrayList<>( );
@@ -1010,6 +1028,7 @@ public final class DocumentDAO implements IDocumentDAO
      * @return the document list
      * @deprecated
      */
+    @Override
     public List<Document> selectAll( )
     {
         List<Document> listDocuments = new ArrayList<>( );
@@ -1059,6 +1078,7 @@ public final class DocumentDAO implements IDocumentDAO
      *            The identifier of page template
      * @return the page template path
      */
+    @Override
     public String getPageTemplateDocumentPath( int nIdPageTemplateDocument )
     {
         String strPageTemplatePath = "";
@@ -1158,6 +1178,7 @@ public final class DocumentDAO implements IDocumentDAO
      *            The id of the document
      * @return the document
      */
+    @Override
     public Document loadLastModifiedAttributes( int nIdDocument )
     {
         Document document = null;
@@ -1184,6 +1205,7 @@ public final class DocumentDAO implements IDocumentDAO
      *            the user name
      * @return the instance of the Document
      */
+    @Override
     public Document loadLastModifiedDocumentFromUser( String strUserName )
     {
         Document document = null;
@@ -1228,6 +1250,7 @@ public final class DocumentDAO implements IDocumentDAO
      *
      * @return the instance of the Document
      */
+    @Override
     public Document loadLastPublishedDocument( )
     {
         Document document = null;

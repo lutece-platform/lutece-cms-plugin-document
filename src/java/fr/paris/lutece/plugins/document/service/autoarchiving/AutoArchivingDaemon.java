@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.service.autoarchiving;
 
 import fr.paris.lutece.portal.service.daemon.Daemon;
+import jakarta.enterprise.inject.spi.CDI;
 
 
 /**
@@ -41,11 +42,13 @@ import fr.paris.lutece.portal.service.daemon.Daemon;
  */
 public class AutoArchivingDaemon extends Daemon
 {
+	
     /**
      * Run the Auto Archiving process
      */
+	@Override
     public void run(  )
     {
-        setLastRunLogs( AutoArchivingService.getInstance(  ).processAutoArchiving(  ) );
+        CDI.current( ).select( AutoArchivingService.class ).get( ).processAutoArchiving(  );
     }
 }

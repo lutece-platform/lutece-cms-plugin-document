@@ -2,9 +2,9 @@
 
 <jsp:include page="../../AdminHeader.jsp" />
 
-<jsp:useBean id="documentRules" scope="session" class="fr.paris.lutece.plugins.document.web.rules.DocumentRulesJspBean" />
+<%@page import="fr.paris.lutece.plugins.document.web.rules.DocumentRulesJspBean"%>
 
-<% documentRules.init( request, documentRules.RIGHT_RULES_MANAGEMENT ); %>
-<%= documentRules.getCreateRule( request ) %>
+${ documentRulesJspBean.init( pageContext.request, DocumentRulesJspBean.RIGHT_RULES_MANAGEMENT ) }
+${ documentRulesJspBean.getCreateRule( pageContext.request ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

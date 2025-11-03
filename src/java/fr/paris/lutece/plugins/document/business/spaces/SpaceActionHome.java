@@ -34,7 +34,7 @@
 package fr.paris.lutece.plugins.document.business.spaces;
 
 import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.List;
 import java.util.Locale;
@@ -45,7 +45,7 @@ import java.util.Locale;
 public final class SpaceActionHome
 {
     // Static variable pointed at the DAO instance
-    private static ISpaceActionDAO _dao = SpringContextService.getBean( "document.spaceActionDAO" );
+    private static ISpaceActionDAO _dao = CDI.current( ).select( ISpaceActionDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated

@@ -33,9 +33,10 @@
  */
 package fr.paris.lutece.plugins.document.business;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.util.List;
+
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods (create, find, ...) for IndexerAction objects
@@ -43,7 +44,7 @@ import java.util.List;
 public final class IndexerActionHome
 {
     // Static variable pointed at the DAO instance
-    private static IIndexerActionDAO _dao = SpringContextService.getBean( "document.documentIndexerActionDAO" );
+    private static IIndexerActionDAO _dao = CDI.current( ).select( IIndexerActionDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated

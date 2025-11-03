@@ -49,6 +49,7 @@ public class RichTextManager extends DefaultManager
      * Gets the template to enter the attribute value
      * @return The template to enter the attribute value
      */
+    @Override
     protected String getCreateTemplate(  )
     {
         return TEMPLATE_CREATE_ATTRIBUTE;
@@ -58,6 +59,7 @@ public class RichTextManager extends DefaultManager
      * Gets the template to modify the attribute value
      * @return The template to modify the attribute value
      */
+    @Override
     protected String getModifyTemplate(  )
     {
         return TEMPLATE_MODIFY_ATTRIBUTE;
@@ -67,6 +69,7 @@ public class RichTextManager extends DefaultManager
      * Gets the template to enter the parameters of the attribute value
      * @return The template to enter the parameters of the attribute value
      */
+    @Override
     protected String getCreateParametersTemplate(  )
     {
         return null;
@@ -76,6 +79,7 @@ public class RichTextManager extends DefaultManager
      * Gets the template to modify the parameters of the attribute value
      * @return The template to modify the parameters of the attribute value
      */
+    @Override
     protected String getModifyParametersTemplate(  )
     {
         return null;
@@ -87,6 +91,7 @@ public class RichTextManager extends DefaultManager
      * @param attribute  The attribute
      * @return The XML value of the attribute
      */
+    @Override
     public String getAttributeXmlValue( Document document, DocumentAttribute attribute )
     {
         // Return cdata Value

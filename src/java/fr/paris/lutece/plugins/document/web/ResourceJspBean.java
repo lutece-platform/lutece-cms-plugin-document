@@ -37,13 +37,18 @@ import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentResource;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 
-import javax.servlet.http.HttpServletRequest;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * JSP Bean for document file resource management
  */
-public class ResourceJspBean
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+
+@SessionScoped
+@Named
+public class ResourceJspBean implements java.io.Serializable
 {
     //////////////////////////////////////////////////////////////////////////////
     // Constants
@@ -53,9 +58,9 @@ public class ResourceJspBean
     private static final String PARAMETER_ATTRIBUTE_ID = "id_attribute";
     private DocumentResource _resource;
 
+
     /**
-     * Load a file resource corresponding to a file attribute of a document
-     * @param request The HTTP request
+     * Initialise la ressource à partir de la requête (utilisable en EL)
      */
     public void loadResource( HttpServletRequest request )
     {
@@ -67,7 +72,7 @@ public class ResourceJspBean
 
         _resource = DocumentHome.getValidatedResource( nDocumentId, nAttributeId );
     }
-
+    
     /**
      * Returns the content of the file resource
      * @return The content of the file resource

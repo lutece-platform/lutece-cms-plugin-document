@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.business.rules;
 
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ import java.util.List;
 /**
  * This class provides Data Access methods for Rule objects
  */
+@ApplicationScoped
 public final class RuleDAO implements IRuleDAO
 {
     // Constants
@@ -83,6 +85,7 @@ public final class RuleDAO implements IRuleDAO
      * @param rule
      *            The rule object
      */
+    @Override
     public synchronized void insert( Rule rule )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
@@ -130,6 +133,7 @@ public final class RuleDAO implements IRuleDAO
      *            The rule type set object
      * @return the instance of the Rule
      */
+    @Override
     public Rule load( int nRuleId, IRuleTypesSet ruleTypesSet )
     {
         Rule rule = null;
@@ -176,6 +180,7 @@ public final class RuleDAO implements IRuleDAO
      * @param nRuleId
      *            The Rule Id
      */
+    @Override
     public void delete( int nRuleId )
     {
         deleteAttributes( nRuleId );
@@ -211,6 +216,7 @@ public final class RuleDAO implements IRuleDAO
      * @param rule
      *            The reference of rule
      */
+    @Override
     public void store( Rule rule )
     {
         // Just update attributes
@@ -225,6 +231,7 @@ public final class RuleDAO implements IRuleDAO
      *            The ruleTypeSet
      * @return The Collection of the Rules
      */
+    @Override
     public List<Rule> selectRuleList( IRuleTypesSet ruleTypesSet )
     {
         List<Rule> listRules = new ArrayList<>( );
@@ -251,6 +258,7 @@ public final class RuleDAO implements IRuleDAO
      *            The rule types set
      * @return The Collection of the Rules
      */
+    @Override
     public List<Rule> selectRuleListByRuleTypeKey( String strRuleTypeKey, IRuleTypesSet ruleTypesSet )
     {
         List<Rule> listRules = new ArrayList<>( );

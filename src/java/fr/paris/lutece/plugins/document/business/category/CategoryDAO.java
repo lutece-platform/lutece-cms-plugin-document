@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.document.business.category;
 
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +43,7 @@ import java.util.Collection;
 /**
  * This class provides Data Access methods for Category objects
  */
+@ApplicationScoped
 public final class CategoryDAO implements ICategoryDAO
 {
     // Constants
@@ -68,6 +70,7 @@ public final class CategoryDAO implements ICategoryDAO
      * 
      * @return The Collection of Category (empty collection is no result)
      */
+    @Override
     public Collection<Category> selectAll( )
     {
         int nParam;
@@ -100,6 +103,7 @@ public final class CategoryDAO implements ICategoryDAO
      * @param category
      *            The object category to insert
      */
+    @Override
     public void insert( Category category )
     {
         int nParam = 0;
@@ -143,6 +147,7 @@ public final class CategoryDAO implements ICategoryDAO
      *            The identifier of the category
      * @return The Instance of the object Category
      */
+    @Override
     public Category load( int nIdCategory )
     {
         int nParam;
@@ -174,6 +179,7 @@ public final class CategoryDAO implements ICategoryDAO
      * @param nIdCategory
      *            The identifier of the object Category
      */
+    @Override
     public void delete( int nIdCategory )
     {
         int nParam = 0;
@@ -190,6 +196,7 @@ public final class CategoryDAO implements ICategoryDAO
      * @param category
      *            The instance of the Category to update
      */
+    @Override
     public void store( Category category )
     {
         int nParam = 0;
@@ -213,6 +220,7 @@ public final class CategoryDAO implements ICategoryDAO
      *            The name of the category
      * @return The Collection of Category (empty collection is no result)
      */
+    @Override
     public Collection<Category> selectByName( String strCategoryName )
     {
         int nParam;
@@ -314,6 +322,7 @@ public final class CategoryDAO implements ICategoryDAO
      *            The category name
      * @return count of id document
      */
+    @Override
     public int selectCountIdDocuments( int nIdCategory )
     {
         int nCountDocumentsId = -1;
@@ -337,6 +346,7 @@ public final class CategoryDAO implements ICategoryDAO
      *            The identifier of Category object
      * @return The image resource
      */
+    @Override
     public ImageResource loadImageResource( int nCategoryId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_RESOURCE_IMAGE ) )

@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.business.history;
 
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +43,7 @@ import java.util.List;
 /**
  * This class provides Data Access methods for HistoryEvent objects
  */
+@ApplicationScoped
 public final class HistoryEventDAO implements IHistoryEventDAO
 {
     // Constants
@@ -56,6 +58,7 @@ public final class HistoryEventDAO implements IHistoryEventDAO
      * @param historyEvent
      *            The historyEvent object
      */
+    @Override
     public void insert( HistoryEvent historyEvent )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
@@ -77,6 +80,7 @@ public final class HistoryEventDAO implements IHistoryEventDAO
      * @param nDocumentId
      *            The id of the document
      */
+    @Override
     public void delete( int nDocumentId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -94,6 +98,7 @@ public final class HistoryEventDAO implements IHistoryEventDAO
      * @param nDocumentId
      *            The document Id
      */
+    @Override
     public List<HistoryEvent> selectEventListByDocument( int nDocumentId )
     {
         List<HistoryEvent> listHistoryEvents = new ArrayList<>( );
@@ -125,6 +130,7 @@ public final class HistoryEventDAO implements IHistoryEventDAO
      * @param strUserId
      *            The UserId
      */
+    @Override
     public Collection<HistoryEvent> selectEventListByUser( String strUserId )
     {
         Collection<HistoryEvent> listHistoryEvents = new ArrayList<>( );

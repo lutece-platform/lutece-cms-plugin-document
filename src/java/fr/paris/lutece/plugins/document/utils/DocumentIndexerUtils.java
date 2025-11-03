@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.document.utils;
 
 import fr.paris.lutece.portal.business.event.ResourceEvent;
 import fr.paris.lutece.portal.business.indexeraction.IndexerAction;
-import fr.paris.lutece.portal.service.event.ResourceEventManager;
+import jakarta.enterprise.inject.spi.CDI;
 
 
 /**
@@ -47,7 +47,7 @@ public final class DocumentIndexerUtils
 {
     // Indexed resource type name
     public static final String CONSTANT_TYPE_RESOURCE = "DOCUMENT_DOCUMENT";
-
+    
     /**
      * Private constructor
      */
@@ -63,7 +63,7 @@ public final class DocumentIndexerUtils
      */
     public static void addIndexerAction( String strIdResource, int nIdTask, int nIdPortlet )
     {
-        ResourceEvent event = new ResourceEvent(  );
+        ResourceEvent event = new ResourceEvent( );
         event.setIdResource( String.valueOf( strIdResource ) );
         event.setTypeResource( CONSTANT_TYPE_RESOURCE );
         event.setIdPortlet( nIdPortlet );
@@ -71,21 +71,10 @@ public final class DocumentIndexerUtils
         switch ( nIdTask )
         {
             case IndexerAction.TASK_CREATE:
-                ResourceEventManager.fireAddedResource( event );
-
-                break;
-
             case IndexerAction.TASK_MODIFY:
-                ResourceEventManager.fireUpdatedResource( event );
-
-                break;
-
             case IndexerAction.TASK_DELETE:
-                ResourceEventManager.fireDeletedResource( event );
 
-                break;
-
-            default:
+                CDI.current( ).getBeanManager( ).getEvent( ).fire( event );
                 break;
         }
     }

@@ -37,8 +37,8 @@ import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.util.xml.XmlUtil;
-
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class represents business objects ArticlesList Portlet
@@ -57,12 +57,14 @@ public class DocumentListPortlet extends Portlet
     private int _nPortletId;
     private int [ ] _nArrayIdCategory;
 
+	private static DocumentListPortletHome _portletHome = CDI.current( ).select( DocumentListPortletHome.class ).get( );
+    
     /**
      * Sets the identifier of the portlet type to the value specified in the ArticlesListPortletHome class
      */
     public DocumentListPortlet( )
     {
-        setPortletTypeId( DocumentListPortletHome.getInstance( ).getPortletTypeId( ) );
+        setPortletTypeId( _portletHome.getPortletTypeId( ) );
     }
 
     /**
@@ -77,7 +79,9 @@ public class DocumentListPortlet extends Portlet
         StringBuffer strXml = new StringBuffer( );
         XmlUtil.beginElement( strXml, TAG_DOCUMENT_LIST_PORTLET );
 
-        for ( Document document : PublishingService.getInstance( ).getPublishedDocumentsByPortletId( getId( ) ) )
+        PublishingService publishingService = CDI.current( ).select( PublishingService.class ).get( );
+        
+        for ( Document document : publishingService.getPublishedDocumentsByPortletId( getId( ) ) )
         {
             if ( document.isValid( ) ) // to have only the valid documents
             {
@@ -109,7 +113,7 @@ public class DocumentListPortlet extends Portlet
      */
     public void update( )
     {
-        DocumentListPortletHome.getInstance( ).update( this );
+    	_portletHome.update( this );
     }
 
     /**
@@ -117,7 +121,7 @@ public class DocumentListPortlet extends Portlet
      */
     public void remove( )
     {
-        DocumentListPortletHome.getInstance( ).remove( this );
+    	_portletHome.remove( this );
     }
 
     /**

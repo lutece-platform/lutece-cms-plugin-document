@@ -37,11 +37,13 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@ApplicationScoped
 public class DocumentPortletDAO implements IDocumentPortletDAO
 {
     private static final String SQL_QUERY_INSERT = "INSERT INTO document_portlet ( id_portlet , code_document_type ) VALUES ( ? , ? )";
@@ -74,6 +76,7 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
      * @param portlet
      *            the instance of the Portlet object to insert
      */
+    @Override
     public void insert( Portlet portlet )
     {
         DocumentPortlet p = (DocumentPortlet) portlet;
@@ -119,6 +122,7 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
      * @param nPortletId
      *            the portlet identifier
      */
+    @Override
     public void delete( int nPortletId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -172,6 +176,7 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
      *            The Portlet identifier
      * @return the DocumentPortlet object
      */
+    @Override
     public Portlet load( int nPortletId )
     {
         DocumentPortlet portlet = new DocumentPortlet( );
@@ -227,6 +232,7 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
      * @param portlet
      *            A portlet
      */
+    @Override
     public void store( Portlet portlet )
     {
         DocumentPortlet p = (DocumentPortlet) portlet;
@@ -253,6 +259,7 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
      *            the order of the portlets
      * @return A collection of referenceItem
      */
+    @Override
     public Collection<ReferenceItem> selectByDocumentOdAndDocumentType( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder,
             PortletFilter pFilter )
     {
@@ -316,6 +323,7 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
      *            The identifier of the document
      * @return true if the portlet is alias, false otherwise
      */
+    @Override
     public boolean checkIsAliasPortlet( int nPortletId )
     {
         boolean bIsAlias = false;
@@ -336,6 +344,7 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
      *
      * {@inheritDoc}
      */
+    @Override
     public List<Integer> selectPortletsByDocumentId( int nDocumentId )
     {
         List<Integer> list = new ArrayList<>( );

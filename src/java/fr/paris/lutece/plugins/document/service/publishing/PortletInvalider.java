@@ -35,41 +35,88 @@ package fr.paris.lutece.plugins.document.service.publishing;
 
 import fr.paris.lutece.plugins.document.business.portlet.DocumentPortletHome;
 import fr.paris.lutece.plugins.document.service.DocumentEvent;
-import fr.paris.lutece.plugins.document.service.DocumentEventListener;
 import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Named;
+import jakarta.servlet.ServletContext;
 
 import java.util.List;
-
 
 /**
  * PortletInvalider
  */
-public class PortletInvalider implements PublishingEventListener, DocumentEventListener
+@ApplicationScoped
+@Named( "document.PortletInvalider" )
+public class PortletInvalider
 {
+	
     /**
-     * Invalidate portlet on publishing events
-     * @param event The event to process
+     * Observe publishing events via CDI
+     * @param event The publishing event
      */
-    public void processPublishingEvent( PublishingEvent event )
+    public void onPublishingEvent(@Observes PublishingEvent event)
     {
-        int nPortletId = event.getPortletId(  );
-        PortletHome.invalidate( nPortletId );
+        processPublishingEvent(event);
     }
-
+    
     /**
-     *
-     *{@inheritDoc}
+     * Observe document events via CDI
+     * @param event The document event
+     * @throws DocumentException if error occurs
      */
-    public void processDocumentEvent( DocumentEvent event )
-        throws DocumentException
+    public void onDocumentEvent(@Observes DocumentEvent event) throws DocumentException
     {
-        List<Integer> listPortletIds = DocumentPortletHome.findPortletForDocument( event.getDocument(  ).getId(  ) );
-
-        // invalidating all portlets
-        for ( int nPortletId : listPortletIds )
-        {
-            PortletHome.invalidate( nPortletId );
-        }
+        processDocumentEvent(event);
     }
+    
+	/**
+	 * Invalidate portlet on publishing events
+	 * 
+	 * @param event The event to process
+	 */
+	public void processPublishingEvent( PublishingEvent event )
+	{
+		int nPortletId = event.getPortletId( );
+		PortletHome.invalidate( nPortletId );
+	}
+
+	/**
+	 *
+	 * {@inheritDoc}
+	 */
+	public void processDocumentEvent( DocumentEvent event )
+			throws DocumentException
+	{
+		List < Integer > listPortletIds = DocumentPortletHome.findPortletForDocument( event.getDocument( ).getId( ) );
+
+		// invalidating all portlets
+		for( int nPortletId : listPortletIds )
+		{
+			PortletHome.invalidate( nPortletId );
+		}
+	}
+
+	/**
+	 * This method observes the initialization of the {@link ApplicationScoped}
+	 * context.
+	 * It ensures that this CDI beans are instantiated at the application startup.
+	 *
+	 * <p>
+	 * This method is triggered automatically by CDI when the
+	 * {@link ApplicationScoped} context is initialized,
+	 * which typically occurs during the startup of the application server.
+	 * </p>
+	 *
+	 * @param context the {@link ServletContext} that is initialized. This parameter
+	 *                is observed
+	 *                and injected automatically by CDI when the
+	 *                {@link ApplicationScoped} context is initialized.
+	 */
+	public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context )
+	{
+		// This method is intentionally left empty to trigger CDI bean instantiation
+	}
 }

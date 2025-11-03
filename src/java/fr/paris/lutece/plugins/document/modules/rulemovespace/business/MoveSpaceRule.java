@@ -40,7 +40,6 @@ import fr.paris.lutece.plugins.document.service.DocumentEvent;
 import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.plugins.document.service.DocumentService;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
-import fr.paris.lutece.plugins.document.service.spaces.SpaceRemovalListenerService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.i18n.I18nService;
@@ -48,9 +47,13 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.html.HtmlTemplate;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -60,8 +63,12 @@ import java.util.Map;
 /**
  * This rule lets move a document from a space to another when the document's state is changing
  */
-public class MoveSpaceRule extends AbstractRule
+@Dependent
+@Named("document.MoveSpaceRule")
+public class MoveSpaceRule extends AbstractRule implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     private static final String TEMPLATE_CREATE_RULE = "/admin/plugins/document/modules/rulemovespace/create_rule_move_space.html";
     private static final String MARK_STATES_LIST = "states_list";
     private static final String MARK_STATE_ID = "id_state";
@@ -79,25 +86,26 @@ public class MoveSpaceRule extends AbstractRule
     private static final String PROPERTY_RULE_UNKNOWN_ERROR = "module.document.rulemovespace.message.create_rule_move_space.unknownError";
     private static final String PROPERTY_RULE_NAME = "module.document.rulemovespace.ruleName";
     private static String[] _attributes = { PARAMETER_SPACE_SOURCE_ID, PARAMETER_SPACE_DESTINATION_ID, PARAMETER_STATE_ID };
-    private static MoveSpaceSpaceRemovalListener _listenerSpaces;
+    
+    @Inject
+    private DocumentService _documentService;
+    
+    @Inject
+    private DocumentSpacesService _documentSpacesService;
 
     /**
      * Initialize the rule
      */
+    @Override
     public void init(  )
     {
-        // Create removal listeners and register them
-        if ( _listenerSpaces == null )
-        {
-            _listenerSpaces = new MoveSpaceSpaceRemovalListener(  );
-            SpaceRemovalListenerService.getService(  ).registerListener( _listenerSpaces );
-        }
     }
 
     /**
      * Gets the Rule name key
      * @return The Rule name key
      */
+    @Override
     public String getNameKey(  )
     {
         return PROPERTY_RULE_NAME;
@@ -108,6 +116,7 @@ public class MoveSpaceRule extends AbstractRule
      * @param event The document event
      * @throws DocumentException raise when error occurs in event or rule
      */
+    @Override
     public void apply( DocumentEvent event ) throws DocumentException
     {
         try
@@ -120,8 +129,7 @@ public class MoveSpaceRule extends AbstractRule
             {
                 if ( event.getSpaceId(  ) == nSourceSpace )
                 {
-                    DocumentService.getInstance(  )
-                                   .moveDocument( event.getDocument(  ), event.getUser(  ), nDestinationSpace );
+                    _documentService.moveDocument( event.getDocument(  ), event.getUser(  ), nDestinationSpace );
                 }
             }
         }
@@ -138,6 +146,7 @@ public class MoveSpaceRule extends AbstractRule
      * @param locale The current Locale
      * @return The HTML code of the form
      */
+    @Override
     public String getCreateForm( AdminUser user, Locale locale )
     {
         Map<String, Object> model = new HashMap<String, Object>(  );
@@ -167,7 +176,7 @@ public class MoveSpaceRule extends AbstractRule
                 AppLogService.error( ne );
             }
 
-            strPathSpaceSource = DocumentSpacesService.getInstance(  ).getLabelSpacePath( nIdSpaceSource, user );
+            strPathSpaceSource = _documentSpacesService.getLabelSpacePath( nIdSpaceSource, user );
             model.put( MARK_SPACE_SOURCE_PATH, strPathSpaceSource );
         }
 
@@ -186,7 +195,7 @@ public class MoveSpaceRule extends AbstractRule
                 AppLogService.error( ne );
             }
 
-            strPathSpaceDestination = DocumentSpacesService.getInstance(  ).getLabelSpacePath( nIdSpaceDestination, user );
+            strPathSpaceDestination = _documentSpacesService.getLabelSpacePath( nIdSpaceDestination, user );
             model.put( MARK_SPACE_DESTINATION_PATH, strPathSpaceDestination );
         }
 
@@ -200,17 +209,18 @@ public class MoveSpaceRule extends AbstractRule
      * @param user the current user
      * @return true if the user is authorized to view the rule
      */
+    @Override
     public boolean isAuthorized( AdminUser user )
     {
         int nSourceSpaceId = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
         int nDestinationSpaceId = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_DESTINATION_ID ) );
 
-        if ( !DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( nSourceSpaceId, user ) )
+        if ( !_documentSpacesService.isAuthorizedViewByWorkgroup( nSourceSpaceId, user ) )
         {
             return false;
         }
 
-        if ( !DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( nDestinationSpaceId, user ) )
+        if ( !_documentSpacesService.isAuthorizedViewByWorkgroup( nDestinationSpaceId, user ) )
         {
             return false;
         }
@@ -223,6 +233,7 @@ public class MoveSpaceRule extends AbstractRule
      *
      * @return null if rule is valid, message if rule not valid
      */
+    @Override
     public String validateRule(  )
     {
         String strSourceSpaceId = getAttribute( PARAMETER_SPACE_SOURCE_ID );
@@ -253,6 +264,7 @@ public class MoveSpaceRule extends AbstractRule
      * Gets all attributes of the rule
      * @return attributes of the rule
      */
+    @Override
     public String[] getAttributesList(  )
     {
         return _attributes;
@@ -262,13 +274,13 @@ public class MoveSpaceRule extends AbstractRule
      * Gets the explicit text of the rule
      * @return The text of the rule
      */
+    @Override
     public String getRule(  )
     {
         int nSourceSpaceId = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
-        String strSourceSpace = DocumentSpacesService.getInstance(  ).getLabelSpacePath( nSourceSpaceId, getUser(  ) );
+        String strSourceSpace = _documentSpacesService.getLabelSpacePath( nSourceSpaceId, getUser(  ) );
         int nDestinationSpaceId = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_DESTINATION_ID ) );
-        String strDestinationSpace = DocumentSpacesService.getInstance(  )
-                                                          .getLabelSpacePath( nDestinationSpaceId, getUser(  ) );
+        String strDestinationSpace = _documentSpacesService.getLabelSpacePath( nDestinationSpaceId, getUser(  ) );
         int nStateId = IntegerUtils.convert( getAttribute( PARAMETER_STATE_ID ) );
         DocumentState state = DocumentStateHome.findByPrimaryKey( nStateId );
         String strState = StringUtils.EMPTY;

@@ -1,4 +1,6 @@
-<jsp:include page="../../insert/InsertServiceHeader.jsp" />
-<jsp:useBean id="documentServiceJspBean" scope="session" class="fr.paris.lutece.plugins.document.web.DocumentServiceJspBean" />
+<%@ page errorPage="../../ErrorPage.jsp" %>
 
-<% response.sendRedirect( documentServiceJspBean.doSelectPortlet( request ) );%>
+<%@page import="fr.paris.lutece.plugins.document.web.DocumentServiceJspBean"%>
+
+${ documentServiceJspBean.init( pageContext.request ) }
+${ pageContext.response.sendRedirect( documentServiceJspBean.doSelectPortlet( pageContext.request ) ) }

@@ -42,11 +42,14 @@ import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.search.IndexationService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -70,9 +73,7 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.NIOFSDirectory;
-import org.apache.lucene.util.Version;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -91,22 +92,32 @@ import java.util.Locale;
 /**
  * DocumentSearchService
  */
+@ApplicationScoped
+@Named( "document.DocSearchService" )
 public class DocSearchService
 {
     // Constants corresponding to the variables defined in the lutece.properties file
     public static final String PATH_INDEX = "document.docsearch.lucene.indexPath";
     public static final String PARAM_FORCING = "forcing";
-    public static final String PATTERN_DATE = "dd/MM/yy";
+    public static final String PATTERN_DATE = "yyyy-MM-dd HH:mm:ss";
+    public static final String PATTERN_DATE_IN_DATABASE = "dd/MM/yyyy";
     private static final String PROPERTY_ANALYSER_CLASS_NAME = "document.docsearch.lucene.analyser.className";
     private static final int MAX_RESPONSES = 1000000;
     private static String _strIndex;
+    
     private static Analyzer _analyzer;
+    
     private static IndexSearcher _searcher;
-    private static DocSearchService _singleton;
-    private static IDocSearchIndexer _indexer;
+    
+    @Inject
+    @Named("document.DefaultDocSearchIndexer")
+    private IDocSearchIndexer _indexer;
+    
+    @Inject
+    private DocumentSpacesService _documentSpacesService;
 
     /** Creates a new instance of DocumentSearchService */
-    private DocSearchService(  )
+    public DocSearchService(  )
     {
         // Read configuration properties
         _strIndex = AppPathService.getPath( PATH_INDEX );
@@ -123,8 +134,6 @@ public class DocSearchService
             throw new AppException( "Analyser class name not found in lucene.properties", null );
         }
 
-        _indexer = SpringContextService.getBean( "document.docSearchIndexer" );
-
         try
         {
             _analyzer = (Analyzer) Class.forName( strAnalyserClassName ).newInstance(  );
@@ -136,17 +145,21 @@ public class DocSearchService
     }
 
     /**
-     * The singleton
-     * @return instance of DocSearchService
+     * Returns the unique instance of the {@link DocSearchService} service.
+     * 
+     * <p>This method is deprecated and is provided for backward compatibility only. 
+     * For new code, use dependency injection with {@code @Inject} to obtain the 
+     * {@link DocSearchService} instance instead.</p>
+     * 
+     * @return The unique instance of {@link DocSearchService}.
+     * 
+     * @deprecated Use {@code @Inject} to obtain the {@link DocSearchService} 
+     * instance. This method will be removed in future versions.
      */
+    @Deprecated( since = "8.0", forRemoval = true )
     public static DocSearchService getInstance(  )
     {
-        if ( _singleton == null )
-        {
-            _singleton = new DocSearchService(  );
-        }
-
-        return _singleton;
+        return CDI.current( ).select( DocSearchService.class ).get( );
     }
 
     /**
@@ -378,7 +391,7 @@ public class DocSearchService
                     _analyzer );
             Query query = parser.parse( ( StringUtils.isNotBlank( strQuery ) ) ? strQuery : "*:*" );
 
-            List<DocumentSpace> listSpaces = DocumentSpacesService.getInstance(  ).getUserAllowedSpaces( user );
+            List<DocumentSpace> listSpaces = _documentSpacesService.getUserAllowedSpaces( user );
             Query[] filters = new Query[listSpaces.size(  )];
             int nIndex = 0;
 
@@ -601,16 +614,16 @@ public class DocSearchService
      * @param date the date
      * @return formatedDate the formated date
      */
-    private String formatDate( String date )
+    private String formatDate( String inputDate )
     {
-        DateFormat dateFormat = new SimpleDateFormat( PATTERN_DATE, Locale.FRENCH );
-        dateFormat.setLenient( false );
-
-        Date formatedDate;
+    	DateFormat inputFormat = new SimpleDateFormat( PATTERN_DATE, Locale.FRENCH );
+    	DateFormat outputFormat = new SimpleDateFormat( PATTERN_DATE_IN_DATABASE, Locale.FRENCH );
+    	inputFormat.setLenient( false );
 
         try
         {
-            formatedDate = dateFormat.parse( date.trim(  ) );
+        	Date parsedDate = inputFormat.parse( inputDate.trim( ) );
+            return outputFormat.format( parsedDate );
         }
         catch ( ParseException e )
         {
@@ -618,7 +631,5 @@ public class DocSearchService
 
             return null;
         }
-
-        return dateFormat.format( formatedDate );
     }
 }

@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.business;
 
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ import java.util.List;
 /**
  * This class provides Data Access methods for Indexer Action objects
  */
+@ApplicationScoped
 public final class IndexerActionDAO implements IIndexerActionDAO
 {
     // Constants
@@ -60,6 +62,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#newPrimaryKey()
      */
+    @Override
     public int newPrimaryKey( )
     {
         int nKey;
@@ -83,6 +86,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#insert(fr.paris.lutece.plugins.document.business.IndexerAction)
      */
+    @Override
     public synchronized void insert( IndexerAction indexerAction )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
@@ -102,6 +106,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#load(int)
      */
+    @Override
     public IndexerAction load( int nId )
     {
         IndexerAction indexerAction = null;
@@ -127,6 +132,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#delete(int)
      */
+    @Override
     public void delete( int nId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -141,6 +147,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#delete(int)
      */
+    @Override
     public void deleteAll( )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ALL ) )
@@ -154,6 +161,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#store(fr.paris.lutece.plugins.document.business.IndexerAction)
      */
+    @Override
     public void store( IndexerAction indexerAction )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
@@ -173,6 +181,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#selectList(fr.paris.lutece.plugins.document.business.IndexerActionlFilter)
      */
+    @Override
     public List<IndexerAction> selectList( IndexerActionFilter filter )
     {
         List<IndexerAction> indexerActionList = new ArrayList<>( );

@@ -39,6 +39,7 @@
  */
 package fr.paris.lutece.plugins.document.modules.metadatadublincore.business;
 
+import org.junit.jupiter.api.Test;
 import fr.paris.lutece.test.LuteceTestCase;
 
 
@@ -66,6 +67,7 @@ public class DublinCoreMetadataTest extends LuteceTestCase
     /**
      * Test of load method, of class fr.paris.lutece.plugins.document.modules.metadatadublincore.business.DublinCoreMetadata.
      */
+    @Test
     public void testLoad(  )
     {
         System.out.println( "load" );

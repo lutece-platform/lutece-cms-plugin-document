@@ -272,6 +272,7 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
      * 
      * @return The Resource Type Code
      */
+    @Override
     public String getResourceTypeCode( )
     {
         return RESOURCE_TYPE;
@@ -282,6 +283,7 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
      * 
      * @return The resource Id of the current object
      */
+    @Override
     public String getResourceId( )
     {
         return "" + getId( );
@@ -291,6 +293,7 @@ public class DocumentSpace implements RBACResource, AdminWorkgroupResource
      *
      * @return the work group associate to the DocumentSpace
      */
+    @Override
     public String getWorkgroup( )
     {
         return _strWorkgroup;

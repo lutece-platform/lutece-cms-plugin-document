@@ -34,7 +34,7 @@
 package fr.paris.lutece.plugins.document.business.publication;
 
 import fr.paris.lutece.portal.business.portlet.Portlet;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.Collection;
 import java.util.Date;
@@ -47,7 +47,7 @@ public class DocumentPublicationHome
     /////////////////////////////////////////////////////////////////////////////////
     // Constants
     // Static variable pointed at the DAO instance
-    private static IDocumentPublicationDAO _dao = SpringContextService.getBean( "document.documentPublicationDAO" );
+    private static IDocumentPublicationDAO _dao = CDI.current( ).select( IDocumentPublicationDAO.class ).get( );
 
     /**
      * Create the documentsPublication object

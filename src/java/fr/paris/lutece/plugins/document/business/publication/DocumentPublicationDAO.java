@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.business.publication;
 
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.sql.Timestamp;
 
@@ -44,6 +45,7 @@ import java.util.Date;
 /**
  * This class provides Data Access methods for DocumentPublication objects
  */
+@ApplicationScoped
 public class DocumentPublicationDAO implements IDocumentPublicationDAO
 {
     private static final String SQL_QUERY_DELETE = " DELETE FROM document_published WHERE id_portlet = ? AND id_document = ? ";
@@ -66,6 +68,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      * @param documentPublication
      *            The document Publication object
      */
+    @Override
     public void insert( DocumentPublication documentPublication )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
@@ -86,6 +89,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      * @param documentPublication
      *            The {@link DocumentPublication} object
      */
+    @Override
     public void store( DocumentPublication documentPublication )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
@@ -108,6 +112,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      * @param nDocumentId
      *            the document identifier
      */
+    @Override
     public void delete( int nPortletId, int nDocumentId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -124,6 +129,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      * @param nPortletId
      *            the portlet identifier
      */
+    @Override
     public void deleteFromPortletId( int nPortletId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_FROM_PORTLET_ID ) )
@@ -139,6 +145,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      * @param nDocumentId
      *            the document identifier
      */
+    @Override
     public void deleteFromDocumentId( int nDocumentId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_FROM_DOCUMENT_ID ) )
@@ -160,6 +167,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      *            The document identifier
      * @return The {@link DocumentPublication} object or null if the object does not exists
      */
+    @Override
     public DocumentPublication select( int nPortletId, int nDocumentId )
     {
         DocumentPublication documentPublication = null;
@@ -189,6 +197,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      *            The portlet identifier
      * @return The {@link DocumentPublication} objects list (empty list if no objects found)
      */
+    @Override
     public Collection<DocumentPublication> selectByPortletId( int nPortletId )
     {
         Collection<DocumentPublication> listDocumentPublication = new ArrayList<>( );
@@ -218,6 +227,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      *            The document identifier
      * @return The {@link DocumentPublication} objects list (empty list if no objects found)
      */
+    @Override
     public Collection<DocumentPublication> selectByDocumentId( int nDocumentId )
     {
         Collection<DocumentPublication> listDocumentPublication = new ArrayList<>( );
@@ -249,6 +259,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      *            The status
      * @return The {@link DocumentPublication} objects list (empty list if no objects found)
      */
+    @Override
     public Collection<DocumentPublication> selectByPortletIdAndStatus( int nPortletId, int nStatus )
     {
         Collection<DocumentPublication> listDocumentPublication = new ArrayList<>( );
@@ -281,6 +292,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      *            The status
      * @return The {@link DocumentPublication} objects list (empty list if no objects found)
      */
+    @Override
     public Collection<DocumentPublication> selectByDocumentIdAndStatus( int nDocumentId, int nStatus )
     {
         Collection<DocumentPublication> listDocumentPublication = new ArrayList<>( );
@@ -313,6 +325,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      *            The status
      * @return The {@link DocumentPublication} objects {@link Collection} ordered by documentOrder ascending. The list is empty if no objects found.
      */
+    @Override
     public Collection<DocumentPublication> selectSinceDatePublishingAndStatus( Date datePublishing, int nStatus )
     {
         Collection<DocumentPublication> listDocumentPublication = new ArrayList<>( );
@@ -343,6 +356,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      *            the portlet identifer
      * @return The max order of document
      */
+    @Override
     public int selectMaxDocumentOrder( int nPortletId )
     {
         int nOrder = 0;
@@ -368,6 +382,7 @@ public class DocumentPublicationDAO implements IDocumentPublicationDAO
      *            the portlet identifier
      * @return The order of the Document
      */
+    @Override
     public int selectDocumentIdByOrder( int nDocumentOrder, int nPortletId )
     {
         // FIXME The document_order column is not a primary key, so this method have to return a collection

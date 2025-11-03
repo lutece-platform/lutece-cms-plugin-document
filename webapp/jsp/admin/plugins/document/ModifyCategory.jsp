@@ -1,10 +1,9 @@
 <%@ page errorPage="../../ErrorPage.jsp" %>
-
 <jsp:include page="../../AdminHeader.jsp" />
 
-<jsp:useBean id="category" scope="session" class="fr.paris.lutece.plugins.document.web.category.CategoryJspBean" />
+<%@page import="fr.paris.lutece.plugins.document.web.category.CategoryJspBean"%>
 
-<% category.init( request, category.RIGHT_CATEGORY_MANAGEMENT ); %>
-<%= category.getModifyCategory( request ) %>
+${ categoryJspBean.init( pageContext.request, CategoryJspBean.RIGHT_CATEGORY_MANAGEMENT ) }
+${ categoryJspBean.getModifyCategory( pageContext.request ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

@@ -34,7 +34,7 @@
 package fr.paris.lutece.plugins.document.business.category;
 
 import fr.paris.lutece.portal.service.image.ImageResource;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.Collection;
 
@@ -44,7 +44,7 @@ import java.util.Collection;
 public final class CategoryHome
 {
     // Static variable pointed at the DAO instance
-    private static ICategoryDAO _dao = SpringContextService.getBean( "document.categoryDAO" );
+    private static ICategoryDAO _dao = CDI.current( ).select( ICategoryDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated

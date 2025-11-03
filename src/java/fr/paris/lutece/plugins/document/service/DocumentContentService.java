@@ -50,6 +50,8 @@ import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.business.style.ModeHome;
 import fr.paris.lutece.portal.service.cache.ICacheKeyService;
+import fr.paris.lutece.portal.service.cache.Lutece107Cache;
+import fr.paris.lutece.portal.service.cache.LuteceCacheManager;
 import fr.paris.lutece.portal.service.content.ContentService;
 import fr.paris.lutece.portal.service.content.PageData;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
@@ -59,7 +61,6 @@ import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -71,15 +72,10 @@ import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.xml.XmlUtil;
 
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.event.CacheEventListener;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -90,16 +86,28 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
+import javax.cache.event.CacheEntryEvent;
+import javax.cache.event.CacheEntryExpiredListener;
+import javax.cache.event.CacheEntryListener;
+import javax.cache.event.CacheEntryListenerException;
+import javax.cache.event.CacheEntryRemovedListener;
+
+import jakarta.enterprise.inject.literal.NamedLiteral;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.servlet.http.HttpServletRequest;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+
+import javax.cache.configuration.Factory;
 
 
 /**
  *
  */
-public final class DocumentContentService extends ContentService implements CacheEventListener
+
+public class DocumentContentService extends ContentService
 {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     // Constants
@@ -151,10 +159,65 @@ public final class DocumentContentService extends ContentService implements Cach
     //Should be equal to PortletCacheService.CACHE_PORTLET_PREFIX without the final semicolon
     private static final String PARAMETER_PORTLET = "portlet";
     private static final String PORTLET_CACHE_KEY_SUFFIX = "[documentContentService]";
+    private static final String SERVICE_NAME_PORTLET_CACHE_KEY_SERVICE = "portletCacheKeyService";
     private boolean _bInit;
+       
+    private PublishingService _publishingService;
+    
     private PortletCacheService _cachePortlets;
-    private ICacheKeyService _cksPortlet;
+    
+    private ICacheKeyService _cksPortlet; //PortletCacheKeyService type
 
+    private Lutece107Cache<String, String> _cache;
+
+    /**
+     * Initializes the service
+     */
+    private void init(  )
+    {
+    	
+    	_publishingService = CDI.current( ).select( PublishingService.class ).get( );
+    	
+    	_cachePortlets =  CDI.current( ).select( PortletCacheService.class ).get( );
+    	
+    	_cksPortlet = CDI.current( ).select( ICacheKeyService.class, NamedLiteral.of( SERVICE_NAME_PORTLET_CACHE_KEY_SERVICE ) ).get( );   	
+    	
+    	//LuteceCache creation
+    	LuteceCacheManager cacheManager= CDI.current( ).select( LuteceCacheManager.class ).get( ); 
+    	_cache = cacheManager.createCache(  CONTENT_SERVICE_NAME, String.class, String.class );
+
+    	
+        // Initialize the cache according property value. 
+        // If the property isn't found the default is true
+        String strCache = AppPropertiesService.getProperty( PROPERTY_CACHE_ENABLED, "true" );
+
+        if ( strCache.equalsIgnoreCase( "true" ) )
+        {
+            _cache.enableCache( true );
+            
+            // Register listener avec Factory pattern comme PageCacheService
+            Factory<CacheEntryListener<String, String>> factory = 
+                new DocumentContentCacheEntryListenerFactory();
+            
+            MutableCacheEntryListenerConfiguration<String, String> listenerConfig =
+                new MutableCacheEntryListenerConfiguration<>(
+                    factory,
+                    null,
+                    false,
+                    false
+                );
+
+            _cache.registerCacheEntryListener(listenerConfig);
+        }
+        else
+        {
+            _cache.enableCache( false );
+        }
+        
+        _bInit = true;
+    }
+
+    
     /**
      * Returns the document page for a given document and a given portlet. The
      * page is built from XML data or retrieved
@@ -167,6 +230,7 @@ public final class DocumentContentService extends ContentService implements Cach
      * @throws SiteMessageException occurs when a site message need to be
      *             displayed
      */
+    @Override
     public String getPage( HttpServletRequest request, int nMode )
         throws UserNotSignedException, SiteMessageException
     {
@@ -185,7 +249,7 @@ public final class DocumentContentService extends ContentService implements Cach
         }
 
         String strKey = getKey( strDocumentId, strPortletId, strSiteLocale, nMode );
-        String strPage = (String) getFromCache( strKey );
+        String strPage = (String) _cache.get( strKey );
 
         if ( strPage == null )
         {
@@ -193,7 +257,7 @@ public final class DocumentContentService extends ContentService implements Cach
             synchronized ( strKey )
             {
                 // can be useful if an other thread had evaluate the page
-                strPage = (String) getFromCache( strKey );
+                strPage = (String) _cache.get( strKey );
 
                 // ignore CheckStyle, this double verification is useful when page cache has been created when thread is
                 // blocked on synchronized
@@ -210,7 +274,7 @@ public final class DocumentContentService extends ContentService implements Cach
 
                         if ( ( document != null ) )
                         {
-                            putInCache( strKey, strPage );
+                        	_cache.put( strKey, strPage );
                         }
                     }
                 }
@@ -226,28 +290,6 @@ public final class DocumentContentService extends ContentService implements Cach
         }
 
         return strPage;
-    }
-
-    /**
-     * Initializes the service
-     */
-    private void init(  )
-    {
-        // Initialize the cache according property value. 
-        // If the property isn't found the default is true
-        String strCache = AppPropertiesService.getProperty( PROPERTY_CACHE_ENABLED, "true" );
-
-        if ( strCache.equalsIgnoreCase( "true" ) )
-        {
-            initCache( getName(  ) );
-        }
-
-        //initCache(  ) by the core in PageService
-        _cachePortlets = SpringContextService.getBean( "portletCacheService" );
-
-        _cksPortlet = SpringContextService.getBean( "portletCacheKeyService" );
-
-        _bInit = true;
     }
 
     /**
@@ -287,8 +329,7 @@ public final class DocumentContentService extends ContentService implements Cach
         }
 
         DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
-        DocumentPublication documentPublication = PublishingService.getInstance(  )
-                                                                   .getDocumentPublication( nPortletId, nDocumentId );
+        DocumentPublication documentPublication = _publishingService.getDocumentPublication( nPortletId, nDocumentId );
 
         Map<String, Object> model = new HashMap<String, Object>(  );
 
@@ -327,16 +368,16 @@ public final class DocumentContentService extends ContentService implements Cach
             Page page = PageHome.getPage( portlet.getPageId(  ) );
             String strRole = page.getRole(  );
 
-            if ( !strRole.equals( Page.ROLE_NONE ) && SecurityService.isAuthenticationEnable(  ) )
+            if ( !strRole.equals( Page.ROLE_NONE ) && SecurityService.getInstance( ).isAuthenticationEnable( ) )
             {
-                LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
+                LuteceUser user = SecurityService.getInstance().getRegisteredUser( request );
 
-                if ( ( user == null ) && ( !SecurityService.getInstance(  ).isExternalAuthentication(  ) ) )
+                if ( ( user == null ) && ( !SecurityService.getInstance().isExternalAuthentication(  ) ) )
                 {
                     // The user is not registered and identify itself with the Portal authentication
-                    String strAccessControledTemplate = SecurityService.getInstance(  ).getAccessControledTemplate(  );
+                    String strAccessControledTemplate = SecurityService.getInstance().getAccessControledTemplate(  );
                     HashMap<String, Object> modelAccessControledTemplate = new HashMap<String, Object>(  );
-                    String strLoginUrl = SecurityService.getInstance(  ).getLoginPageUrl(  );
+                    String strLoginUrl = SecurityService.getInstance().getLoginPageUrl(  );
                     modelAccessControledTemplate.put( MARK_URL_LOGIN, strLoginUrl );
 
                     HtmlTemplate tAccessControled = AppTemplateService.getTemplate( strAccessControledTemplate,
@@ -346,10 +387,10 @@ public final class DocumentContentService extends ContentService implements Cach
                     return PortalService.buildPageContent( data, nMode, request );
                 }
 
-                if ( !SecurityService.getInstance(  ).isUserInRole( request, strRole ) )
+                if ( !SecurityService.getInstance().isUserInRole( request, strRole ) )
                 {
                     // The user doesn't have the correct role
-                    String strAccessDeniedTemplate = SecurityService.getInstance(  ).getAccessDeniedTemplate(  );
+                    String strAccessDeniedTemplate = SecurityService.getInstance().getAccessDeniedTemplate(  );
                     HtmlTemplate tAccessDenied = AppTemplateService.getTemplate( strAccessDeniedTemplate,
                             request.getLocale(  ) );
                     data.setContent( tAccessDenied.getHtml(  ) );
@@ -418,6 +459,7 @@ public final class DocumentContentService extends ContentService implements Cach
      * @param request The HTTP request
      * @return true if this ContentService should handle this request
      */
+    @Override
     public boolean isInvoked( HttpServletRequest request )
     {
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
@@ -437,6 +479,7 @@ public final class DocumentContentService extends ContentService implements Cach
      *
      * @return The name as a String
      */
+    @Override
     public String getName(  )
     {
         return CONTENT_SERVICE_NAME;
@@ -529,13 +572,13 @@ public final class DocumentContentService extends ContentService implements Cach
                 htParamRequest.put( MARKER_TARGET, TARGET_TOP );
             }
 
-            if ( _cachePortlets.isCacheEnable(  ) )
+            if ( _cachePortlets !=null && _cachePortlets.isCacheEnable(  ) )
             {
                 LuteceUser user = null;
 
                 if ( SecurityService.isAuthenticationEnable(  ) )
                 {
-                    user = SecurityService.getInstance(  ).getRegisteredUser( request );
+                    user = SecurityService.getInstance().getRegisteredUser( request );
                 }
 
                 boolean bCanBeCached = ( user != null ) ? ( portlet.canBeCachedForConnectedUsers(  ) )
@@ -551,7 +594,7 @@ public final class DocumentContentService extends ContentService implements Cach
                             PORTLET_CACHE_KEY_SUFFIX );
 
                     // get portlet from cache
-                    String strPortlet = (String) _cachePortlets.getFromCache( strKey );
+                    String strPortlet = (String) _cachePortlets.get( strKey );
 
                     if ( strPortlet == null )
                     {
@@ -560,7 +603,7 @@ public final class DocumentContentService extends ContentService implements Cach
                         {
                             // can be useful if an other thread had evaluate the
                             // porlet
-                            strPortlet = (String) _cachePortlets.getFromCache( strKey );
+                            strPortlet = (String) _cachePortlets.get( strKey );
 
                             // ignore checkstyle, this double verification is useful
                             // when page cache has been created when thread is
@@ -575,7 +618,7 @@ public final class DocumentContentService extends ContentService implements Cach
                                 strPortlet = xmlTransformerService.transformBySourceWithXslCache( strXml, xslSource,
                                         strXslUniquePrefix, htParamRequest, outputProperties );
 
-                                _cachePortlets.putInCache( strKey, strPortlet );
+                                _cachePortlets.put( strKey, strPortlet );
                             }
                         }
                     }
@@ -623,12 +666,11 @@ public final class DocumentContentService extends ContentService implements Cach
             for ( Document relatedDocument : listRelatedDocument )
             {
                 // Get list of portlets for each document
-                for ( Portlet portlet : PublishingService.getInstance(  )
-                                                         .getPortletsByDocumentId( Integer.toString( 
+                for ( Portlet portlet : _publishingService.getPortletsByDocumentId( Integer.toString( 
                             relatedDocument.getId(  ) ) ) )
                 {
                     // Check if document and portlet are published and document is not the input document 
-                    if ( ( PublishingService.getInstance(  ).isPublished( relatedDocument.getId(  ), portlet.getId(  ) ) ) &&
+                    if ( ( _publishingService.isPublished( relatedDocument.getId(  ), portlet.getId(  ) ) ) &&
                             ( portlet.getStatus(  ) == Portlet.STATUS_PUBLISHED ) && ( relatedDocument.isValid(  ) ) &&
                             ( relatedDocument.getId(  ) != document.getId(  ) ) )
                     {
@@ -653,67 +695,6 @@ public final class DocumentContentService extends ContentService implements Cach
         {
             return StringUtils.EMPTY;
         }
-    }
-
-    /**
-     * @see net.sf.ehcache.event.CacheEventListener#dispose()
-     */
-    public void dispose(  )
-    {
-    }
-
-    /**
-     * @see net.sf.ehcache.event.CacheEventListener#notifyElementEvicted(net.sf.ehcache.Ehcache,
-     *      net.sf.ehcache.Element)
-     */
-    public void notifyElementEvicted( Ehcache cache, Element element )
-    {
-        _keyMemory.remove( element.getKey(  ) );
-    }
-
-    /**
-     * @see net.sf.ehcache.event.CacheEventListener#notifyElementExpired(net.sf.ehcache.Ehcache,
-     *      net.sf.ehcache.Element)
-     */
-    public void notifyElementExpired( Ehcache cache, Element element )
-    {
-        _keyMemory.remove( element.getKey(  ) );
-    }
-
-    /**
-     * @see net.sf.ehcache.event.CacheEventListener#notifyElementPut(net.sf.ehcache.Ehcache,
-     *      net.sf.ehcache.Element)
-     */
-    public void notifyElementPut( Ehcache cache, Element element )
-        throws CacheException
-    {
-    }
-
-    /**
-     * @see net.sf.ehcache.event.CacheEventListener#notifyElementRemoved(net.sf.ehcache.Ehcache,
-     *      net.sf.ehcache.Element)
-     */
-    public void notifyElementRemoved( Ehcache cache, Element element )
-        throws CacheException
-    {
-        _keyMemory.remove( element.getKey(  ) );
-    }
-
-    /**
-     * @see net.sf.ehcache.event.CacheEventListener#notifyElementUpdated(net.sf.ehcache.Ehcache,
-     *      net.sf.ehcache.Element)
-     */
-    public void notifyElementUpdated( Ehcache cache, Element element )
-        throws CacheException
-    {
-    }
-
-    /**
-     * @see net.sf.ehcache.event.CacheEventListener#notifyRemoveAll(net.sf.ehcache.Ehcache)
-     */
-    public void notifyRemoveAll( Ehcache cache )
-    {
-        _keyMemory.clear(  );
     }
 
     /**
@@ -758,14 +739,8 @@ public final class DocumentContentService extends ContentService implements Cach
         return strPortletKey;
     }
 
-    /**
-     * @see java.lang.Object#clone()
-     */
-    @Override
-    public Object clone(  )
-    {
-        return new DocumentContentService(  );
-    }
+
+
 
     /**
      * Remove a document from the cache
@@ -774,15 +749,61 @@ public final class DocumentContentService extends ContentService implements Cach
      */
     public void removeFromCache( String strDocumentId, String strPortletId )
     {
-        if ( getCache(  ) != null )
+        if ( _cache != null && _cache.isCacheEnable( ) )
         {
             String strKey = getKey( strDocumentId, strPortletId, LOCALE_FR, PortalJspBean.MODE_HTML );
 
-            getCache(  ).remove( strKey );
+            _cache.remove( strKey );
 
             strKey = getKey( strDocumentId, strPortletId, LOCALE_EN, PortalJspBean.MODE_HTML );
 
-            getCache(  ).remove( strKey );
+            _cache.remove( strKey );
         }
     }
+    
+	private static class DocumentContentCacheEntryListener<K, V> implements CacheEntryRemovedListener<K, V>, CacheEntryExpiredListener<K, V>, Serializable
+	{
+
+		@Override
+		public void onExpired( Iterable < CacheEntryEvent < ? extends K, ? extends V > > events )
+				throws CacheEntryListenerException
+		{
+			for (CacheEntryEvent<? extends K, ? extends V> event : events)
+	        {
+				_keyMemory.remove( (String) event.getKey( ) );
+	        }
+		}
+
+		@Override
+		public void onRemoved( Iterable < CacheEntryEvent < ? extends K, ? extends V > > events )
+				throws CacheEntryListenerException
+		{
+			for ( CacheEntryEvent<? extends K, ? extends V> event : events )
+            {
+                _keyMemory.remove( (String) event.getKey( ) );
+            }
+		}
+		
+	}
+	
+	
+	private static class DocumentContentCacheEntryListenerFactory implements Factory < CacheEntryListener < String, String > >
+	{
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public CacheEntryListener < String, String > create( )
+		{
+			return new DocumentContentCacheEntryListener <>( );
+		}
+	}
+	
+	public void loachInit( )
+	{
+		if( !_bInit )
+		{
+			init( );
+		}
+	}
 }

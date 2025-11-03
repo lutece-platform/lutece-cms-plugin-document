@@ -42,285 +42,309 @@ import fr.paris.lutece.portal.service.image.ImageResourceProvider;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.web.constants.Parameters;
 import fr.paris.lutece.util.url.UrlItem;
+import fr.paris.lutece.api.user.User;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Named;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
- *
- * This classe provide services for Category
- *
+ * This class provides services for Category
  */
+@ApplicationScoped
+@Named( "document.CategoryService" )
 public class CategoryService implements ImageResourceProvider
 {
-    private static CategoryService _singleton = new CategoryService(  );
-    private static final String IMAGE_RESOURCE_TYPE_ID = "icon_category";
+	private static final String IMAGE_RESOURCE_TYPE_ID = "icon_category";
 
-    /**
-     * Creates a new instance of CategoryService
+	/**
+	 * Initialize the service - register as image provider
+	 */
+	@PostConstruct
+	public void init( )
+	{
+		ImageResourceManager.registerProvider( this );
+	}
+
+	/**
+     * Returns the unique instance of the {@link CategoryService} service.
+     * 
+     * <p>This method is deprecated and is provided for backward compatibility only. 
+     * For new code, use dependency injection with {@code @Inject} to obtain the 
+     * {@link CategoryService} instance instead.</p>
+     * 
+     * @return The unique instance of {@link CategoryService}.
+     * 
+     * @deprecated Use {@code @Inject} to obtain the {@link CategoryService} 
+     * instance. This method will be removed in future versions.
      */
-    CategoryService(  )
-    {
-        ImageResourceManager.registerProvider( this );
-    }
+	@Deprecated( since = "8.0", forRemoval = true )
+	public static CategoryService getInstance( )
+	{
+		return CDI.current( ).select( CategoryService.class ).get( );
+	}
 
-    /**
-     * Get the unique instance of the service
-     *
-     * @return The unique instance
-     */
-    public static CategoryService getInstance(  )
-    {
-        return _singleton;
-    }
+	/**
+	 * Get the resource for image
+	 * 
+	 * @param nIdCategory The identifier of Category object
+	 * @return The ImageResource
+	 */
+	@Override
+	public ImageResource getImageResource( int nIdCategory )
+	{
+		return CategoryHome.getImageResource( nIdCategory );
+	}
 
-    /**
-     * Get the resource for image
-     * @param nIdCategory The identifier of Category object
-     * @return The ImageResource
-     */
-    public ImageResource getImageResource( int nIdCategory )
-    {
-        return CategoryHome.getImageResource( nIdCategory );
-    }
+	/**
+	 * Get the type of resource
+	 * 
+	 * @return The type of resource
+	 */
+	@Override
+	public String getResourceTypeId( )
+	{
+		return IMAGE_RESOURCE_TYPE_ID;
+	}
 
-    /**
-     * Get the type of resource
-     * @return The type of resource
-     */
-    public String getResourceTypeId(  )
-    {
-        return IMAGE_RESOURCE_TYPE_ID;
-    }
+	/**
+	 * Get all Category converted to CategoryDisplay objects
+	 * 
+	 * @param user The current user
+	 * @return The Collection of CategoryDisplay
+	 */
+	public Collection < CategoryDisplay > getAllCategoriesDisplay( AdminUser user )
+	{
+		Collection < Category > listCategory = CategoryHome.findAll( );
+		listCategory = AdminWorkgroupService.getAuthorizedCollection( listCategory, ( User ) user );
 
-    /**
-     * Get all Category converted to CategoryDisplay objects
-     * @param user The current user
-     * @return The Collection of CategoryDisplay
-     */
-    public static Collection<CategoryDisplay> getAllCategoriesDisplay( AdminUser user )
-    {
-        Collection<Category> listCategory = CategoryHome.findAll(  );
-        listCategory = AdminWorkgroupService.getAuthorizedCollection( listCategory, user );
+		Collection < CategoryDisplay > listCategoryDisplay = new ArrayList <>( );
 
-        Collection<CategoryDisplay> listCategoryDisplay = new ArrayList<CategoryDisplay>(  );
+		for( Category category : listCategory )
+		{
+			CategoryDisplay categoryDisplay = createCategoryDisplay( category );
+			categoryDisplay.setAssigned( false );
+			listCategoryDisplay.add( categoryDisplay );
+		}
 
-        for ( Category category : listCategory )
-        {
-            CategoryDisplay categoryDisplay = _singleton.new CategoryDisplay(  );
-            categoryDisplay.setCategory( category );
-            if(category.getIconContent() != null)
-            {
-            	categoryDisplay.setIconUrl( getResourceImageCategory( categoryDisplay.getCategory(  ).getId(  ) ) );
-            }
-            else
-            {
-            	categoryDisplay.setIconUrl( null );
-            }
-            categoryDisplay.setCountLinkedDocuments( CategoryHome.findCountIdDocuments( category.getId(  ) ) );
-            categoryDisplay.setAssigned( false );
-            listCategoryDisplay.add( categoryDisplay );
-        }
+		return listCategoryDisplay;
+	}
 
-        return listCategoryDisplay;
-    }
+	/**
+	 * Get all Category converted to CategoryDisplay objects and tagged with the
+	 * assigned value when lists of categories matched
+	 * 
+	 * @param arrayIdCategory The array of Id categories
+	 * @param user            The current user
+	 * @return The Collection of CategoryDisplay
+	 */
+	public Collection < CategoryDisplay > getAllCategoriesDisplay( int [ ] arrayIdCategory, AdminUser user )
+	{
+		Collection < Category > listCategory = CategoryHome.findAll( );
+		listCategory = AdminWorkgroupService.getAuthorizedCollection( listCategory, ( User ) user );
 
-    /**
-     * Get all Category converted to CategoryDisplay objects and tagged with the
-     * assigned value when lists of categories matched
-     * @param arrayIdCategory The array of Id categories
-     * @param user The current user
-     * @return The Collection of CategoryDisplay
-     */
-    public static Collection<CategoryDisplay> getAllCategoriesDisplay( int[] arrayIdCategory, AdminUser user )
-    {
-        Collection<Category> listCategory = CategoryHome.findAll(  );
-        listCategory = AdminWorkgroupService.getAuthorizedCollection( listCategory, user );
+		Collection < CategoryDisplay > listCategoryDisplay = new ArrayList <>( );
 
-        Collection<CategoryDisplay> listCategoryDisplay = new ArrayList<CategoryDisplay>(  );
+		for( Category category : listCategory )
+		{
+			CategoryDisplay categoryDisplay = createCategoryDisplay( category );
+			categoryDisplay.setAssigned( false );
 
-        for ( Category category : listCategory )
-        {
-            CategoryDisplay categoryDisplay = _singleton.new CategoryDisplay(  );
-            categoryDisplay.setCategory( category );
-            if(category.getIconContent() != null)
-            {
-            	categoryDisplay.setIconUrl( getResourceImageCategory( categoryDisplay.getCategory(  ).getId(  ) ) );
-            }
-            else
-            {
-            	categoryDisplay.setIconUrl( null );
-            }
-            categoryDisplay.setCountLinkedDocuments( CategoryHome.findCountIdDocuments( category.getId(  ) ) );
-            categoryDisplay.setAssigned( false );
+			for( int nIdCategory : arrayIdCategory )
+			{
+				if( nIdCategory == category.getId( ) )
+				{
+					categoryDisplay.setAssigned( true );
+					break;
+				}
+			}
 
-            for ( int nIdCategory : arrayIdCategory )
-            {
-                if ( nIdCategory == category.getId(  ) )
-                {
-                    categoryDisplay.setAssigned( true );
-                }
-            }
+			listCategoryDisplay.add( categoryDisplay );
+		}
 
-            listCategoryDisplay.add( categoryDisplay );
-        }
+		return listCategoryDisplay;
+	}
 
-        return listCategoryDisplay;
-    }
+	/**
+	 * Get all Category converted to CategoryDisplay objects and tagged with the
+	 * assigned value when lists of categories matched
+	 * 
+	 * @param listCategory The list of categories
+	 * @param user         The current user
+	 * @return A Collection of CategoryDisplay object
+	 */
+	public Collection < CategoryDisplay > getAllCategoriesDisplay( List < Category > listCategory, AdminUser user )
+	{
+		int [ ] arrayCategory = new int [ listCategory.size( ) ];
+		int i = 0;
 
-    /**
-     * Get all Category converted to CategoryDisplay objects and tagged with the
-     * assigned value when lists of categories matched
-     * @param listCategory The list of ca t
-     * @param user The current user
-     * @return A Collection of CategoryDisplay object
-     */
-    public static Collection<CategoryDisplay> getAllCategoriesDisplay( List<Category> listCategory, AdminUser user )
-    {
-        int[] arrayCategory = new int[listCategory.size(  )];
-        int i = 0;
+		for( Category category : listCategory )
+		{
+			arrayCategory [i ++ ] = category.getId( );
+		}
 
-        for ( Category category : listCategory )
-        {
-            arrayCategory[i++] = category.getId(  );
-        }
+		return getAllCategoriesDisplay( arrayCategory, user );
+	}
 
-        return getAllCategoriesDisplay( arrayCategory, user );
-    }
+	/**
+	 * Return a CategoryDisplay object for a specified Category
+	 * 
+	 * @param nIdCategory The id of Category
+	 * @return The CategoryDisplay object
+	 */
+	public CategoryDisplay getCategoryDisplay( int nIdCategory )
+	{
+		Category category = CategoryHome.find( nIdCategory );
 
-    /**
-     * Return a CategoryDisplay object for a specified Category
-     * @param nIdCategory The id of Category
-     * @return The CategoryDisplay object
-     */
-    public static CategoryDisplay getCategoryDisplay( int nIdCategory )
-    {
-        CategoryDisplay categoryDisplay = _singleton.new CategoryDisplay(  );
+		if( category == null )
+		{
+			return null;
+		}
 
-        Category category = CategoryHome.find( nIdCategory );
+		CategoryDisplay categoryDisplay = createCategoryDisplay( category );
+		categoryDisplay.setAssigned( false );
 
-        if ( category == null )
-        {
-            return null;
-        }
+		return categoryDisplay;
+	}
 
-        categoryDisplay.setCategory( category );
-        if(category.getIconContent() != null)
-        {
-        	categoryDisplay.setIconUrl( getResourceImageCategory( categoryDisplay.getCategory(  ).getId(  ) ) );
-        }
-        else
-        {
-        	categoryDisplay.setIconUrl( null );
-        }
-        categoryDisplay.setCountLinkedDocuments( CategoryHome.findCountIdDocuments( 
-                categoryDisplay.getCategory(  ).getId(  ) ) );
-        categoryDisplay.setAssigned( false );
+	/**
+	 * Create a CategoryDisplay from a Category
+	 * 
+	 * @param category The Category
+	 * @return The CategoryDisplay
+	 */
+	private CategoryDisplay createCategoryDisplay( Category category )
+	{
+		CategoryDisplay categoryDisplay = new CategoryDisplay( );
+		categoryDisplay.setCategory( category );
 
-        return categoryDisplay;
-    }
+		if( category.getIconContent( ) != null )
+		{
+			categoryDisplay.setIconUrl( getResourceImageCategory( category.getId( ) ) );
+		}
+		else
+		{
+			categoryDisplay.setIconUrl( null );
+		}
 
-    /**
-     * Management of the image associated to the Category
-     * @param nCategoryId The Category identifier
-     * @return The url of the resource
-     */
-    public static String getResourceImageCategory( int nCategoryId )
-    {
-        String strResourceType = CategoryService.getInstance(  ).getResourceTypeId(  );
-        UrlItem url = new UrlItem( Parameters.IMAGE_SERVLET );
-        url.addParameter( Parameters.RESOURCE_TYPE, strResourceType );
-        url.addParameter( Parameters.RESOURCE_ID, Integer.toString( nCategoryId ) );
+		categoryDisplay.setCountLinkedDocuments(
+				CategoryHome.findCountIdDocuments( category.getId( ) ) );
 
-        return url.getUrlWithEntity(  );
-    }
+		return categoryDisplay;
+	}
 
-    /**
-     *
-     * This class defines a CategoryDisplay object intended to be used in
-     * freemarker templates
-     * It provide the Category object and other informations.
-     *
-     */
-    public class CategoryDisplay
-    {
-        private Category _category;
-        private String _strIconUrl;
-        private int _nCountLinkedDocuments;
-        private boolean _bAssigned;
+	/**
+	 * Management of the image associated to the Category
+	 * 
+	 * @param nCategoryId The Category identifier
+	 * @return The url of the resource
+	 */
+	public String getResourceImageCategory( int nCategoryId )
+	{
+		UrlItem url = new UrlItem( Parameters.IMAGE_SERVLET );
+		url.addParameter( Parameters.RESOURCE_TYPE, IMAGE_RESOURCE_TYPE_ID );
+		url.addParameter( Parameters.RESOURCE_ID, Integer.toString( nCategoryId ) );
 
-        /**
-         * Get the Category object
-         * @return The Category object
-         */
-        public Category getCategory(  )
-        {
-            return _category;
-        }
+		return url.getUrlWithEntity( );
+	}
 
-        /**
-         * Set the Category object
-         * @param category The Category object to set
-         */
-        public void setCategory( Category category )
-        {
-            this._category = category;
-        }
+	/**
+	 * This class defines a CategoryDisplay object intended to be used in
+	 * freemarker templates. It provides the Category object and other information.
+	 */
+	public static class CategoryDisplay implements Serializable
+	{
+		private static final long serialVersionUID = 1L;
 
-        /**
-         * Get the number of linked documents
-         * @return The number of linked documents
-         */
-        public int getCountLinkedDocuments(  )
-        {
-            return _nCountLinkedDocuments;
-        }
+		private Category _category;
+		private String _strIconUrl;
+		private int _nCountLinkedDocuments;
+		private boolean _bAssigned;
 
-        /**
-         * Set the number of linked documents
-         * @param nCountLinkedDocuments The number of linked documents
-         */
-        public void setCountLinkedDocuments( int nCountLinkedDocuments )
-        {
-            _nCountLinkedDocuments = nCountLinkedDocuments;
-        }
+		/**
+		 * Get the Category object
+		 * 
+		 * @return The Category object
+		 */
+		public Category getCategory( )
+		{
+			return _category;
+		}
 
-        /**
-         * Get the icon url
-         * @return The icon url
-         */
-        public String getIconUrl(  )
-        {
-            return _strIconUrl;
-        }
+		/**
+		 * Set the Category object
+		 * 
+		 * @param category The Category object to set
+		 */
+		public void setCategory( Category category )
+		{
+			this._category = category;
+		}
 
-        /**
-         * Set the icon url
-         * @param strIconUrl The url to set
-         */
-        public void setIconUrl( String strIconUrl )
-        {
-            _strIconUrl = strIconUrl;
-        }
+		/**
+		 * Get the number of linked documents
+		 * 
+		 * @return The number of linked documents
+		 */
+		public int getCountLinkedDocuments( )
+		{
+			return _nCountLinkedDocuments;
+		}
 
-        /**
-         * Return true if Document is linked to this Category
-         * @return true if Document is linked, false else
-         */
-        public boolean getAssigned(  )
-        {
-            return _bAssigned;
-        }
+		/**
+		 * Set the number of linked documents
+		 * 
+		 * @param nCountLinkedDocuments The number of linked documents
+		 */
+		public void setCountLinkedDocuments( int nCountLinkedDocuments )
+		{
+			_nCountLinkedDocuments = nCountLinkedDocuments;
+		}
 
-        /**
-         * Set the assigned value (true if document is linked to this Category)
-         * @param bAssigned true if document if assigned
-         */
-        public void setAssigned( boolean bAssigned )
-        {
-            _bAssigned = bAssigned;
-        }
-    }
+		/**
+		 * Get the icon url
+		 * 
+		 * @return The icon url
+		 */
+		public String getIconUrl( )
+		{
+			return _strIconUrl;
+		}
+
+		/**
+		 * Set the icon url
+		 * 
+		 * @param strIconUrl The url to set
+		 */
+		public void setIconUrl( String strIconUrl )
+		{
+			_strIconUrl = strIconUrl;
+		}
+
+		/**
+		 * Return true if Document is linked to this Category
+		 * 
+		 * @return true if Document is linked, false else
+		 */
+		public boolean getAssigned( )
+		{
+			return _bAssigned;
+		}
+
+		/**
+		 * Set the assigned value (true if document is linked to this Category)
+		 * 
+		 * @param bAssigned true if document if assigned
+		 */
+		public void setAssigned( boolean bAssigned )
+		{
+			_bAssigned = bAssigned;
+		}
+	}
 }

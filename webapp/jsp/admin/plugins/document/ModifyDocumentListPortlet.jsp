@@ -1,8 +1,9 @@
 <%@ page errorPage="../../ErrorPage.jsp" %>
 <jsp:include page="../../PortletAdminHeader.jsp" />
 
-<jsp:useBean id="documentListPortlet" scope="session" class="fr.paris.lutece.plugins.document.web.portlet.DocumentListPortletJspBean" />
+<%@page import="fr.paris.lutece.plugins.document.web.portlet.DocumentListPortletJspBean"%>
 
+${ documentListPortletJspBean.init( pageContext.request, DocumentListPortletJspBean.RIGHT_MANAGE_ADMIN_SITE ) }
+${ documentListPortletJspBean.getModify( pageContext.request ) }
 
-<% documentListPortlet.init( request, documentListPortlet.RIGHT_MANAGE_ADMIN_SITE ); %>
-<%= documentListPortlet.getModify( request ) %>
+<%@ include file="../../AdminFooter.jsp" %>

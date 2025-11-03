@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.document.business.spaces;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ import java.util.Locale;
 /**
  * This class provides Data Access methods for DocumentSpace objects
  */
+@ApplicationScoped
 public final class DocumentSpaceDAO implements IDocumentSpaceDAO
 {
     // Constants
@@ -103,6 +105,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      * @param space
      *            The space object
      */
+    @Override
     public synchronized void insert( DocumentSpace space )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
@@ -150,7 +153,8 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      * @param nDocumentSpaceId
      *            The identifier of DocumentSpace
      * @return the instance of the DocumentSpace
-     */
+     */    
+    @Override
     public DocumentSpace load( int nDocumentSpaceId )
     {
         DocumentSpace space = null;
@@ -207,6 +211,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      * @param nSpaceId
      *            The Id to delete
      */
+    @Override
     public void delete( int nSpaceId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -239,6 +244,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      * @param space
      *            The reference of space
      */
+    @Override
     public void store( DocumentSpace space )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
@@ -268,6 +274,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      *            The space identifier
      * @return The Collection of the DocumentSpaces
      */
+    @Override
     public List<DocumentSpace> selectChilds( int nSpaceId, String strCodeType )
     {
         List<DocumentSpace> listDocumentSpaces = new ArrayList<>( );
@@ -326,6 +333,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      *            the document type filter
      * @return The Collection of the DocumentSpaces
      */
+    @Override
     public List<DocumentSpace> selectSpacesAllowingDocumentCreationByDocumentType( String strCodeType, int createDocumentIsAllowed )
     {
         List<DocumentSpace> listDocumentSpaces = new ArrayList<>( );
@@ -360,6 +368,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      * 
      * @return The Collection of the DocumentSpaces
      */
+    @Override
     public ReferenceList getDocumentSpaceList( )
     {
         ReferenceList list = new ReferenceList( );
@@ -386,6 +395,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      *            The locale
      * @return The Collection of the DocumentSpaces
      */
+    @Override
     public ReferenceList getViewTypeList( Locale locale )
     {
         ReferenceList list = new ReferenceList( );
@@ -408,6 +418,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      * 
      * @return A list of icons
      */
+    @Override
     public ReferenceList getIconsList( )
     {
         ReferenceList list = new ReferenceList( );
@@ -430,6 +441,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      * 
      * @return A collection of all spaces.
      */
+    @Override
     public List<DocumentSpace> selectAll( )
     {
         List<DocumentSpace> listDocumentSpaces = new ArrayList<>( );
@@ -462,6 +474,7 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
      *            The space Id
      * @return Allowed documents types as a ReferenceList
      */
+    @Override
     public ReferenceList getAllowedDocumentTypes( int nSpaceId )
     {
         ReferenceList list = new ReferenceList( );

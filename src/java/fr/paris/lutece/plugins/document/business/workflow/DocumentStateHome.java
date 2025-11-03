@@ -33,8 +33,8 @@
  */
 package fr.paris.lutece.plugins.document.business.workflow;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.Locale;
 
@@ -44,7 +44,7 @@ import java.util.Locale;
 public class DocumentStateHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentStateDAO _dao = SpringContextService.getBean( "document.documentStateDAO" );
+    private static IDocumentStateDAO _dao = CDI.current( ).select( IDocumentStateDAO.class ).get( );
 
     /**
      * Returns a ReferenceList of Document States

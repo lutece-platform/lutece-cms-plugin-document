@@ -38,9 +38,8 @@ import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.util.xml.XmlUtil;
 
-import java.util.Collection;
-
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -61,12 +60,14 @@ public class DocumentPortlet extends Portlet
     private int _nPortletId;
     private int [ ] _nArrayIdCategory;
 
+    private static DocumentPortletHome _portletHome = CDI.current( ).select( DocumentPortletHome.class ).get( );
+    
     /**
      * Sets the identifier of the portlet type to the value specified in the DocumentPortletHome class
      */
     public DocumentPortlet( )
     {
-        setPortletTypeId( DocumentPortletHome.getInstance( ).getPortletTypeId( ) );
+        setPortletTypeId( _portletHome.getPortletTypeId( ) );
     }
 
     /**
@@ -76,12 +77,14 @@ public class DocumentPortlet extends Portlet
      *            The HTTP Servlet request
      * @return the Xml code of the DocumentPortlvet content
      */
+    @Override
     public String getXml( HttpServletRequest request )
     {
         StringBuffer strXml = new StringBuffer( );
         XmlUtil.beginElement( strXml, TAG_DOCUMENT_PORTLET );
 
-        Document document = PublishingService.getInstance( ).getFirstValidPublishedDocument( getId( ) );
+        PublishingService publishingService = CDI.current( ).select( PublishingService.class ).get( );
+        Document document = publishingService.getFirstValidPublishedDocument( getId( ) );
 
         if ( document != null )
         {
@@ -102,6 +105,7 @@ public class DocumentPortlet extends Portlet
      *            The HTTP Servlet Request
      * @return the Xml code of the DocumentPortlet
      */
+    @Override
     public String getXmlDocument( HttpServletRequest request )
     {
         return XmlUtil.getXmlHeader( ) + getXml( request );
@@ -112,15 +116,17 @@ public class DocumentPortlet extends Portlet
      */
     public void update( )
     {
-        DocumentPortletHome.getInstance( ).update( this );
+    	
+    	_portletHome.update( this );
     }
 
     /**
      * Removes the current instance of the DocumentPortlet object
      */
+    @Override
     public void remove( )
     {
-        DocumentPortletHome.getInstance( ).remove( this );
+    	_portletHome.remove( this );
     }
 
     /**

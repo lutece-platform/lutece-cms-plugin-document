@@ -33,13 +33,16 @@
  */
 package fr.paris.lutece.plugins.document.business.attributes;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * This class represents the business object DocumentAttribute
  */
-public class DocumentAttribute
+public class DocumentAttribute implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     // Variables declarations
     private int _nIdDocumentAttribute;
     private String _strCodeDocumentType;

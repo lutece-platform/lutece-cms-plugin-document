@@ -35,12 +35,14 @@ package fr.paris.lutece.plugins.document.business.workflow;
 
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.Locale;
 
 /**
  * This class porvides Data Access methods for DocumentStateDAO objects
  */
+@ApplicationScoped
 public class DocumentStateDAO implements IDocumentStateDAO
 {
     // Constants

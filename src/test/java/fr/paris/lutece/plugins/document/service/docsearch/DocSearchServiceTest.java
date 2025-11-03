@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.document.service.docsearch;
 
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
+import org.junit.jupiter.api.Test;
 import fr.paris.lutece.test.LuteceTestCase;
 
 import java.util.List;
@@ -45,14 +46,17 @@ import java.util.List;
  */
 public class DocSearchServiceTest extends LuteceTestCase
 {
-    public DocSearchServiceTest( String testName )
+    /*
+	public DocSearchServiceTest( String testName )
     {
         super( testName );
     }
+    */
 
     /**
      * Test of processIndexing method, of class fr.paris.lutece.plugins.document.service.docsearch.DocSearchService.
      */
+	@Test
     public void testProcessIndexing(  )
     {
         System.out.println( "processIndexing" );

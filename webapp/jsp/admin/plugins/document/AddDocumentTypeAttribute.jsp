@@ -2,9 +2,9 @@
 
 <jsp:include page="../../AdminHeader.jsp" />
 
-<jsp:useBean id="documentType" scope="session" class="fr.paris.lutece.plugins.document.web.DocumentTypeJspBean" />
+<%@page import="fr.paris.lutece.plugins.document.web.DocumentTypeJspBean"%>
 
-<% documentType.init( request, documentType.RIGHT_DOCUMENT_TYPES_MANAGEMENT ); %>
-<%= documentType.getAddAttribute( request ) %>
+${ documentTypeJspBean.init( pageContext.request, DocumentTypeJspBean.RIGHT_DOCUMENT_TYPES_MANAGEMENT ) }
+${ documentTypeJspBean.getAddAttribute( pageContext.request ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

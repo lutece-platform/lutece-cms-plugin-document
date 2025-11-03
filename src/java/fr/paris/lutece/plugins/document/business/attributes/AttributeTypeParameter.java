@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.document.business.attributes;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.i18n.Localizable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -43,8 +44,10 @@ import java.util.Locale;
 /**
  * This class represents the business object AttributeTypeParameter
  */
-public class AttributeTypeParameter implements Localizable
+public class AttributeTypeParameter implements Localizable,Serializable
 {
+    private static final long serialVersionUID = 1L;
+    
     // Variables declarations
     private String _strName;
     private String _strLabelKey;

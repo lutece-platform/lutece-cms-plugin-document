@@ -55,6 +55,7 @@ public class NotifyUsersMailingListRemovalListener implements RemovalListener
     * @param strId The object id
     * @return true if the pbject can be removed otherwise false
     */
+    @Override
     public boolean canBeRemoved( String strId )
     {
         if ( IntegerUtils.isNotNumeric( strId ) )
@@ -92,6 +93,7 @@ public class NotifyUsersMailingListRemovalListener implements RemovalListener
      * @param locale The current locale
      * @return The message
      */
+    @Override
     public String getRemovalRefusedMessage( String id, Locale locale )
     {
         // Build a message for rules using this mailing list

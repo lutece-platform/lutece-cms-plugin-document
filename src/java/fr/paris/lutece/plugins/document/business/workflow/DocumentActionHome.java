@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.document.business.workflow;
 
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.List;
 import java.util.Locale;
@@ -46,7 +46,7 @@ import java.util.Locale;
 public final class DocumentActionHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentActionDAO _dao = SpringContextService.getBean( "document.documentActionDAO" );
+    private static IDocumentActionDAO _dao = CDI.current( ).select( IDocumentActionDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated
