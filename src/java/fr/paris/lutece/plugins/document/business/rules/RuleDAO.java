@@ -33,9 +33,11 @@
  */
 package fr.paris.lutece.plugins.document.business.rules;
 
+import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.util.sql.DAOUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,38 +48,14 @@ import java.util.List;
 public final class RuleDAO implements IRuleDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_rule ) FROM document_rule ";
     private static final String SQL_QUERY_SELECT = "SELECT id_rule, rule_type FROM document_rule WHERE id_rule = ?  ";
     private static final String SQL_QUERY_SELECT_BY_RULE_TYPE_KEY = "SELECT id_rule FROM document_rule WHERE rule_type = ?";
     private static final String SQL_QUERY_SELECT_ATTRIBUTES = "SELECT attr_name , attr_value FROM document_rule_attr WHERE id_rule = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO document_rule ( id_rule, rule_type ) VALUES ( ?, ? ) ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO document_rule ( rule_type ) VALUES ( ? ) ";
     private static final String SQL_QUERY_INSERT_ATTRIBUTE = " INSERT INTO document_rule_attr ( id_rule, attr_name , attr_value ) VALUES ( ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM document_rule WHERE id_rule = ?  ";
     private static final String SQL_QUERY_DELETE_ATTRIBUTES = "DELETE FROM document_rule_attr WHERE id_rule = ?  ";
     private static final String SQL_QUERY_SELECTALL = "SELECT id_rule, rule_type FROM document_rule ";
-
-    /**
-     * Generates a new primary key
-     * 
-     * @return The new primary key
-     */
-    private int newPrimaryKey( )
-    {
-        int nKey;
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
-        {
-            daoUtil.executeQuery( );
-
-            if ( !daoUtil.next( ) )
-            {
-                // if the table is empty
-                nKey = 1;
-            }
-
-            nKey = daoUtil.getInt( 1 ) + 1;
-        }
-        return nKey;
-    }
 
     /**
      * Insert a new record in the table.
@@ -88,14 +66,19 @@ public final class RuleDAO implements IRuleDAO
     @Override
     public synchronized void insert( Rule rule )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS ) )
         {
-            rule.setId( newPrimaryKey( ) );
-            daoUtil.setInt( 1, rule.getId( ) );
-            daoUtil.setString( 2, rule.getRuleTypeId( ) );
+            daoUtil.setString( 1, rule.getRuleTypeId( ) );
 
             daoUtil.executeUpdate( );
+            
+
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+            	rule.setId( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
         }
+        
         // Rule attributes
         insertAttributes( rule );
     }

@@ -189,6 +189,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MARK_SPACES_BROWSER = "spaces_browser";
     private static final String MARK_SELECTED_CRITERIA = "selected_criteria";
     private static final String MARK_IS_FILES2DOCS_PLUGIN_ACTIVE = "is_files2docs_plugin_active";
+    private static final String MARK_IS_PARSER_PLUGIN_ACTIVE = "is_parser_plugin_active";
 
     // Parameters
     private static final String PARAMETER_DOCUMENT_TYPE_CODE = "document_type_code";
@@ -223,6 +224,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String JSP_DO_REMOVE_SELECTION = "jsp/admin/plugins/document/DoRemoveSelection.jsp";
     private static final String JSP_DO_ARCHIVE_SELECTION = "DoArchiveSelection.jsp";
     private static final String JSP_DOCUMENTS_PUBLISHING = "ManageDocumentPublishing.jsp";
+    private static final String JSP_MANAGE_DOCUMENTS = "jsp/admin/plugins/document/ManageDocuments.jsp";
 
     // Messages
     private static final String MESSAGE_CONFIRM_DELETE = "document.message.confirmDeleteDocument";
@@ -254,6 +256,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String PAGE_INDEX_FIRST = "1";
     private static final String CONSTANT_DATE_FORMAT = "dd/MM/yyyy";    
     private static final String CONSTANT_FILES2DOC_PLUGIN_NAME = "files2docs" ;
+    private static final String CONSTANT_PARSER_PLUGIN_NAME = "parser" ;
     
     private String _strCurrentDocumentTypeFilter;
     private String _strCurrentStateFilter;
@@ -336,6 +339,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         List<SpaceAction> listSpaceActions = SpaceActionHome.getActionsList( getLocale(  ) );
         int nCurrentSpaceId = IntegerUtils.convert( _strCurrentSpaceId );
         DocumentSpace currentSpace = DocumentSpaceHome.findByPrimaryKey( nCurrentSpaceId );
+
         listSpaceActions = (List<SpaceAction>) RBACService.getAuthorizedActionsCollection( listSpaceActions,
                 currentSpace, ( User ) getUser(  ) );
 
@@ -413,6 +417,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
                 DocumentMassActionResourceService.PERMISSION_MASS_ARCHIVE, ( User ) user ) );
         
         _model.put( MARK_IS_FILES2DOCS_PLUGIN_ACTIVE , PluginService.isPluginEnable( CONSTANT_FILES2DOC_PLUGIN_NAME )  );
+        _model.put( MARK_IS_PARSER_PLUGIN_ACTIVE , PluginService.isPluginEnable( CONSTANT_PARSER_PLUGIN_NAME )  );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_DOCUMENTS, getLocale(  ), _model );
 
@@ -815,8 +820,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         UrlItem url = new UrlItem( PATH_JSP + JSP_DELETE_DOCUMENT );
         url.addParameter( PARAMETER_DOCUMENT_ID, nDocumentId );
 
-        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE, messageArgs, url.getUrl(  ),
-            AdminMessage.TYPE_CONFIRMATION );
+        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE, messageArgs,null, url.getUrl(  ),null,
+            AdminMessage.TYPE_CONFIRMATION, null,JSP_MANAGE_DOCUMENTS  );
     }
 
     /**
@@ -1123,8 +1128,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             {
                 UrlItem url = new UrlItem( JSP_DO_REMOVE_SELECTION );
 
-                return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE_SELECTION, url.getUrl(  ),
-                    AdminMessage.TYPE_CONFIRMATION );
+                return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE_SELECTION,null, null, url.getUrl(  ),null,
+                    AdminMessage.TYPE_CONFIRMATION, null, JSP_MANAGE_DOCUMENTS );
             }
             else if ( strAction.equals( CONSTANT_ARCHIVE ) )
             {

@@ -12,7 +12,6 @@ CREATE TABLE document_indexer_action (
   PRIMARY KEY (id_action)  
 );
 
-
 --
 -- Table document_workflow_transition
 --

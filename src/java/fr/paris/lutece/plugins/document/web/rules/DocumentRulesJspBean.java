@@ -341,8 +341,8 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
 
         String[] args = { rule.getRule(  ) };
 
-        return AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_RULE_DELETE, args, url.getUrl(  ),
-            AdminMessage.TYPE_CONFIRMATION );
+        return AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_RULE_DELETE, args, null, url.getUrl(  ), null,
+            AdminMessage.TYPE_CONFIRMATION,null, JSP_MANAGE_RULES );
     }
 
     /**

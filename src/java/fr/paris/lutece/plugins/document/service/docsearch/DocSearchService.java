@@ -494,10 +494,13 @@ public class DocSearchService
                 {
                     String formatedDate = formatDate( date );
 
-                    Query queryDate = new TermQuery( new Term( DocSearchItem.FIELD_DATE, formatedDate ) );
-                    queries.add( queryDate.toString(  ) );
-                    fields.add( DocSearchItem.FIELD_DATE );
-                    flags.add( BooleanClause.Occur.SHOULD );
+                    if ( formatedDate != null )
+                    {
+                        Query queryDate = new TermQuery( new Term( DocSearchItem.FIELD_DATE, formatedDate ) );
+                        queries.add( queryDate.toString(  ) );
+                        fields.add( DocSearchItem.FIELD_DATE );
+                        flags.add( BooleanClause.Occur.SHOULD );
+                    }
                 }
 
                 KeywordAnalyzer analyzer = new KeywordAnalyzer(  );
@@ -524,8 +527,11 @@ public class DocSearchService
             if ( ( date != null ) && ( !date.equals( StringUtils.EMPTY ) ) )
             {
                 String formatedDate = formatDate( date );
-                Query queryDate = new TermQuery( new Term( DocSearchItem.FIELD_DATE, formatedDate ) );
-                filterList.add( queryDate );
+                if ( formatedDate != null )
+                {
+                    Query queryDate = new TermQuery( new Term( DocSearchItem.FIELD_DATE, formatedDate ) );
+                    filterList.add( queryDate );
+                }
             }
 
             TopDocs topDocs = null;

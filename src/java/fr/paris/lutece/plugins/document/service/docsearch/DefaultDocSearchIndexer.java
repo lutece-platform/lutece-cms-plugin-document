@@ -36,16 +36,16 @@ package fr.paris.lutece.plugins.document.service.docsearch;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
-import fr.paris.lutece.plugins.parser.service.TikaAutoDetectParser;
 import fr.paris.lutece.portal.service.parser.Parser;
 import fr.paris.lutece.portal.service.parser.ParserException;
 import fr.paris.lutece.portal.service.search.SearchItem;
-import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Named;
 
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StringField;
@@ -59,15 +59,25 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * DefaultDocSearchIndexer
+ * When the DocSearchIndexerDaemon is run, each document is indexed.
+ * When the application is started, DocSearchIndexerDaemon is launched."
+ * 
  */
 @ApplicationScoped
 @Named( "document.DefaultDocSearchIndexer" )
 public class DefaultDocSearchIndexer implements IDocSearchIndexer
 {
 
+	//Pattern for HTML detection
+	private static final Pattern HTML_TAG_PATTERN = Pattern.compile( "<[^>]+>" );
+		
+	//Flag preventing duplicate logs
+	private static boolean _parserWarningLogged = false;
+		
 	private Parser _parser;
 
 	/**
@@ -128,15 +138,29 @@ public class DefaultDocSearchIndexer implements IDocSearchIndexer
 		// Content to Indexed
 		String strContentToIndex = getContentToIndex( document );
 
-		String parsedContent;
-		try( ByteArrayInputStream bais = new ByteArrayInputStream( strContentToIndex.getBytes( ) ) )
+		// Parse HTML content only if HTML tags are detected in text attributes
+		// This step cleans HTML formatting from text attributes (e.g., <p>, <strong> tags)
+		// Binary content was already parsed in getContentToIndex()
+		String parsedContent = strContentToIndex;
+		
+		
+		_parser = CDI.current( ).select( Parser.class ).get( );
+		
+		if( _parser != null && containsHtmlTags( strContentToIndex ) )
 		{
-			Parser parser = _parser =  new TikaAutoDetectParser( );
-			parsedContent = _parser.parseToString( bais );
-		}
-		catch( ParserException e )
-		{
-			throw new AppException( "Error during document parsing.", e );
+			try( ByteArrayInputStream bais = new ByteArrayInputStream(
+					strContentToIndex.getBytes( StandardCharsets.UTF_8 ) ) )
+			{
+				String htmlParsed = _parser.parseToString( bais );
+				if( htmlParsed != null && !htmlParsed.isEmpty( ) )
+				{
+					parsedContent = htmlParsed;
+				}
+			}
+			catch( ParserException | IOException e )
+			{
+				AppLogService.error( "Error parsing HTML content from text attributes", e );
+			}
 		}
 
 		// Add the tag-stripped contents as a Reader-valued Text field so it will
@@ -182,13 +206,41 @@ public class DefaultDocSearchIndexer implements IDocSearchIndexer
 				}
 				else
 				{
+					// Binary attributes - If plugin-parser is present is enable, the parser selected is TikaAutoDetectParser
+					// else it's the html defaultParser presents in plugin-document. Tika parser can parse any document type.
+					_parser = CDI.current( ).select( Parser.class ).get( );
+
 					try( ByteArrayInputStream bais = new ByteArrayInputStream( attribute.getBinaryValue( ) ) )
 					{
-						sbContentToIndex.append( _parser.parseToString( bais ) ).append( " " );
+						try
+						{
+							String parsedBinary = _parser.parseToString( bais );
+							sbContentToIndex.append( parsedBinary ).append( " " );
+						}
+						catch( ParserException e )
+						{
+							//Informative log
+							if( !_parserWarningLogged )
+							{
+								AppLogService.info( 
+									"Binary document attributes detected that could not be parsed. " +
+									"Install plugin-parser to enable full indexing of non-HTML documents (PDF, DOCX, XLSX, etc.)" 
+								);
+								_parserWarningLogged = true;
+							}
+							
+							// Log for debug
+							if( AppLogService.isDebugEnabled( ) )
+							{
+								AppLogService.debug( "Failed to parse binary attribute for document ID: " + 
+									document.getId( ) + ", attribute: " + attribute.getName( ), e );
+							}
+						}
 					}
-					catch( ParserException | IOException e )
+					catch( IOException e )
 					{
-						AppLogService.error( "Error parsing binary attribute: " + e.getMessage( ), e );
+						AppLogService.error( "Error reading binary stream for document ID: " + 
+							document.getId( ), e );
 					}
 				}
 			}
@@ -198,5 +250,21 @@ public class DefaultDocSearchIndexer implements IDocSearchIndexer
 		sbContentToIndex.append( document.getXmlMetadata( ) );
 
 		return sbContentToIndex.toString( );
+	}
+	
+	/**
+	 * Check if the content contains HTML tags
+	 * 
+	 * @param content the content to check
+	 * @return true if HTML tags are detected, false otherwise
+	 */
+	private boolean containsHtmlTags( String content )
+	{
+		if( StringUtils.isEmpty( content ) )
+		{
+			return false;
+		}
+		
+		return HTML_TAG_PATTERN.matcher( content ).find( );
 	}
 }

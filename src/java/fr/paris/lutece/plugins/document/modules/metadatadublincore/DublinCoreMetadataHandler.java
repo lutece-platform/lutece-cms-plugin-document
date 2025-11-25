@@ -81,9 +81,9 @@ public class DublinCoreMetadataHandler implements MetadataHandler
     @Override
     public String getCreateForm( HttpServletRequest request )
     {
-        DublinCoreMetadata metadata = new DublinCoreMetadata(  );
+        DublinCoreMetadata dublinMetadata = new DublinCoreMetadata(  );
         Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put( MARK_METADATA, metadata );
+        model.put( MARK_METADATA, dublinMetadata );
 
         Locale locale = AdminUserService.getLocale( request );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_FORM, locale, model );

@@ -251,16 +251,6 @@ public final class DocumentHome
     }
 
     /**
-     * Get a new primary key
-     * 
-     * @return The new primary key
-     */
-    public static int newPrimaryKey( )
-    {
-        return _dao.newPrimaryKey( );
-    }
-
-    /**
      * Gets all documents id
      * 
      * @return A collection of Integer
@@ -348,5 +338,33 @@ public final class DocumentHome
     public static Document loadLastPublishedDocument( )
     {
         return _dao.loadLastPublishedDocument( );
+    }
+
+    /**
+     * Get the max_allowed_packet value from MySQL configuration
+     *
+     * @return the max_allowed_packet value as a String (e.g., "16777216" or "16M"), or null if unable to retrieve
+     */
+    public static String getMaxAllowedPacket( )
+    {
+        String strSQL = "SHOW VARIABLES LIKE 'max_allowed_packet'";
+        String strMaxPacket = null;
+        
+        try ( fr.paris.lutece.util.sql.DAOUtil daoUtil = new fr.paris.lutece.util.sql.DAOUtil( strSQL ) )
+        {
+            daoUtil.executeQuery( );
+            
+            if ( daoUtil.next( ) )
+            {
+                strMaxPacket = daoUtil.getString( 2 ); // Column 2 is the value
+            }
+        }
+        catch ( Exception e )
+        {
+            // Return null if unable to query
+            strMaxPacket = null;
+        }
+        
+        return strMaxPacket;
     }
 }

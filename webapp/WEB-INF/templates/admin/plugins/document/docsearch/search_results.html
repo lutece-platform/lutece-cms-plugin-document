@@ -33,11 +33,12 @@
 								<@formGroup labelFor='date' labelKey='#i18n{document.advanced_search.checkbox.date}' rows=2>
 									<@inputGroup>
 										<#if date_query??>
-											<#assign value = date_query />
+											<#assign dateString = date_query />
+										    <#assign value = dateString?datetime("yyyy-MM-dd HH:mm:ss") />
 										<#else>
 											<#assign value = '' />
 										</#if>
-										<@input type='date' name='date' id='date' value = value />
+										<@input type='date' name='date' id='date' defaultDate=value />
 										<@inputGroupItem type='text'>
 											<@icon style='calendar' />
 										</@inputGroupItem>
@@ -122,7 +123,3 @@
 </@formGroup>
 </#list>
 </#macro>
-
-<#if advanced_search??>
-	<@getDatePickerBootstrap idField="date" language=locale />
-</#if>

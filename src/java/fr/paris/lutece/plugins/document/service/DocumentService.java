@@ -62,6 +62,7 @@ import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.upload.MultipartItem;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.date.DateUtil;
@@ -127,6 +128,7 @@ public class DocumentService
 	private static final String MESSAGE_ATTRIBUTE_WIDTH_ERROR = "document.message.widthError";
 	private static final String MESSAGE_ATTRIBUTE_RESIZE_ERROR = "document.message.resizeError";
 	private static final String MESSAGE_EXTENSION_ERROR = "document.message.extensionError";
+	private static final String MESSAGE_FILE_SIZE_ERROR = "document.message.fileSizeError";
 	private static final String TAG_DOCUMENT_ID = "document-id";
 	private static final String TAG_DOCUMENT_TITLE = "document-title";
 	private static final String TAG_DOCUMENT_SUMMARY = "document-summary";
@@ -263,7 +265,6 @@ public class DocumentService
 	public void createDocument( Document document, AdminUser user )
 			throws DocumentException
 	{
-		document.setId( DocumentHome.newPrimaryKey( ) );
 		document.setDateCreation( new Timestamp( new java.util.Date( ).getTime( ) ) );
 		document.setDateModification( new Timestamp( new java.util.Date( ).getTime( ) ) );
 		document.setXmlWorkingContent( buildXmlContent( document ) );
@@ -804,6 +805,21 @@ public class DocumentService
 			{
 				return AdminMessageService.getMessageUrl( mRequest, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
 			}
+			// Check file size against database limit
+			else if( ( bytes != null ) && ( bytes.length > 0 ) )
+			{
+				long maxFileSize = getMaxAllowedFileSize( );
+				if( bytes.length > maxFileSize )
+				{
+					Object [ ] params = new Object [ 3 ];
+					params [0] = attribute.getName( );
+					params [1] = formatFileSize( bytes.length );
+					params [2] = formatFileSize( maxFileSize );
+
+					return AdminMessageService.getMessageUrl( mRequest, MESSAGE_FILE_SIZE_ERROR, params,
+							AdminMessage.TYPE_STOP );
+				}
+			}
 			else if( StringUtils.isNotBlank( extensionList ) && ! extensionList.contains( strExtension ) )
 			{
 				Object [ ] params = new Object [ 2 ];
@@ -860,6 +876,102 @@ public class DocumentService
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get the maximum allowed file size from MySQL max_allowed_packet configuration.
+	 * This method queries the database to get the actual limit and caches it.
+	 * 
+	 * @return the maximum file size in bytes (defaults to 16MB if unable to retrieve)
+	 */
+	private long getMaxAllowedFileSize( )
+	{
+		try
+		{
+			// Query MySQL for max_allowed_packet value
+			String strMaxPacket = DocumentHome.getMaxAllowedPacket( );
+			if( StringUtils.isNotBlank( strMaxPacket ) )
+			{
+				// Parse the value (can be in format like "16777216" or "16M")
+				long maxSize = parseMaxPacketSize( strMaxPacket );
+				// Return 90% of max_allowed_packet to leave room for query overhead
+				return (long) ( maxSize * 0.9 );
+			}
+		}
+		catch( Exception e )
+		{
+			// Log error but don't fail, use default value
+			AppLogService.error( "Unable to retrieve max_allowed_packet from MySQL, using default 16MB", e );
+		}
+		
+		// Default: 16MB (MySQL default)
+		return 16 * 1024 * 1024;
+	}
+
+	/**
+	 * Parse MySQL max_allowed_packet value which can be in different formats
+	 * (numeric bytes or with K/M/G suffix).
+	 * 
+	 * @param strValue the value to parse
+	 * @return the size in bytes
+	 */
+	private long parseMaxPacketSize( String strValue )
+	{
+		strValue = strValue.trim( ).toUpperCase( );
+		
+		try
+		{
+			// Check if it has a suffix (K, M, G)
+			if( strValue.matches( "\\d+[KMG]" ) )
+			{
+				long number = Long.parseLong( strValue.substring( 0, strValue.length( ) - 1 ) );
+				char suffix = strValue.charAt( strValue.length( ) - 1 );
+				
+				switch( suffix )
+				{
+					case 'K':
+						return number * 1024;
+					case 'M':
+						return number * 1024 * 1024;
+					case 'G':
+						return number * 1024 * 1024 * 1024;
+				}
+			}
+			
+			// No suffix, parse as bytes
+			return Long.parseLong( strValue );
+		}
+		catch( NumberFormatException e )
+		{
+			AppLogService.error( "Unable to parse max_allowed_packet value: " + strValue, e );
+			return 16 * 1024 * 1024; // Default 16MB
+		}
+	}
+
+	/**
+	 * Format file size in human-readable format (KB, MB, GB).
+	 * 
+	 * @param size the size in bytes
+	 * @return formatted string like "2.5 MB"
+	 */
+	private String formatFileSize( long size )
+	{
+		if( size < 1024 )
+		{
+			return size + " B";
+		}
+		else if( size < 1024 * 1024 )
+		{
+			return String.format( "%.2f KB", size / 1024.0 );
+		}
+		else if( size < 1024 * 1024 * 1024 )
+		{
+			return String.format( "%.2f MB", size / ( 1024.0 * 1024.0 ) );
+		}
+		else
+		{
+			return String.format( "%.2f GB", size / ( 1024.0 * 1024.0 * 1024.0 ) );
+		}
 	}
 
 	/**

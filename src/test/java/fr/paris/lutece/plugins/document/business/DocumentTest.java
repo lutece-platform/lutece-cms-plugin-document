@@ -84,7 +84,6 @@ public class DocumentTest extends LuteceTestCase
     {
         // Initialize an object
         Document document = new Document(  );
-        document.setId( DocumentHome.newPrimaryKey(  ) );
         document.setCodeDocumentType( CODEDOCUMENTTYPE1 );
         document.setDateCreation( DATECREATION1 );
         document.setDateModification( DATEMODIFICATION1 );

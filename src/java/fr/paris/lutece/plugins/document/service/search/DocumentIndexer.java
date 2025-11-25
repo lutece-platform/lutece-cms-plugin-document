@@ -40,7 +40,6 @@ import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
-import fr.paris.lutece.plugins.parser.service.TikaAutoDetectParser;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.business.portlet.Portlet;
@@ -54,7 +53,6 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.url.UrlItem;
-import jakarta.enterprise.inject.literal.NamedLiteral;
 import jakarta.enterprise.inject.spi.CDI;
 
 import org.apache.commons.lang3.StringUtils;
@@ -69,6 +67,7 @@ import org.apache.lucene.document.TextField;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -88,11 +87,18 @@ public class DocumentIndexer implements SearchIndexer
 	private static final String PARAMETER_PORTLET_ID = "portlet_id";
 	private static final String JSP_PAGE_ADVANCED_SEARCH = "jsp/site/Portal.jsp?page=advanced_search";
 
+	// Pattern for HTML detection
+		private static final Pattern HTML_TAG_PATTERN = Pattern.compile("<[^>]+>");
+		
+	// Flag preventing duplicate logs
+	private static boolean _parserWarningLogged = false;
+		
 	private DocumentListPortletHome _documentListPortletHome = CDI.current( ).select( DocumentListPortletHome.class )
 			.get( );
 
 	private PublishingService _publishingService = CDI.current( ).select( PublishingService.class ).get( );
 
+	
 	private Parser _parser;
 
 	/**
@@ -281,22 +287,27 @@ public class DocumentIndexer implements SearchIndexer
 			strContentToIndex = ""; // fallback if parse failed
 		}
 
-		// 2. Parse HTML global
+		// Parse HTML content only if HTML tags are detected in text attributes
+		// This step cleans HTML formatting from text attributes (e.g., <p>, <strong> tags)
+		// Binary content was already parsed in getContentToIndex()
 		String strContent = strContentToIndex;
-		if( _parser != null )
+		
+		_parser = CDI.current( ).select( Parser.class ).get( );
+		
+		if( _parser != null && containsHtmlTags( strContentToIndex ) )
 		{
 			try( ByteArrayInputStream bais = new ByteArrayInputStream(
 					strContentToIndex.getBytes( StandardCharsets.UTF_8 ) ) )
 			{
 				String parsedContent = _parser.parseToString( bais );
-				if( parsedContent != null )
+				if( parsedContent != null && !parsedContent.isEmpty( ) )
 				{
 					strContent = parsedContent;
 				}
 			}
 			catch( ParserException | IOException e )
 			{
-				AppLogService.error( "Error parsing HTML content", e );
+				AppLogService.error( "Error parsing HTML content from text attributes", e );
 			}
 		}
 
@@ -346,27 +357,66 @@ public class DocumentIndexer implements SearchIndexer
 				}
 				else
 				{
-					Parser parser = _parser =  new TikaAutoDetectParser( );
+					_parser = CDI.current( ).select( Parser.class ).get( );
 
 					try( ByteArrayInputStream bais = new ByteArrayInputStream( attribute.getBinaryValue( ) ) )
 					{
 						sbContentToIndex.append( " " );
-						String parsedContent = parser.parseToString( bais );
-						sbContentToIndex.append( parsedContent );
+						
+						try 
+						{
+							String parsedContent = _parser.parseToString( bais );
+							sbContentToIndex.append( parsedContent );
+						}
+						catch( ParserException e ) 
+						{
+							// Informative Log 
+							if( !_parserWarningLogged )
+							{
+								AppLogService.info( 
+									"Binary document attributes detected that could not be parsed. " +
+									"Install plugin-parser to enable full indexing of non-HTML documents (PDF, DOCX, XLSX, etc.)" 
+								);
+								_parserWarningLogged = true;
+							}
+							
+							// Debuging log
+							if( AppLogService.isDebugEnabled( ) )
+							{
+								AppLogService.debug( "Failed to parse binary attribute for document ID: " + 
+									document.getId( ) + ", attribute: " + attribute.getName( ), e );
+							}
+						}
 					}
-					catch( ParserException e )
+					catch( Exception e )
 					{
-						AppLogService.error( "Error parsing binary attribute", e );
+						AppLogService.error( "Error reading the stream for document ID: " + 
+							document.getId( ), e );
 					}
 				}
 			}
 		}
-
 		// Index Metadata
 		sbContentToIndex.append( " " );
 		sbContentToIndex.append( StringUtils.defaultString( document.getXmlMetadata( ) ) );
 
 		return sbContentToIndex.toString( );
+	}
+	
+	/**
+	 * Check if the content contains HTML tags
+	 * 
+	 * @param content the content to check
+	 * @return true if HTML tags are detected, false otherwise
+	 */
+	private boolean containsHtmlTags( String content )
+	{
+		if( StringUtils.isEmpty( content ) )
+		{
+			return false;
+		}
+		
+		return HTML_TAG_PATTERN.matcher( content ).find( );
 	}
 
 	/**

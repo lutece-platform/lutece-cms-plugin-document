@@ -46,7 +46,7 @@ import java.util.List;
 public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = " SELECT max( id_page_template_document ) FROM document_page_template";
+    private static final String SQL_QUERY_NEW_PK = " SELECT max( id_page_template_document ) FROM document_page_template ";
     private static final String SQL_QUERY_SELECT = " SELECT id_page_template_document, description, page_template_path, picture_path FROM document_page_template WHERE id_page_template_document = ?";
     private static final String SQL_QUERY_INSERT = " INSERT INTO document_page_template ( id_page_template_document, description, page_template_path, picture_path ) VALUES ( ?, ?, ?, ? )";
     private static final String SQL_QUERY_DELETE = " DELETE FROM document_page_template WHERE id_page_template_document = ?";
@@ -62,7 +62,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      * 
      * @return The new primary key
      */
-    int newPrimaryKey( )
+    private int newPrimaryKey( )
     {
         int nKey;
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
@@ -76,8 +76,6 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
             }
 
             nKey = daoUtil.getInt( 1 ) + 1;
-
-
         }
         return nKey;
     }
@@ -93,9 +91,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
         {
-
             documentPageTemplate.setId( newPrimaryKey( ) );
-
             daoUtil.setInt( 1, documentPageTemplate.getId( ) );
             daoUtil.setString( 2, documentPageTemplate.getDescription( ) );
             daoUtil.setString( 3, documentPageTemplate.getFile( ) );
@@ -163,7 +159,6 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
         {
-
             daoUtil.setInt( 1, documentPageTemplate.getId( ) );
             daoUtil.setString( 2, documentPageTemplate.getDescription( ) );
             daoUtil.setString( 3, documentPageTemplate.getFile( ) );
@@ -171,7 +166,6 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
             daoUtil.setInt( 5, documentPageTemplate.getId( ) );
 
             daoUtil.executeUpdate( );
-
         }
     }
 

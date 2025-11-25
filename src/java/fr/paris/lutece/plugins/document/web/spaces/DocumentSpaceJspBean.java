@@ -121,6 +121,8 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
     private static final String PROPERTY_MOVE_SPACE_PAGE_TITLE = "document.move_space.pageTitle";
     private static final String MESSAGE_MOVING_SPACE_NOT_AUTHORIZED = "document.message.movingSpaceNotAuthorized";
 
+	private static final String JSP_URL_MANAGE_DOCUMENT = "jsp/admin/plugins/document/ManageDocuments.jsp";
+
     @Inject
     @Named("document.spaceRemovalService")
     private RemovalListenerService _removalListenerService;
@@ -357,10 +359,14 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
         UrlItem url = new UrlItem( PATH_JSP + JSP_DELETE_SPACE );
         url.addParameter( PARAMETER_SPACE_ID, nSpaceId );
 
-        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE, messageArgs, url.getUrl(  ),
-            AdminMessage.TYPE_CONFIRMATION );
-    }
+        StringBuilder strUrlBack = new StringBuilder( JSP_URL_MANAGE_DOCUMENT )
+        	    .append("?id_space_filter=")
+        	    .append(nSpaceId);
 
+        
+        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE, messageArgs, null, url.getUrl(  ),null,
+            AdminMessage.TYPE_CONFIRMATION, null, strUrlBack.toString( ) );
+    }
     /**
      * Perform the deletion
      * @param request The HTTP request

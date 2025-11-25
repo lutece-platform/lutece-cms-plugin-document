@@ -1,0 +1,11 @@
+<#-- Fix for Flatpickr paths in plugin context -->
+<#macro initDatePicker language=locale>
+<#if !datePickerInitialized??>
+<link rel="stylesheet" href="css/bootstrap-flatpickr.min.css">
+<script src="js/util/lutece.js"></script>
+<script src="js/admin/bootstrap-flatpickr.min.js"></script>
+<#assign isEn=language?starts_with("en")?c />
+<#if !isEn?boolean><script src="js/admin/locales/bootstrap-flatpickr.${language?keep_before("_")}.js"></script></#if>
+<#assign datePickerInitialized=true />
+</#if>
+</#macro>

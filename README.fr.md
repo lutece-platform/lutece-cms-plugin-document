@@ -5,6 +5,8 @@
 
 # Plugin Document
 
+## Introduction
+
 Le plugin Document constitue l'application de gestion de contenu d'un portail Lutece.
 
 Ses principales fonctionnalités sont :
@@ -18,6 +20,36 @@ Ses principales fonctionnalités sont :
 * Pour la publication, le plugin fournit également deux portlets permettant de publier un ou une liste de documents. Il gère des dates de mise en ligne et de retrait automatique, ainsi qu’un ordonnancement ou une suspension manuel de chacun des documents.
 * Les documents sont accessibles par le moteur de recherche. Celui-ci indexe en texte intégral les zones de contenu définies comme « à indexer » dans le type du document.
 
+
+## Usage
+
+ **Indexation des documents** 
+
+Après la création ou la modification de documents, il est nécessaire de lancer le démon d'indexation `docSearchIndexer` pour que les nouveaux documents ou les modifications soient pris en compte dans les résultats de recherche.
+
+Le démon d'indexation peut être lancé manuellement depuis l'interface d'administration (Système → Démons) ou s'exécute automatiquement selon la configuration définie.
+
+## Configuration
+
+ **Indexation et Parsers** 
+
+Pour une indexation complète des documents, notamment des fichiers binaires (PDF, Office, etc.), il est recommandé d'installer le **plugin-parser** .
+
+Le plugin document fournit un parser HTML par défaut ( `DefaultDocumentIndexerParser` ) qui utilise JSoup pour extraire le texte des contenus HTML. Ce parser a une priorité basse (priorité 2).
+
+Le plugin-parser fournit un parser universel basé sur Apache Tika ( `TikaAutoDetectParser` ) qui a une priorité plus élevée (priorité 1). Ce parser détecte automatiquement le format des documentset peut traiter :
+ 
+* PDF
+* Documents MS Office (DOC, XLS, PPT, DOCX, XLSX, PPTX)
+* Documents OpenDocument (ODT, ODS, ODP)
+* HTML, XML
+* Archives (ZIP, RAR, etc.)
+* Et de nombreux autres formats
+
+
+ **Note :** Le plugin-parser apporte des dépendances lourdes (Apache Tika et ses bibliothèques). Si vous n'avez besoin que de l'indexation HTML, le parser par défaut du plugin document suffit.Pour une indexation complète incluant les fichiers binaires, installez le plugin-parser.
+
+Le système de priorité CDI sélectionne automatiquement le parser disponible avec la priorité la plus élevée.
 
 
 [Maven documentation and reports](https://dev.lutece.paris.fr/plugins/plugin-document/)

@@ -33,10 +33,12 @@
  */
 package fr.paris.lutece.plugins.document.business.category;
 
+import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.util.sql.DAOUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -47,10 +49,9 @@ import java.util.Collection;
 public final class CategoryDAO implements ICategoryDAO
 {
     // Constants
-    private static final String SQL_QUERY_MAX_PK = " SELECT MAX(id_category) FROM document_category ";
     private static final String SQL_QUERY_SELECT_BY_NAME = " SELECT id_category, description, icon_content, icon_mime_type, workgroup_key FROM document_category WHERE document_category_name = ? ";
     private static final String SQL_QUERY_SELECTALL = " SELECT id_category, document_category_name, description, icon_content, icon_mime_type, workgroup_key FROM document_category ORDER BY document_category_name";
-    private static final String SQL_QUERY_INSERT = " INSERT INTO document_category ( id_category, document_category_name, description, icon_content, icon_mime_type, workgroup_key ) VALUES ( ?, ?, ?, ?, ?, ? )";
+    private static final String SQL_QUERY_INSERT = " INSERT INTO document_category ( document_category_name, description, icon_content, icon_mime_type, workgroup_key ) VALUES ( ?, ?, ?, ?, ? )";
     private static final String SQL_QUERY_SELECT = " SELECT document_category_name, description, icon_content, icon_mime_type ,workgroup_key FROM document_category WHERE id_category = ? ";
     private static final String SQL_QUERY_DELETE = " DELETE FROM document_category WHERE id_category = ? ";
     private static final String SQL_QUERY_UPDATE = " UPDATE document_category SET document_category_name = ?, description = ?, icon_content = ?, icon_mime_type = ?, workgroup_key= ? WHERE id_category = ?";
@@ -107,9 +108,8 @@ public final class CategoryDAO implements ICategoryDAO
     public void insert( Category category )
     {
         int nParam = 0;
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS ) )
         {
-            daoUtil.setInt( ++nParam, getNewPrimaryKey( ) );
             daoUtil.setString( ++nParam, category.getName( ) );
             daoUtil.setString( ++nParam, category.getDescription( ) );
             daoUtil.setBytes( ++nParam, category.getIconContent( ) );
@@ -117,29 +117,14 @@ public final class CategoryDAO implements ICategoryDAO
             daoUtil.setString( ++nParam, category.getWorkgroup( ) );
 
             daoUtil.executeUpdate( );
-        }
-    }
-
-    /**
-     * Auto increment the primary key for the new category
-     * 
-     * @return the new primary key for category
-     */
-    private int getNewPrimaryKey( )
-    {
-        int nNewPrimaryKey = -1;
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_MAX_PK ) )
-        {
-            daoUtil.executeQuery( );
-
-            if ( daoUtil.next( ) )
+            
+            if ( daoUtil.nextGeneratedKey( ) )
             {
-                nNewPrimaryKey = daoUtil.getInt( 1 );
+            	category.setId( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        return ++nNewPrimaryKey;
     }
-
+    
     /**
      * Load the data of Category from the table
      * 

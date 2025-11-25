@@ -1,24 +1,50 @@
 <@fieldSet legendId='dublin_core_meta' legend='#i18n{module.document.metadatadublincore.title}'>
     <@div class='dublin_core_meta_content'>
 		<@formGroup labelFor='dc_title' labelKey='#i18n{module.document.metadatadublincore.labelTitle}' rows=2>
-			<@input type='text' name='dc_title' id='dc_title' value='${metadata.title}' />
+			<@input type='text' name='dc_title' id='dc_title' value='${metadata_business.title}' />
 		</@formGroup>
 		
-		<@formGroup labelFor='dc_creator' labelKey='#i18n{module.document.metadatadublincore.labelCreator}' rows=2>			<@input type='text' name='dc_creator' id='dc_creator' value='${metadata.creator}' />		</@formGroup>
-		<@formGroup labelFor='dc_subject' labelKey='#i18n{module.document.metadatadublincore.labelSubject}' rows=2>			<@input type='text' name='dc_subject' id='dc_subject' value='${metadata.subject}' />		</@formGroup>
-		<@formGroup labelFor='dc_description' labelKey='#i18n{module.document.metadatadublincore.labelDescription}' rows=2>			<@input type='text' name='dc_description' id='dc_description' value='${metadata.description}' />		</@formGroup>
-		<@formGroup labelFor='dc_publisher' labelKey='#i18n{module.document.metadatadublincore.labelPublisher}' rows=2>			<@input type='text' name='dc_publisher' id='dc_publisher' value='${metadata.publisher}' />		</@formGroup>
-		<@formGroup labelFor='dc_contributor' labelKey='#i18n{module.document.metadatadublincore.labelContributor}' rows=2>			<@input type='text' name='dc_contributor' id='dc_contributor' value='${metadata.contributor}' />		</@formGroup>
-		<@formGroup labelFor='dc_date' labelKey='#i18n{module.document.metadatadublincore.labelDate}' rows=2>			<@input type='text' name='dc_date' id='dc_date' value='${metadata.date}' />		</@formGroup>
-		<@formGroup labelFor='dc_type' labelKey='#i18n{module.document.metadatadublincore.labelType}' rows=2>			<@input type='text' name='dc_type' id='dc_type' value='${metadata.type}' />		</@formGroup>
-		<@formGroup labelFor='dc_format' labelKey='#i18n{module.document.metadatadublincore.labelFormat}' rows=2>			<@input type='text' name='dc_format' id='dc_format' value='${metadata.format}' />		</@formGroup>
-		<@formGroup labelFor='dc_identifier' labelKey='#i18n{module.document.metadatadublincore.labelIdentifier}' rows=2>			<@input type='text' name='dc_identifier' id='dc_identifier' value='${metadata.identifier}' />		</@formGroup>
-		<@formGroup labelFor='dc_source' labelKey='#i18n{module.document.metadatadublincore.labelSource}' rows=2>
-			<@input type='text' name='dc_source' id='dc_source' value='${metadata.source}' />
+		<@formGroup labelFor='dc_creator' labelKey='#i18n{module.document.metadatadublincore.labelCreator}' rows=2>
+			<@input type='text' name='dc_creator' id='dc_creator' value='${metadata_business.creator!}' />
 		</@formGroup>
-		<@formGroup labelFor='dc_language' labelKey='#i18n{module.document.metadatadublincore.labelLanguage} :' rows=2>			<@input type='text' name='dc_language' id='dc_language' value='${metadata.language}' />		</@formGroup>
-		<@formGroup labelFor='dc_relation' labelKey='#i18n{module.document.metadatadublincore.labelRelation} :' rows=2>			<@input type='text' name='dc_relation' id='dc_relation' value='${metadata.relation}' />		</@formGroup>
-		<@formGroup labelFor='dc_coverage' labelKey='#i18n{module.document.metadatadublincore.labelCoverage} :' rows=2>			<@input type='text' name='dc_coverage' id='dc_coverage' value='${metadata.coverage}' />		</@formGroup>
-		<@formGroup labelFor='dc_rights' labelKey='#i18n{module.document.metadatadublincore.labelRights} :' rows=2>			<@input type='text' name='dc_rights' id='dc_rights' value='${metadata.rights}' />		</@formGroup>
+		<@formGroup labelFor='dc_subject' labelKey='#i18n{module.document.metadatadublincore.labelSubject}' rows=2>
+			<@input type='text' name='dc_subject' id='dc_subject' value='${metadata_business.subject!}' />
+		</@formGroup>
+		<@formGroup labelFor='dc_description' labelKey='#i18n{module.document.metadatadublincore.labelDescription}' rows=2>
+			<@input type='text' name='dc_description' id='dc_description' value='${metadata_business.description!}' />
+		</@formGroup>
+		<@formGroup labelFor='dc_publisher' labelKey='#i18n{module.document.metadatadublincore.labelPublisher}' rows=2>
+			<@input type='text' name='dc_publisher' id='dc_publisher' value='${metadata_business.publisher!}' />
+		</@formGroup>
+		<@formGroup labelFor='dc_contributor' labelKey='#i18n{module.document.metadatadublincore.labelContributor}' rows=2>
+			<@input type='text' name='dc_contributor' id='dc_contributor' value='${metadata_business.contributor!}' />
+		</@formGroup>
+		<@formGroup labelFor='dc_date' labelKey='#i18n{module.document.metadatadublincore.labelDate}' rows=2>
+			<@input type='text' name='dc_date' id='dc_date' value='${metadata_business.date!}' />
+		</@formGroup>
+		<@formGroup labelFor='dc_type' labelKey='#i18n{module.document.metadatadublincore.labelType}' rows=2>
+			<@input type='text' name='dc_type' id='dc_type' value='${metadata_business.type!}' />
+		</@formGroup>
+		<@formGroup labelFor='dc_format' labelKey='#i18n{module.document.metadatadublincore.labelFormat}' rows=2>
+			<@input type='text' name='dc_format' id='dc_format' value='${metadata_business.format!}' />
+		</@formGroup>
+		<@formGroup labelFor='dc_identifier' labelKey='#i18n{module.document.metadatadublincore.labelIdentifier}' rows=2>
+			<@input type='text' name='dc_identifier' id='dc_identifier' value='${metadata_business.identifier!}' />
+		</@formGroup>
+		<@formGroup labelFor='dc_source' labelKey='#i18n{module.document.metadatadublincore.labelSource}' rows=2>
+			<@input type='text' name='dc_source' id='dc_source' value='${metadata_business.source!}' />
+		</@formGroup>
+		<@formGroup labelFor='dc_language' labelKey='#i18n{module.document.metadatadublincore.labelLanguage} :' rows=2>
+			<@input type='text' name='dc_language' id='dc_language' value='${metadata_business.language!}' />
+		</@formGroup>
+		<@formGroup labelFor='dc_relation' labelKey='#i18n{module.document.metadatadublincore.labelRelation} :' rows=2>
+			<@input type='text' name='dc_relation' id='dc_relation' value='${metadata_business.relation!}' />
+		</@formGroup>
+		<@formGroup labelFor='dc_coverage' labelKey='#i18n{module.document.metadatadublincore.labelCoverage} :' rows=2>
+			<@input type='text' name='dc_coverage' id='dc_coverage' value='${metadata_business.coverage!}' />
+		</@formGroup>
+		<@formGroup labelFor='dc_rights' labelKey='#i18n{module.document.metadatadublincore.labelRights} :' rows=2>
+			<@input type='text' name='dc_rights' id='dc_rights' value='${metadata_business.rights!}' />
+		</@formGroup>
     </@div>
 </@fieldSet>

@@ -1,3 +1,5 @@
+<#include "/admin/util/document/macro_date_fix.html" />
+<@initDatePicker language=locale />
 <@pageContainer>
     <@pageColumn>
 		<@pageHeader title='#i18n{document.adminFeature.documents_management.name}' />
@@ -81,11 +83,11 @@
 						<#if metadata?has_content >
 							<@box>
 								<@boxHeader title='#i18n{document.modify_document_type.labelMetadata}'>
-									<@button type='button' style='card-control collapse' buttonTargetId='#metadata' buttonIcon='plus' size='sm' />
+									<@button type='button' style='card-control collapse' buttonTargetId='#div_metadata' buttonIcon='plus' size='sm' />
 								</@boxHeader>
 								<@boxBody> 
-									<@div id='metadata'>
-										<#noescape>${metadata}</#noescape>
+									<@div id='div_metadata'>
+										<#noescape>${metadata_form}</#noescape>
 									</@div>
 								</@boxBody>
 							</@box>
@@ -98,5 +100,4 @@
 </@pageContainer>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />
-<#--<@getDatePickerRangeBootstrap language=locale />-->
 

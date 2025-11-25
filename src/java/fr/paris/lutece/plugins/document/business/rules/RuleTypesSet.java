@@ -87,6 +87,7 @@ public class RuleTypesSet implements IRuleTypesSet
 	public Rule newInstance( String strRuleTypeKey )
 	{
 		Rule rule = null;
+		
 		if( BEAN_NAME_RULEMOVESPACE.equals( strRuleTypeKey ) )
 		{
 			rule = moveSpaceRuleInstance.get( );
@@ -97,9 +98,9 @@ public class RuleTypesSet implements IRuleTypesSet
 		}
 		else
 		{
-			// log ou exception si besoin
 			return null;
 		}
+		
 		rule.setRuleTypeId( strRuleTypeKey );
 
 		return rule;

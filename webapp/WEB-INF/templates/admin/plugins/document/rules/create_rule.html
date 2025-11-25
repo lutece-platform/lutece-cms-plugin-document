@@ -5,7 +5,7 @@
             <@boxBody>
 				<@tform method='post' name='createRule' id='createRule' action='jsp/admin/plugins/document/DoCreateRule.jsp'>
 					<@input type='hidden' name='id_rule_type' value='${rule_type_id}' />
-					<@input type='hidden' name='rule_attribute_selected" id="rule_attribute_selected' value='' />
+					<@input type='hidden' name='rule_attribute_selected' id='rule_attribute_selected' value='' />
 					${create_form}
 					<@formGroup>
 						<@button type='submit' title='#i18n{document.create_rule.buttonCreate}' buttonIcon='save' />
@@ -18,20 +18,16 @@
 </@row>
    
 <script language="javascript">
-$(".btn-primary").click( function(){
-	var d = $(this).attr("data-space");
-	if (typeof d !== 'undefined') {
-		$("#rule_attribute_selected").val( d );
-		$("#createRule").attr("action","jsp/admin/plugins/document/SelectSpaceRule.jsp").submit();
-	} else {
-		return true;
-	}
+$(document).ready(function() {
+    $(".btn-primary").click( function(){
+        var d = $(this).attr("data-space");
+        if (typeof d !== 'undefined') {
+            $("#rule_attribute_selected").val( d );
+            $("#createRule").attr("action","jsp/admin/plugins/document/SelectSpaceRule.jsp").submit();
+        } else {
+            return true;
+        }
+    });
 });
-/*
-function selectSpace(select){
-	document.forms['createRule'].action='jsp/admin/plugins/document/SelectSpaceRule.jsp';
- 	document.forms['createRule'].rule_attribute_selected.value=select;
- 	document.forms['createRule'].submit();
-}
-*/
+
 </script>

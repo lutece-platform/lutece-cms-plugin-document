@@ -355,10 +355,10 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
 		UrlItem url = new UrlItem( JSP_URL_REMOVE_CATEGORY );
 		url.addParameter( PARAMETER_CATEGORY_ID, Integer.toString( nIdCategory ) );
 
-		return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_CATEGORY, url.getUrl( ),
-				AdminMessage.TYPE_CONFIRMATION );
+		return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_CATEGORY,null,null, url.getUrl( ),null,
+				AdminMessage.TYPE_CONFIRMATION, null, JSP_URL_MANAGE_CATEGORY );
 	}
-
+	
 	/**
 	 * Perform the deletion
 	 * 

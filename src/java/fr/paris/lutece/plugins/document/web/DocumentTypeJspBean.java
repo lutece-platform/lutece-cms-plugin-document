@@ -152,6 +152,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	private static final String PARAMETER_SESSION = "session";
 	private static final String JSP_MANAGE_DOCUMENT_TYPE = "jsp/admin/plugins/document/ManageDocumentTypes.jsp";
 	private static final String JSP_MODIFY_DOCUMENT_TYPE = "ModifyDocumentType.jsp";
+	private static final String JSP_URL_MODIFY_DOCUMENT_TYPE = "jsp/admin/plugins/document/ModifyDocumentType.jsp";
 	private static final String JSP_DELETE_DOCUMENT_TYPE = "jsp/admin/plugins/document/DoDeleteDocumentType.jsp";
 	private static final String JSP_DELETE_ATTRIBUTE = "jsp/admin/plugins/document/DoDeleteAttribute.jsp";
 	private static final String JSP_MODIFY_DOCUMENT_TYPE_ATTRIBUTE = "ModifyDocumentTypeAttribute.jsp";
@@ -708,8 +709,8 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	{
 		String strCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
 		String strDeleteUrl = JSP_DELETE_DOCUMENT_TYPE + "?" + PARAMETER_DOCUMENT_TYPE_CODE + "=" + strCode;
-		String strUrl = AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_DELETE_TYPE, strDeleteUrl,
-				AdminMessage.TYPE_CONFIRMATION );
+		String strUrl = AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_DELETE_TYPE,null,null, strDeleteUrl,null,
+				AdminMessage.TYPE_CONFIRMATION,null,JSP_MANAGE_DOCUMENT_TYPE );
 
 		// Check if this type has documents
 		if( DocumentTypeHome.checkDocuments( strCode ) )
@@ -759,11 +760,12 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	 */
 	public String doConfirmDeleteAttribute( HttpServletRequest request )
 	{
+		String strCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
 		String strId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
 		String strDeleteUrl = JSP_DELETE_ATTRIBUTE + "?" + PARAMETER_ATTRIBUTE_ID + "=" + strId;
-		String strUrl = AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_DELETE_ATTRIBUTE, strDeleteUrl,
-				AdminMessage.TYPE_CONFIRMATION );
-
+		String strUrl = AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_DELETE_ATTRIBUTE,null,null, strDeleteUrl,null,
+				AdminMessage.TYPE_CONFIRMATION,null, JSP_URL_MODIFY_DOCUMENT_TYPE + "?" + PARAMETER_DOCUMENT_TYPE_CODE + "=" + strCode );
+		
 		return strUrl;
 	}
 
