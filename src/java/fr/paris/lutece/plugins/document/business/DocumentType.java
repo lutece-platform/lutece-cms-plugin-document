@@ -37,13 +37,15 @@ import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataHandler;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataService;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.UniqueIDGenerator;
 import fr.paris.lutece.util.html.HtmlTemplate;
+import jakarta.enterprise.inject.literal.NamedLiteral;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,8 +59,11 @@ import javax.xml.transform.stream.StreamSource;
 /**
  * This class represents the business object DocumentType
  */
-public class DocumentType implements RBACResource
+public class DocumentType implements RBACResource, Serializable
 {
+	
+    private static final long serialVersionUID = 1L;
+    
     public static final String RESOURCE_TYPE = "DOCUMENT_TYPE";
     private static final String TEMPLATE_ADMIN_DEFAULT_XSL = "/admin/plugins/document/document_admin_default_xsl.html";
     private static final String TEMPLATE_CONTENT_SERVICE_DEFAULT_XSL = "/skin/plugins/document/document_content_service_default_xsl.html";
@@ -466,7 +471,7 @@ public class DocumentType implements RBACResource
         if ( ( _strMetadataHandler != null ) && ( !_strMetadataHandler.equals( "" ) ) && ( !_strMetadataHandler.equals( MetadataService.NO_HANDLER ) ) )
         {
             String strBeanName = MetadataService.getBeanName( _strMetadataHandler );
-            handler = SpringContextService.getBean( strBeanName );
+            handler = CDI.current().select( MetadataHandler.class, NamedLiteral.of( strBeanName ) ).get( );
         }
 
         return handler;

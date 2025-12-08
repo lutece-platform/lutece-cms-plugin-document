@@ -38,7 +38,8 @@ import fr.paris.lutece.plugins.document.business.DocumentHome;
 
 import java.util.Collection;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
@@ -79,7 +80,7 @@ public final class DocumentTools
 
             if ( document != null )
             {
-                String strXml = DocumentService.getInstance(  ).buildXmlContent( document );
+                String strXml = CDI.current( ).select( DocumentService.class ).get( ).buildXmlContent( document );
                 document.setXmlWorkingContent( strXml );
 
                 if ( bRebuildValidatedContent )

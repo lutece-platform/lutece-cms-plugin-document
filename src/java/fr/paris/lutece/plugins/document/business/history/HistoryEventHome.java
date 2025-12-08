@@ -34,7 +34,7 @@
 package fr.paris.lutece.plugins.document.business.history;
 
 import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,7 +46,7 @@ import java.util.Locale;
 public final class HistoryEventHome
 {
     // Static variable pointed at the DAO instance
-    private static IHistoryEventDAO _dao = SpringContextService.getBean( "document.historyEventDAO" );
+    private static IHistoryEventDAO _dao = CDI.current( ).select( IHistoryEventDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated

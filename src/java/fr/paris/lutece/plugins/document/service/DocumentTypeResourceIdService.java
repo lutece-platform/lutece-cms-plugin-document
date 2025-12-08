@@ -108,6 +108,7 @@ public class DocumentTypeResourceIdService extends ResourceIdService
     /**
      * Initializes the service
      */
+    @Override
     public void register(  )
     {
         ResourceType rt = new ResourceType(  );
@@ -184,6 +185,7 @@ public class DocumentTypeResourceIdService extends ResourceIdService
      * @param locale The current locale
      * @return A list of resource ids
      */
+    @Override
     public ReferenceList getResourceIdList( Locale locale )
     {
         return DocumentTypeHome.getDocumentTypesList(  );
@@ -195,6 +197,7 @@ public class DocumentTypeResourceIdService extends ResourceIdService
      * @param locale The current locale
      * @return The Title of a given resource
      */
+    @Override
     public String getTitle( String strId, Locale locale )
     {
         DocumentType type = DocumentTypeHome.findByPrimaryKey( strId );

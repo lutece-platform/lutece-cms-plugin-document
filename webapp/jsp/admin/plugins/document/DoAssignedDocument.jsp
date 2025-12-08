@@ -1,8 +1,6 @@
 <%@ page errorPage="../../ErrorPage.jsp" %>
 
-<jsp:useBean id="documentPublishing" scope="session" class="fr.paris.lutece.plugins.document.web.publishing.DocumentPublishingJspBean" />
+<%@page import="fr.paris.lutece.plugins.document.web.publishing.DocumentPublishingJspBean"%>
 
-<%
-    documentPublishing.init( request, documentPublishing.RIGHT_DOCUMENT_MANAGEMENT );
-    response.sendRedirect( documentPublishing.doAssignedDocument( request ) );
-%>
+${ documentPublishingJspBean.init( pageContext.request, DocumentPublishingJspBean.RIGHT_DOCUMENT_MANAGEMENT ) }
+${ pageContext.response.sendRedirect( documentPublishingJspBean.doAssignedDocument( pageContext.request ) ) }

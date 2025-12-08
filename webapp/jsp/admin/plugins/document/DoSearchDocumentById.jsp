@@ -1,8 +1,6 @@
 <%@ page errorPage="../../ErrorPage.jsp" %>
 
-<jsp:useBean id="document" scope="session" class="fr.paris.lutece.plugins.document.web.DocumentJspBean" />
+<%@page import="fr.paris.lutece.plugins.document.web.DocumentJspBean"%>
 
-<% 
-    document.init( request, document.RIGHT_DOCUMENT_MANAGEMENT ); 
-    response.sendRedirect( document.doSearchDocumentById( request ) );
-%>
+${ documentJspBean.init( pageContext.request, DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT ) }
+${ pageContext.response.sendRedirect( documentJspBean.doSearchDocumentById( pageContext.request ) ) }

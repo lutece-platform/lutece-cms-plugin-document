@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.service.autopublication;
 
 import fr.paris.lutece.portal.service.daemon.Daemon;
+import jakarta.enterprise.inject.spi.CDI;
 
 
 /**
@@ -42,10 +43,11 @@ import fr.paris.lutece.portal.service.daemon.Daemon;
 public class AutoPublicationDaemon extends Daemon
 {
     /**
-     *
+     * Run the Auto AutoPublication process
      */
+	@Override
     public void run(  )
     {
-        setLastRunLogs( AutoPublicationService.getInstance(  ).processAutoPublishing(  ) );
+        setLastRunLogs( CDI.current( ).select( AutoPublicationService.class ).get( ).processAutoPublishing(  ) );
     }
 }

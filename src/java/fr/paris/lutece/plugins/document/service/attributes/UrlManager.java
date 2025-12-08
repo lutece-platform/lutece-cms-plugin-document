@@ -49,6 +49,7 @@ public class UrlManager extends TextManager
      * Gets the template to enter the attribute value
      * @return The template to enter the attribute value
      */
+    @Override
     protected String getCreateTemplate(  )
     {
         return TEMPLATE_CREATE_ATTRIBUTE;
@@ -58,6 +59,7 @@ public class UrlManager extends TextManager
      * Gets the template to modify the attribute value
      * @return The template to modify the attribute value
      */
+    @Override
     protected String getModifyTemplate(  )
     {
         return TEMPLATE_MODIFY_ATTRIBUTE;
@@ -69,6 +71,7 @@ public class UrlManager extends TextManager
      * @param attribute  The attribute
      * @return The XML value of the attribute
      */
+    @Override
     public String getAttributeXmlValue( Document document, DocumentAttribute attribute )
     {
         // Return cdata Value

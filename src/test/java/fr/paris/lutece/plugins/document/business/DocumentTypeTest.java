@@ -34,9 +34,10 @@
 package fr.paris.lutece.plugins.document.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.test.LuteceTestCase;
 
+import fr.paris.lutece.portal.service.plugin.PluginService;
+import org.junit.jupiter.api.Test;
+import fr.paris.lutece.test.LuteceTestCase;
 
 public class DocumentTypeTest extends LuteceTestCase
 {
@@ -57,6 +58,7 @@ public class DocumentTypeTest extends LuteceTestCase
     private final static String METADATAHANDLER1 = "MetadataHandler1";
     private final static String METADATAHANDLER2 = "MetadataHandler2";
 
+    @Test
     public void testBusiness(  )
     {
         Plugin plugin = PluginService.getPlugin( "documentType" );

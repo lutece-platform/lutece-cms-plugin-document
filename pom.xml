@@ -1,25 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    
-	<parent>
-        <artifactId>lutece-global-pom</artifactId>
-        <groupId>fr.paris.lutece.tools</groupId>
-        <version>7.0.2</version>
+
+    <parent>
+		<artifactId>lutece-global-pom</artifactId>
+		<groupId>fr.paris.lutece.tools</groupId>
+		<version>8.0.0-SNAPSHOT</version>
     </parent>
-	
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-document</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>5.1.2-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
     <name>Lutece document plugin</name>
-	
+
     <repositories>
+
         <repository>
-            <id>lutece</id>
-            <name>luteceRepository</name>
-            <url>https://dev.lutece.paris.fr/maven_repository</url>
-            <layout>default</layout>
+			<id>lutece</id>
+			<name>luteceRepository</name>
+			<url>https://dev.lutece.paris.fr/maven_repository</url>
+			<layout>default</layout>
         </repository>
+
         <repository>
             <id>luteceSnapshot</id>
             <name>luteceSnapshot</name>
@@ -31,14 +33,18 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
+
     </repositories>
+
     <dependencies>
+
         <dependency>
             <groupId>fr.paris.lutece</groupId>
             <artifactId>lutece-core</artifactId>
-            <version>[7.0.10,7.9.9)</version>
+            <version>[8.0.0-SNAPSHOT,)</version>
             <type>lutece-core</type>
         </dependency>
+
         <!-- Add to resize image -->
         <dependency>
             <groupId>org.imgscalr</groupId>
@@ -46,12 +52,24 @@
             <version>4.1</version>
             <type>jar</type>
         </dependency>
+        
+		<!-- JUnit -->
 		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.5.0</version>
+			<groupId>fr.paris.lutece.plugins</groupId>
+			<artifactId>library-lutece-unit-testing</artifactId>
+			<type>jar</type>
+			<scope>test</scope>
 		</dependency>
+		
+        <dependency>
+            <groupId>fr.paris.lutece.plugins</groupId>
+            <artifactId>library-theme-jquery</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+            <type>lutece-plugin</type>
+        </dependency>
+
     </dependencies>
+    
     <properties>
         <componentName>document</componentName>
         <jiraProjectName>DOCUMENT</jiraProjectName>

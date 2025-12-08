@@ -7,9 +7,10 @@
     </properties>
     <body>
         <section name="Plugin Document">
-            <p>
-                Le plugin Document constitue l'application de gestion de contenu d'un portail Lutece.
-            </p>
+            <subsection name="Introduction">
+                <p>
+                    Le plugin Document constitue l'application de gestion de contenu d'un portail Lutece.
+                </p>
             <p>
                 Ses principales fonctionnalités sont : 
             </p>
@@ -28,6 +29,57 @@
                     <li>Les documents sont accessibles par le moteur de recherche. Celui-ci indexe en texte intégral les zones de contenu définies comme « à indexer » dans le type du document. </li>
                 </ul>
             </p>
+            </subsection>
+            
+            <subsection name="Usage">
+                <p>
+                    <strong>Indexation des documents</strong>
+                </p>
+                <p>
+                    Après la création ou la modification de documents, il est nécessaire de lancer le démon d'indexation 
+                    <code>docSearchIndexer</code> pour que les nouveaux documents ou les modifications soient pris en compte 
+                    dans les résultats de recherche.
+                </p>
+                <p>
+                    Le démon d'indexation peut être lancé manuellement depuis l'interface d'administration 
+                    (Système → Démons) ou s'exécute automatiquement selon la configuration définie.
+                </p>
+            </subsection>
+            
+            <subsection name="Configuration">
+                <p>
+                    <strong>Indexation et Parsers</strong>
+                </p>
+                <p>
+                    Pour une indexation complète des documents, notamment des fichiers binaires (PDF, Office, etc.), 
+                    il est recommandé d'installer le <strong>plugin-parser</strong>.
+                </p>
+                <p>
+                    Le plugin document fournit un parser HTML par défaut (<code>DefaultDocumentIndexerParser</code>) 
+                    qui utilise JSoup pour extraire le texte des contenus HTML. Ce parser a une priorité basse (priorité 2).
+                </p>
+                <p>
+                    Le plugin-parser fournit un parser universel basé sur Apache Tika (<code>TikaAutoDetectParser</code>) 
+                    qui a une priorité plus élevée (priorité 1). Ce parser détecte automatiquement le format des documents 
+                    et peut traiter :
+                    <ul>
+                        <li>PDF</li>
+                        <li>Documents MS Office (DOC, XLS, PPT, DOCX, XLSX, PPTX)</li>
+                        <li>Documents OpenDocument (ODT, ODS, ODP)</li>
+                        <li>HTML, XML</li>
+                        <li>Archives (ZIP, RAR, etc.)</li>
+                        <li>Et de nombreux autres formats</li>
+                    </ul>
+                </p>
+                <p>
+                    <strong>Note :</strong> Le plugin-parser apporte des dépendances lourdes (Apache Tika et ses bibliothèques). 
+                    Si vous n'avez besoin que de l'indexation HTML, le parser par défaut du plugin document suffit. 
+                    Pour une indexation complète incluant les fichiers binaires, installez le plugin-parser.
+                </p>
+                <p>
+                    Le système de priorité CDI sélectionne automatiquement le parser disponible avec la priorité la plus élevée.
+                </p>
+            </subsection>
         </section>
     </body>
 </document>

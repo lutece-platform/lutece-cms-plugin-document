@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.document.business.autopublication;
 
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.portal.business.portlet.Portlet;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.Collection;
 
@@ -46,7 +46,7 @@ import java.util.Collection;
 public class DocumentAutoPublicationHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentAutoPublicationDAO _dao = SpringContextService.getBean( "document.documentAutoPublicationDAO" );
+    private static IDocumentAutoPublicationDAO _dao = CDI.current( ).select( IDocumentAutoPublicationDAO.class ).get( );
 
     /* This class implements the Singleton design pattern. */
 

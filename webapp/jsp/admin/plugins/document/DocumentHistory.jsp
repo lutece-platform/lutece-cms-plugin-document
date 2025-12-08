@@ -2,10 +2,9 @@
 
 <jsp:include page="../../AdminHeader.jsp" />
 
-<jsp:useBean id="documentHistory" scope="session" class="fr.paris.lutece.plugins.document.web.history.DocumentHistoryJspBean" />
+<%@page import="fr.paris.lutece.plugins.document.web.DocumentJspBean"%>
 
-<% documentHistory.init( request, fr.paris.lutece.plugins.document.web.DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT ); %>
-
-<%= documentHistory.getHistory( request ) %>
+${ documentHistoryJspBean.init( pageContext.request, DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT ) }
+${ documentHistoryJspBean.getHistory( pageContext.request ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

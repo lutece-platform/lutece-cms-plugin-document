@@ -34,8 +34,8 @@
 package fr.paris.lutece.plugins.document.business.rules;
 
 import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,8 +46,8 @@ import java.util.Locale;
  */
 public final class RuleHome
 {
-    private static IRuleDAO _dao = SpringContextService.getBean( "document.ruleDAO" );
-    private static IRuleTypesSet _ruleTypesSet = SpringContextService.getBean( "document.ruleTypesSet" );
+    private static IRuleDAO _dao = CDI.current( ).select( IRuleDAO.class ).get( );
+    private static IRuleTypesSet _ruleTypesSet = CDI.current( ).select( IRuleTypesSet.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated

@@ -1,9 +1,9 @@
 <%@ page errorPage="../../ErrorPage.jsp" %>
 <jsp:include page="../../AdminHeader.jsp" />
 
-<jsp:useBean id="documentPublishing" scope="session" class="fr.paris.lutece.plugins.document.web.publishing.DocumentPublishingJspBean" />
+<%@page import="fr.paris.lutece.plugins.document.web.publishing.DocumentPublishingJspBean"%>
 
-<% documentPublishing.init( request, documentPublishing.RIGHT_DOCUMENT_MANAGEMENT ); %>
-<%= documentPublishing.getManageDocumentPublishing( request ) %>
+${ documentPublishingJspBean.init( pageContext.request, DocumentPublishingJspBean.RIGHT_DOCUMENT_MANAGEMENT ) }
+${ documentPublishingJspBean.getManageDocumentPublishing( pageContext.request ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

@@ -33,11 +33,12 @@
  */
 package fr.paris.lutece.plugins.document.business.attributes;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
 import org.apache.commons.lang3.StringUtils;
 
+import jakarta.enterprise.inject.spi.CDI;
+import java.util.stream.Collectors;
 import java.util.List;
 
 /**
@@ -95,6 +96,6 @@ public final class MapProviderManager
      */
     public static List<IMapProvider> getMapProvidersList( )
     {
-        return SpringContextService.getBeansOfType( IMapProvider.class );
+        return CDI.current( ).select( IMapProvider.class ).stream() .collect( Collectors.toList( ) );
     }
 }

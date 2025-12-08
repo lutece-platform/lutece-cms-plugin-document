@@ -49,7 +49,14 @@ import fr.paris.lutece.portal.business.portlet.PortletType;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.search.IndexationService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.ServletContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,24 +67,36 @@ import java.util.Locale;
 /**
  * Publishing service
  */
+@ApplicationScoped
+@Named( "document.PublishingService" )
 public class PublishingService
 {
-    private static PublishingService _singleton = new PublishingService(  );
-    private static PublishingEventListenersManager _manager;
-
+	@Inject
+	private Event<PublishingEvent> _publishingEvent;
+	
     /** Creates a new instance of PublishingService */
-    private PublishingService(  )
+    public PublishingService(  )
     {
-        _manager = SpringContextService.getBean( "document.publishingEventListenersManager" );
     }
 
     /**
-     * Get the unique instance of the service
-     * @return The unique instance
-     */
+	 * Returns the unique instance of the {@link PublishingService} service.
+	 * 
+	 * <p>
+	 * This method is deprecated and is provided for backward compatibility only.
+	 * For new code, use dependency injection with {@code @Inject} to obtain the
+	 * {@link PublishingService} instance instead.
+	 * </p>
+	 * 
+	 * @return The unique instance of {@link PublishingService}.
+	 * 
+	 * @deprecated Use {@code @Inject} to obtain the {@link PublishingService}
+	 *             instance. This method will be removed in future versions.
+	 */
+    @Deprecated( since = "8.0", forRemoval = true )
     public static PublishingService getInstance(  )
     {
-        return _singleton;
+        return CDI.current( ).select( PublishingService.class ).get( );
     }
 
     /**
@@ -114,15 +133,15 @@ public class PublishingService
         {
             documentPublication.setStatus( DocumentPublication.STATUS_PUBLISHED );
             documentPublication.setDatePublishing( new Date(  ) );
-            documentPublication.setDocumentOrder( getInstance(  ).getMaxDocumentOrderByPortletId( nPortletId ) + 1 );
+            documentPublication.setDocumentOrder( getMaxDocumentOrderByPortletId( nPortletId ) + 1 );
             DocumentPublicationHome.update( documentPublication );
 
             PublishingEvent event = new PublishingEvent( nDocumentId, nPortletId, PublishingEvent.DOCUMENT_PUBLISHED );
+            
+            _publishingEvent.fire(event);
+            //_manager.notifyListeners( event );
 
-            _manager.notifyListeners( event );
-
-            getInstance(  )
-                .changeDocumentOrder( documentPublication.getDocumentId(  ), documentPublication.getPortletId(  ), 1 );
+            changeDocumentOrder( documentPublication.getDocumentId(  ), documentPublication.getPortletId(  ), 1 );
         }
 
         String strIdDocument = Integer.toString( nDocumentId );
@@ -144,8 +163,8 @@ public class PublishingService
         DocumentPublication documentPublication = DocumentPublicationHome.findByPrimaryKey( nPortletId, nDocumentId );
 
         // Move the document at the end of the list
-        int nNewOrder = getInstance(  ).getMaxDocumentOrderByPortletId( nPortletId );
-        getInstance(  ).changeDocumentOrder( nDocumentId, nPortletId, nNewOrder );
+        int nNewOrder = getMaxDocumentOrderByPortletId( nPortletId );
+        changeDocumentOrder( nDocumentId, nPortletId, nNewOrder );
 
         if ( documentPublication != null )
         {
@@ -155,7 +174,9 @@ public class PublishingService
             DocumentPublicationHome.update( documentPublication );
 
             PublishingEvent event = new PublishingEvent( nDocumentId, nPortletId, PublishingEvent.DOCUMENT_UNPUBLISHED );
-            _manager.notifyListeners( event );
+            
+            _publishingEvent.fire(event);
+            //_manager.notifyListeners( event );
         }
 
         String strIdDocument = Integer.toString( nDocumentId );
@@ -458,5 +479,20 @@ public class PublishingService
     public int getMaxDocumentOrderByPortletId( int nPortletId )
     {
         return DocumentPublicationHome.findMaxDocumentOrderByPortletId( nPortletId );
+    }
+    
+	/**
+     * This method observes the initialization of the {@link ApplicationScoped} context.
+     * It ensures that this CDI beans are instantiated at the application startup.
+     *
+     * <p>This method is triggered automatically by CDI when the {@link ApplicationScoped} context is initialized,
+     * which typically occurs during the startup of the application server.</p>
+     *
+     * @param context the {@link ServletContext} that is initialized. This parameter is observed
+     *                and injected automatically by CDI when the {@link ApplicationScoped} context is initialized.
+     */
+    public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context ) 
+    {
+        // This method is intentionally left empty to trigger CDI bean instantiation
     }
 }

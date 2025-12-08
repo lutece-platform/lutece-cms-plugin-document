@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.document.business.autopublication;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,6 +45,7 @@ import java.util.Collection;
  * This class provides Data Access methods for DocumentAutoPublication objects
  *
  */
+@ApplicationScoped
 public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
 {
     private static final String SQL_QUERY_INSERT = "INSERT INTO document_auto_publication ( id_portlet , id_space ) VALUES ( ? , ? )";
@@ -64,6 +66,7 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      * @param nSpaceId
      *            the {@link DocumentSpace} identifier
      */
+    @Override
     public void delete( int nPortletId, int nSpaceId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -80,6 +83,7 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      * @param nPortletId
      *            the portlet identifier
      */
+    @Override
     public void deleteAllSpaces( int nPortletId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ALL_SPACES ) )
@@ -95,6 +99,7 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      * @param documentAutoPublication
      *            the instance of the DocumentAutoPublication object to insert
      */
+    @Override
     public void insert( DocumentAutoPublication documentAutoPublication )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
@@ -115,6 +120,7 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      *            The {@link DocumentSpace} identifier
      * @return The {@link DocumentAutoPublication} object
      */
+    @Override
     public DocumentAutoPublication load( int nPortletId, int nSpaceId )
     {
         DocumentAutoPublication documentAutoPublication = null;
@@ -140,6 +146,7 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      *
      * @return The {@link Collection} of {@link DocumentAutoPublication} object
      */
+    @Override
     public Collection<DocumentAutoPublication> load( )
     {
         Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<>( );
@@ -165,6 +172,7 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      *            The {@link Portlet} identifier
      * @return The {@link DocumentAutoPublication} object
      */
+    @Override
     public Collection<DocumentAutoPublication> selectByPortletId( int nPortletId )
     {
         Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<>( );
@@ -191,6 +199,7 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      *            The {@link DocumentSpace} identifier
      * @return The {@link DocumentAutoPublication} object
      */
+    @Override
     public Collection<DocumentAutoPublication> selectBySpaceId( int nSpaceId )
     {
         Collection<DocumentAutoPublication> listDocumentAutoPublication = new ArrayList<>( );
@@ -216,6 +225,7 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
      * @param documentAutoPublication
      *            The DocumentAutoPublication to update
      */
+    @Override
     public void store( DocumentAutoPublication documentAutoPublication )
     {
         // DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );

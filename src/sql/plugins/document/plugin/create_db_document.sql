@@ -6,7 +6,7 @@
 --
 DROP TABLE IF EXISTS document;
 CREATE TABLE document (
-	id_document int default 0 NOT NULL,
+	id_document int AUTO_INCREMENT,
 	code_document_type varchar(30) default NULL,
 	date_creation timestamp default CURRENT_TIMESTAMP NOT NULL,
 	date_modification timestamp default '1980-01-01 00:00:00' NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE document_attr_type_parameter (
 --
 DROP TABLE IF EXISTS document_category;
 CREATE TABLE document_category (
-	id_category int NOT NULL,
+	id_category int AUTO_INCREMENT,
 	document_category_name varchar(100) NOT NULL,
 	description varchar(255) default NULL,
 	icon_content long varbinary default NULL,
@@ -187,7 +187,7 @@ CREATE TABLE document_published (
 --
 DROP TABLE IF EXISTS document_rule;
 CREATE TABLE document_rule (
-	id_rule int default 0 NOT NULL,
+	id_rule int AUTO_INCREMENT,
 	rule_type varchar(50) NOT NULL,
 	PRIMARY KEY (id_rule)
 );
@@ -275,7 +275,7 @@ CREATE TABLE document_type (
 --
 DROP TABLE IF EXISTS document_type_attr;
 CREATE TABLE document_type_attr (
-	id_document_attr int default 0 NOT NULL,
+	id_document_attr int AUTO_INCREMENT,
 	code_document_type varchar(30) default NULL,
 	code_attr_type varchar(50) default NULL,
 	code varchar(50) default NULL,
@@ -362,7 +362,7 @@ CREATE TABLE document_type_attr_verify_by (
 -- Table structure for table document_indexer_action
 --
 DROP TABLE IF EXISTS document_indexer_action;
-CREATE TABLE  document_indexer_action (
+CREATE TABLE document_indexer_action(
   id_action int default 0 NOT NULL,
   id_record int default 0 NOT NULL,
   id_task int default 0 NOT NULL,

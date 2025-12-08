@@ -45,14 +45,6 @@ import java.util.Map;
 public interface IRuleTypesSet
 {
     /**
-     * Sets the rule types map
-     * 
-     * @param mapRules
-     *            The rule types map
-     */
-    void setRuleTypesMap( Map<String, Rule> mapRules );
-
-    /**
      * Returns the rule types list
      * 
      * @param locale

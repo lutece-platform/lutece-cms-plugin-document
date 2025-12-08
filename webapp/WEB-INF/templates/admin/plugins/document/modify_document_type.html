@@ -24,7 +24,7 @@
 								<@select name='thumbnail_attribute' items=thumbnail_attributes_list default_value='${document_type.thumbnailAttributeId}' />
 							</@formGroup>
 							<@formGroup labelFor='name' labelKey='#i18n{document.modify_document_type.labelMetadata}' helpKey='#i18n{document.modify_document_type.helpMetadata}' mandatory=true rows=2>
-								<@select name='metadata' items=metadata_handlers_list default_value='' />
+								<@select name='metadata' items=metadata_handlers_list default_value="${document_type.getMetadataHandler()!''}" />
 							</@formGroup>
 							<@formGroup rows=2>
 								<@button type='submit' title='#i18n{document.modify_document_type.buttonModify}' buttonIcon='device-floppy' />
@@ -77,7 +77,7 @@
 										<@aButton href='jsp/admin/plugins/document/ModifyDocumentTypeAttribute.jsp?attribute_id=${attribute.id}' title='${attribute.name}' buttonIcon='edit' size='sm' hideTitle=['all'] />
 										<@aButton href='jsp/admin/plugins/document/DoAttributeMoveUp.jsp?index=${attribute.attributeOrder}' title='#i18n{document.modify_document_type.buttonMoveUp}' buttonIcon='arrow-up' size='sm' hideTitle=['all'] />
 										<@aButton href='jsp/admin/plugins/document/DoAttributeMoveDown.jsp?index=${attribute.attributeOrder}' title='#i18n{document.modify_document_type.buttonMoveDown}' buttonIcon='arrow-down' size='sm' hideTitle=['all'] />
-										<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteAttribute.jsp?attribute_id=${attribute.id}' title='#i18n{document.modify_document_type.buttonDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all'] />
+										<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteAttribute.jsp?document_type_code=${document_type.code}&attribute_id=${attribute.id}' title='#i18n{document.modify_document_type.buttonDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all'] />
 									</@td>
 								</@tr>
 								</#list>

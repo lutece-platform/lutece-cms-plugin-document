@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.document.business;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttributeHome;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +44,7 @@ import java.util.Collection;
 /**
  * This class provides Data Access methods for DocumentType objects
  */
+@ApplicationScoped
 public final class DocumentTypeDAO implements IDocumentTypeDAO
 {
     // Constants
@@ -62,6 +64,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
      * @param documentType
      *            The documentType object
      */
+    @Override
     public void insert( DocumentType documentType )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
@@ -84,6 +87,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
      *            the code
      * @return the instance of the DocumentType
      */
+    @Override
     public DocumentType load( String strDocumentTypeCode )
     {
         DocumentType documentType = null;
@@ -116,6 +120,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
      * @param strCode
      *            the code type
      */
+    @Override
     public void delete( String strCode )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -132,6 +137,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
      * @param documentType
      *            The reference of documentType
      */
+    @Override
     public void store( DocumentType documentType )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
@@ -153,6 +159,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
      * 
      * @return The Collection of the DocumentTypes
      */
+    @Override
     public Collection<DocumentType> selectDocumentTypeList( )
     {
         Collection<DocumentType> listDocumentTypes = new ArrayList<>( );
@@ -181,6 +188,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
      * 
      * @return listDocumentTypes
      */
+    @Override
     public ReferenceList getDocumentTypeList( )
     {
         ReferenceList listDocumentTypes = new ReferenceList( );
@@ -205,6 +213,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
      *            The code type
      * @return bCheck the boolean
      */
+    @Override
     public boolean checkDocuments( String strCode )
     {
         boolean bCheck;
@@ -229,6 +238,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
      * @param nOrderAttribute2
      *            the attribute order
      */
+    @Override
     public void reorderAttributes( int nIdAttribute1, int nOrderAttribute1, int nIdAttribute2, int nOrderAttribute2 )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REORDER_ATTRIBUTES ) )
@@ -250,6 +260,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
      * @param strCodeType
      *            The code type
      */
+    @Override
     public void setAdminStyleSheet( byte [ ] baXslAdmin, String strCodeType )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_ADMIN_STYLESHEET ) )
@@ -269,6 +280,7 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
      * @param strCodeType
      *            The code type
      */
+    @Override
     public void setContentStyleSheet( byte [ ] baXslContent, String strCodeType )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_CONTENT_STYLESHEET ) )

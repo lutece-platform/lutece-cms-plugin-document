@@ -43,15 +43,19 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
  * Dublin Core Metadata Handler
  */
+@ApplicationScoped
+@Named("document.metadataDublinCore")
 public class DublinCoreMetadataHandler implements MetadataHandler
 {
-    private static final String TEMPLATE_FORM = "admin/plugins/document/modules/metadatadublincore/dublin_core_form.html";
+	private static final String TEMPLATE_FORM = "admin/plugins/document/modules/metadatadublincore/dublin_core_form.html";
 
     // Parameters
     private static final String PARAMETER_TITLE = "dc_title";
@@ -69,7 +73,7 @@ public class DublinCoreMetadataHandler implements MetadataHandler
     private static final String PARAMETER_RELATION = "dc_relation";
     private static final String PARAMETER_COVERAGE = "dc_coverage";
     private static final String PARAMETER_RIGTHS = "dc_rights";
-    private static final String MARK_METADATA = "metadata";
+    private static final String MARK_METADATA = "metadata_business";
 
     /**
      * {@inheritDoc}
@@ -77,9 +81,9 @@ public class DublinCoreMetadataHandler implements MetadataHandler
     @Override
     public String getCreateForm( HttpServletRequest request )
     {
-        DublinCoreMetadata metadata = new DublinCoreMetadata(  );
+        DublinCoreMetadata dublinMetadata = new DublinCoreMetadata(  );
         Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put( MARK_METADATA, metadata );
+        model.put( MARK_METADATA, dublinMetadata );
 
         Locale locale = AdminUserService.getLocale( request );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_FORM, locale, model );

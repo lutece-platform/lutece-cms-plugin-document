@@ -35,87 +35,128 @@ package fr.paris.lutece.plugins.document.service.attributes;
 
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttributeHome;
+import fr.paris.lutece.plugins.document.service.AttributeService;
 import fr.paris.lutece.util.xml.XmlUtil;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Named;
+import jakarta.servlet.ServletContext;
 
 import java.util.Collection;
-
 
 /**
  * Document Attributes management Service.
  */
+@ApplicationScoped
+@Named( "document.DocumentAttributesService" )
 public class DocumentAttributesService
 {
-    private static final String TAG_ATTRIBUTES = "attributes";
-    private static final String TAG_ATTRIBUTE = "attribute";
-    private static final String TAG_ATTRIBUTE_ID = "id_document_attr";
-    private static final String TAG_CODE_ATTRIBUTE_TYPE = "code_attr_type";
-    private static final String TAG_CODE_ATTRIBUTE = "code";
-    private static final String TAG_DOCUMENT_TYPE_ATTRIBUTE_NAME = "document_type_attr_name";
-    private static final String TAG_ATTRIBUTE_DESCRIPTION = "description";
-    private static DocumentAttributesService _singleton = new DocumentAttributesService(  );
+	private static final String TAG_ATTRIBUTES = "attributes";
+	private static final String TAG_ATTRIBUTE = "attribute";
+	private static final String TAG_ATTRIBUTE_ID = "id_document_attr";
+	private static final String TAG_CODE_ATTRIBUTE_TYPE = "code_attr_type";
+	private static final String TAG_CODE_ATTRIBUTE = "code";
+	private static final String TAG_DOCUMENT_TYPE_ATTRIBUTE_NAME = "document_type_attr_name";
+	private static final String TAG_ATTRIBUTE_DESCRIPTION = "description";
 
-    /** Creates a new instance of DocumentSpacesService */
-    private DocumentAttributesService(  )
-    {
-    }
+	/** Creates a new instance of DocumentSpacesService */
+	public DocumentAttributesService( )
+	{
+	}
 
     /**
-     * Returns the unique instance of the service
-     * @return the unique instance of the service
+     * Returns the unique instance of the {@link DocumentAttributesService} service.
+     * 
+     * <p>This method is deprecated and is provided for backward compatibility only. 
+     * For new code, use dependency injection with {@code @Inject} to obtain the 
+     * {@link DocumentAttributesService} instance instead.</p>
+     * 
+     * @return The unique instance of {@link DocumentAttributesService}.
+     * 
+     * @deprecated Use {@code @Inject} to obtain the {@link DocumentAttributesService} 
+     * instance. This method will be removed in future versions.
      */
-    public static DocumentAttributesService getInstance(  )
-    {
-        return _singleton;
-    }
+	@Deprecated( since = "8.0", forRemoval = true )
+	public static DocumentAttributesService getInstance( )
+	{
+		return CDI.current( ).select( DocumentAttributesService.class ).get( );
+	}
 
-    /**
-     * Gets attributes list of a type of document as an XML document
-     * @param strCodeType The code for the document type
-     * @return An XML document containing attributes list
-     */
-    public String getXmlAttributesList( String strCodeType )
-    {
-        StringBuffer sbXML = new StringBuffer(  );
-        XmlUtil.beginElement( sbXML, TAG_ATTRIBUTES );
+	/**
+	 * Gets attributes list of a type of document as an XML document
+	 * 
+	 * @param strCodeType The code for the document type
+	 * @return An XML document containing attributes list
+	 */
+	public String getXmlAttributesList( String strCodeType )
+	{
+		StringBuffer sbXML = new StringBuffer( );
+		XmlUtil.beginElement( sbXML, TAG_ATTRIBUTES );
 
-        for ( DocumentAttribute attribute : getAttributesOfDocumentType( strCodeType ) )
-        {
-            findDocumentAttributeByCodeType( sbXML, attribute.getId(  ) );
-        }
+		for( DocumentAttribute attribute : getAttributesOfDocumentType( strCodeType ) )
+		{
+			findDocumentAttributeByCodeType( sbXML, attribute.getId( ) );
+		}
 
-        XmlUtil.endElement( sbXML, TAG_ATTRIBUTES );
+		XmlUtil.endElement( sbXML, TAG_ATTRIBUTES );
 
-        return sbXML.toString(  );
-    }
+		return sbXML.toString( );
+	}
 
-    /**
-     * Get a attributes list of a selected code document type
-     * @param codeDocumentType The code document type
-     * @return The attributes list
-     */
-    private Collection<DocumentAttribute> getAttributesOfDocumentType( String codeDocumentType )
-    {
-        Collection<DocumentAttribute> listAttributes = DocumentAttributeHome.selectAllAttributesOfDocumentType( codeDocumentType );
+	/**
+	 * Get a attributes list of a selected code document type
+	 * 
+	 * @param codeDocumentType The code document type
+	 * @return The attributes list
+	 */
+	private Collection < DocumentAttribute > getAttributesOfDocumentType( String codeDocumentType )
+	{
+		Collection < DocumentAttribute > listAttributes = DocumentAttributeHome
+				.selectAllAttributesOfDocumentType( codeDocumentType );
 
-        return listAttributes;
-    }
+		return listAttributes;
+	}
 
-    /**
-    * Build recursively the XML document containing the arborescence of spaces
-    *
-    * @param sbXML The buffer in which adding the current space of the arborescence
-    * @param nAttributeId The attribute ID
-    */
-    private void findDocumentAttributeByCodeType( StringBuffer sbXML, int nAttributeId )
-    {
-        DocumentAttribute attribute = DocumentAttributeHome.findByPrimaryKey( nAttributeId );
+	/**
+	 * Build recursively the XML document containing the arborescence of spaces
+	 *
+	 * @param sbXML        The buffer in which adding the current space of the
+	 *                     arborescence
+	 * @param nAttributeId The attribute ID
+	 */
+	private void findDocumentAttributeByCodeType( StringBuffer sbXML, int nAttributeId )
+	{
+		DocumentAttribute attribute = DocumentAttributeHome.findByPrimaryKey( nAttributeId );
 
-        XmlUtil.beginElement( sbXML, TAG_ATTRIBUTE );
-        XmlUtil.addElement( sbXML, TAG_ATTRIBUTE_ID, attribute.getId(  ) );
-        XmlUtil.addElement( sbXML, TAG_CODE_ATTRIBUTE_TYPE, attribute.getCodeAttributeType(  ) );
-        XmlUtil.addElement( sbXML, TAG_CODE_ATTRIBUTE, attribute.getCode(  ) );
-        XmlUtil.addElement( sbXML, TAG_DOCUMENT_TYPE_ATTRIBUTE_NAME, attribute.getName(  ) );
-        XmlUtil.addElement( sbXML, TAG_ATTRIBUTE_DESCRIPTION, attribute.getDescription(  ) );
-        XmlUtil.endElement( sbXML, TAG_ATTRIBUTE );
-    }
+		XmlUtil.beginElement( sbXML, TAG_ATTRIBUTE );
+		XmlUtil.addElement( sbXML, TAG_ATTRIBUTE_ID, attribute.getId( ) );
+		XmlUtil.addElement( sbXML, TAG_CODE_ATTRIBUTE_TYPE, attribute.getCodeAttributeType( ) );
+		XmlUtil.addElement( sbXML, TAG_CODE_ATTRIBUTE, attribute.getCode( ) );
+		XmlUtil.addElement( sbXML, TAG_DOCUMENT_TYPE_ATTRIBUTE_NAME, attribute.getName( ) );
+		XmlUtil.addElement( sbXML, TAG_ATTRIBUTE_DESCRIPTION, attribute.getDescription( ) );
+		XmlUtil.endElement( sbXML, TAG_ATTRIBUTE );
+	}
+
+	/**
+	 * This method observes the initialization of the {@link ApplicationScoped}
+	 * context.
+	 * It ensures that this CDI beans are instantiated at the application startup.
+	 *
+	 * <p>
+	 * This method is triggered automatically by CDI when the
+	 * {@link ApplicationScoped} context is initialized,
+	 * which typically occurs during the startup of the application server.
+	 * </p>
+	 *
+	 * @param context the {@link ServletContext} that is initialized. This parameter
+	 *                is observed
+	 *                and injected automatically by CDI when the
+	 *                {@link ApplicationScoped} context is initialized.
+	 */
+	public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context )
+	{
+		// This method is intentionally left empty to trigger CDI bean instantiation
+	}
 }

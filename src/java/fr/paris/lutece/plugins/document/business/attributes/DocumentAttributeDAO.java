@@ -35,7 +35,9 @@ package fr.paris.lutece.plugins.document.business.attributes;
 
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -43,13 +45,13 @@ import java.util.List;
 /**
  * This class provides Data Access methods for DocumentAttribute objects
  */
+@ApplicationScoped
 public final class DocumentAttributeDAO implements IDocumentAttributeDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = " SELECT max( id_document_attr ) FROM document_type_attr ";
-    private static final String SQL_QUERY_INSERT = " INSERT INTO document_type_attr ( id_document_attr, code_document_type, code_attr_type, code, document_type_attr_name, description, attr_order, required, searchable ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_INSERT = " INSERT INTO document_type_attr ( code_document_type, code_attr_type, code, document_type_attr_name, description, attr_order, required, searchable ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = " DELETE FROM document_type_attr WHERE id_document_attr = ?  ";
-    private static final String SQL_QUERY_UPDATE = " UPDATE document_type_attr SET id_document_attr = ?, code_document_type = ?, code_attr_type = ?, code = ?, document_type_attr_name = ?, description = ?, attr_order = ?, required = ?, searchable = ? WHERE id_document_attr = ?  ";
+    private static final String SQL_QUERY_UPDATE = " UPDATE document_type_attr SET code_document_type = ?, code_attr_type = ?, code = ?, document_type_attr_name = ?, description = ?, attr_order = ?, required = ?, searchable = ? WHERE id_document_attr = ?  ";
     private static final String SQL_QUERY_SELECTALL_ATTRIBUTES = " SELECT a.id_document_attr, a.code_document_type," + " a.code_attr_type, a.code, "
             + " a.document_type_attr_name, a.description, a.attr_order, a.required, a.searchable " + " FROM document_type_attr a, document_attr_type b"
             + " WHERE a.code_attr_type =  b.code_attr_type" + " AND a.code_document_type = ? ORDER BY  a.attr_order";
@@ -71,28 +73,7 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
     private static final String SQL_QUERY_DELETE_REGULAR_EXPRESSIONS = "DELETE FROM document_type_attr_verify_by WHERE id_document_attr=?";
     private static final String SQL_QUERY_SELECT_REGULAR_EXPRESSION_BY_ID_ATTRIBUTE = "SELECT id_expression FROM document_type_attr_verify_by WHERE id_document_attr=?";
 
-    /**
-     * Generates a new primary key
-     * 
-     * @return The new primary key
-     */
-    private int newPrimaryKey( )
-    {
-        int nKey;
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
-        {
-            daoUtil.executeQuery( );
 
-            if ( !daoUtil.next( ) )
-            {
-                // if the table is empty
-                nKey = 1;
-            }
-
-            nKey = daoUtil.getInt( 1 ) + 1;
-        }
-        return nKey;
-    }
 
     /**
      * Insert a new record in the table.
@@ -100,23 +81,28 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      * @param documentAttribute
      *            The documentAttribute object
      */
+    @Override
     public synchronized void insert( DocumentAttribute documentAttribute )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS ) )
         {
-            documentAttribute.setId( newPrimaryKey( ) );
-            daoUtil.setInt( 1, documentAttribute.getId( ) );
-            daoUtil.setString( 2, documentAttribute.getCodeDocumentType( ) );
-            daoUtil.setString( 3, documentAttribute.getCodeAttributeType( ) );
-            daoUtil.setString( 4, documentAttribute.getCode( ) );
-            daoUtil.setString( 5, documentAttribute.getName( ) );
-            daoUtil.setString( 6, documentAttribute.getDescription( ) );
-            daoUtil.setInt( 7, documentAttribute.getAttributeOrder( ) );
-            daoUtil.setInt( 8, documentAttribute.isRequired( ) ? 1 : 0 );
-            daoUtil.setInt( 9, documentAttribute.isSearchable( ) ? 1 : 0 );
+            daoUtil.setString( 1, documentAttribute.getCodeDocumentType( ) );
+            daoUtil.setString( 2, documentAttribute.getCodeAttributeType( ) );
+            daoUtil.setString( 3, documentAttribute.getCode( ) );
+            daoUtil.setString( 4, documentAttribute.getName( ) );
+            daoUtil.setString( 5, documentAttribute.getDescription( ) );
+            daoUtil.setInt( 6, documentAttribute.getAttributeOrder( ) );
+            daoUtil.setInt( 7, documentAttribute.isRequired( ) ? 1 : 0 );
+            daoUtil.setInt( 8, documentAttribute.isSearchable( ) ? 1 : 0 );
 
             daoUtil.executeUpdate( );
+            
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+            	documentAttribute.setId( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
         }
+        
         // Insert parameters
         insertAttributeParameters( documentAttribute );
     }
@@ -128,6 +114,7 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      *            The attribute Id
      * @return the instance of the DocumentAttribute
      */
+    @Override
     public DocumentAttribute load( int nAttributeId )
     {
         DocumentAttribute documentAttribute = null;
@@ -159,6 +146,7 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      * @param nAttributeId
      *            The DocumentAttribute Id
      */
+    @Override
     public void delete( int nAttributeId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -212,20 +200,20 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      * @param documentAttribute
      *            The document attribute
      */
+    @Override
     public void store( DocumentAttribute documentAttribute )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
         {
-            daoUtil.setInt( 1, documentAttribute.getId( ) );
-            daoUtil.setString( 2, documentAttribute.getCodeDocumentType( ) );
-            daoUtil.setString( 3, documentAttribute.getCodeAttributeType( ) );
-            daoUtil.setString( 4, documentAttribute.getCode( ) );
-            daoUtil.setString( 5, documentAttribute.getName( ) );
-            daoUtil.setString( 6, documentAttribute.getDescription( ) );
-            daoUtil.setInt( 7, documentAttribute.getAttributeOrder( ) );
-            daoUtil.setInt( 8, documentAttribute.isRequired( ) ? 1 : 0 );
-            daoUtil.setInt( 9, documentAttribute.isSearchable( ) ? 1 : 0 );
-            daoUtil.setInt( 10, documentAttribute.getId( ) );
+            daoUtil.setString( 1, documentAttribute.getCodeDocumentType( ) );
+            daoUtil.setString( 2, documentAttribute.getCodeAttributeType( ) );
+            daoUtil.setString( 3, documentAttribute.getCode( ) );
+            daoUtil.setString( 4, documentAttribute.getName( ) );
+            daoUtil.setString( 5, documentAttribute.getDescription( ) );
+            daoUtil.setInt( 6, documentAttribute.getAttributeOrder( ) );
+            daoUtil.setInt( 7, documentAttribute.isRequired( ) ? 1 : 0 );
+            daoUtil.setInt( 8, documentAttribute.isSearchable( ) ? 1 : 0 );
+            daoUtil.setInt( 9, documentAttribute.getId( ) );
 
             daoUtil.executeUpdate( );
         }
@@ -240,6 +228,7 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      * @param documentType
      *            The document Type
      */
+    @Override
     public void selectAttributesByDocumentType( DocumentType documentType )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ATTRIBUTES ) )
@@ -275,6 +264,7 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      *            The code document Type
      * @return listDocumentAttributes The list of all attributes of selected code document type
      */
+    @Override
     public List<DocumentAttribute> selectAllAttributesOfDocumentType( String codeDocumentType )
     {
         List<DocumentAttribute> listDocumentAttributes = new ArrayList<>( );
@@ -301,7 +291,12 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
         return listDocumentAttributes;
     }
 
-    // Parameters
+    /**
+     * Insert Attribute Parameters
+     * 
+     * @param documentAttribute
+     *            Document Attribute
+     */
     private void insertAttributeParameters( DocumentAttribute documentAttribute )
     {
         for ( AttributeTypeParameter parameter : documentAttribute.getParameters( ) )
@@ -332,6 +327,7 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      *            The attribute Id
      * @return List of attribute parameters values
      */
+    @Override
     public List<AttributeTypeParameter> selectAttributeParametersValues( int nAttributeId )
     {
         ArrayList<AttributeTypeParameter> listParameters = new ArrayList<>( );
@@ -360,6 +356,7 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      *            The parameter name
      * @return The parameter values of an attribute
      */
+    @Override
     public List<String> getAttributeParameterValues( int nAttributeId, String strParameterName )
     {
         List<String> listValues = new ArrayList<>( );
@@ -385,6 +382,7 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      * @param nIdExpression
      *            The identifier of the regular expression
      */
+    @Override
     public void insertRegularExpression( int nIdAttribute, int nIdExpression )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_REGULAR_EXPRESSION ) )
@@ -403,6 +401,7 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      * @param nIdExpression
      *            The identifier of the regular expression
      */
+    @Override
     public void deleteRegularExpression( int nIdAttribute, int nIdExpression )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_REGULAR_EXPRESSION ) )
@@ -435,6 +434,7 @@ public final class DocumentAttributeDAO implements IDocumentAttributeDAO
      *            The identifier of the document attribute
      * @return A collection of regular expression key
      */
+    @Override
     public Collection<Integer> selectListRegularExpressionKeyByIdAttribute( int nIdAttribute )
     {
         Collection<Integer> colRegularExpression = new ArrayList<>( );

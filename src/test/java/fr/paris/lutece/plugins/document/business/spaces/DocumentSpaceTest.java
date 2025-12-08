@@ -33,9 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.business.spaces;
 
-import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
-import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
-import fr.paris.lutece.plugins.document.business.spaces.SpaceActionHome;
+import org.junit.jupiter.api.Test;
 import fr.paris.lutece.test.LuteceTestCase;
 
 import java.util.Locale;
@@ -55,6 +53,7 @@ public class DocumentSpaceTest extends LuteceTestCase
     private static final String DOCTYPE1 = "DocType 1";
     private static final String DOCTYPE2 = "DocType 2";
 
+    @Test
     public void testDocumentSpaceBusiness(  )
     {
         // Initialize an object

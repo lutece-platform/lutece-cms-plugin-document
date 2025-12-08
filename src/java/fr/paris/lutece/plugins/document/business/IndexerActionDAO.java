@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.business;
 
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ import java.util.List;
 /**
  * This class provides Data Access methods for Indexer Action objects
  */
+@ApplicationScoped
 public final class IndexerActionDAO implements IIndexerActionDAO
 {
     // Constants
@@ -48,19 +50,19 @@ public final class IndexerActionDAO implements IIndexerActionDAO
     public static final String CONSTANT_AND = " AND ";
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_action ) FROM document_indexer_action";
     private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_action,id_record,id_task" + " FROM document_indexer_action WHERE id_action = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO document_indexer_action( id_action,id_record,id_task)" + " VALUES(?,?,?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO document_indexer_action(id_action,id_record,id_task)" + " VALUES(?,?,?)";
     private static final String SQL_QUERY_DELETE = "DELETE FROM document_indexer_action WHERE id_action = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE document_indexer_action SET id_action=?,id_record=?,id_task=? WHERE id_action = ? ";
+    private static final String SQL_QUERY_UPDATE = "UPDATE document_indexer_action SET id_record=?,id_task=? WHERE id_action = ? ";
     private static final String SQL_QUERY_SELECT = "SELECT id_action,id_record,id_task" + " FROM document_indexer_action  ";
     private static final String SQL_QUERY_DELETE_ALL = "DELETE from document_indexer_action";
     private static final String SQL_FILTER_ID_TASK = " id_task = ? ";
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#newPrimaryKey()
+    /**
+     * Generates a new primary key
+     *
+     * @return The new primary key
      */
-    public int newPrimaryKey( )
+    private int newPrimaryKey( )
     {
         int nKey;
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
@@ -83,15 +85,15 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#insert(fr.paris.lutece.plugins.document.business.IndexerAction)
      */
+    @Override
     public synchronized void insert( IndexerAction indexerAction )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
         {
-            daoUtil.setInt( 2, indexerAction.getIdDocument( ) );
-            daoUtil.setInt( 3, indexerAction.getIdTask( ) );
-
             indexerAction.setIdAction( newPrimaryKey( ) );
             daoUtil.setInt( 1, indexerAction.getIdAction( ) );
+            daoUtil.setInt( 2, indexerAction.getIdDocument( ) );
+            daoUtil.setInt( 3, indexerAction.getIdTask( ) );
 
             daoUtil.executeUpdate( );
         }
@@ -102,6 +104,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#load(int)
      */
+    @Override
     public IndexerAction load( int nId )
     {
         IndexerAction indexerAction = null;
@@ -127,6 +130,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#delete(int)
      */
+    @Override
     public void delete( int nId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -141,6 +145,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#delete(int)
      */
+    @Override
     public void deleteAll( )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ALL ) )
@@ -154,15 +159,14 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#store(fr.paris.lutece.plugins.document.business.IndexerAction)
      */
+    @Override
     public void store( IndexerAction indexerAction )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
         {
-            daoUtil.setInt( 1, indexerAction.getIdAction( ) );
-            daoUtil.setInt( 2, indexerAction.getIdDocument( ) );
-            daoUtil.setInt( 3, indexerAction.getIdTask( ) );
-
-            daoUtil.setInt( 4, indexerAction.getIdAction( ) );
+            daoUtil.setInt( 1, indexerAction.getIdDocument( ) );
+            daoUtil.setInt( 2, indexerAction.getIdTask( ) );
+            daoUtil.setInt( 3, indexerAction.getIdAction( ) );
 
             daoUtil.executeUpdate( );
         }
@@ -173,6 +177,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * 
      * @see fr.paris.lutece.plugins.document.business.IIndexerActionDAO#selectList(fr.paris.lutece.plugins.document.business.IndexerActionlFilter)
      */
+    @Override
     public List<IndexerAction> selectList( IndexerActionFilter filter )
     {
         List<IndexerAction> indexerActionList = new ArrayList<>( );

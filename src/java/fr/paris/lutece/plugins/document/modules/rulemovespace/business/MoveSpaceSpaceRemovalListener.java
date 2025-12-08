@@ -42,60 +42,65 @@ import fr.paris.lutece.portal.service.util.RemovalListener;
 import java.util.Collection;
 import java.util.Locale;
 
-
 /**
  * Space Removal Listener
  */
 public class MoveSpaceSpaceRemovalListener implements RemovalListener
 {
-    private static final String PROPERTY_SPACE_CANNOT_BE_REMOVED = "module.document.rulemovespace.message.spaceCannotBeRemoved";
+	private static final String PROPERTY_SPACE_CANNOT_BE_REMOVED = "module.document.rulemovespace.message.spaceCannotBeRemoved";
 
-    /**
-    * Check if the object can be safely removed
-    * @param strId The object id
-    * @return true if the pbject can be removed otherwise false
-    */
-    public boolean canBeRemoved( String strId )
-    {
-        if ( IntegerUtils.isNotNumeric( strId ) )
-        {
-            return true;
-        }
+	/**
+	 * Check if the object can be safely removed
+	 * 
+	 * @param strId The object id
+	 * 
+	 * @return true if the pbject can be removed otherwise false
+	 */
+	@Override
+	public boolean canBeRemoved( String strId )
+	{
+		if( IntegerUtils.isNotNumeric( strId ) )
+		{
+			return true;
+		}
 
-        int nId = IntegerUtils.convert( strId );
+		int nId = IntegerUtils.convert( strId );
 
-        // Get the rule type key of the given rule type class
-        Rule moveSpaceRule = new MoveSpaceRule(  );
-        String strRuleTypeKey = RuleHome.getRuleTypeKey( moveSpaceRule );
+		// Get the rule type key of the given rule type class
+		Rule moveSpaceRule = new MoveSpaceRule( );
+		String strRuleTypeKey = RuleHome.getRuleTypeKey( moveSpaceRule );
 
-        //Get list of rules filtered by rule type key
-        Collection<Rule> listRule = RuleHome.findByRuleTypeKey( strRuleTypeKey );
+		// Get list of rules filtered by rule type key
+		Collection < Rule > listRule = RuleHome.findByRuleTypeKey( strRuleTypeKey );
 
-        for ( Rule rule : listRule )
-        {
-            String strSourceSpaceId = rule.getAttribute( MoveSpaceRule.getParameterKeySourceSpaceId(  ) );
-            String strDestinationSpaceId = rule.getAttribute( MoveSpaceRule.getParameterKeyDestinationSpaceId(  ) );
-            int nSourceSpaceId = IntegerUtils.convert( strSourceSpaceId );
-            int nDestinationId = IntegerUtils.convert( strDestinationSpaceId );
+		for( Rule rule : listRule )
+		{
+			String strSourceSpaceId = rule.getAttribute( MoveSpaceRule.getParameterKeySourceSpaceId( ) );
+			String strDestinationSpaceId = rule.getAttribute( MoveSpaceRule.getParameterKeyDestinationSpaceId( ) );
+			int nSourceSpaceId = IntegerUtils.convert( strSourceSpaceId );
+			int nDestinationId = IntegerUtils.convert( strDestinationSpaceId );
 
-            if ( ( nSourceSpaceId == nId ) || ( nDestinationId == nId ) )
-            {
-                return false;
-            }
-        }
+			if( ( nSourceSpaceId == nId ) || ( nDestinationId == nId ) )
+			{
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    /**
-     * Gives a message explaining why the object can't be removed
-     * @param id The object id
-     * @param locale The current locale
-     * @return The message
-     */
-    public String getRemovalRefusedMessage( String id, Locale locale )
-    {
-        // Build a message for rules using this space
-        return I18nService.getLocalizedString( PROPERTY_SPACE_CANNOT_BE_REMOVED, locale );
-    }
+	/**
+	 * Gives a message explaining why the object can't be removed
+	 * 
+	 * @param id     The object id
+	 * @param locale The current locale
+	 * 
+	 * @return The message
+	 */
+	@Override
+	public String getRemovalRefusedMessage( String id, Locale locale )
+	{
+		// Build a message for rules using this space
+		return I18nService.getLocalizedString( PROPERTY_SPACE_CANNOT_BE_REMOVED, locale );
+	}
 }

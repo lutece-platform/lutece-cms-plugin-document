@@ -36,31 +36,28 @@ package fr.paris.lutece.plugins.document.business.portlet;
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceItem;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Named;
 
 import java.util.Collection;
 import java.util.List;
 
+@ApplicationScoped
+@Named("document.DocumentPortletHome")
 public class DocumentPortletHome extends PortletHome
 {
     /////////////////////////////////////////////////////////////////////////////////
     // Constants
     // Static variable pointed at the DAO instance
-    private static IDocumentPortletDAO _dao = SpringContextService.getBean( "document.documentPortletDAO" );
-
-    /* This class implements the Singleton design pattern. */
-    private static DocumentPortletHome _singleton = null;
+    private static IDocumentPortletDAO _dao =  CDI.current( ).select( IDocumentPortletDAO.class ).get( );
 
     /**
      * Constructor
      */
     public DocumentPortletHome( )
     {
-        if ( _singleton == null )
-        {
-            _singleton = this;
-        }
     }
 
     /**
@@ -68,14 +65,10 @@ public class DocumentPortletHome extends PortletHome
      *
      * @return the DocumentPortletHome instance
      */
+    @Deprecated( since = "8.0", forRemoval = true )
     public static PortletHome getInstance( )
     {
-        if ( _singleton == null )
-        {
-            _singleton = new DocumentPortletHome( );
-        }
-
-        return _singleton;
+        return CDI.current( ).select( DocumentPortletHome.class ).get( );
     }
 
     /**
@@ -83,6 +76,7 @@ public class DocumentPortletHome extends PortletHome
      *
      * @return the portlet type identifier
      */
+    @Override
     public String getPortletTypeId( )
     {
         String strCurrentClassName = this.getClass( ).getName( );
@@ -96,6 +90,7 @@ public class DocumentPortletHome extends PortletHome
      *
      * @return the instance of the DAO singleton
      */
+    @Override
     public IPortletInterfaceDAO getDAO( )
     {
         return _dao;

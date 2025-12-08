@@ -41,12 +41,6 @@ import java.util.List;
  */
 public interface IDocumentDAO
 {
-    /**
-     * Generates a new primary key
-     * 
-     * @return The new primary key
-     */
-    int newPrimaryKey( );
 
     /**
      * Delete a record from the table

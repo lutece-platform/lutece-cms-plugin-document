@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.web.publishing;
 
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentPageTemplate;
@@ -70,6 +71,7 @@ import fr.paris.lutece.portal.service.portlet.PortletService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -84,12 +86,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
  * DocumentPublishingJspBean
  */
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
+
+@RequestScoped
+@Named
 public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 {
     public static final String RIGHT_DOCUMENT_MANAGEMENT = "DOCUMENT_MANAGEMENT";
@@ -171,6 +179,25 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     private static final String ERROR_MESSAGE_NOT_NUMERIC_FIELD = "document.message.notNumericField";
     private static final String ERROR_MESSAGE_MESSAGE_MANDATORY_SEARCH_FIELD = "document.message.mandatory.searchField";
 
+    @Inject
+    private DocumentService _documentService;
+    
+    @Inject
+    private DocumentSpacesService _documentSpacesService;
+    
+    @Inject
+    private PublishingService _publishingService;
+    
+    @Inject
+    private PortletService _portletService;
+    
+    @Inject
+    private AutoPublicationService _autoPublicationService;
+    
+    @Inject
+    Models _model;
+    
+    
     /**
      * Returns the publish template management
      *
@@ -191,11 +218,9 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         Portlet portlet;
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
-        Map<String, Object> model = new HashMap<String, Object>(  );
 
         if ( ( document != null ) &&
-                DocumentService.getInstance(  )
-                                   .isAuthorizedAdminDocument( document.getSpaceId(  ),
+        		_documentService.isAuthorizedAdminDocument( document.getSpaceId(  ),
                     document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_VIEW, getUser(  ) ) )
         {
             PortletOrder pOrder = new PortletOrder(  );
@@ -220,7 +245,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
                 if ( strErrorFilter != null )
                 {
-                    model.put( MARK_PORTLET_FILTER_ERROR, strErrorFilter );
+                    _model.put( MARK_PORTLET_FILTER_ERROR, strErrorFilter );
                 }
             }
 
@@ -238,8 +263,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             Collection<ReferenceItem> listDocumentPortlets = getListAuthorizedDocumentPortlets( document.getId(  ),
                     document.getCodeDocumentType(  ), pOrder, ( strErrorFilter == null ) ? portletFilter : null );
 
-            Collection<Portlet> listAssignedPortlet = PublishingService.getInstance(  )
-                                                                       .getPortletsByDocumentId( strDocumentId );
+            Collection<Portlet> listAssignedPortlet = _publishingService.getPortletsByDocumentId( strDocumentId );
 
             Collection<HashMap<String, Object>> listAssignedPortlets = new ArrayList<HashMap<String, Object>>(  );
 
@@ -250,18 +274,18 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
                 // Check if portlet is in Auto publication mode, if yes, delete
                 // it from iterator
                 if ( !DocumentAutoPublicationHome.isPortletAutoPublished( portlet.getId(  ) ) &&
-                        PortletService.getInstance(  ).isAuthorized( portlet, getUser(  ) ) )
+                        _portletService.isAuthorized( portlet, getUser(  ) ) )
                 {
                     HashMap<String, Object> portletPublication = new HashMap<String, Object>(  );
                     portletPublication.put( MARK_PORTLET, portlet );
                     portletPublication.put( MARK_ASSIGNED_PUBLICATION,
-                        PublishingService.getInstance(  ).getDocumentPublication( portlet.getId(  ), document.getId(  ) ) );
+                        _publishingService.getDocumentPublication( portlet.getId(  ), document.getId(  ) ) );
 
                     listAssignedPortlets.add( portletPublication );
                 }
             }
 
-            DocumentService.getInstance(  ).getActions( document, getLocale(  ), getUser(  ) );
+            _documentService.getActions( document, getLocale(  ), getUser(  ) );
 
             for ( Object action : document.getActions(  ) )
             {
@@ -270,30 +294,30 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
                 if ( ( docAction.getPermission(  ) != null ) &&
                         DocumentTypeResourceIdService.PERMISSION_ASSIGN.equals( docAction.getPermission(  ) ) )
                 {
-                    model.put( MARK_PERMISSION_ASSIGN, 1 );
+                    _model.put( MARK_PERMISSION_ASSIGN, 1 );
                 }
                 else if ( ( docAction.getPermission(  ) != null ) &&
                         DocumentTypeResourceIdService.PERMISSION_PUBLISH.equals( docAction.getPermission(  ) ) )
                 {
-                    model.put( MARK_PERMISSION_PUBLISH, 1 );
+                    _model.put( MARK_PERMISSION_PUBLISH, 1 );
                 }
             }
 
-            model.put( MARK_ORDER_PORTLET, nOrderPortlet );
-            model.put( MARK_ORDER_PORTLET_ASC, nOrderPortletAsc );
-            model.put( MARk_DOCUMENT_LIST_PORTLET_LIST, listDocumentListPortlets );
-            model.put( MARK_DOCUMENT_PORTLET_LIST, listDocumentPortlets );
-            model.put( MARK_ASSIGNED_PORTLET, listAssignedPortlets );
-            model.put( MARK_PUBLISHED_STATUS_VALUE, DocumentPublication.STATUS_PUBLISHED );
-            model.put( MARK_DOCUMENT, document );
-            model.put( MARK_UNPUBLISHED_STATUS_VALUE, DocumentPublication.STATUS_UNPUBLISHED );
-            model.put( MARK_PORTLET_FILTER, portletFilter );
-            model.put( MARK_LABEL_DISPLAY_LATEST_PORTLETS,
+            _model.put( MARK_ORDER_PORTLET, nOrderPortlet );
+            _model.put( MARK_ORDER_PORTLET_ASC, nOrderPortletAsc );
+            _model.put( MARk_DOCUMENT_LIST_PORTLET_LIST, listDocumentListPortlets );
+            _model.put( MARK_DOCUMENT_PORTLET_LIST, listDocumentPortlets );
+            _model.put( MARK_ASSIGNED_PORTLET, listAssignedPortlets );
+            _model.put( MARK_PUBLISHED_STATUS_VALUE, DocumentPublication.STATUS_PUBLISHED );
+            _model.put( MARK_DOCUMENT, document );
+            _model.put( MARK_UNPUBLISHED_STATUS_VALUE, DocumentPublication.STATUS_UNPUBLISHED );
+            _model.put( MARK_PORTLET_FILTER, portletFilter );
+            _model.put( MARK_LABEL_DISPLAY_LATEST_PORTLETS,
                 I18nService.getLocalizedString( PROPERTY_DISPLAY_LATEST_PORTLETS,
                     messageNumberOfMaxLatestPortletsDisplay, getLocale(  ) ) );
         }
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_PUBLISHING, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_PUBLISHING, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
     }
@@ -328,7 +352,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
         // Check role PERMISSION_MANAGE for DocumentListPortlet
         if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, DocumentListPortlet.RESOURCE_ID,
-                    PortletResourceIdService.PERMISSION_MANAGE, getUser(  ) ) )
+                    PortletResourceIdService.PERMISSION_MANAGE, (User) getUser(  ) ) )
         {
             listPortlets.addAll( DocumentListPortletHome.findByCodeDocumentTypeAndCategory( nDocumentId,
                     strCodeDocumentType, pOrder, pFilter ) );
@@ -370,7 +394,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
         // Check role PERMISSION_MANAGE for DocumentPortlet
         if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, DocumentPortlet.RESOURCE_ID,
-                    PortletResourceIdService.PERMISSION_MANAGE, getUser(  ) ) )
+                    PortletResourceIdService.PERMISSION_MANAGE, (User) getUser(  ) ) )
         {
             listPortlets.addAll( DocumentPortletHome.findByCodeDocumentTypeAndCategory( nDocumentId,
                     strCodeDocumentType, pOrder, pFilter ) );
@@ -401,7 +425,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             Portlet portlet = PortletHome.findByPrimaryKey( IntegerUtils.convert( item.getCode(  ) ) );
 
             if ( ( portlet != null ) && !DocumentAutoPublicationHome.isPortletAutoPublished( portlet.getId(  ) ) &&
-                    PortletService.getInstance(  ).isAuthorized( portlet, getUser(  ) ) )
+                    _portletService.isAuthorized( portlet, getUser(  ) ) )
             {
                 Map<String, Object> subModel = new HashMap<String, Object>(  );
                 subModel.put( MARK_LIST_PAGE,
@@ -469,17 +493,17 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
                     int nPortletId = IntegerUtils.convert( strId );
                     int nStatus = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_PUBLISHED_STATUS ) );
 
-                    if ( !PublishingService.getInstance(  ).isAssigned( nDocumentId, nPortletId ) )
+                    if ( !_publishingService.isAssigned( nDocumentId, nPortletId ) )
                     {
                         // Publishing of document : if status =
                         // DocumentListPortlet.STATUS_UNPUBLISHED (=1), the
                         // document is assigned, otherwize is assigned AND
                         // published
-                        PublishingService.getInstance(  ).assign( nDocumentId, nPortletId );
+                    	_publishingService.assign( nDocumentId, nPortletId );
 
                         if ( nStatus == DocumentPublication.STATUS_PUBLISHED )
                         {
-                            PublishingService.getInstance(  ).publish( nDocumentId, nPortletId );
+                        	_publishingService.publish( nDocumentId, nPortletId );
                         }
                     }
                 }
@@ -487,7 +511,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             else
             {
                 int nIdPortlet = IntegerUtils.convert( strPortletId );
-                PublishingService.getInstance(  ).publish( nDocumentId, nIdPortlet );
+                _publishingService.publish( nDocumentId, nIdPortlet );
             }
         }
 
@@ -512,11 +536,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         // Remove the document assigned
         if ( nStatus != DocumentPublication.STATUS_PUBLISHED )
         {
-            PublishingService.getInstance(  ).unAssign( nDocumentId, nPortletId );
+        	_publishingService.unAssign( nDocumentId, nPortletId );
         }
         else
         {
-            PublishingService.getInstance(  ).unPublish( nDocumentId, nPortletId );
+        	_publishingService.unPublish( nDocumentId, nPortletId );
         }
 
         // Display the page of publishing
@@ -543,39 +567,38 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
         Portlet portlet = PortletHome.findByPrimaryKey( nPortletId );
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put( MARK_PORTLET, portlet );
+        _model.put( MARK_PORTLET, portlet );
 
         Page page = PageHome.findByPrimaryKey( portlet.getPageId(  ) );
         String strPageName = page.getName(  );
-        model.put( MARK_PAGE_NAME, strPageName );
+        _model.put( MARK_PAGE_NAME, strPageName );
 
         // get publication mode
         if ( DocumentAutoPublicationHome.isPortletAutoPublished( nPortletId ) )
         {
-            model.put( MARK_MODE_PUBLICATION, MODE_PUBLICATION_AUTO_PUBLICATION );
+            _model.put( MARK_MODE_PUBLICATION, MODE_PUBLICATION_AUTO_PUBLICATION );
 
-            return getAutoPublicationManagement( request, model, nPortletId );
+            return getAutoPublicationManagement( request, _model, nPortletId );
         }
 
         if ( ( strModePublication == null ) || !strModePublication.matches( REGEX_ID ) )
         {
-            model.put( MARK_MODE_PUBLICATION, MODE_PUBLICATION_STANDARD );
+            _model.put( MARK_MODE_PUBLICATION, MODE_PUBLICATION_STANDARD );
 
-            return getStandardPublication( request, model, nPortletId );
+            return getStandardPublication( request, _model, nPortletId );
         }
 
         nModePublication = IntegerUtils.convert( strModePublication );
 
-        model.put( MARK_MODE_PUBLICATION, nModePublication );
+        _model.put( MARK_MODE_PUBLICATION, nModePublication );
 
         switch ( nModePublication )
         {
             case MODE_PUBLICATION_AUTO_PUBLICATION:
-                return getAutoPublicationManagement( request, model, nPortletId );
+                return getAutoPublicationManagement( request, _model, nPortletId );
 
             default:
-                return getStandardPublication( request, model, nPortletId );
+                return getStandardPublication( request, _model, nPortletId );
         }
     }
 
@@ -614,7 +637,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
                 default:
 
-                    if ( PublishingService.getInstance(  ).getAssignedDocumentsByPortletId( nPortletId ).size(  ) > 0 )
+                    if ( _publishingService.getAssignedDocumentsByPortletId( nPortletId ).size(  ) > 0 )
                     {
                         strMessage = MESSAGE_CONFIRM_CHANGE_MODE_PUBLICATION_STANDARD;
                     }
@@ -669,16 +692,14 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
                 default:
 
-                    for ( Document document : PublishingService.getInstance(  )
-                                                               .getPublishedDocumentsByPortletId( nPortletId ) )
+                    for ( Document document : _publishingService.getPublishedDocumentsByPortletId( nPortletId ) )
                     {
-                        PublishingService.getInstance(  ).unPublish( document.getId(  ), nPortletId );
+                    	_publishingService.unPublish( document.getId(  ), nPortletId );
                     }
 
-                    for ( Document document : PublishingService.getInstance(  )
-                                                               .getAssignedDocumentsByPortletId( nPortletId ) )
+                    for ( Document document : _publishingService.getAssignedDocumentsByPortletId( nPortletId ) )
                     {
-                        PublishingService.getInstance(  ).unAssign( document.getId(  ), nPortletId );
+                    	_publishingService.unAssign( document.getId(  ), nPortletId );
                     }
             }
         }
@@ -703,7 +724,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         int nDocumentId = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ID ) );
         int nPortletId = IntegerUtils.convert( request.getParameter( PARAMETER_PORTLET_ID ) );
 
-        PublishingService.getInstance(  ).publish( nDocumentId, nPortletId );
+        _publishingService.publish( nDocumentId, nPortletId );
 
         // Display the page of publishing
         return getUrlPublishedPage( nPortletId, nDocumentId );
@@ -721,7 +742,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         // Recovery of parameters processing
         int nDocumentId = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ID ) );
         int nPortletId = IntegerUtils.convert( request.getParameter( PARAMETER_PORTLET_ID ) );
-        PublishingService.getInstance(  ).unPublish( nDocumentId, nPortletId );
+        _publishingService.unPublish( nDocumentId, nPortletId );
 
         // Display the page of publishing
         return getUrlPublishedPage( nPortletId, nDocumentId );
@@ -740,7 +761,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         int nPortletId = IntegerUtils.convert( request.getParameter( PARAMETER_PORTLET_ID ) );
         int nNewOrder = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ORDER ) );
 
-        PublishingService.getInstance(  ).changeDocumentOrder( nDocumentId, nPortletId, nNewOrder );
+        _publishingService.changeDocumentOrder( nDocumentId, nPortletId, nNewOrder );
 
         // Display the page of publishing
         return getUrlPublishedPage( nPortletId, nDocumentId );
@@ -765,19 +786,18 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put( MARK_PORTLET_ID, strPortletId );
+        _model.put( MARK_PORTLET_ID, strPortletId );
 
         if ( ( strSpaceId != null ) && !strSpaceId.equals( "" ) )
         {
             bSubmitButtonDisabled = Boolean.FALSE;
         }
 
-        model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
-        model.put( MARK_SPACES_BROWSER,
-            DocumentSpacesService.getInstance(  ).getSpacesBrowser( request, getUser(  ), getLocale(  ), true, true ) );
+        _model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
+        _model.put( MARK_SPACES_BROWSER,
+            _documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), true, true ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_AUTO_PUBLICATION, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_AUTO_PUBLICATION, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
     }
@@ -854,12 +874,12 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         // delete auto publication
         DocumentAutoPublicationHome.remove( nPortletId, nSpaceId );
 
-        for ( Document document : PublishingService.getInstance(  ).getPublishedDocumentsByPortletId( nPortletId ) )
+        for ( Document document : _publishingService.getPublishedDocumentsByPortletId( nPortletId ) )
         {
-            if ( PublishingService.getInstance(  ).isPublished( document.getId(  ), nPortletId ) )
+            if ( _publishingService.isPublished( document.getId(  ), nPortletId ) )
             {
-                PublishingService.getInstance(  ).unPublish( document.getId(  ), nPortletId );
-                PublishingService.getInstance(  ).unAssign( document.getId(  ), nPortletId );
+            	_publishingService.unPublish( document.getId(  ), nPortletId );
+            	_publishingService.unAssign( document.getId(  ), nPortletId );
             }
         }
 
@@ -880,9 +900,8 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     private String getPublishedDocumentsList( Document document, int nPortletId )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
 
-        DocumentService.getInstance(  ).getActions( document, getLocale(  ), getUser(  ) );
+        _documentService.getActions( document, getLocale(  ), getUser(  ) );
 
         for ( Object action : document.getActions(  ) )
         {
@@ -891,25 +910,24 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             if ( ( docAction != null ) && ( docAction.getPermission(  ) != null ) &&
                     docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_PUBLISH ) )
             {
-                model.put( MARK_PERMISSION_PUBLISH, 1 );
+                _model.put( MARK_PERMISSION_PUBLISH, 1 );
             }
         }
 
-        DocumentPublication documentPublication = PublishingService.getInstance(  )
-                                                                   .getDocumentPublication( nPortletId,
+        DocumentPublication documentPublication = _publishingService.getDocumentPublication( nPortletId,
                 document.getId(  ) );
-        model.put( MARK_PORTLET_ID, Integer.toString( nPortletId ) );
-        model.put( MARK_DOCUMENT_PUBLISHED_STATUS, Integer.toString( documentPublication.getStatus(  ) ) );
-        model.put( MARK_PUBLISHED_STATUS_VALUE, Integer.toString( DocumentPublication.STATUS_PUBLISHED ) );
-        model.put( MARK_DOCUMENT_PUBLISHED, document );
-        model.put( MARK_DOCUMENT_ORDER_LIST, getOrdersList( nPortletId ) );
-        model.put( MARK_DOCUMENT_ORDER, Integer.toString( documentPublication.getDocumentOrder(  ) ) );
+        _model.put( MARK_PORTLET_ID, Integer.toString( nPortletId ) );
+        _model.put( MARK_DOCUMENT_PUBLISHED_STATUS, Integer.toString( documentPublication.getStatus(  ) ) );
+        _model.put( MARK_PUBLISHED_STATUS_VALUE, Integer.toString( DocumentPublication.STATUS_PUBLISHED ) );
+        _model.put( MARK_DOCUMENT_PUBLISHED, document );
+        _model.put( MARK_DOCUMENT_ORDER_LIST, getOrdersList( nPortletId ) );
+        _model.put( MARK_DOCUMENT_ORDER, Integer.toString( documentPublication.getDocumentOrder(  ) ) );
 
         // Page Template display
         DocumentPageTemplate documentPageTemplate = DocumentPageTemplateHome.findByPrimaryKey( document.getPageTemplateDocumentId(  ) );
-        model.put( MARK_DOCUMENT_PAGE_TEMPLATE_PICTURE, documentPageTemplate.getPicture(  ) );
+        _model.put( MARK_DOCUMENT_PAGE_TEMPLATE_PICTURE, documentPageTemplate.getPicture(  ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PUBLISHED_DOCUMENT_LIST, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PUBLISHED_DOCUMENT_LIST, getLocale(  ), _model );
 
         return template.getHtml(  );
     }
@@ -925,9 +943,8 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     private String getAssignedDocumentsList( Document document, int nPortletId )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
 
-        DocumentService.getInstance(  ).getActions( document, getLocale(  ), getUser(  ) );
+        _documentService.getActions( document, getLocale(  ), getUser(  ) );
 
         for ( Object action : document.getActions(  ) )
         {
@@ -936,24 +953,23 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             if ( ( docAction.getPermission(  ) != null ) &&
                     docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_ASSIGN ) )
             {
-                model.put( MARK_PERMISSION_ASSIGN, 1 );
+                _model.put( MARK_PERMISSION_ASSIGN, 1 );
             }
             else if ( ( docAction.getPermission(  ) != null ) &&
                     docAction.getPermission(  ).equals( DocumentTypeResourceIdService.PERMISSION_PUBLISH ) )
             {
-                model.put( MARK_PERMISSION_PUBLISH, 1 );
+                _model.put( MARK_PERMISSION_PUBLISH, 1 );
             }
         }
 
-        DocumentPublication documentPublication = PublishingService.getInstance(  )
-                                                                   .getDocumentPublication( nPortletId,
+        DocumentPublication documentPublication = _publishingService.getDocumentPublication( nPortletId,
                 document.getId(  ) );
-        model.put( MARK_PORTLET_ID, Integer.toString( nPortletId ) );
-        model.put( MARK_DOCUMENT_PUBLISHED_STATUS, Integer.toString( documentPublication.getStatus(  ) ) );
-        model.put( MARK_UNPUBLISHED_STATUS_VALUE, Integer.toString( DocumentPublication.STATUS_UNPUBLISHED ) );
-        model.put( MARK_DOCUMENT_PUBLISHED, document );
+        _model.put( MARK_PORTLET_ID, Integer.toString( nPortletId ) );
+        _model.put( MARK_DOCUMENT_PUBLISHED_STATUS, Integer.toString( documentPublication.getStatus(  ) ) );
+        _model.put( MARK_UNPUBLISHED_STATUS_VALUE, Integer.toString( DocumentPublication.STATUS_UNPUBLISHED ) );
+        _model.put( MARK_DOCUMENT_PUBLISHED, document );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ASSIGNED_DOCUMENT_LIST, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ASSIGNED_DOCUMENT_LIST, getLocale(  ), _model );
 
         return template.getHtml(  );
     }
@@ -967,7 +983,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     private ReferenceList getOrdersList( int nPortletId )
     {
-        int nMax = PublishingService.getInstance(  ).getMaxDocumentOrderByPortletId( nPortletId );
+        int nMax = _publishingService.getMaxDocumentOrderByPortletId( nPortletId );
         ReferenceList list = new ReferenceList(  );
 
         for ( int i = 1; i < ( nMax + 1 ); i++ )
@@ -1036,12 +1052,12 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      *            The portlet Id
      * @return The HTML code
      */
-    private String getStandardPublication( HttpServletRequest request, Map<String, Object> model, int nPortletId )
+    private String getStandardPublication( HttpServletRequest request, Models model, int nPortletId )
     {
         StringBuffer strPublishedDocumentsRow = new StringBuffer(  );
 
         // Scan of the list
-        for ( Document document : PublishingService.getInstance(  ).getAssignedDocumentsByPortletId( nPortletId ) )
+        for ( Document document : _publishingService.getAssignedDocumentsByPortletId( nPortletId ) )
         {
             strPublishedDocumentsRow.append( getPublishedDocumentsList( document, nPortletId ) );
         }
@@ -1057,7 +1073,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         StringBuffer strAssignedDocumentsRow = new StringBuffer(  );
 
         // Scan of the list
-        for ( Document document : PublishingService.getInstance(  ).getAssignedDocumentsByPortletId( nPortletId ) )
+        for ( Document document : _publishingService.getAssignedDocumentsByPortletId( nPortletId ) )
         {
             strAssignedDocumentsRow.append( getAssignedDocumentsList( document, nPortletId ) );
         }
@@ -1086,7 +1102,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      *            The portlet Id
      * @return The HTML code
      */
-    private String getAutoPublicationManagement( HttpServletRequest request, Map<String, Object> model, int nPortletId )
+    private String getAutoPublicationManagement( HttpServletRequest request, Models model, int nPortletId )
     {
         Collection<DocumentAutoPublication> listDocumentAutoPublication = DocumentAutoPublicationHome.findByPortletId( nPortletId );
         Collection<Map<String, Object>> listModels = new ArrayList<Map<String, Object>>(  );
@@ -1096,20 +1112,19 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         for ( DocumentAutoPublication documentAutoPublication : listDocumentAutoPublication )
         {
             // Check if user is authorized to view space
-            if ( DocumentSpacesService.getInstance(  )
-                                          .isAuthorizedViewByRole( documentAutoPublication.getIdSpace(  ), getUser(  ) ) )
+            if ( _documentSpacesService.isAuthorizedViewByRole( documentAutoPublication.getIdSpace(  ), getUser(  ) ) )
             {
                 Map<String, Object> subModel = new HashMap<String, Object>(  );
 
-                if ( DocumentSpacesService.getInstance(  )
-                                              .isAuthorizedViewByWorkgroup( documentAutoPublication.getIdSpace(  ), user ) )
+                if ( _documentSpacesService.isAuthorizedViewByWorkgroup( documentAutoPublication.getIdSpace(  ), user ) )
                 {
                     documentSpace = DocumentSpaceHome.findByPrimaryKey( documentAutoPublication.getIdSpace(  ) );
                     subModel.put( MARK_SPACE_NAME,
                         ( documentSpace != null ) ? documentSpace.getName(  ) : StringUtils.EMPTY );
 
-                    int nCountDocuments = AutoPublicationService.findCountByPortletAndSpace( documentAutoPublication.getIdPortlet(  ),
+                    int nCountDocuments = _autoPublicationService.findCountByPortletAndSpace( documentAutoPublication.getIdPortlet(  ),
                             documentAutoPublication.getIdSpace(  ) );
+                    
                     subModel.put( MARK_NUMBER_AUTO_PUBLISHED_DOCUMENTS, nCountDocuments );
                     subModel.put( MARK_DOCUMENT_AUTO_PUBLICATION, documentAutoPublication );
                     listModels.add( subModel );

@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.web.spaces;
 
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentFilter;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
@@ -40,7 +41,6 @@ import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
-import fr.paris.lutece.plugins.document.service.spaces.SpaceRemovalListenerService;
 import fr.paris.lutece.plugins.document.service.spaces.SpaceResourceIdService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.plugins.document.web.DocumentJspBean;
@@ -49,8 +49,10 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.RemovalListenerService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -64,12 +66,18 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
  * JSP Bean for spaces management
  */
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+
+@SessionScoped
+@Named
 public class DocumentSpaceJspBean extends PluginAdminPageJspBean
 {
     public static final String RIGHT_DOCUMENT_SPACE_MANAGEMENT = "DOCUMENT_MANAGEMENT";
@@ -113,6 +121,18 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
     private static final String PROPERTY_MOVE_SPACE_PAGE_TITLE = "document.move_space.pageTitle";
     private static final String MESSAGE_MOVING_SPACE_NOT_AUTHORIZED = "document.message.movingSpaceNotAuthorized";
 
+	private static final String JSP_URL_MANAGE_DOCUMENT = "jsp/admin/plugins/document/ManageDocuments.jsp";
+
+    @Inject
+    @Named("document.spaceRemovalService")
+    private RemovalListenerService _removalListenerService;
+    
+	@Inject
+    private DocumentSpacesService _documentSpacesService;
+	
+    @Inject
+    Models _model;
+	    
     /**
      * Gets the create space page
      * @param request The HTTP request
@@ -127,27 +147,26 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
         AdminUser user = getUser(  );
         ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( user, getLocale(  ) );
         DocumentSpace spaceParent = DocumentSpaceHome.findByPrimaryKey( nParentId );
-        Map<String, Object> model = new HashMap<String, Object>(  );
 
         if ( RBACService.isAuthorized( DocumentSpace.RESOURCE_TYPE, strParentId,
-                    SpaceResourceIdService.PERMISSION_CREATE, getUser(  ) ) &&
-                DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( nParentId, getUser(  ) ) )
+                    SpaceResourceIdService.PERMISSION_CREATE, (User) getUser(  ) ) &&
+        		_documentSpacesService.isAuthorizedViewByWorkgroup( nParentId, getUser(  ) ) )
         {
-            model.put( MARK_VIEW_TYPE, DEFAULT_VIEW_TYPE );
-            model.put( MARK_VIEW_TYPES_LIST, DocumentSpaceHome.getViewTypeList( getLocale(  ) ) );
-            model.put( MARK_ICONS_LIST, DocumentSpaceHome.getIconsList(  ) );
-            model.put( MARK_DOCUMENT_TYPES_LIST, DocumentTypeHome.getDocumentTypesList(  ) );
-            model.put( MARK_PARENT_SPACE, spaceParent );
-            model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
+            _model.put( MARK_VIEW_TYPE, DEFAULT_VIEW_TYPE );
+            _model.put( MARK_VIEW_TYPES_LIST, DocumentSpaceHome.getViewTypeList( getLocale(  ) ) );
+            _model.put( MARK_ICONS_LIST, DocumentSpaceHome.getIconsList(  ) );
+            _model.put( MARK_DOCUMENT_TYPES_LIST, DocumentTypeHome.getDocumentTypesList(  ) );
+            _model.put( MARK_PARENT_SPACE, spaceParent );
+            _model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
 
             //LUTECE-890 : the first workgroup will be selected by default
             if ( !refListWorkGroups.isEmpty(  ) )
             {
-                model.put( MARK_WORKGROUP_SELECTED, refListWorkGroups.get( 0 ).getCode(  ) );
+                _model.put( MARK_WORKGROUP_SELECTED, refListWorkGroups.get( 0 ).getCode(  ) );
             }
         }
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_SPACE, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_SPACE, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
     }
@@ -163,9 +182,8 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
         String strParentId = request.getParameter( PARAMETER_PARENT_SPACE_ID );
 
         if ( !RBACService.isAuthorized( DocumentSpace.RESOURCE_TYPE, strParentId,
-                    SpaceResourceIdService.PERMISSION_CREATE, getUser(  ) ) ||
-                !DocumentSpacesService.getInstance(  )
-                                          .isAuthorizedViewByWorkgroup( IntegerUtils.convert( strParentId ), getUser(  ) ) )
+                    SpaceResourceIdService.PERMISSION_CREATE, (User) getUser(  ) ) ||
+                !_documentSpacesService.isAuthorizedViewByWorkgroup( IntegerUtils.convert( strParentId ), getUser(  ) ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
         }
@@ -194,26 +212,25 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
         String strIdSpace = request.getParameter( PARAMETER_SPACE_ID );
         int nIdSpace = IntegerUtils.convert( strIdSpace );
         AdminUser user = getUser(  );
-        Map<String, Object> model = new HashMap<String, Object>(  );
 
         if ( RBACService.isAuthorized( DocumentSpace.RESOURCE_TYPE, strIdSpace,
-                    SpaceResourceIdService.PERMISSION_MODIFY, getUser(  ) ) &&
-                DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( nIdSpace, getUser(  ) ) )
+                    SpaceResourceIdService.PERMISSION_MODIFY, (User) getUser(  ) ) &&
+        		_documentSpacesService.isAuthorizedViewByWorkgroup( nIdSpace, getUser(  ) ) )
         {
             ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( user, getLocale(  ) );
             DocumentSpace space = DocumentSpaceHome.findByPrimaryKey( nIdSpace );
             ReferenceList listDocumentTypes = DocumentTypeHome.getDocumentTypesList(  );
             listDocumentTypes.checkItems( space.getAllowedDocumentTypes(  ) );
 
-            model.put( MARK_SPACE, space );
-            model.put( MARK_VIEW_TYPE, DEFAULT_VIEW_TYPE );
-            model.put( MARK_VIEW_TYPES_LIST, DocumentSpaceHome.getViewTypeList( getLocale(  ) ) );
-            model.put( MARK_ICONS_LIST, DocumentSpaceHome.getIconsList(  ) );
-            model.put( MARK_DOCUMENT_TYPES_LIST, listDocumentTypes );
-            model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
+            _model.put( MARK_SPACE, space );
+            _model.put( MARK_VIEW_TYPE, DEFAULT_VIEW_TYPE );
+            _model.put( MARK_VIEW_TYPES_LIST, DocumentSpaceHome.getViewTypeList( getLocale(  ) ) );
+            _model.put( MARK_ICONS_LIST, DocumentSpaceHome.getIconsList(  ) );
+            _model.put( MARK_DOCUMENT_TYPES_LIST, listDocumentTypes );
+            _model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
         }
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_SPACE, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_SPACE, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
     }
@@ -230,8 +247,8 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
 
         // Check for user's rights
         if ( !RBACService.isAuthorized( DocumentSpace.RESOURCE_TYPE, strIdSpace,
-                    SpaceResourceIdService.PERMISSION_MODIFY, getUser(  ) ) ||
-                !DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( nIdSpace, getUser(  ) ) )
+                    SpaceResourceIdService.PERMISSION_MODIFY, (User) getUser(  ) ) ||
+                !_documentSpacesService.isAuthorizedViewByWorkgroup( nIdSpace, getUser(  ) ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
         }
@@ -319,16 +336,16 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
 
         // Check for user's rights
         if ( !RBACService.isAuthorized( DocumentSpace.RESOURCE_TYPE, strSpaceId,
-                    SpaceResourceIdService.PERMISSION_DELETE, getUser(  ) ) ||
-                !DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( nSpaceId, getUser(  ) ) )
+                    SpaceResourceIdService.PERMISSION_DELETE, (User) getUser(  ) ) ||
+                !_documentSpacesService.isAuthorizedViewByWorkgroup( nSpaceId, getUser(  ) ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
         }
 
         ArrayList<String> listErrors = new ArrayList<String>(  );
 
-        if ( !SpaceRemovalListenerService.getService(  )
-                                             .checkForRemoval( Integer.toString( nSpaceId ), listErrors, getLocale(  ) ) )
+        if ( !
+        		_removalListenerService.checkForRemoval( Integer.toString( nSpaceId ), listErrors, getLocale(  ) ) )
         {
             String strCause = AdminMessageService.getFormattedList( listErrors, getLocale(  ) );
             Object[] args = { strCause };
@@ -342,10 +359,14 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
         UrlItem url = new UrlItem( PATH_JSP + JSP_DELETE_SPACE );
         url.addParameter( PARAMETER_SPACE_ID, nSpaceId );
 
-        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE, messageArgs, url.getUrl(  ),
-            AdminMessage.TYPE_CONFIRMATION );
-    }
+        StringBuilder strUrlBack = new StringBuilder( JSP_URL_MANAGE_DOCUMENT )
+        	    .append("?id_space_filter=")
+        	    .append(nSpaceId);
 
+        
+        return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE, messageArgs, null, url.getUrl(  ),null,
+            AdminMessage.TYPE_CONFIRMATION, null, strUrlBack.toString( ) );
+    }
     /**
      * Perform the deletion
      * @param request The HTTP request
@@ -362,8 +383,8 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
 
         if ( ( nSpaceId != 0 ) &&
                 RBACService.isAuthorized( DocumentSpace.RESOURCE_TYPE, strSpaceId,
-                    SpaceResourceIdService.PERMISSION_DELETE, getUser(  ) ) &&
-                DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( nSpaceId, getUser(  ) ) ) //if space is not root space
+                    SpaceResourceIdService.PERMISSION_DELETE, (User) getUser(  ) ) &&
+                _documentSpacesService.isAuthorizedViewByWorkgroup( nSpaceId, getUser(  ) ) ) //if space is not root space
         {
             DocumentSpaceHome.remove( nSpaceId );
             url.addParameter( DocumentJspBean.PARAMETER_SPACE_ID_FILTER, nParentSpaceId );
@@ -400,15 +421,13 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
             bSubmitButtonDisabled = Boolean.FALSE;
         }
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
-
         // Spaces browser
-        model.put( MARK_SPACE, spaceToMove );
-        model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
-        model.put( MARK_SPACES_BROWSER,
-            DocumentSpacesService.getInstance(  ).getSpacesBrowser( request, getUser(  ), getLocale(  ), true, true ) );
+        _model.put( MARK_SPACE, spaceToMove );
+        _model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
+        _model.put( MARK_SPACES_BROWSER,
+        		_documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), true, true ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MOVE_SPACE, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MOVE_SPACE, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
     }
@@ -454,9 +473,9 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
         }
 
         // Check if user have rights to create a space into this space
-        if ( RBACService.isAuthorized( space, SpaceResourceIdService.PERMISSION_CREATE, getUser(  ) ) &&
-                DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( spaceToMove.getId(  ), getUser(  ) ) &&
-                DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( space.getId(  ), getUser(  ) ) )
+        if ( RBACService.isAuthorized( space, SpaceResourceIdService.PERMISSION_CREATE, (User) getUser(  ) ) &&
+        		_documentSpacesService.isAuthorizedViewByWorkgroup( spaceToMove.getId(  ), getUser(  ) ) &&
+        		_documentSpacesService.isAuthorizedViewByWorkgroup( space.getId(  ), getUser(  ) ) )
         {
             spaceToMove.setIdParent( nSpaceId );
             DocumentSpaceHome.update( spaceToMove );

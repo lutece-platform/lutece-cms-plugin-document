@@ -46,14 +46,14 @@ import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.util.xml.XmlUtil;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * A document of the CMS.
@@ -877,7 +877,7 @@ public class Document implements Localizable, IExtendableResource
     @Override
     public String getExtendableResourceImageUrl( )
     {
-        if ( StringUtils.equalsIgnoreCase( _strCodeDocumentType, CODE_DOCUMENT_TYPE_IMAGE ) )
+        if ( Strings.CI.equals( _strCodeDocumentType, CODE_DOCUMENT_TYPE_IMAGE ) )
         {
             UrlItem urlItem = new UrlItem( SERVLET_DOCUMENT_PATH );
             urlItem.addParameter( MARK_ID, _nIdDocument );
@@ -889,7 +889,7 @@ public class Document implements Localizable, IExtendableResource
         {
             for ( DocumentAttribute attribute : _listAttributes )
             {
-                if ( StringUtils.equals( attribute.getCodeAttributeType( ), "image" ) )
+                if (  Strings.CS.equals( attribute.getCodeAttributeType( ), "image" ) )
                 {
                     UrlItem urlItem = new UrlItem( SERVLET_DOCUMENT_PATH );
                     urlItem.addParameter( MARK_ID, _nIdDocument );

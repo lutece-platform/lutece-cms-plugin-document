@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
@@ -77,6 +77,7 @@ public class ListBoxManager extends DefaultManager
      * Gets the template to enter the attribute value
      * @return The template to enter the attribute value
      */
+    @Override
     protected String getCreateTemplate(  )
     {
         return TEMPLATE_CREATE_ATTRIBUTE;
@@ -86,6 +87,7 @@ public class ListBoxManager extends DefaultManager
      * Gets the template to modify the attribute value
      * @return The template to modify the attribute value
      */
+    @Override
     protected String getModifyTemplate(  )
     {
         return TEMPLATE_MODIFY_ATTRIBUTE;
@@ -95,6 +97,7 @@ public class ListBoxManager extends DefaultManager
      * Gets the template to enter the parameters of the attribute value
      * @return The template to enter the parameters of the attribute value
      */
+    @Override
     protected String getCreateParametersTemplate(  )
     {
         return TEMPLATE_CREATE_PARAMETERS_ATTRIBUTE;
@@ -104,6 +107,7 @@ public class ListBoxManager extends DefaultManager
      * Gets the template to modify the parameters of the attribute value
      * @return The template to modify the parameters of the attribute value
      */
+    @Override
     protected String getModifyParametersTemplate(  )
     {
         return TEMPLATE_MODIFY_PARAMETERS_ATTRIBUTE;
@@ -115,6 +119,7 @@ public class ListBoxManager extends DefaultManager
      * @param locale The current Locale
      * @return null if valid, otherwise message property
      */
+    @Override
     public String validateValueParameters( List<AttributeTypeParameter> listParameters, Locale locale )
     {
         for ( AttributeTypeParameter parameter : listParameters )

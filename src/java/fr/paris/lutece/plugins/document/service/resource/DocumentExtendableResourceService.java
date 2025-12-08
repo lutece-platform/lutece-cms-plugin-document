@@ -42,24 +42,31 @@ import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.portal.service.resource.IExtendableResourceService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.util.url.UrlItem;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.Locale;
 
-
 /**
  *
  * DocumentExtendableResourceService
  *
  */
+@ApplicationScoped
+@Named( "document.DocumentExtendableResourceService" )
 public class DocumentExtendableResourceService implements IExtendableResourceService
 {
     private static final String MESSAGE_DOCUMENT_RESOURCE_TYPE_DESCRIPTION = "document.resource.resourceTypeDescription";
     private static final String PARAMETER_DOCUMENT_ID = "document_id";
     private static final String PARAMETER_PORTLET_ID = "portlet_id";
 
+    @Inject
+    private PublishingService _publishingService;
+    
     /**
      * {@inheritDoc}
      */
@@ -111,7 +118,7 @@ public class DocumentExtendableResourceService implements IExtendableResourceSer
     {
         if ( StringUtils.isNotBlank( strIdResource ) && StringUtils.isNumeric( strIdResource ) )
         {
-            Collection<Portlet> listPortlets = PublishingService.getInstance(  ).getPortletsByDocumentId( strIdResource );
+            Collection<Portlet> listPortlets = _publishingService.getPortletsByDocumentId( strIdResource );
 
             if ( ( listPortlets != null ) && ( listPortlets.size(  ) > 0 ) )
             {

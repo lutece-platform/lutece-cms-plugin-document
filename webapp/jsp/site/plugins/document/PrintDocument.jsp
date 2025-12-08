@@ -1,8 +1,6 @@
 <%@ page errorPage="../../ErrorPagePortal.jsp" %>
 <jsp:include page="../../PortalHeader.jsp" />
 
+<%@page import="fr.paris.lutece.plugins.document.web.DocumentContentJspBean" %>
 
-<jsp:useBean id="documentContent" scope="page" class="fr.paris.lutece.plugins.document.web.DocumentContentJspBean" />
-
-<%= documentContent.getPrintDocumentPage( request ) %>
-
+${ documentContentJspBean.getPrintDocumentPage( pageContext.request ) }

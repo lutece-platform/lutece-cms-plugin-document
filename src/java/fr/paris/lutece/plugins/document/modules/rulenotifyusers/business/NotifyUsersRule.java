@@ -39,7 +39,6 @@ import fr.paris.lutece.plugins.document.business.workflow.DocumentStateHome;
 import fr.paris.lutece.plugins.document.service.DocumentEvent;
 import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
-import fr.paris.lutece.plugins.document.service.spaces.SpaceRemovalListenerService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.mailinglist.MailingList;
 import fr.paris.lutece.portal.business.mailinglist.MailingListHome;
@@ -48,18 +47,23 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mail.MailService;
 import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
-import fr.paris.lutece.portal.service.mailinglist.MailingListRemovalListenerService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.service.util.BeanUtils;
+import fr.paris.lutece.portal.service.util.RemovalListenerService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -70,9 +74,12 @@ import java.util.StringTokenizer;
 /**
  * This class provides a rule to notify users on document events
  */
-public class NotifyUsersRule extends AbstractRule
+@Dependent
+@Named("document.NotifyUsersRule")
+public class NotifyUsersRule extends AbstractRule implements Serializable
 {
-    ////////////////////////////////////////////////////////////////////////////
+    private static final long serialVersionUID = 1L;
+    
     // Constants
     private static final String REGEX_ID = "^[\\d]+$";
     private static final String NO_MAILING_LIST = "none";
@@ -117,33 +124,35 @@ public class NotifyUsersRule extends AbstractRule
         {
             PARAMETER_SPACE_SOURCE_ID, PARAMETER_MAILINGLIST_ID, PARAMETER_STATE_ID, PARAMETER_MESSAGE_TEMPLATE_KEY,
         };
-    private static NotifyUsersMailingListRemovalListener _listenerMailingList;
-    private static NotifyUsersSpaceRemovalListener _listenerSpace;
+    
+    private NotifyUsersMailingListRemovalListener _listenerMailingList;
+    
+  	@Inject
+	private DocumentSpacesService _documentSpacesService;
+  	
+  	@Inject
+  	@Named( BeanUtils.BEAN_MAILINGLIST_REMOVAL_SERVICE )
+  	private RemovalListenerService _removalListenerService;
+  	
     private static final String PROPERTY_PROD_BASE_URL = "lutece.prod.url";
 
+    
     /**
      * Initialize the rule
      */
+    @Override
     public void init(  )
     {
-        // Create removal listeners and register them
-        if ( _listenerMailingList == null )
-        {
-            _listenerMailingList = new NotifyUsersMailingListRemovalListener(  );
-            MailingListRemovalListenerService.getService(  ).registerListener( _listenerMailingList );
-        }
-
-        if ( _listenerSpace == null )
-        {
-            _listenerSpace = new NotifyUsersSpaceRemovalListener(  );
-            SpaceRemovalListenerService.getService(  ).registerListener( _listenerSpace );
-        }
+	    _listenerMailingList = new NotifyUsersMailingListRemovalListener(  );
+	    _removalListenerService.registerListener( _listenerMailingList );
     }
 
     /**
      * Gets the Rule name key
+     * 
      * @return The Rule name key
      */
+    @Override
     public String getNameKey(  )
     {
         return PROPERTY_RULE_NAME;
@@ -154,6 +163,7 @@ public class NotifyUsersRule extends AbstractRule
      * @param event The document event
      * @throws DocumentException raise when error occurs in event or rule
      */
+    @Override
     public void apply( DocumentEvent event ) throws DocumentException
     {
         try
@@ -208,6 +218,7 @@ public class NotifyUsersRule extends AbstractRule
      * @param locale The current locale
      * @return The HTML form
      */
+    @Override
     public String getCreateForm( AdminUser user, Locale locale )
     {
         Map<String, Object> model = new HashMap<String, Object>(  );
@@ -245,7 +256,7 @@ public class NotifyUsersRule extends AbstractRule
                 AppLogService.error( ne );
             }
 
-            strPathSpaceSource = DocumentSpacesService.getInstance(  ).getLabelSpacePath( nIdSpaceSource, user );
+            strPathSpaceSource = _documentSpacesService.getLabelSpacePath( nIdSpaceSource, user );
             model.put( MARK_SPACE_SOURCE_PATH, strPathSpaceSource );
         }
 
@@ -267,6 +278,7 @@ public class NotifyUsersRule extends AbstractRule
      *
      * @return null if rule is valid, message if rule not valid
      */
+    @Override
     public String validateRule(  )
     {
         String strMailingListId = getAttribute( PARAMETER_MAILINGLIST_ID );
@@ -290,11 +302,12 @@ public class NotifyUsersRule extends AbstractRule
      * @param user the current user
      * @return true if the user is authorized to view the rule
      */
+    @Override
     public boolean isAuthorized( AdminUser user )
     {
         int nSourceSpaceId = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
 
-        if ( !DocumentSpacesService.getInstance(  ).isAuthorizedViewByWorkgroup( nSourceSpaceId, user ) )
+        if ( !_documentSpacesService.isAuthorizedViewByWorkgroup( nSourceSpaceId, user ) )
         {
             return false;
         }
@@ -306,6 +319,7 @@ public class NotifyUsersRule extends AbstractRule
      * Gets all attributes of the rule
      * @return attributes of the rule
      */
+    @Override
     public String[] getAttributesList(  )
     {
         return _attributes;
@@ -315,10 +329,11 @@ public class NotifyUsersRule extends AbstractRule
      * Gets the explicit text of the rule
      * @return The text of the rule
      */
+    @Override
     public String getRule(  )
     {
         int nSourceSpaceId = IntegerUtils.convert( getAttribute( PARAMETER_SPACE_SOURCE_ID ) );
-        String strSourceSpace = DocumentSpacesService.getInstance(  ).getLabelSpacePath( nSourceSpaceId, getUser(  ) );
+        String strSourceSpace = _documentSpacesService.getLabelSpacePath( nSourceSpaceId, getUser(  ) );
         String strMailingListId = getAttribute( PARAMETER_MAILINGLIST_ID );
         String strMailingList = null;
 

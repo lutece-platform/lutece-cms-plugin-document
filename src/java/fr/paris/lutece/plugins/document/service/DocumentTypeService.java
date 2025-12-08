@@ -36,12 +36,16 @@ package fr.paris.lutece.plugins.document.service;
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.util.xml.XmlUtil;
-
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Named;
 
 /**
  *
  *
  */
+@ApplicationScoped
+@Named( "document.DocumentTypeService" )
 public class DocumentTypeService
 {
     private static final String TAG_DOCUMENT_TYPES = "document_types";
@@ -53,21 +57,28 @@ public class DocumentTypeService
     private static final String TAG_DOCUMENT_TYPE_DEFAULT_THUMBNAIL_URL = "default_thumbnail_url";
     private static final String TAG_DOCUMENT_TYPE_METADATA_HANDLER = "metadata_handler";
 
-    //CONSTANTS
-    private static DocumentTypeService _singleton = new DocumentTypeService(  );
 
     /** Creates a new instance of DocumentSpacesService */
-    private DocumentTypeService(  )
+    public DocumentTypeService(  )
     {
     }
 
     /**
-     * Returns the unique instance of the service
-     * @return the unique instance of the service
+     * Returns the unique instance of the {@link DocumentTypeService} service.
+     * 
+     * <p>This method is deprecated and is provided for backward compatibility only. 
+     * For new code, use dependency injection with {@code @Inject} to obtain the 
+     * {@link DocumentTypeService} instance instead.</p>
+     * 
+     * @return The unique instance of {@link DocumentTypeService}.
+     * 
+     * @deprecated Use {@code @Inject} to obtain the {@link DocumentTypeService} 
+     * instance. This method will be removed in future versions.
      */
+    @Deprecated( since = "8.0", forRemoval = true )
     public static DocumentTypeService getInstance(  )
     {
-        return _singleton;
+    	return CDI.current( ).select( DocumentTypeService.class ).get( );
     }
 
     /**

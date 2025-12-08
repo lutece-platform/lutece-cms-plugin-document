@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.document.service.docsearch;
 
 import fr.paris.lutece.portal.service.daemon.Daemon;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import jakarta.enterprise.inject.spi.CDI;
 
 
 /**
@@ -47,9 +48,10 @@ public class DocSearchIndexerDaemon extends Daemon
     /**
      * Init indexing
      */
+    @Override
     public void run(  )
     {
         boolean bTotalIndexing = Boolean.valueOf( AppPropertiesService.getProperty( PROPERTY_INDEXER_PARAM_TOTAL, "true" ) );
-        setLastRunLogs( DocSearchService.getInstance(  ).processIndexing( bTotalIndexing ) );
+        setLastRunLogs(  CDI.current( ).select( DocSearchService.class ).get( ).processIndexing( bTotalIndexing ) );
     }
 }

@@ -44,6 +44,7 @@ import fr.paris.lutece.portal.service.database.AppConnectionService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
@@ -52,7 +53,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
@@ -72,7 +75,7 @@ public class DocumentDashboardComponent extends DashboardComponent
 
     // TEMPALTES
     private static final String TEMPLATE_DASHBOARD = "/admin/plugins/document/dashboard/document_dashboard.html";
-
+    
     /**
      * {@inheritDoc}
      */
@@ -87,15 +90,17 @@ public class DocumentDashboardComponent extends DashboardComponent
         {
             return StringUtils.EMPTY;
         }
-
+        
         // Get the last document the user was working on
         Document lastModifiedDocument = DocumentHome.loadLastModifiedDocumentFromUser( user.getAccessCode(  ) );
 
+        DocumentService documentService = CDI.current( ).select( DocumentService.class ).get( );
+        
         if ( lastModifiedDocument != null )
         {
             lastModifiedDocument.setLocale( user.getLocale(  ) );
-            DocumentService.getInstance(  ).getActions( lastModifiedDocument, user.getLocale(  ), user );
-            DocumentService.getInstance(  ).getPublishedStatus( lastModifiedDocument );
+            documentService.getActions( lastModifiedDocument, user.getLocale(  ), user );
+            documentService.getPublishedStatus( lastModifiedDocument );
         }
 
         // Get the last published document
@@ -104,8 +109,8 @@ public class DocumentDashboardComponent extends DashboardComponent
         if ( lastPublishedDocument != null )
         {
             lastPublishedDocument.setLocale( user.getLocale(  ) );
-            DocumentService.getInstance(  ).getActions( lastPublishedDocument, user.getLocale(  ), user );
-            DocumentService.getInstance(  ).getPublishedStatus( lastPublishedDocument );
+            documentService.getActions( lastPublishedDocument, user.getLocale(  ), user );
+            documentService.getPublishedStatus( lastPublishedDocument );
         }
 
         UrlItem url = new UrlItem( right.getUrl(  ) );

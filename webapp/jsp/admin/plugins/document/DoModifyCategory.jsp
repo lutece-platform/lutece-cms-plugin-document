@@ -1,11 +1,9 @@
 <%@ page errorPage="../../ErrorPage.jsp"%>
 
-<jsp:useBean id="category" scope="session" class="fr.paris.lutece.plugins.document.web.category.CategoryJspBean" />
+<%@page import="fr.paris.lutece.plugins.document.web.category.CategoryJspBean"%>
 
-<%
-	category.init( request, category.RIGHT_CATEGORY_MANAGEMENT );
-	response.sendRedirect( category.doModifyCategory( request ) );
-%>
+${ categoryJspBean.init( pageContext.request, CategoryJspBean.RIGHT_CATEGORY_MANAGEMENT ) }
+${ pageContext.response.sendRedirect( categoryJspBean.doModifyCategory( pageContext.request ) ) }
 
 
 

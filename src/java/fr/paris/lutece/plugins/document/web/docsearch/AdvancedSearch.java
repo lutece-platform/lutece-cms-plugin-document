@@ -47,6 +47,7 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.web.xpages.XPageApplication;
 import fr.paris.lutece.util.ReferenceList;
@@ -61,193 +62,206 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * AdvancedSearch
  */
+@SessionScoped
+@Named( "document.xpage.advanced_search" )
+@Controller( xpageName = "advanced_search" , pageTitleI18nKey = "document.advanced_search.title" , pagePathI18nKey = "document.advanced_search.title" )
 public class AdvancedSearch implements XPageApplication
 {
-    private static final String TEMPLATE_ADVANCED_SEARCH = "skin/plugins/document/advanced_search.html";
-    private static final String MARK_LOCALE = "locale";
-    private static final String MARK_URL = "url";
-    private static final String MARK_SELECTED_TYPE = "selected_type";
-    private static final String MARK_TITLE = "title";
-    private static final String MARK_SUMMARY = "summary";
-    private static final String MARK_QUERY = "query";
-    private static final String MARK_DATE_QUERY = "date_query";
-    private static final String MARK_CONTENT = "content";
-    private static final String MARK_TYPE_LIST = "document_type_list";
-    private static final String MARK_DOC_SEARCH_ITEM = "docSearchItem";
-    private static final String MARK_ID_PORTLET = "idPortlet";
-    private static final String MARK_DATE_ERROR = "date_error";
-    private static final String PARAMETER_QUERY = "query";
-    private static final String PARAMETER_SEARCH_QUERY = "search_query";
-    private static final String PARAMETER_TITLE = "title";
-    private static final String PARAMETER_SUMMARY = "summary";
-    private static final String PARAMETER_DATE = "date";
-    private static final String PARAMETER_TYPE = "document_type";
-    private static final String MESSAGE_TITLE = "document.advanced_search.title";
-    private static final String MESSAGE_DATE_ERROR = "document.advanced_search.date_error";
+	private static final String TEMPLATE_ADVANCED_SEARCH = "skin/plugins/document/advanced_search.html";
+	private static final String MARK_LOCALE = "locale";
+	private static final String MARK_URL = "url";
+	private static final String MARK_SELECTED_TYPE = "selected_type";
+	private static final String MARK_TITLE = "title";
+	private static final String MARK_SUMMARY = "summary";
+	private static final String MARK_QUERY = "query";
+	private static final String MARK_DATE_QUERY = "date_query";
+	private static final String MARK_CONTENT = "content";
+	private static final String MARK_TYPE_LIST = "document_type_list";
+	private static final String MARK_DOC_SEARCH_ITEM = "docSearchItem";
+	private static final String MARK_ID_PORTLET = "idPortlet";
+	private static final String MARK_DATE_ERROR = "date_error";
+	private static final String PARAMETER_QUERY = "query";
+	private static final String PARAMETER_SEARCH_QUERY = "search_query";
+	private static final String PARAMETER_TITLE = "title";
+	private static final String PARAMETER_SUMMARY = "summary";
+	private static final String PARAMETER_DATE = "date";
+	private static final String PARAMETER_TYPE = "document_type";
+	private static final String MESSAGE_TITLE = "document.advanced_search.title";
+	private static final String MESSAGE_DATE_ERROR = "document.advanced_search.date_error";
 
-    /**
-     * Return the form for advanced search with results
-     * @param request the request
-     * @param plugin the plugin
-     * @return the xpage
-     */
-    public XPage getPage( HttpServletRequest request, int nMode, Plugin plugin )
-    {
-        DocSearchService dss = DocSearchService.getInstance(  );
-        XPage page = new XPage(  );
-        HashMap<Object, Object> model = new HashMap<Object, Object>(  );
+	@Inject
+	private DocSearchService _dss;
 
-        String url = request.getRequestURL(  ).toString(  );
-        model.put( MARK_URL, url );
+	@Inject
+	private PublishingService _publishingService;
 
-        if ( request.getParameter( PARAMETER_SEARCH_QUERY ) != null )
-        {
-            String strSearchQuery = request.getParameter( PARAMETER_QUERY );
+	/**
+	 * Return the form for advanced search with results
+	 * 
+	 * @param request the request
+	 * @param plugin  the plugin
+	 * @return the xpage
+	 */
+	public XPage getPage( HttpServletRequest request, int nMode, Plugin plugin )
+	{
+		XPage page = new XPage( );
+		HashMap < Object, Object > model = new HashMap < Object, Object >( );
 
-            boolean bTitle = false;
-            boolean bSummary = false;
+		String url = request.getRequestURL( ).toString( );
+		model.put( MARK_URL, url );
 
-            if ( request.getParameter( PARAMETER_TITLE ) != null )
-            {
-                model.put( MARK_TITLE, true );
-                bTitle = true;
-            }
+		if( request.getParameter( PARAMETER_SEARCH_QUERY ) != null )
+		{
+			String strSearchQuery = request.getParameter( PARAMETER_QUERY );
 
-            if ( request.getParameter( PARAMETER_SUMMARY ) != null )
-            {
-                model.put( MARK_SUMMARY, true );
-                bSummary = true;
-            }
+			boolean bTitle = false;
+			boolean bSummary = false;
 
-            String strDate = request.getParameter( PARAMETER_DATE );
+			if( request.getParameter( PARAMETER_TITLE ) != null )
+			{
+				model.put( MARK_TITLE, true );
+				bTitle = true;
+			}
 
-            if ( ( strDate != null ) && !( strDate.equals( "" ) ) && !( isValidDate( strDate ) ) )
-            {
-                model.put( MARK_DATE_ERROR, I18nService.getLocalizedString( MESSAGE_DATE_ERROR, request.getLocale(  ) ) );
-            }
+			if( request.getParameter( PARAMETER_SUMMARY ) != null )
+			{
+				model.put( MARK_SUMMARY, true );
+				bSummary = true;
+			}
 
-            String strDocumentType = request.getParameter( PARAMETER_TYPE );
-            DocumentType docType = null;
+			String strDate = request.getParameter( PARAMETER_DATE );
 
-            if ( strDocumentType != null )
-            {
-                docType = DocumentTypeHome.findByPrimaryKey( strDocumentType );
-                model.put( MARK_SELECTED_TYPE, strDocumentType );
-            }
+			if( ( strDate != null ) && ! ( strDate.equals( "" ) ) && ! ( isValidDate( strDate ) ) )
+			{
+				model.put( MARK_DATE_ERROR,
+						I18nService.getLocalizedString( MESSAGE_DATE_ERROR, request.getLocale( ) ) );
+			}
 
-            List<DocSearchItem> result = dss.getSearchResults( strSearchQuery, bTitle, bSummary, strDate, docType );
-            List<HashMap<String, Object>> finalResult = new ArrayList<HashMap<String, Object>>(  );
-            PublishingService service = PublishingService.getInstance(  );
+			String strDocumentType = request.getParameter( PARAMETER_TYPE );
+			DocumentType docType = null;
 
-            Iterator<DocSearchItem> i = result.iterator(  );
+			if( strDocumentType != null )
+			{
+				docType = DocumentTypeHome.findByPrimaryKey( strDocumentType );
+				model.put( MARK_SELECTED_TYPE, strDocumentType );
+			}
 
-            while ( i.hasNext(  ) )
-            {
-                DocSearchItem docSearchItem = i.next(  );
+			List < DocSearchItem > result = _dss.getSearchResults( strSearchQuery, bTitle, bSummary, strDate, docType );
+			List < HashMap < String, Object > > finalResult = new ArrayList < HashMap < String, Object > >( );
 
-                if ( service.isPublished( IntegerUtils.convert( docSearchItem.getId(  ) ) ) )
-                {
-                    Collection<Portlet> c = service.getPortletsByDocumentId( docSearchItem.getId(  ) );
-                    Iterator<Portlet> it = c.iterator(  );
-                    int idPortlet = -1;
+			Iterator < DocSearchItem > i = result.iterator( );
 
-                    if ( it.hasNext(  ) )
-                    {
-                        idPortlet = it.next(  ).getId(  );
-                    }
+			while( i.hasNext( ) )
+			{
+				DocSearchItem docSearchItem = i.next( );
 
-                    Page pagePortlet = null;
+				if( _publishingService.isPublished( IntegerUtils.convert( docSearchItem.getId( ) ) ) )
+				{
+					Collection < Portlet > c = _publishingService.getPortletsByDocumentId( docSearchItem.getId( ) );
+					Iterator < Portlet > it = c.iterator( );
+					int idPortlet = - 1;
 
-                    if ( idPortlet != -1 )
-                    {
-                        Portlet portlet = DocumentPortletHome.findByPrimaryKey( idPortlet );
-                        pagePortlet = PageHome.getPage( portlet.getPageId(  ) );
-                    }
+					if( it.hasNext( ) )
+					{
+						idPortlet = it.next( ).getId( );
+					}
 
-                    if ( ( pagePortlet == null ) || ( pagePortlet.getRole(  ).equals( Page.ROLE_NONE ) ) ||
-                            ( ( SecurityService.isAuthenticationEnable(  ) ) &&
-                            ( SecurityService.getInstance(  ).isUserInRole( request, pagePortlet.getRole(  ) ) ) ) )
-                    {
-                        HashMap<String, Object> currentHashMap = new HashMap<String, Object>(  );
-                        currentHashMap.put( MARK_DOC_SEARCH_ITEM, docSearchItem );
-                        currentHashMap.put( MARK_ID_PORTLET, idPortlet );
-                        finalResult.add( currentHashMap );
-                    }
-                }
-            }
+					Page pagePortlet = null;
 
-            //replace all quotes by html code
-            strSearchQuery = strSearchQuery.replaceAll( "\"", "&quot;" );
+					if( idPortlet != - 1 )
+					{
+						Portlet portlet = DocumentPortletHome.findByPrimaryKey( idPortlet );
+						pagePortlet = PageHome.getPage( portlet.getPageId( ) );
+					}
 
-            model.put( MARK_QUERY, strSearchQuery );
-            model.put( MARK_DATE_QUERY, strDate );
+					if( ( pagePortlet == null ) || ( pagePortlet.getRole( ).equals( Page.ROLE_NONE ) ) ||
+							( ( SecurityService.isAuthenticationEnable( ) ) &&
+									( SecurityService.getInstance( ).isUserInRole( request, pagePortlet.getRole( ) ) ) ) )
+					{
+						HashMap < String, Object > currentHashMap = new HashMap < String, Object >( );
+						currentHashMap.put( MARK_DOC_SEARCH_ITEM, docSearchItem );
+						currentHashMap.put( MARK_ID_PORTLET, idPortlet );
+						finalResult.add( currentHashMap );
+					}
+				}
+			}
 
-            if ( finalResult.size(  ) > 0 )
-            {
-                model.put( MARK_CONTENT, finalResult );
-            }
-        }
-        else
-        {
-            model.put( MARK_SELECTED_TYPE, "-1" );
-        }
+			// replace all quotes by html code
+			strSearchQuery = strSearchQuery.replaceAll( "\"", "&quot;" );
 
-        model.put( MARK_TYPE_LIST, getRefListDocumentType(  ) );
-        model.put( MARK_LOCALE, request.getLocale(  ) );
+			model.put( MARK_QUERY, strSearchQuery );
+			model.put( MARK_DATE_QUERY, strDate );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADVANCED_SEARCH, request.getLocale(  ), model );
+			if( finalResult.size( ) > 0 )
+			{
+				model.put( MARK_CONTENT, finalResult );
+			}
+		}
+		else
+		{
+			model.put( MARK_SELECTED_TYPE, "-1" );
+		}
 
-        page.setContent( template.getHtml(  ) );
-        page.setTitle( I18nService.getLocalizedString( MESSAGE_TITLE, request.getLocale(  ) ) );
-        page.setPathLabel( I18nService.getLocalizedString( MESSAGE_TITLE, request.getLocale(  ) ) );
+		model.put( MARK_TYPE_LIST, getRefListDocumentType( ) );
+		model.put( MARK_LOCALE, request.getLocale( ) );
 
-        return page;
-    }
+		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADVANCED_SEARCH, request.getLocale( ), model );
 
-    /**
-     * Check if the date is well formed.
-     * @param strDate
-     * @return true if the date is valid else false
-     */
-    private boolean isValidDate( String strDate )
-    {
-        SimpleDateFormat f = new SimpleDateFormat( "dd/MM/yy" );
-        f.setLenient( false );
+		page.setContent( template.getHtml( ) );
+		page.setTitle( I18nService.getLocalizedString( MESSAGE_TITLE, request.getLocale( ) ) );
+		page.setPathLabel( I18nService.getLocalizedString( MESSAGE_TITLE, request.getLocale( ) ) );
 
-        try
-        {
-            f.parse( strDate );
+		return page;
+	}
 
-            return true;
-        }
-        catch ( ParseException e )
-        {
-            return false;
-        }
-    }
+	/**
+	 * Check if the date is well formed.
+	 * 
+	 * @param strDate
+	 * @return true if the date is valid else false
+	 */
+	private boolean isValidDate( String strDate )
+	{
+		SimpleDateFormat f = new SimpleDateFormat( "dd/MM/yy" );
+		f.setLenient( false );
 
-    /**
-     * The document referencelist
-     * @return The document referencelist
-     */
-    public static ReferenceList getRefListDocumentType(  )
-    {
-        Collection<DocumentType> listDocumentType = DocumentTypeHome.findAll(  );
-        ReferenceList reflistDocumentType = new ReferenceList(  );
+		try
+		{
+			f.parse( strDate );
 
-        reflistDocumentType.addItem( -1, " " );
+			return true;
+		}
+		catch( ParseException e )
+		{
+			return false;
+		}
+	}
 
-        for ( DocumentType documentType : listDocumentType )
-        {
-            reflistDocumentType.addItem( documentType.getCode(  ), documentType.getName(  ) );
-        }
+	/**
+	 * The document referencelist
+	 * 
+	 * @return The document referencelist
+	 */
+	public static ReferenceList getRefListDocumentType( )
+	{
+		Collection < DocumentType > listDocumentType = DocumentTypeHome.findAll( );
+		ReferenceList reflistDocumentType = new ReferenceList( );
 
-        return reflistDocumentType;
-    }
+		reflistDocumentType.addItem( - 1, " " );
+
+		for( DocumentType documentType : listDocumentType )
+		{
+			reflistDocumentType.addItem( documentType.getCode( ), documentType.getName( ) );
+		}
+
+		return reflistDocumentType;
+	}
 }

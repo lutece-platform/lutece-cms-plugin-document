@@ -33,118 +33,127 @@
  */
 package fr.paris.lutece.plugins.document.business.rules;
 
+import fr.paris.lutece.plugins.document.modules.rulemovespace.business.MoveSpaceRule;
+import fr.paris.lutece.plugins.document.modules.rulenotifyusers.business.NotifyUsersRule;
 import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import java.util.Collection;
+
+import jakarta.enterprise.inject.Instance;
 import java.util.Locale;
-import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.Arrays;
 
 /**
  * Rules Set
  */
+@ApplicationScoped
+@Named( "document.ruleTypesSet" )
 public class RuleTypesSet implements IRuleTypesSet
 {
-    private Map<String, Rule> _mapRuleTypes;
+	private final String BEAN_NAME_RULEMOVESPACE = "moveSpace";
+	private final String BEAN_NAME_NOTIFYUSERS = "notifyUsers";
+	private java.util.List < String > _ruleTypeKeys = Arrays.asList( BEAN_NAME_RULEMOVESPACE, BEAN_NAME_NOTIFYUSERS );
 
-    /**
-     * Sets the rule types map
-     * 
-     * @param mapRules
-     *            The rule types map
-     */
-    public void setRuleTypesMap( Map<String, Rule> mapRules )
-    {
-        _mapRuleTypes = mapRules;
-    }
+	@Inject
+	@Named( "document.MoveSpaceRule" )
+	private Instance < MoveSpaceRule > moveSpaceRuleInstance;
 
-    /**
-     * Create a new instance of a rule of a given type
-     * 
-     * @param strRuleTypeKey
-     *            The key name of the rule type
-     * @return A new Rule instance
-     */
-    public Rule newInstance( String strRuleTypeKey )
-    {
-        Rule rule = null;
+	@Inject
+	@Named( "document.NotifyUsersRule" )
+	private Instance < NotifyUsersRule > notifyUsersRuleInstance;
 
-        try
-        {
-            rule = _mapRuleTypes.get( strRuleTypeKey ).getClass( ).newInstance( );
-            rule.setRuleTypeId( strRuleTypeKey );
-        }
-        catch( InstantiationException e )
-        {
-            AppLogService.error( e.getMessage( ), e );
-        }
-        catch( IllegalAccessException e )
-        {
-            AppLogService.error( e.getMessage( ), e );
-        }
+	/**
+	 * Init
+	 * 
+	 */
+	public void init( )
+	{
 
-        return rule;
-    }
+	}
 
-    /**
-     * Returns the rule type of a given class type
-     * 
-     * @return The rule type
-     */
-    public String getRuleTypeKey( Rule rule )
-    {
-        for ( String key : _mapRuleTypes.keySet( ) )
-        {
-            Rule ruleType;
+	/**
+	 * Create a new instance of a rule of a given type
+	 * 
+	 * @param strRuleTypeKey
+	 *                       The key name of the rule type
+	 * @return A new Rule instance
+	 */
+    @Override
+	public Rule newInstance( String strRuleTypeKey )
+	{
+		Rule rule = null;
+		
+		if( BEAN_NAME_RULEMOVESPACE.equals( strRuleTypeKey ) )
+		{
+			rule = moveSpaceRuleInstance.get( );
+		}
+		else if( BEAN_NAME_NOTIFYUSERS.equals( strRuleTypeKey ) )
+		{
+			rule = notifyUsersRuleInstance.get( );
+		}
+		else
+		{
+			return null;
+		}
+		
+		rule.setRuleTypeId( strRuleTypeKey );
 
-            try
-            {
-                ruleType = _mapRuleTypes.get( key ).getClass( ).newInstance( );
+		return rule;
+	}
 
-                if ( ruleType.getClass( ).isInstance( rule ) )
-                {
-                    return key;
-                }
-            }
-            catch( InstantiationException e )
-            {
-                AppLogService.error( e.getMessage( ), e );
-            }
-            catch( IllegalAccessException e )
-            {
-                AppLogService.error( e.getMessage( ), e );
-            }
-        }
+	/**
+	 * Returns the rule type of a given class type
+	 * 
+	 * @return The rule type
+	 */
+    @Override
+	public String getRuleTypeKey( Rule rule )
+	{
+		for( String key : _ruleTypeKeys )
+		{
+			Rule candidate = newInstance( key );
+			if( candidate != null && candidate.getClass( ).isInstance( rule ) )
+			{
+				return key;
+			}
+		}
+		return null;
+	}
 
-        return null;
-    }
+	/**
+	 * Returns the rule types list
+	 * 
+	 * @return The rule types list
+	 */
+    @Override
+	public ReferenceList getRuleTypesList( Locale locale )
+	{
+		ReferenceList listRules = new ReferenceList( );
 
-    /**
-     * Returns the rule types list
-     * 
-     * @return The rule types list
-     */
-    public ReferenceList getRuleTypesList( Locale locale )
-    {
-        ReferenceList listRules = new ReferenceList( );
+		for( String strRuleKey : _ruleTypeKeys )
+		{
+			String strRuleNameKey = newInstance( strRuleKey ).getNameKey( );
+			listRules.addItem( strRuleKey, I18nService.getLocalizedString( strRuleNameKey, locale ) );
+		}
 
-        for ( String strRuleKey : _mapRuleTypes.keySet( ) )
-        {
-            String strRuleNameKey = newInstance( strRuleKey ).getNameKey( );
-            listRules.addItem( strRuleKey, I18nService.getLocalizedString( strRuleNameKey, locale ) );
-        }
+		return listRules;
+	}
 
-        return listRules;
-    }
-
-    /**
-     * Returns all rule types
-     * 
-     * @return A collection of rule types
-     */
-    public Collection<Rule> getRuleTypes( )
-    {
-        return _mapRuleTypes.values( );
-    }
+	/**
+	 * Returns all rule types
+	 * 
+	 * @return A collection of rule types
+	 */
+    @Override
+	public Collection < Rule > getRuleTypes( )
+	{
+		return _ruleTypeKeys.stream( )
+				.map( this::newInstance )
+				.collect( Collectors.toList( ) );
+	}
 }

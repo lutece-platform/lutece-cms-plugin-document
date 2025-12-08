@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.document.business;
 import fr.paris.lutece.plugins.document.service.docsearch.DocSearchService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.resource.ExtendableResourceRemovalListenerService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,8 +48,11 @@ import java.util.Locale;
 public final class DocumentHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentDAO _dao = SpringContextService.getBean( "document.documentDAO" );
+    private static IDocumentDAO _dao =  CDI.current( ).select( IDocumentDAO.class ).get( );
 
+    private static DocSearchService _docSearchService = CDI.current( ).select( DocSearchService.class ).get( );
+    
+    
     /**
      * Private constructor - this class need not be instantiated
      */
@@ -67,7 +70,7 @@ public final class DocumentHome
     public static Document create( Document document )
     {
         _dao.insert( document );
-        DocSearchService.getInstance( ).addIndexerAction( document.getId( ), IndexerAction.TASK_CREATE );
+        _docSearchService.addIndexerAction( document.getId( ), IndexerAction.TASK_CREATE );
 
         /*
          * IndexationService.addIndexerAction( document.getId(), DocumentIndexer.INDEXER_NAME, IndexerAction.TASK_CREATE );
@@ -87,7 +90,7 @@ public final class DocumentHome
     public static Document update( Document document, boolean bUpdateContent )
     {
         _dao.store( document, bUpdateContent );
-        DocSearchService.getInstance( ).addIndexerAction( document.getId( ), IndexerAction.TASK_MODIFY );
+        _docSearchService.addIndexerAction( document.getId( ), IndexerAction.TASK_MODIFY );
 
         /*
          * if(PublishingService.getInstance().isPublished(document.getId())) { IndexationService.getInstance().addIndexerAction( document.getId() ,
@@ -116,7 +119,7 @@ public final class DocumentHome
     public static void remove( int nDocumentId )
     {
         _dao.delete( nDocumentId );
-        DocSearchService.getInstance( ).addIndexerAction( nDocumentId, IndexerAction.TASK_DELETE );
+        _docSearchService.addIndexerAction( nDocumentId, IndexerAction.TASK_DELETE );
         // We remove extensions of the removed document if any
         ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Document.PROPERTY_RESOURCE_TYPE, Integer.toString( nDocumentId ) );
     }
@@ -248,16 +251,6 @@ public final class DocumentHome
     }
 
     /**
-     * Get a new primary key
-     * 
-     * @return The new primary key
-     */
-    public static int newPrimaryKey( )
-    {
-        return _dao.newPrimaryKey( );
-    }
-
-    /**
      * Gets all documents id
      * 
      * @return A collection of Integer
@@ -345,5 +338,33 @@ public final class DocumentHome
     public static Document loadLastPublishedDocument( )
     {
         return _dao.loadLastPublishedDocument( );
+    }
+
+    /**
+     * Get the max_allowed_packet value from MySQL configuration
+     *
+     * @return the max_allowed_packet value as a String (e.g., "16777216" or "16M"), or null if unable to retrieve
+     */
+    public static String getMaxAllowedPacket( )
+    {
+        String strSQL = "SHOW VARIABLES LIKE 'max_allowed_packet'";
+        String strMaxPacket = null;
+        
+        try ( fr.paris.lutece.util.sql.DAOUtil daoUtil = new fr.paris.lutece.util.sql.DAOUtil( strSQL ) )
+        {
+            daoUtil.executeQuery( );
+            
+            if ( daoUtil.next( ) )
+            {
+                strMaxPacket = daoUtil.getString( 2 ); // Column 2 is the value
+            }
+        }
+        catch ( Exception e )
+        {
+            // Return null if unable to query
+            strMaxPacket = null;
+        }
+        
+        return strMaxPacket;
     }
 }

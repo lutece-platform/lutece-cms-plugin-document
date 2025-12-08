@@ -42,18 +42,26 @@ import fr.paris.lutece.plugins.document.service.DocumentTypeResourceIdService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
  * DocumentHistoryJspBean
  */
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
+@SessionScoped
+@Named
 public class DocumentHistoryJspBean extends PluginAdminPageJspBean
 {
     /**
@@ -66,6 +74,9 @@ public class DocumentHistoryJspBean extends PluginAdminPageJspBean
     private static final String PROPERTY_PAGE_TITLE = "document.document_history.pageTitle";
     private static final String PARAMETER_DOCUMENT_ID = "id_document";
 
+    @Inject
+    private Models _model;
+    
     /**
      * Get the history page
      * @param request The request
@@ -81,7 +92,7 @@ public class DocumentHistoryJspBean extends PluginAdminPageJspBean
         Collection<HistoryEvent> listEvents = null;
 
         if ( ( document != null ) &&
-                DocumentService.getInstance(  )
+        		 CDI.current( ).select( DocumentService.class ).get( )
                                    .isAuthorizedAdminDocument( document.getSpaceId(  ),
                     document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_VIEW_HISTORY, getUser(  ) ) )
         {
@@ -92,12 +103,10 @@ public class DocumentHistoryJspBean extends PluginAdminPageJspBean
             document = null;
         }
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        _model.put( MARK_DOCUMENT, document );
+        _model.put( MARK_EVENTS_LIST, listEvents );
 
-        model.put( MARK_DOCUMENT, document );
-        model.put( MARK_EVENTS_LIST, listEvents );
-
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_HISTORY, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_HISTORY, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
     }

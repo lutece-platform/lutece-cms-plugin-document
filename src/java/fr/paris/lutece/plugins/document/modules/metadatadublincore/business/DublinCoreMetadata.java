@@ -37,12 +37,12 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.xml.XmlUtil;
 
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.xmlrules.DigesterLoader;
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.binder.DigesterLoader;
+import org.apache.commons.digester3.xmlrules.FromXmlRulesModule;
 
 import org.xml.sax.SAXException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -475,32 +475,45 @@ public class DublinCoreMetadata
      */
     public void load( String strXmlData )
     {
-        // Configure Digester from XML ruleset
-        URL rules = getClass(  ).getResource( FILE_RULES );
-        Digester digester = DigesterLoader.createDigester( rules );
+    	 if (strXmlData == null || strXmlData.isEmpty()) {
+    	        return;
+    	    }
 
-        // Push empty List onto Digester's Stack
-        digester.push( this );
-
-        try
-        {
-            if ( strXmlData != null )
-            {
-                StringReader sr = new StringReader( strXmlData );
-                digester.parse( sr );
-            }
-        }
-        catch ( FileNotFoundException e )
-        {
-            AppLogService.error( e.getMessage(  ), e );
-        }
-        catch ( SAXException e )
-        {
-            AppLogService.error( e.getMessage(  ), e );
-        }
-        catch ( IOException e )
-        {
-            AppLogService.error( e.getMessage(  ), e );
-        }
+    	    URL rules = getClass().getResource(FILE_RULES);
+    	    if (rules == null) {
+    	        AppLogService.error("Cannot find Digester rules file: " + FILE_RULES);
+    	        return;
+    	    }
+    	    
+    	    try
+    	    {
+	    	    DigesterLoader loader = DigesterLoader.newLoader(new FromXmlRulesModule() {
+	    	        @Override
+	    	        protected void loadRules() {
+	    	            loadXMLRules(rules);
+	    	        }
+	    	    });
+    	    
+	    	    try
+	    	    {
+		    	    Digester digester = loader.newDigester();
+		    	    digester.push(this);
+		
+		    	    try (StringReader sr = new StringReader(strXmlData)) {
+		    	        digester.parse(sr);
+		    	    } 
+		    	    catch (IOException | SAXException e) {
+		    	        AppLogService.error("Error parsing DublinCore XML: " + e.getMessage(), e);
+		    	    }
+		    	    }
+	    	    catch( Exception e )
+	    	    {
+	    	    	AppLogService.error("Error Digester DublinCore XML: " + e.getMessage(), e);
+	    	    }
+    	    }
+    	    catch( Exception e )
+    	    {
+    	    	AppLogService.error("Error laoding DublinCore XML: " + e.getMessage(), e);
+    	    }
     }
 }

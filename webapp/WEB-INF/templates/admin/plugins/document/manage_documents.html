@@ -66,6 +66,12 @@
 			</@columns>
 			<@columns xl=9>
 			<#if space?has_content>
+				<#if is_parser_plugin_active?has_content && !is_parser_plugin_active>
+					<@alert color='warning' dismissible=true>
+						<@icon style='exclamation-triangle' />
+						#i18n{document.manage_documents.parserPluginWarning}
+					</@alert>
+				</#if>
 				<@box>
 					<@boxHeader title='#i18n{document.manage_documents.buttonSearch}' />
 					<@boxBody>

@@ -35,15 +35,18 @@ package fr.paris.lutece.plugins.document.business.attributes;
 
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+
 /**
  * This class provides Data Access methods for DocumentAttributeType objects
  */
+@ApplicationScoped
 public final class AttributeTypeDAO implements IAttributeTypeDAO
 {
     // Constants
@@ -61,6 +64,7 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
      * @param documentAttributeType
      *            The documentAttributeType object
      */
+    @Override
     public void insert( AttributeType documentAttributeType )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
@@ -81,6 +85,7 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
      *            The identifier of DocumentAttributeType
      * @return the instance of the DocumentAttributeType
      */
+    @Override
     public AttributeType load( int nDocumentAttributeTypeId )
     {
         AttributeType documentAttributeType = null;
@@ -107,6 +112,7 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
      * @param documentAttributeType
      *            The DocumentAttributeType object
      */
+    @Override
     public void delete( AttributeType documentAttributeType )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -123,6 +129,7 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
      * @param documentAttributeType
      *            The reference of documentAttributeType
      */
+    @Override
     public void store( AttributeType documentAttributeType )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
@@ -142,6 +149,7 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
      * 
      * @return The Collection of the DocumentAttributeTypes
      */
+    @Override
     public Collection<AttributeType> selectDocumentAttributeTypeList( )
     {
         Collection<AttributeType> listDocumentAttributeTypes = new ArrayList<>( );
@@ -170,6 +178,7 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
      * @param locale
      *            The locale
      */
+    @Override
     public ReferenceList selectAttributeTypeList( Locale locale )
     {
         ReferenceList listAttributeTypes = new ReferenceList( );
@@ -197,6 +206,7 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
      * 
      * @return The list of attribute managers
      */
+    @Override
     public ReferenceList getAttributeManagersList( )
     {
         ReferenceList listAttributeManagers = new ReferenceList( );
@@ -222,6 +232,7 @@ public final class AttributeTypeDAO implements IAttributeTypeDAO
      * @param strAttributeTypeCode
      *            The attribute type code
      */
+    @Override
     public List<AttributeTypeParameter> selectAttributeTypeParameterList( String strAttributeTypeCode )
     {
         List<AttributeTypeParameter> listAttributeTypeParameters = new ArrayList<>( );

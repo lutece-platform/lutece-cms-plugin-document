@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.business;
 
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +42,11 @@ import java.util.List;
 /**
  * This class provides Data Access methods for DocumentPageTemplate objects
  */
+@ApplicationScoped
 public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = " SELECT max( id_page_template_document ) FROM document_page_template";
+    private static final String SQL_QUERY_NEW_PK = " SELECT max( id_page_template_document ) FROM document_page_template ";
     private static final String SQL_QUERY_SELECT = " SELECT id_page_template_document, description, page_template_path, picture_path FROM document_page_template WHERE id_page_template_document = ?";
     private static final String SQL_QUERY_INSERT = " INSERT INTO document_page_template ( id_page_template_document, description, page_template_path, picture_path ) VALUES ( ?, ?, ?, ? )";
     private static final String SQL_QUERY_DELETE = " DELETE FROM document_page_template WHERE id_page_template_document = ?";
@@ -60,7 +62,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      * 
      * @return The new primary key
      */
-    int newPrimaryKey( )
+    private int newPrimaryKey( )
     {
         int nKey;
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
@@ -74,8 +76,6 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
             }
 
             nKey = daoUtil.getInt( 1 ) + 1;
-
-
         }
         return nKey;
     }
@@ -86,13 +86,12 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      * @param documentPageTemplate
      *            The Instance of the object DocumentPageTemplate
      */
+    @Override
     public synchronized void insert( DocumentPageTemplate documentPageTemplate )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
         {
-
             documentPageTemplate.setId( newPrimaryKey( ) );
-
             daoUtil.setInt( 1, documentPageTemplate.getId( ) );
             daoUtil.setString( 2, documentPageTemplate.getDescription( ) );
             daoUtil.setString( 3, documentPageTemplate.getFile( ) );
@@ -109,6 +108,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      *            The indentifier of the object DocumentPageTemplate
      * @return The Instance of the object PageTemplate
      */
+    @Override
     public DocumentPageTemplate load( int nPageTemplateId )
     {
         DocumentPageTemplate documentPageTemplate = null;
@@ -138,6 +138,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      * @param nPageTemplateId
      *            The indentifier of the object PageTemplate
      */
+    @Override
     public void delete( int nPageTemplateId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -153,11 +154,11 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      * @param documentPageTemplate
      *            The instance of the PageTemplate to update
      */
+    @Override
     public void store( DocumentPageTemplate documentPageTemplate )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
         {
-
             daoUtil.setInt( 1, documentPageTemplate.getId( ) );
             daoUtil.setString( 2, documentPageTemplate.getDescription( ) );
             daoUtil.setString( 3, documentPageTemplate.getFile( ) );
@@ -165,7 +166,6 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
             daoUtil.setInt( 5, documentPageTemplate.getId( ) );
 
             daoUtil.executeUpdate( );
-
         }
     }
 
@@ -174,6 +174,7 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      * 
      * @return A list of PageTemplates objects
      */
+    @Override
     public List<DocumentPageTemplate> selectPageTemplatesList( )
     {
         List<DocumentPageTemplate> listDocumentPageTemplates = new ArrayList<>( );

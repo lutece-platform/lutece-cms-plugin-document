@@ -45,6 +45,7 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
@@ -58,14 +59,24 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
  * This class provides the user interface to manage DocumentList Portlet
  */
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+
+@SessionScoped
+@Named
 public class DocumentListPortletJspBean extends PortletJspBean
 {
+
+    // Constants
+    private static final long serialVersionUID = 1L;
+
     // Right
     public static final String RIGHT_MANAGE_ADMIN_SITE = "CORE_ADMIN_SITE";
     private static final String MARK_DOCUMENT_TYPE_LIST = "document_type_list";
@@ -79,12 +90,19 @@ public class DocumentListPortletJspBean extends PortletJspBean
     private static final String TEMPLATE_CATEGORY_DOCUMENT_LIST = "admin/plugins/document/portlet/category_document_list.html";
     private static final String MESSAGE_ERROR_DOCUMENTS_MUST_BE_UNASSIGNED = "document.message.errorDocumentsMustBeUnassigned";
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Constants
-    private static final long serialVersionUID = 1L;
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Class attributes
+    
+    @Inject
+    private DocumentListPortletHome _documentListPortletHome;
+    
+    @Inject
+    private  CategoryService  _categoryService;
+    
+    @Inject
+    private PublishingService _publishingService;
+    
+    @Inject
+    private Models _model;
+    
 
     /**
      * Returns portlet's properties prefix
@@ -168,7 +186,7 @@ public class DocumentListPortletJspBean extends PortletJspBean
         portlet.setIdCategory( setIdCategory( request ) );
 
         //Portlet creation
-        DocumentListPortletHome.getInstance(  ).create( portlet );
+        _documentListPortletHome.create( portlet );
 
         //Displays the page with the new Portlet
         return getPageUrl( nIdPage );
@@ -188,7 +206,7 @@ public class DocumentListPortletJspBean extends PortletJspBean
         int[] arrayIdCategories = setIdCategory( request );
 
         int nPortletId = IntegerUtils.convert( strPortletId );
-        DocumentListPortlet portlet = (DocumentListPortlet) DocumentListPortletHome.findByPrimaryKey( nPortletId );
+        DocumentListPortlet portlet = (DocumentListPortlet) _documentListPortletHome.findByPrimaryKey( nPortletId );
         int[] arrayOldIdCategories = portlet.getIdCategory(  );
 
         if ( arrayIdCategories != null )
@@ -203,7 +221,7 @@ public class DocumentListPortletJspBean extends PortletJspBean
 
         if ( ( !Arrays.equals( arrayIdCategories, arrayOldIdCategories ) ||
                 !portlet.getDocumentTypeCode(  ).equals( strDocumentTypeCode ) ) &&
-                ( PublishingService.getInstance(  ).getAssignedDocumentsByPortletId( nPortletId ).size(  ) != 0 ) )
+                ( _publishingService.getAssignedDocumentsByPortletId( nPortletId ).size(  ) != 0 ) )
         {
             return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENTS_MUST_BE_UNASSIGNED,
                 AdminMessage.TYPE_STOP );
@@ -274,12 +292,10 @@ public class DocumentListPortletJspBean extends PortletJspBean
             }
         }
 
-        Map<String, Serializable> model = new HashMap<String, Serializable>(  );
+        _model.put( MARK_CODE_TYPE_DOCUMENT, strCodeTypeDocument );
+        _model.put( MARK_DOCUMENT_TYPE_LIST, DocumentTypeHome.getDocumentTypesList(  ) );
 
-        model.put( MARK_CODE_TYPE_DOCUMENT, strCodeTypeDocument );
-        model.put( MARK_DOCUMENT_TYPE_LIST, DocumentTypeHome.getDocumentTypesList(  ) );
-
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_TYPE_LIST, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_TYPE_LIST, getLocale(  ), _model );
 
         return template.getHtml(  );
     }
@@ -301,19 +317,18 @@ public class DocumentListPortletJspBean extends PortletJspBean
 
             if ( portlet != null )
             {
-                listCategoriesDisplay = CategoryService.getAllCategoriesDisplay( portlet.getIdCategory(  ), user );
+                listCategoriesDisplay = _categoryService.getAllCategoriesDisplay( portlet.getIdCategory(  ), user );
             }
         }
         else
         {
-            listCategoriesDisplay = CategoryService.getAllCategoriesDisplay( user );
+            listCategoriesDisplay = _categoryService.getAllCategoriesDisplay( user );
         }
 
-        Map<String, Collection<CategoryDisplay>> model = new HashMap<String, Collection<CategoryDisplay>>(  );
 
-        model.put( MARK_CATEGORY_LIST, listCategoriesDisplay );
+        _model.put( MARK_CATEGORY_LIST, listCategoriesDisplay );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CATEGORY_DOCUMENT_LIST, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CATEGORY_DOCUMENT_LIST, getLocale(  ), _model );
 
         return template.getHtml(  );
     }

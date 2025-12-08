@@ -35,67 +35,70 @@ package fr.paris.lutece.plugins.document.web;
 
 import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
 
-import net.sf.ehcache.Cache;
-
+import javax.cache.Cache;
 
 /**
  * ResourceServletCache
  */
-public class ResourceServletCache extends AbstractCacheableService
+public class ResourceServletCache extends AbstractCacheableService < String, ResourceValueObject >
 {
-    private static final String NAME = "Document ResourceServlet Cache";
+	private static final String NAME = "Document ResourceServlet Cache";
 
-    /**
-     * Default constructor
-     */
-    public ResourceServletCache(  )
-    {
-        initCache( getName(  ) );
-    }
+	/**
+	 * Default constructor
+	 */
+	public ResourceServletCache( )
+	{
+		initCache( getName( ) );
+	}
 
-    /**
-     * Gets the cache name
-     * @return The cache name
-     */
-    public final String getName(  )
-    {
-        return NAME;
-    }
+	/**
+	 * Gets the cache name
+	 * 
+	 * @return The cache name
+	 */
+	public final String getName( )
+	{
+		return NAME;
+	}
 
-    /**
-     * Get from the cache
-     * @param strKey The key
-     * @return The object or null if not found
-     */
-    public ResourceValueObject get( String strKey )
-    {
-        return (ResourceValueObject) getFromCache( strKey );
-    }
+	/**
+	 * Get from the cache
+	 * 
+	 * @param strKey The key
+	 * @return The object or null if not found
+	 */
+	public ResourceValueObject get( String strKey )
+	{
+		return ( ResourceValueObject ) super.get( strKey );
+	}
 
-    /**
-     * Put an object into the cache
-     * @param strKey The key
-     * @param resource The value
-     */
-    public void put( String strKey, ResourceValueObject resource )
-    {
-        putInCache( strKey, resource );
-    }
+	/**
+	 * Put an object into the cache
+	 * 
+	 * @param strKey   The key
+	 * @param resource The value
+	 */
+	public void put( String strKey, ResourceValueObject resource )
+	{
+		super.put( strKey, resource );
+	}
 
-    /**
-     * Remove keys from a key pattern
-     * @param strKeyPattern The key pattern
-     */
-    void removeFromKeyPattern( String strKeyPattern )
-    {
-        Cache cache = getCache(  );
+	/**
+	 * Remove keys from a key pattern
+	 * 
+	 * @param strKeyPattern The key pattern
+	 */
+	void removeFromKeyPattern( String strKeyPattern )
+	{
+		Cache < String, ResourceValueObject > cache = getCache( );
 
-        for ( String strKey : getKeys(  ) )
-        {
-            if ( strKey.contains( strKeyPattern ) )
-            {
-                cache.remove( strKey );
-            }
-        }
-    }
+		for( String strKey : getKeys( ) )
+		{
+			if( strKey.contains( strKeyPattern ) )
+			{
+				cache.remove( strKey );
+			}
+		}
+	}
 }

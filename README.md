@@ -5,6 +5,8 @@
 
 # Document Plugin
 
+## Introduction
+
 The Document plugin is the content management application of a Lutece portal.
 
 Its main features are :
@@ -18,6 +20,36 @@ Its main features are :
 * For publishing, the plugin also provides two portlets allowing to publish one or a list of documents. It manages automatic upload and removal dates, as well as a manual scheduling or suspension of each document.
 * The documents are accessible through the search engine. The search engine indexes in full text the content areas defined as "to be indexed" in the document type.
 
+
+## Usage
+
+ **Document Indexing** 
+
+After creating or modifying documents, it is necessary to run the indexing daemon `docSearchIndexer` so that the new documents or modifications are included in the search results.
+
+The indexing daemon can be launched manually from the administration interface (System → Daemons) or runs automatically according to the defined configuration.
+
+## Configuration
+
+ **Indexing and Parsers** 
+
+For complete document indexing, especially for binary files (PDF, Office, etc.), it is recommended to install the **plugin-parser** .
+
+The document plugin provides a default HTML parser ( `DefaultDocumentIndexerParser` ) which uses JSoup to extract text from HTML content. This parser has a low priority (priority 2).
+
+The plugin-parser provides a universal parser based on Apache Tika ( `TikaAutoDetectParser` ) which has a higher priority (priority 1). This parser automatically detects document formatsand can process:
+ 
+* PDF
+* MS Office documents (DOC, XLS, PPT, DOCX, XLSX, PPTX)
+* OpenDocument documents (ODT, ODS, ODP)
+* HTML, XML
+* Archives (ZIP, RAR, etc.)
+* And many other formats
+
+
+ **Note:** The plugin-parser brings heavy dependencies (Apache Tika and its libraries). If you only need HTML indexing, the document plugin's default parser is sufficient.For complete indexing including binary files, install the plugin-parser.
+
+The CDI priority system automatically selects the available parser with the highest priority.
 
 
 [Maven documentation and reports](https://dev.lutece.paris.fr/plugins/plugin-document/)

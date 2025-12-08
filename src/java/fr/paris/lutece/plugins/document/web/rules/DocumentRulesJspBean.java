@@ -43,23 +43,29 @@ import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.constants.Messages;
+import fr.paris.lutece.portal.web.util.IPager;
+import fr.paris.lutece.portal.web.util.Pager;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
  * JSP Bean for document rules management
  */
+@SessionScoped
+@Named
 public class DocumentRulesJspBean extends PluginAdminPageJspBean
 {
     public static final String RIGHT_RULES_MANAGEMENT = "DOCUMENT_RULES_MANAGEMENT";
@@ -71,6 +77,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
     private static final String JSP_DO_DELETE_RULE = "jsp/admin/plugins/document/DoDeleteRule.jsp";
     private static final String JSP_SELECT_SPACE = "jsp/admin/plugins/document/SelectSpace.jsp";
     private static final String JSP_CREATE_RULE_SESSION = "jsp/admin/plugins/document/CreateRuleSession.jsp";
+    private static final String JSP_MANAGE_RULES = "jsp/admin/plugins/document/ManageRules.jsp";
     private static final String TEMPLATE_MANAGE_RULES = "/admin/plugins/document/rules/manage_rules.html";
     private static final String TEMPLATE_CREATE_RULE = "/admin/plugins/document/rules/create_rule.html";
     private static final String TEMPLATE_SELECT_SPACE = "/admin/plugins/document/rules/select_space_rule.html";
@@ -91,6 +98,16 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
     private Rule _rule;
     private String _StrRuleAttributeSelected;
 
+    @Inject
+    private DocumentSpacesService _documentSpacesService;
+    
+	@Inject
+	private Models _model;
+	
+	@Inject
+	@Pager( listBookmark = MARK_RULES_LIST )
+	private IPager<Rule, Void> _pager;
+	
     /**
      * Get rule
      * @return Rule
@@ -149,15 +166,32 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
                 listRulesAuthorized.add( rule );
             }
         }
+		
+        addPaginatorToModel( request, listRulesAuthorized, _model );
+        
+        //_model.put( MARK_RULES_LIST, listRulesAuthorized );
+        _model.put( MARK_RULE_TYPES_LIST, RuleHome.getRuleTypesList( getLocale(  ) ) );
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put( MARK_RULES_LIST, listRulesAuthorized );
-        model.put( MARK_RULE_TYPES_LIST, RuleHome.getRuleTypesList( getLocale(  ) ) );
-
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_RULES, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_RULES, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
     }
+    
+	/**
+	 * Add Paginator to model map
+	 * 
+	 * @param request The request
+	 * @param listIdPersonne list of authorized rules id 
+	 * **/
+	 private void addPaginatorToModel ( HttpServletRequest request, List < Rule > listRulesAuthorized, Models model )
+	{
+		UrlItem url = new UrlItem ( JSP_MANAGE_RULES ) ;
+		String strUrl = url.getUrl ( ) ;
+		
+		_pager.withBaseUrl( strUrl )
+				.withListItem( listRulesAuthorized )
+				.populateModels( request, model, request.getLocale( ) );
+	}
 
     /**
      * Gets the interface of spaces selection
@@ -176,13 +210,12 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
             bSubmitButtonDisabled = Boolean.FALSE;
         }
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
         // Spaces browser
-        model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
-        model.put( MARK_SPACES_BROWSER,
-            DocumentSpacesService.getInstance(  ).getSpacesBrowser( request, getUser(  ), getLocale(  ), false, true ) );
+        _model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
+        _model.put( MARK_SPACES_BROWSER,
+            _documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), false, true ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECT_SPACE, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECT_SPACE, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
     }
@@ -202,9 +235,9 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
         }
 
         int nSpaceId = IntegerUtils.convert( strSpaceId );
-        getRuleSession(  ).setAttribute( getRuleAttributeSelectedSession(  ), Integer.toString( nSpaceId ) );
+    getRuleSession(  ).setAttribute( getRuleAttributeSelectedSession(  ), Integer.toString( nSpaceId ) );
 
-        return AppPathService.getBaseUrl( request ) + JSP_CREATE_RULE_SESSION;
+    return AppPathService.getBaseUrl( request ) + JSP_CREATE_RULE_SESSION;
     }
 
     /**
@@ -230,11 +263,10 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
             strRuleTypeId = rule.getRuleTypeId(  );
         }
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put( MARK_CREATE_FORM, rule.getCreateForm( getUser(  ), getLocale(  ) ) );
-        model.put( MARK_RULE_TYPE_ID, strRuleTypeId );
+        _model.put( MARK_CREATE_FORM, rule.getCreateForm( getUser(  ), getLocale(  ) ) );
+        _model.put( MARK_RULE_TYPE_ID, strRuleTypeId );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_RULE, getLocale(  ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_RULE, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
     }
@@ -309,8 +341,8 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
 
         String[] args = { rule.getRule(  ) };
 
-        return AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_RULE_DELETE, args, url.getUrl(  ),
-            AdminMessage.TYPE_CONFIRMATION );
+        return AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_RULE_DELETE, args, null, url.getUrl(  ), null,
+            AdminMessage.TYPE_CONFIRMATION,null, JSP_MANAGE_RULES );
     }
 
     /**

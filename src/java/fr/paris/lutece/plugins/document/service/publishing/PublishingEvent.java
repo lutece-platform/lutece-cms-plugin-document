@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.document.service.publishing;
 
-
 /**
  * PublishingEvent
  */

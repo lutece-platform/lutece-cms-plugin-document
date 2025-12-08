@@ -1,4 +1,5 @@
 <%@ page errorPage="../../ErrorPage.jsp" %>
-<jsp:useBean id="documentRules" scope="session" class="fr.paris.lutece.plugins.document.web.rules.DocumentRulesJspBean" />
-<% documentRules.init( request, documentRules.RIGHT_RULES_MANAGEMENT ); %>
-<%  response.sendRedirect( documentRules.doSaveRuleSession( request ) ); %>
+<%@page import="fr.paris.lutece.plugins.document.web.rules.DocumentRulesJspBean"%>
+
+${ documentRulesJspBean.init( pageContext.request, DocumentRulesJspBean.RIGHT_RULES_MANAGEMENT ) }
+${ pageContext.response.sendRedirect( documentRulesJspBean.doSaveRuleSession( pageContext.request ) ) }

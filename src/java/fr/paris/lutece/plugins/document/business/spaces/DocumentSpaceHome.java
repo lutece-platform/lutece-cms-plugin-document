@@ -33,8 +33,8 @@
  */
 package fr.paris.lutece.plugins.document.business.spaces;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,7 +46,7 @@ import java.util.Locale;
 public final class DocumentSpaceHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentSpaceDAO _dao = SpringContextService.getBean( "document.documentSpaceDAO" );
+    private static IDocumentSpaceDAO _dao = CDI.current( ).select( IDocumentSpaceDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated

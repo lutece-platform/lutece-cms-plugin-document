@@ -53,6 +53,7 @@ public class NumerictextManager extends TextManager
      * Gets the template to enter the attribute value
      * @return The template to enter the attribute value
      */
+    @Override
     protected String getCreateTemplate(  )
     {
         return TEMPLATE_CREATE_ATTRIBUTE;
@@ -62,6 +63,7 @@ public class NumerictextManager extends TextManager
      * Gets the template to modify the attribute value
      * @return The template to modify the attribute value
      */
+    @Override
     protected String getModifyTemplate(  )
     {
         return TEMPLATE_MODIFY_ATTRIBUTE;
@@ -71,6 +73,7 @@ public class NumerictextManager extends TextManager
      * Gets the template to enter the parameters of the attribute value
      * @return The template to enter the parameters of the attribute value
      */
+    @Override
     protected String getCreateParametersTemplate(  )
     {
         return TEMPLATE_CREATE_PARAMETERS_ATTRIBUTE;
@@ -80,6 +83,7 @@ public class NumerictextManager extends TextManager
      * Gets the template to modify the parameters of the attribute value
      * @return The template to modify the parameters of the attribute value
      */
+    @Override
     protected String getModifyParametersTemplate(  )
     {
         return TEMPLATE_MODIFY_PARAMETERS_ATTRIBUTE;
@@ -92,6 +96,7 @@ public class NumerictextManager extends TextManager
      * @param locale The current Locale
      * @return null if valid, otherwise error message
      */
+    @Override
     public String validateValue( int nAttributeId, String strValue, Locale locale )
     {
         String strValidateValue = super.validateValue( nAttributeId, strValue, locale );
