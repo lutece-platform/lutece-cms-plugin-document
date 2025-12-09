@@ -105,6 +105,7 @@ public class DocumentSpaceTest extends LuteceTestCase
         assertNull( spaceStored );
     }
 
+    @Test
     public void testSpaceActionBusiness(  )
     {
         SpaceActionHome.getActionsList( Locale.getDefault(  ) );

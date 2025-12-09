@@ -68,6 +68,7 @@ public class DocSearchServiceTest extends LuteceTestCase
     /**
      * Test of getSearchResults method, of class fr.paris.lutece.plugins.document.service.docsearch.DocSearchService.
      */
+    @Test
     public void testGetSearchResults(  )
     {
         System.out.println( "getSearchResults" );

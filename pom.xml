@@ -60,6 +60,16 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <scope>test</scope>
+        </dependency>
 		
         <dependency>
             <groupId>fr.paris.lutece.plugins</groupId>
@@ -72,8 +82,6 @@
     
     <properties>
         <componentName>document</componentName>
-        <jiraProjectName>DOCUMENT</jiraProjectName>
-        <jiraComponentId>10166</jiraComponentId>
     </properties>
 
     <scm>
