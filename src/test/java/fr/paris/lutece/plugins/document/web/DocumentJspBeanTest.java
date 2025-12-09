@@ -34,14 +34,20 @@
 package fr.paris.lutece.plugins.document.web;
 
 
+import fr.paris.lutece.portal.business.right.Right;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import fr.paris.lutece.test.LuteceTestCase;
 
 import fr.paris.lutece.test.mocks.MockHttpServletRequest;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -50,6 +56,10 @@ import fr.paris.lutece.test.mocks.MockHttpServletRequest;
 public class DocumentJspBeanTest extends LuteceTestCase
 {
 	private static final String PARAMETER_DOCUMENT_TYPE = "document_type_code";
+    private static final String ATTRIBUTE_ADMIN_USER = "lutece_admin_user";
+
+    @Inject
+    private DocumentJspBean _instance;
 
 	/**
 	 * Test of getManageDocuments method, of class
@@ -64,15 +74,17 @@ public class DocumentJspBeanTest extends LuteceTestCase
 
 		AdminUser user = AdminUserHome.findUserByLogin( "admin" );
 		user.setRoles( AdminUserHome.getRolesListForUser( user.getUserId( ) ) );
-		// Simule l'enregistrement de l'utilisateur et du droit via setAttribute
-		request.setAttribute( "lutece_user", user );
-		request.setAttribute( "lutece_right", DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT );
+        Map<String, Right> mapRights = new HashMap<>( );
+        Right right = new Right( );
+        right.setId( DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT );
+        mapRights.put( DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT, right );
+        user.setRights( mapRights );
+        user.setLocale( new Locale("fr", "FR", "") );
+        request.getSession( true ).setAttribute( ATTRIBUTE_ADMIN_USER, user );
 
-		DocumentJspBean instance = new DocumentJspBean( );
+        _instance.init( request, DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT );
 
-		instance.init( request, DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT );
-
-		String result = instance.getManageDocuments( request );
+		String result = _instance.getManageDocuments( request );
 	}
 
 	/**
