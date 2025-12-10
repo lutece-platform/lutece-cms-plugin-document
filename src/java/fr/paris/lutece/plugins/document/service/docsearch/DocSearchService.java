@@ -120,7 +120,7 @@ public class DocSearchService
     public DocSearchService(  )
     {
         // Read configuration properties
-        _strIndex = AppPathService.getPath( PATH_INDEX );
+        _strIndex = AppPropertiesService.getProperty( PATH_INDEX );
 
         if ( ( _strIndex == null ) || ( _strIndex.equals( StringUtils.EMPTY ) ) )
         {
@@ -136,7 +136,7 @@ public class DocSearchService
 
         try
         {
-            _analyzer = (Analyzer) Class.forName( strAnalyserClassName ).newInstance(  );
+            _analyzer = (Analyzer) Class.forName( strAnalyserClassName ).getDeclaredConstructor( ).newInstance(  );
         }
         catch ( Exception e )
         {
@@ -156,7 +156,7 @@ public class DocSearchService
      * @deprecated Use {@code @Inject} to obtain the {@link DocSearchService} 
      * instance. This method will be removed in future versions.
      */
-    @Deprecated( since = "8.0", forRemoval = true )
+    @Deprecated( since = "6.0", forRemoval = true )
     public static DocSearchService getInstance(  )
     {
         return CDI.current( ).select( DocSearchService.class ).get( );
