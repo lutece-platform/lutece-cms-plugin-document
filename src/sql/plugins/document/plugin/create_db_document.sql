@@ -162,7 +162,7 @@ CREATE TABLE document_auto_publication (
 --
 DROP TABLE IF EXISTS document_page_template;
 CREATE TABLE document_page_template (
-	id_page_template_document int default 0 NOT NULL,
+	id_page_template_document int AUTO_INCREMENT,
 	page_template_path varchar(255) default NULL,
 	picture_path varchar(255) default NULL,
 	description varchar(255) default NULL,
@@ -208,7 +208,7 @@ CREATE TABLE document_rule_attr (
 --
 DROP TABLE IF EXISTS document_space;
 CREATE TABLE document_space (
-	id_space int default 0 NOT NULL,
+	id_space int AUTO_INCREMENT,
 	id_parent int default NULL,
 	document_space_name varchar(100) default NULL,
 	description varchar(255) default NULL,
@@ -363,7 +363,7 @@ CREATE TABLE document_type_attr_verify_by (
 --
 DROP TABLE IF EXISTS document_indexer_action;
 CREATE TABLE document_indexer_action(
-  id_action int default 0 NOT NULL,
+  id_action int AUTO_INCREMENT,
   id_record int default 0 NOT NULL,
   id_task int default 0 NOT NULL,
   PRIMARY KEY (id_action)  

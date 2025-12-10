@@ -38,6 +38,7 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -49,12 +50,11 @@ import java.util.Locale;
 public final class DocumentSpaceDAO implements IDocumentSpaceDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = " SELECT max( id_space ) FROM document_space ";
     private static final String SQL_QUERY_SELECT = " SELECT a.id_space, a.id_parent, a.document_space_name, a.description, a.document_space_view, a.id_space_icon, b.icon_url, a.document_creation_allowed, a.workgroup_key "
             + " FROM document_space a, document_space_icon b " + " WHERE a.id_space_icon = b.id_space_icon AND id_space = ? ";
-    private static final String SQL_QUERY_INSERT = " INSERT INTO document_space ( id_space, id_parent, document_space_name, description, document_space_view, id_space_icon, document_creation_allowed ,workgroup_key ) VALUES ( ?, ?, ?, ?, ?, ?, ? ,?) ";
+    private static final String SQL_QUERY_INSERT = " INSERT INTO document_space ( id_parent, document_space_name, description, document_space_view, id_space_icon, document_creation_allowed ,workgroup_key ) VALUES ( ?, ?, ?, ?, ?, ? ,?) ";
     private static final String SQL_QUERY_DELETE = " DELETE FROM document_space WHERE id_space = ?  ";
-    private static final String SQL_QUERY_UPDATE = " UPDATE document_space SET id_space = ?, id_parent = ?, document_space_name = ?, description = ?, document_space_view = ?, id_space_icon = ?, document_creation_allowed = ? ,workgroup_key= ? WHERE id_space = ?  ";
+    private static final String SQL_QUERY_UPDATE = " UPDATE document_space SET id_parent = ?, document_space_name = ?, description = ?, document_space_view = ?, id_space_icon = ?, document_creation_allowed = ? ,workgroup_key= ? WHERE id_space = ?  ";
     private static final String SQL_QUERY_SELECT_CHILDS = " SELECT a.id_space, a.id_parent, a.document_space_name, a.description, a.document_space_view, a.id_space_icon, b.icon_url, a.document_creation_allowed ,a.workgroup_key"
             + " FROM document_space a, document_space_icon b WHERE a.id_space_icon = b.id_space_icon AND id_parent = ? ORDER BY a.document_space_name ";
     private static final String SQL_QUERY_SELECT_CHILDS_BY_CODE_TYPE = " SELECT a.id_space, a.id_parent, a.document_space_name, a.description, a.document_space_view, a.id_space_icon, b.icon_url, a.document_creation_allowed ,a.workgroup_key"
@@ -77,49 +77,29 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
             + " ORDER BY a.document_type_name";
 
     /**
-     * Generates a new primary key
-     * 
-     * @return The new primary key
-     */
-    private int newPrimaryKey( )
-    {
-        int nKey;
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
-        {
-            daoUtil.executeQuery( );
-
-            if ( !daoUtil.next( ) )
-            {
-                // if the table is empty
-                nKey = 1;
-            }
-
-            nKey = daoUtil.getInt( 1 ) + 1;
-        }
-        return nKey;
-    }
-
-    /**
      * Insert a new record in the table.
      *
      * @param space
      *            The space object
      */
     @Override
-    public synchronized void insert( DocumentSpace space )
+    public void insert( DocumentSpace space )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS ) )
         {
-            space.setId( newPrimaryKey( ) );
-            daoUtil.setInt( 1, space.getId( ) );
-            daoUtil.setInt( 2, space.getIdParent( ) );
-            daoUtil.setString( 3, space.getName( ) );
-            daoUtil.setString( 4, space.getDescription( ) );
-            daoUtil.setString( 5, space.getViewType( ) );
-            daoUtil.setInt( 6, space.getIdIcon( ) );
-            daoUtil.setInt( 7, space.isDocumentCreationAllowed( ) ? 1 : 0 );
-            daoUtil.setString( 8, space.getWorkgroup( ) );
+            daoUtil.setInt( 1, space.getIdParent( ) );
+            daoUtil.setString( 2, space.getName( ) );
+            daoUtil.setString( 3, space.getDescription( ) );
+            daoUtil.setString( 4, space.getViewType( ) );
+            daoUtil.setInt( 5, space.getIdIcon( ) );
+            daoUtil.setInt( 6, space.isDocumentCreationAllowed( ) ? 1 : 0 );
+            daoUtil.setString( 7, space.getWorkgroup( ) );
             daoUtil.executeUpdate( );
+
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                space.setId( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
         }
         // insert allowed document types
         insertAllowedDocumenTypes( space );
@@ -249,15 +229,14 @@ public final class DocumentSpaceDAO implements IDocumentSpaceDAO
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
         {
-            daoUtil.setInt( 1, space.getId( ) );
-            daoUtil.setInt( 2, space.getIdParent( ) );
-            daoUtil.setString( 3, space.getName( ) );
-            daoUtil.setString( 4, space.getDescription( ) );
-            daoUtil.setString( 5, space.getViewType( ) );
-            daoUtil.setInt( 6, space.getIdIcon( ) );
-            daoUtil.setInt( 7, space.isDocumentCreationAllowed( ) ? 1 : 0 );
-            daoUtil.setString( 8, space.getWorkgroup( ) );
-            daoUtil.setInt( 9, space.getId( ) );
+            daoUtil.setInt( 1, space.getIdParent( ) );
+            daoUtil.setString( 2, space.getName( ) );
+            daoUtil.setString( 3, space.getDescription( ) );
+            daoUtil.setString( 4, space.getViewType( ) );
+            daoUtil.setInt( 5, space.getIdIcon( ) );
+            daoUtil.setInt( 6, space.isDocumentCreationAllowed( ) ? 1 : 0 );
+            daoUtil.setString( 7, space.getWorkgroup( ) );
+            daoUtil.setInt( 8, space.getId( ) );
 
             daoUtil.executeUpdate( );
         }

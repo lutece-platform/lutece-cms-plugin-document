@@ -1,6 +1,11 @@
 -- liquibase formatted sql
 -- changeset document:init_db_document.sql
 -- preconditions onFail:MARK_RAN onError:WARN
+
+-- This setting is required in MariaDB/MySQL when inserting a row with a primary key value of 0.
+-- Enabling NO_AUTO_VALUE_ON_ZERO ensures that 0 is inserted explicitly instead of being replaced by 1.
+SET SESSION sql_mode='NO_AUTO_VALUE_ON_ZERO';
+
 INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES ('file','document.attributeType.file.name','document.attributeType.file.description','fr.paris.lutece.plugins.document.service.attributes.FileManager');
 INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES ('image','document.attributeType.image.name','document.attributeType.image.description','fr.paris.lutece.plugins.document.service.attributes.ImageFileManager');
 INSERT INTO document_attr_type (code_attr_type,name_key,description_key,manager_class) VALUES ('listbox','document.attributeType.listbox.name','document.attributeType.listbox.description','fr.paris.lutece.plugins.document.service.attributes.ListBoxManager');
@@ -29,9 +34,9 @@ INSERT INTO document_attr_type_parameter (code_attr_type, parameter_name, parame
 --
 -- Dumping data for table document_page_template
 --
-INSERT INTO document_page_template (id_page_template_document,page_template_path,picture_path,description) VALUES (0,'/skin/plugins/document/document_content_service.html','images/admin/skin/plugins/document/page_templates/page_template_document0.png','Défaut');
-INSERT INTO document_page_template (id_page_template_document,page_template_path,picture_path,description) VALUES (1,'/skin/plugins/document/page_templates/page_template_document1.html','images/admin/skin/plugins/document/page_templates/page_template_document1.png','Pleine page');
-INSERT INTO document_page_template (id_page_template_document,page_template_path,picture_path,description) VALUES (2,'/skin/plugins/document/page_templates/page_template_document2.html','images/admin/skin/plugins/document/page_templates/page_template_document2.png','Rubrique en-dessous');
+INSERT INTO document_page_template (page_template_path,picture_path,description) VALUES ('/skin/plugins/document/document_content_service.html','images/admin/skin/plugins/document/page_templates/page_template_document0.png','Défaut');
+INSERT INTO document_page_template (page_template_path,picture_path,description) VALUES ('/skin/plugins/document/page_templates/page_template_document1.html','images/admin/skin/plugins/document/page_templates/page_template_document1.png','Pleine page');
+INSERT INTO document_page_template (page_template_path,picture_path,description) VALUES ('/skin/plugins/document/page_templates/page_template_document2.html','images/admin/skin/plugins/document/page_templates/page_template_document2.png','Rubrique en-dessous');
 
 --
 -- Dumping data for table document_rule
