@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.document.business;
 import fr.paris.lutece.util.sql.DAOUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,39 +47,14 @@ import java.util.List;
 public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = " SELECT max( id_page_template_document ) FROM document_page_template ";
     private static final String SQL_QUERY_SELECT = " SELECT id_page_template_document, description, page_template_path, picture_path FROM document_page_template WHERE id_page_template_document = ?";
-    private static final String SQL_QUERY_INSERT = " INSERT INTO document_page_template ( id_page_template_document, description, page_template_path, picture_path ) VALUES ( ?, ?, ?, ? )";
+    private static final String SQL_QUERY_INSERT = " INSERT INTO document_page_template ( description, page_template_path, picture_path ) VALUES ( ?, ?, ? )";
     private static final String SQL_QUERY_DELETE = " DELETE FROM document_page_template WHERE id_page_template_document = ?";
-    private static final String SQL_QUERY_UPDATE = " UPDATE document_page_template SET id_page_template_document = ?, description = ?, page_template_path = ?, picture_path = ? "
-            + " WHERE id_page_template_document = ?";
+    private static final String SQL_QUERY_UPDATE = " UPDATE document_page_template SET description = ?, page_template_path = ?, picture_path = ? WHERE id_page_template_document = ?";
     private static final String SQL_QUERY_SELECTALL = " SELECT id_page_template_document , description, page_template_path, picture_path FROM document_page_template ORDER BY id_page_template_document ";
 
     ///////////////////////////////////////////////////////////////////////////////////////
     // Access methods to data
-
-    /**
-     * Generates a new primary key
-     * 
-     * @return The new primary key
-     */
-    private int newPrimaryKey( )
-    {
-        int nKey;
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
-        {
-            daoUtil.executeQuery( );
-
-            if ( !daoUtil.next( ) )
-            {
-                // if the table is empty
-                nKey = 1;
-            }
-
-            nKey = daoUtil.getInt( 1 ) + 1;
-        }
-        return nKey;
-    }
 
     /**
      * Insert a new record in the table.
@@ -87,17 +63,20 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      *            The Instance of the object DocumentPageTemplate
      */
     @Override
-    public synchronized void insert( DocumentPageTemplate documentPageTemplate )
+    public void insert( DocumentPageTemplate documentPageTemplate )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS ) )
         {
-            documentPageTemplate.setId( newPrimaryKey( ) );
-            daoUtil.setInt( 1, documentPageTemplate.getId( ) );
-            daoUtil.setString( 2, documentPageTemplate.getDescription( ) );
-            daoUtil.setString( 3, documentPageTemplate.getFile( ) );
-            daoUtil.setString( 4, documentPageTemplate.getPicture( ) );
+            daoUtil.setString( 1, documentPageTemplate.getDescription( ) );
+            daoUtil.setString( 2, documentPageTemplate.getFile( ) );
+            daoUtil.setString( 3, documentPageTemplate.getPicture( ) );
 
             daoUtil.executeUpdate( );
+
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                documentPageTemplate.setId( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
         }
     }
 
@@ -159,11 +138,10 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
         {
-            daoUtil.setInt( 1, documentPageTemplate.getId( ) );
-            daoUtil.setString( 2, documentPageTemplate.getDescription( ) );
-            daoUtil.setString( 3, documentPageTemplate.getFile( ) );
-            daoUtil.setString( 4, documentPageTemplate.getPicture( ) );
-            daoUtil.setInt( 5, documentPageTemplate.getId( ) );
+            daoUtil.setString( 1, documentPageTemplate.getDescription( ) );
+            daoUtil.setString( 2, documentPageTemplate.getFile( ) );
+            daoUtil.setString( 3, documentPageTemplate.getPicture( ) );
+            daoUtil.setInt( 4, documentPageTemplate.getId( ) );
 
             daoUtil.executeUpdate( );
         }

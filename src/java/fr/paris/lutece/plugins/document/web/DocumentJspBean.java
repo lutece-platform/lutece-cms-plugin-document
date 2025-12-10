@@ -459,12 +459,12 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         // PageTemplate
         int nIndexRow = 1;
-        StringBuffer strPageTemplatesRow = new StringBuffer(  );
+        StringBuilder strPageTemplatesRow = new StringBuilder(  );
 
         // Scan of the list
         for ( DocumentPageTemplate documentPageTemplate : DocumentPageTemplateHome.getPageTemplatesList(  ) )
         {
-            strPageTemplatesRow.append( getTemplatesPageList( documentPageTemplate.getId(  ), 0,
+            strPageTemplatesRow.append( getTemplatesPageList( documentPageTemplate, nIndexRow == 1,
                     Integer.toString( nIndexRow ) ) );
             nIndexRow++;
         }
@@ -676,13 +676,13 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         // PageTemplate
         int nIndexRow = 1;
-        StringBuffer strPageTemplatesRow = new StringBuffer(  );
+        StringBuilder strPageTemplatesRow = new StringBuilder(  );
 
         // Scan of the list
         for ( DocumentPageTemplate documentPageTemplate : DocumentPageTemplateHome.getPageTemplatesList(  ) )
         {
-            strPageTemplatesRow.append( getTemplatesPageList( documentPageTemplate.getId(  ),
-                    document.getPageTemplateDocumentId(  ), Integer.toString( nIndexRow ) ) );
+            strPageTemplatesRow.append( getTemplatesPageList( documentPageTemplate,
+                    documentPageTemplate.getId(  ) == document.getPageTemplateDocumentId(  ), Integer.toString( nIndexRow ) ) );
             nIndexRow++;
         }
 
@@ -1905,20 +1905,18 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      * Gets an html template displaying the patterns list available in the
      * portal for the layout
      *
-     * @param nTemplatePageId The identifier of the layout to select in the list
-     * @param nPageTemplateDocumentId The page template id
+     * @param documentPageTemplate The document page template
+     * @param bIsTemplateChecked true if this template is checked or if it is the first row in the list (will be checked by default), false otherwise
      * @param nIndexRow the index row
      * @return The html code of the list
      */
-    private String getTemplatesPageList( int nTemplatePageId, int nPageTemplateDocumentId, String nIndexRow )
+    private String getTemplatesPageList( DocumentPageTemplate documentPageTemplate, boolean bIsTemplateChecked, String nIndexRow )
     {
-        
-        DocumentPageTemplate documentPageTemplate = DocumentPageTemplateHome.findByPrimaryKey( nTemplatePageId );
         _model.put( MARK_DOCUMENT_PAGE_TEMPLATE, documentPageTemplate );
 
         _model.put( MARK_INDEX_ROW, nIndexRow );
 
-        String strChecked = ( documentPageTemplate.getId(  ) == nPageTemplateDocumentId ) ? "checked=\"checked\"" : "";
+        String strChecked = bIsTemplateChecked ? "checked=\"checked\"" : "";
         _model.put( MARK_DOCUMENT_PAGE_TEMPLATE_CHECKED, strChecked );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_PAGE_TEMPLATE_ROW, getLocale(  ),
