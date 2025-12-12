@@ -35,6 +35,8 @@ package fr.paris.lutece.plugins.document.utils;
 
 import fr.paris.lutece.portal.business.event.ResourceEvent;
 import fr.paris.lutece.portal.business.indexeraction.IndexerAction;
+import fr.paris.lutece.portal.service.event.EventAction;
+import fr.paris.lutece.portal.service.event.Type.TypeQualifier;
 import jakarta.enterprise.inject.spi.CDI;
 
 
@@ -70,12 +72,15 @@ public final class DocumentIndexerUtils
 
         switch ( nIdTask )
         {
-            case IndexerAction.TASK_CREATE:
-            case IndexerAction.TASK_MODIFY:
-            case IndexerAction.TASK_DELETE:
-
-                CDI.current( ).getBeanManager( ).getEvent( ).fire( event );
-                break;
+            case IndexerAction.TASK_CREATE ->
+                    CDI.current( ).getBeanManager( ).getEvent( ).select( ResourceEvent.class, new TypeQualifier( EventAction.CREATE ) ).fire( event );
+            case IndexerAction.TASK_MODIFY ->
+                    CDI.current( ).getBeanManager( ).getEvent( ).select( ResourceEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fire( event );
+            case IndexerAction.TASK_DELETE ->
+                    CDI.current( ).getBeanManager( ).getEvent( ).select( ResourceEvent.class, new TypeQualifier( EventAction.REMOVE ) ).fire( event );
+            default -> {
+                // nothing
+            }
         }
     }
 }
