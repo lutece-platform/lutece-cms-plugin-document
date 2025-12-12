@@ -8,47 +8,47 @@
 	<div id="show_preview_${attribute.code}">&nbsp;</div>
 </@formGroup>
 <script>
-	// jQuery("img_linkservice_${attribute.code}").style.display = "inline";
-	// DOCUMENT-97: enable clearing internal link field.
-	// document.getElementById('img_linkservice_clear_${attribute.code}').style.display = "inline";
-	var elementsToHover = document.querySelectorAll("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}");
-	elementsToHover.forEach(function(element) {
-		element.addEventListener('mouseover', function() {
-		  element.style.cursor = "pointer";
-		});
-
-		element.addEventListener('mouseout', function() {
-		  element.style.cursor = "auto";
-		});
+// jQuery("img_linkservice_${attribute.code}").style.display = "inline";
+// DOCUMENT-97: enable clearing internal link field.
+// document.getElementById('img_linkservice_clear_${attribute.code}').style.display = "inline";
+const elementsToHover = document.querySelectorAll("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}");
+elementsToHover.forEach(function(element) {
+	element.addEventListener('mouseover', function() {
+		element.style.cursor = "pointer";
 	});
 
-	function linkservice${attribute.code}() {
-		var showPreview = document.getElementById('show_preview_${attribute.code}');
-		showPreview.innerHTML = "&nbsp;";
+	element.addEventListener('mouseout', function() {
+		element.style.cursor = "auto";
+	});
+});
 
-		var fen = window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=", "#i18n{document.attributeType.internallink.labelLinkService}", "toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
-		fen.focus();
-	}
+function linkservice${attribute.code}() {
+	const showPreview = document.getElementById('show_preview_${attribute.code}');
+	showPreview.innerHTML = "&nbsp;";
 
-	// DOCUMENT-97: enable clearing internal link field.
-	function linkservice_clear${attribute.code}() {
-		var attributeCode = document.getElementById('${attribute.code}');
-		var showPreview = document.getElementById('show_preview_${attribute.code}');
+	const fen = window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=", "#i18n{document.attributeType.internallink.labelLinkService}", "toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
+	fen.focus();
+}
 
-		attributeCode.value = "";
-		showPreview.innerHTML = "&nbsp;";
-	}
-	
-	document.addEventListener('DOMContentLoaded', function () {
-		var showPreview = document.getElementById('show_preview_${attribute.code}');
-		var btnShowPreview = document.getElementById('btnShowPreview_${attribute.code}');
-		var attributeCode = document.getElementById('${attribute.code}');
+// DOCUMENT-97: enable clearing internal link field.
+function linkservice_clear${attribute.code}() {
+	const attributeCode = document.getElementById('${attribute.code}');
+	const showPreview = document.getElementById('show_preview_${attribute.code}');
 
-		showPreview.style.display = 'none';
+	attributeCode.value = "";
+	showPreview.innerHTML = "&nbsp;";
+}
 
-		btnShowPreview.addEventListener('click', function () {
-		  showPreview.innerHTML = attributeCode.value + '&nbsp;';
-		  showPreview.style.display = (showPreview.style.display === 'none') ? 'block' : 'none';
-		});
-	  });
+document.addEventListener('DOMContentLoaded', function () {
+	const showPreview = document.getElementById('show_preview_${attribute.code}');
+	const btnShowPreview = document.getElementById('btnShowPreview_${attribute.code}');
+	const attributeCode = document.getElementById('${attribute.code}');
+
+	showPreview.style.display = 'none';
+
+	btnShowPreview.addEventListener('click', function () {
+		showPreview.innerHTML = attributeCode.value + '&nbsp;';
+		showPreview.style.display = (showPreview.style.display === 'none') ? 'block' : 'none';
+	});
+});
 </script>

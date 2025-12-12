@@ -54,7 +54,7 @@
 </@formGroup>
 <script src="js/selectbox.js"></script>
 <script>
-	function manageItems( actionItem ){
+function manageItems( actionItem ){
 	objVisible = document.getElementsByName('${items.name}_select')[0];
 	objHidden = document.getElementsByName('${items.name}')[0];
 	objValue = document.getElementsByName('${items.name}_value')[0];
@@ -83,6 +83,6 @@
 	choice = objSelect.selectedIndex;
 	if(choice > -1){
 		document.getElementsByName("${defaultValue.name}")[0].value = objSelect.options[choice].text;
-		}
 	}
-	</script>
+}
+</script>

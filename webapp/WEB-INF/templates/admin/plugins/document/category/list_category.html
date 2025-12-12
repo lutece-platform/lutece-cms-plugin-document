@@ -1,17 +1,10 @@
 <#if category_list?has_content >
-<ul class="list-unstyled">
-	<#list category_list as categoryDisplay>
-	<li>
-		<#assign labelKey>
-			<div>
-			<#if categoryDisplay.iconUrl??>
-				<img src=${categoryDisplay.iconUrl!} class="img-thumbnail thumbnail-sm" alt="${categoryDisplay.category.name}" />
-			</#if>
-			${categoryDisplay.category.name}&nbsp;
-		</div>
-		</#assign>
+<@ul class='list-unstyled'>
+<#list category_list as categoryDisplay>
+	<@li>
+		<#assign labelKey><#if categoryDisplay.iconUrl??><@img url=categoryDisplay.iconUrl! class='img-thumbnail thumbnail-sm' alt='${categoryDisplay.category.name}' /></#if> ${categoryDisplay.category.name}</#assign>
 		<@checkBox labelFor='category_id_${categoryDisplay?index}' labelKey=labelKey name='category_id' id='category_id_${categoryDisplay?index}' checked=categoryDisplay.assigned value='${categoryDisplay.category.id}' />
-	</li>
-	</#list>
-</ul>
+	</@li>
+</#list>
+</@ul>
 </#if>

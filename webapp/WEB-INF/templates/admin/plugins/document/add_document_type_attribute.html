@@ -30,9 +30,7 @@
 				<@formGroup labelKey='#i18n{document.add_document_type_attribute.labelSearchable}'>
 					<@checkBox labelFor='searchable' labelKey='#i18n{document.add_document_type_attribute.helpSearchable}' name='searchable' id='searchable' checked=searchable />
 				</@formGroup>
-				
 				${attribute_parameters}
-				
 				<@formGroup>
 					<@button type='submit' name='save' value='save' title='#i18n{document.add_document_type_attribute.buttonAddAttribute}' buttonIcon='device-floppy' />
 					<@button type='button' params='onclick="javascript:window.history.back();"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />

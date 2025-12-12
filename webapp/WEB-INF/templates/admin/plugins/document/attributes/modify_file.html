@@ -1,31 +1,39 @@
-<#if attribute.textValue?has_content>
-	<#assign helpKey>
+<@row>
+	<@columns lg=7>
+		<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey mandatory=attribute.required rows=2>
+			<@input type='file' name='${attribute.code}' id='${attribute.code}' /> 
+		</@formGroup>
+	</@columns>
+	<#if attribute.textValue?has_content>
+	<@columns lg=3>
+		<@formGroup helpKey='#i18n{document.attributeType.file.deleteField}' rows=2>
+			<@checkBox labelKey='#i18n{document.attributeType.file.updateField}' name='update_${attribute.code}' id='update_${attribute.code}' value='1' />
+		</@formGroup>
+	</@columns>
+	<@columns lg=2>
 		<@link href='servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true&nocache' title='preview'>
-			<img src='<@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" />' alt="${attribute.textValue}" title="${attribute.textValue}" class="thumblist-medium mt-2">
+			<#assign imgUrl><@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" /></#assign>
+			<@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='thumbnail thumbnail-lg' />
 		</@link>
-	</#assign>
-<#else>
-	<#assign helpKey = attribute.description />
-</#if>
-<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey mandatory=attribute.required rows=2>
-	<@input type='file' name='${attribute.code}' id='${attribute.code}' /> 
-</@formGroup>
-<#if attribute.textValue?has_content>
-	<@formGroup helpKey='#i18n{document.attributeType.file.deleteField}' rows=2>
-		<@checkBox labelKey='#i18n{document.attributeType.file.updateField}' name='update_${attribute.code}' id='update_${attribute.code}' value='1' />
-	</@formGroup>
-</#if>
-
+	</@columns>
+	</#if>
+</@row>
 <script>
-	var updateCheckbox = document.getElementById('update_${attribute.code}');
-	var fileInput = document.getElementById('${attribute.code}');
+const updateCheckbox${attribute.code} = document.getElementById('update_${attribute.code}');
+const ${attribute.code}Input = document.getElementById('${attribute.code}');
 
-	fileInput.required = false;
-	updateCheckbox.addEventListener('change', function() {
-		if (updateCheckbox.checked) {
-			fileInput.required = true;
-		} else {
-			fileInput.required = false;
-		}
-	});
+${attribute.code}Input.required = false;
+updateCheckbox${attribute.code}.addEventListener('change', function() {
+	if (updateCheckbox${attribute.code}.checked) {
+		updateCheckbox${attribute.code}.required = true;
+	} else {
+		updateCheckbox${attribute.code}.required = false;
+	}
+});
+
+${attribute.code}Input.addEventListener('change', function() {
+	if (${attribute.code}Input.value !== '') {
+		updateCheckbox${attribute.code}.checked = true;
+	}
+});
 </script>

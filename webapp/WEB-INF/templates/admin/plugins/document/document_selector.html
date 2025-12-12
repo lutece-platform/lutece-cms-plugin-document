@@ -1,4 +1,4 @@
-<div class="insert-service" >
+<@div class="insert-service" >
 	<@row>
 		<@columns>
 			<ol class="breadcrumb">
@@ -9,17 +9,16 @@
 			</ol>
 			<#if documents_list?size = 0>
 				<@alert color='danger'>#i18n{document.selector.document.noDocument}</@alert>
-				<p>
+				<@p>
 					<@button type='button' params='onclick="javascript:history.go(-1);"' title='#i18n{portal.util.labelBack}' buttonIcon='times' color='default' />
-				</p>
+				</@p>
 			<#else>
 				<@tform method='post' name='fsubmit' action='jsp/admin/plugins/document/DoInsertDocumentLink.jsp'>
+					<@input type='hidden' name='input' value='${input}' />
+					<@input type='hidden' name='portlet_id' value='${portlet_id}' />
+					<@input type='hidden' name='subcategory' value='${type_filter}' />
 					<@row>
 						<@columns sm=4>
-							<@input type='hidden' name='input' value='${input}' />
-							<@input type='hidden' name='portlet_id' value='${portlet_id}' />
-							<@input type='hidden' name='subcategory' value='${type_filter}' />
-							
 							<@fieldSet legend='#i18n{document.selector.document.insertListTitle}'>
 								<@formGroup labelFor='name' labelKey='#i18n{document.selector.document.linkName}'>
 									<@input type='text' name='name' id='name' value='' maxlength=50 />
@@ -28,17 +27,17 @@
 									<@input type='text' name='alt' id='alt' value='' maxlength=50 />
 								</@formGroup>
 								<@formGroup labelFor='target' labelKey='#i18n{document.selector.document.captionTarget}'>
-									<@select name='target' id='target>
-										<option value="_self">#i18n{document.selector.document.target.self}</option>
-										<option value="_blank">#i18n{document.selector.document.target.blank}</option>
-										<option value="_parent">#i18n{document.selector.document.target.parent}</option>
-										<option value="_top">#i18n{document.selector.document.target.top}</option>
+									<@select name='target' id='target'>
+										<@option value='_self' label='#i18n{document.selector.document.target.self}' />
+										<@option value="_blank" label='#i18n{document.selector.document.target.blank}' />
+										<@option value="_parent" label='#i18n{document.selector.document.target.parent}' />
+										<@option value="_top" label='#i18n{document.selector.document.target.top}' />
 									</@select>
 								</@formGroup>
 							</@fieldSet>
 						</@columns>
 						<@columns sm=8>	
-							<@formGroup params='style="overflow:auto;height:360px;"'>
+							<@formGroup>
 								<@table>
 									<@tr>
 										<@th></@th>
@@ -48,10 +47,10 @@
 									<#list documents_list as document>
 									<@tr>
 										<@td>
-											<input class="radio" type="radio" id="document_id_${document.id}" name="document_id" value="${document.id}">
+											<@radioButton id='document_id_${document.id}' name='document_id' value=document.id />
 										</@td>
-										<@td>${document.title?if_exists}</@td>
-										<@td>${document.summary?if_exists}</@td>
+										<@td>${document.title!}</@td>
+										<@td>${document.summary!}</@td>
 									</@tr>
 									</#list>
 								</@table>
@@ -66,4 +65,4 @@
 			</#if>
 		</@columns>
 	</@row>
-</div>
+</@div>

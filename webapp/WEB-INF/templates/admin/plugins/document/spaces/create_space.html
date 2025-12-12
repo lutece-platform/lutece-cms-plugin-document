@@ -4,15 +4,21 @@
 		<@pageHeader title='#i18n{document.create_space.title}' />
 		<@tform method='post' action='jsp/admin/plugins/document/DoCreateSpace.jsp' boxed=true>
 			<@input type='hidden' name='id_parent_space' value='${parent_space.id}' />
-			<@formGroup labelFor='name' labelKey='#i18n{document.create_space.labelName}' mandatory=true>				<@input type='text' name='name' id='name' />			</@formGroup>
-			<@formGroup labelFor='description' labelKey='#i18n{document.create_space.labelDescription}' mandatory=true>				<@input type='text' name='description' id='description' />			</@formGroup>
-			<@formGroup labelFor='view_type' labelKey='#i18n{document.create_space.labelView}'>				<@select name='view_type' default_value='${view_type}' items=view_types_list />			</@formGroup>
+			<@formGroup labelFor='name' labelKey='#i18n{document.create_space.labelName}' mandatory=true>
+				<@input type='text' name='name' id='name' />
+			</@formGroup>
+			<@formGroup labelFor='description' labelKey='#i18n{document.create_space.labelDescription}' mandatory=true>
+				<@input type='text' name='description' id='description' />
+			</@formGroup>
+			<@formGroup labelFor='view_type' labelKey='#i18n{document.create_space.labelView}'>
+				<@select name='view_type' default_value='${view_type}' items=view_types_list />
+			</@formGroup>
 			<@formGroup labelFor='icon' labelKey='#i18n{document.create_space.labelIcon}'>
 				<#list icons_list as item>
 					<#assign default_value = '1' />
 					<#if default_value=item.code><#assign checked=true /><#else><#assign checked=false /></#if>
 					<#assign radioLabelKey>
-						<img src="${item.name}" alt="${item.name}" title="${item.name}" />
+						<img src="${item.name}" alt="${item.name}" title="${item.name}" class="img-fluid" />
 					</#assign>
 					<@radioButton orientation='inline' labelFor='${item.name}' labelKey=radioLabelKey checked=checked name='icon' id='${item.name}' value='${item.code}' />
 				</#list>

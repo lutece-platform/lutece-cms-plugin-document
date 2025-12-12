@@ -1,15 +1,14 @@
 <@formGroup labelFor='id_space_source' labelKey='#i18n{module.document.rulemovespace.create_rule_move_space.ruleText1}'>
-	<@staticText>
+	<@p>
 		<#if id_space_source?exists> 
 		<@input type='hidden' name='id_space_source' value='${id_space_source}' />
 		<strong>${path_space_source}</strong>
 		<#else>
 		<strong>#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</strong> 
 		</#if>
-	</@staticText>
+	</@p>
 	<@button type='submit' params='data-space="id_space_source"' title='#i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}' buttonIcon='check' />
 </@formGroup>
-
 <@formGroup labelFor='id_state' labelKey='#i18n{module.document.rulemovespace.create_rule_move_space.ruleText2}'>
 	<#if id_state?exists >
 		<@select name='id_state' default_value='${id_state}' items=states_list />
@@ -17,15 +16,14 @@
 		<@select name='id_state' default_value='' items=states_list />
 	</#if>
 </@formGroup>
-
 <@formGroup labelFor='id_space_destination' labelKey='#i18n{module.document.rulemovespace.create_rule_move_space.ruleText3} #i18n{module.document.rulemovespace.create_rule_move_space.ruleText4}'>
-	<@staticText>
+	<@p>
 		<#if id_space_destination?exists> 
 			<@input type='hidden' name='id_space_destination' value='${id_space_destination}' />
 			<strong>${path_space_destination}</strong> 
 		<#else>
 			<strong>#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</strong> 
 		</#if>
-	</@staticText>
+	</@p>
 	<@button type='submit' params='data-space="id_space_destination"' title='#i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}' buttonIcon='check' />
 </@formGroup>

@@ -1,45 +1,19 @@
-<#macro setBtnAction action_nb>
-<#switch action_nb>
-    <#case 1>
-    <#case 6>
-    <#case 8>
-    <#case 11>
-        <#assign btnAction='danger' />
-    <#break>
-    <#case 14>
-    <#case 15>
-        <#assign btnAction='info' />
-    <#break>	
-    <#case 4>
-    <#case 12>
-    <#case 13>
-        <#assign btnAction='success' />
-    <#break>
-    <#case 5>
-        <#assign btnAction='warning' />
-    <#break>
-    <#default>
-        <#assign btnAction='primary' />
-</#switch>
-${btnAction}
-</#macro>
 <@pageContainer>
     <@pageColumn>
-		<@pageHeader title='#i18n{document.attributeType.internallink.buttonShowPreview} : ${document.title}'>
-			<#list document.actions  as action >
-				<#if action.url?has_content>
-					<#assign btn_action>
-						<@setBtnAction action_nb=action.idAction />
-					</#assign>
-					<@aButton color=btn_action?trim href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' hideTitle=['all'] class='me-1' />
-				</#if>  
-			</#list>
-			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder' hideTitle=['all'] />
+		<@pageHeader title='#i18n{document.attributeType.internallink.buttonShowPreview} : ${document.title}' class='mb-3'>
+		<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder'  />
+		<@button type='button' class='btn-action' buttonIcon='dots-vertical fs-2 ms-3' dropdownMenu=true>
+		<#list document.actions?sort_by("idAction") as action>
+			<#if action.url?has_content>
+				<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}' class='dropdown-item'><@icon style='${action.iconUrl}' title=action.description />${action.name}</@link>
+			</#if>
+		</#list>
+		</@button>
 		</@pageHeader>
 		<@row>
 			<@columns xl=3>
 				<@box id='document_info'>
-					<@boxHeader title='#${document.id}</span>&nbsp;${document.title}' />
+					<@boxHeader title='#${document.id}</span> ${document.title}' />
 					<@boxBody>
 						<dl>
 							<dt>#i18n{document.preview_document.columnTitleType}</dt>

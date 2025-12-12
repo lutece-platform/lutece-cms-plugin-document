@@ -33,27 +33,17 @@
             </xsl:when>
             <xsl:when test="(resource-content-type='application/pdf')">
                 <a href="servlet/plugins/document/resource?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
-                    <img src="images/local/skin/plugins/document/filetypes/pdf.png" />
+                    <img src="themes/shared/plugins/document/images/filetypes/file-type-pdf.svg" />
                 </a>
             </xsl:when>
             <xsl:when test="(resource-content-type='application/binary')">
                 <a href="servlet/plugins/document/resource?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
-                    <img src="images/local/skin/plugins/document/filetypes/compressed.png" />
-                </a>
-            </xsl:when>
-            <xsl:when test="(resource-content-type='video/mpeg')">
-                <a href="servlet/plugins/document/resource?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
-                    <img src="images/local/skin/plugins/document/filetypes/video.png" />
-                </a>
-            </xsl:when>
-            <xsl:when test="(resource-content-type='audio/mpeg')">
-                <a href="servlet/plugins/document/resource?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
-                    <img src="images/local/skin/plugins/document/filetypes/audio.png" />
+                    <img src="themes/shared/plugins/document/images/filetypes/file.svg" />
                 </a>
             </xsl:when>
             <xsl:otherwise>
                 <a href="servlet/plugins/document/resource?id={resource-document-id}&amp;id_attribute={resource-attribute-id}">
-                    <img src="images/local/skin/plugins/document/filetypes/file.png" />
+                    <img src="themes/shared/plugins/document/images/filetypes/file.svg" />
                 </a>
             </xsl:otherwise>
         </xsl:choose>

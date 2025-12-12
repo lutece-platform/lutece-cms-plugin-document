@@ -1,54 +1,87 @@
-<#macro setBtnAction action_nb>
-	<#switch action_nb>
-		<#case 1>
-		<#case 6>
-		<#case 8>
-		<#case 11>
-			<#assign btnAction='danger' />
-			<#break>
-		<#case 14>
-		<#case 15>
-			<#assign btnAction='info' />
-			<#break>
-		<#case 4>
-		<#case 12>
-		<#case 13>
-			<#assign btnAction='success' />
-			<#break>
-		<#case 5>
-			<#assign btnAction='warning' />
-			<#break>
-		<#default>
-		<#assign btnAction='primary' />
-	</#switch>${btnAction}
-</#macro>
-
 <@pageContainer>
     <@pageColumn>
-		<@pageHeader title='#i18n{document.adminFeature.documents_management.name}' />
+		<@pageHeader title='#i18n{document.adminFeature.documents_management.name}' class='col-md-3 col-lg-3'>
+		<#if space?has_content && space.documentCreationAllowed >
+			<#if document_types_list?has_content>
+				<@tform method='get' name='CreateDocument' action='jsp/admin/plugins/document/CreateDocument.jsp' class='me-auto'>
+					<@formGroup labelFor='document_type_code' labelKey='#i18n{document.manage_documents.labelCreate}' >
+						<@inputGroup>
+							<@select name='document_type_code' default_value='' items=document_types_list />
+							<@button type='submit' title='#i18n{document.manage_documents.buttonCreate}' buttonIcon='plus' hideTitle=['all'] />
+						</@inputGroup>
+					</@formGroup>
+					<#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>
+						<@button type='button' title='#i18n{document.manage_documents.buttonImport}' id='importLinkButton' buttonIcon='plus-circle' /> 
+					</#if>
+				</@tform>                                                                
+			</#if>
+		</#if>
+		<@tform method='post' id='SearchDocumentById' name='SearchDocumentById' action='jsp/admin/plugins/document/DoSearchDocumentById.jsp'>
+				<@formGroup labelFor='id_document' labelKey='#i18n{document.manage_documents.buttonSearch}' helpKey='#i18n{document.manage_documents.labelSearchById}'>
+				<@inputGroup>
+					<@input type='text' id='id_document' name='id_document' maxlength=10 />
+					<@inputGroupItem>
+						<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' hideTitle=['all'] />
+					</@inputGroupItem>
+				</@inputGroup>
+			</@formGroup>
+		</@tform>
+		<@tform method='post' id='FullTextSearchDocument' name='FullTextSearchDocument' action='jsp/admin/plugins/document/DocumentSearch.jsp'>
+			<@input type='hidden' id='id_document' name='id_document' />
+			<@formGroup labelFor='query' labelKey='#i18n{document.manage_documents.buttonSearch}' helpKey='#i18n{document.manage_documents.labelFullTextSearch}'>
+				<@inputGroup>
+					<@input type='text' id='query' name='query' maxlength=50 />
+					<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' hideTitle=['all'] />
+				</@inputGroup>
+			</@formGroup>
+		</@tform>
+		</@pageHeader>
 		<@row>
-			<@columns xl=3>
+			<@columns sm=4 xl=3>
 				<@box>
 					<@boxHeader title='#i18n{document.manage_documents.labelSpaces}'>
-						<#if space_actions_list?size != 0>
-							<@btnGroup>
-							<#list space_actions_list as space_action>
-								<#if space_action.permission="DELETE">
-									<#assign btnClass = 'danger' />
-								<#else>
-									<#assign btnClass = 'primary' />
-								</#if>
-								<@aButton href='${space_action.url}?id_space=${space.id}' title='${space_action.description}' class='btn-space-action' color='${btnClass}' buttonIcon='${space_action.iconUrl}' size='sm' hideTitle=['all'] />
-							</#list>
-							</@btnGroup>
-						</#if>
+					<#if space_actions_list?size != 0>
+						<#list space_actions_list as space_action>
+							<@aButton href='${space_action.url}?id_space=${space.id}' title='${space_action.description}' style='btn btn-action' color='' buttonIcon='${space_action.iconUrl}' hideTitle=['all'] />
+						</#list>
+					</#if>
 					</@boxHeader>
-					<@boxBody>
-						<@icon style='folder-open' /> #i18n{document.manage_documents.labelSpaces}
-						${spaces_tree}
+					<@boxBody class='px-0 pb-0'>
+					${spaces_tree}
 					</@boxBody>
 				</@box>
-				
+				<#if documents_list?size gt 0 >
+				<@box>
+				<@boxHeader title='#i18n{document.manage_documents.buttonFilter}' />
+					<@boxBody>
+					<@tform method='post' name='FilterDocumentsForm' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
+						<#if document_types_filter_list?size gt 2 >
+						<@formGroup labelFor='document_type_code_filter' labelKey='#i18n{document.manage_documents.labelType}'>
+							<@select name='document_type_code_filter' default_value='${default_document_type}' items=document_types_filter_list />
+						</@formGroup>
+						</#if>
+						<@formGroup labelFor='id_state_filter' labelKey='#i18n{document.manage_documents.labelState}'>
+							<@inputGroup>
+								<@select name='id_state_filter' default_value='${default_state}' items=states_filter_list />
+								<@button type='submit' title='#i18n{document.manage_documents.buttonFilter}' buttonIcon='filter' hideTitle=['all'] />
+							</@inputGroup>
+						</@formGroup>
+					</@tform>
+					</@boxBody>
+				</@box>
+				<@box>
+					<@boxBody>
+					<@tform method='post' name='FilterDocumentsForm' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
+					<@formGroup labelFor='view_type' labelKey='#i18n{document.manage_documents.labelViewType}'>
+							<@inputGroup>
+								<@select name='view_type' default_value='${view_type}' items=view_types_list />
+								<@button type='submit' buttonIcon='check' />
+							</@inputGroup>
+						</@formGroup>
+					</@tform>
+					</@boxBody>
+				</@box>
+				</#if>	
 				<#if mass_action?has_content && mass_action>
 					<@box>
 						<@boxHeader title='#i18n{document.manage_documents.labelMoreActions}' />
@@ -64,348 +97,205 @@
 					</@box>
 				</#if>
 			</@columns>
-			<@columns xl=9>
+			<@columns sm=8 xl=9>
 			<#if space?has_content>
 				<#if is_parser_plugin_active?has_content && !is_parser_plugin_active>
 					<@alert color='warning' dismissible=true>
-						<@icon style='exclamation-triangle' />
+						<@icon style='alert-triangle' />
 						#i18n{document.manage_documents.parserPluginWarning}
 					</@alert>
 				</#if>
-				<@box>
-					<@boxHeader title='#i18n{document.manage_documents.buttonSearch}' />
-					<@boxBody>
-						<@tform method='post' id='SearchDocumentById' name='SearchDocumentById' action='jsp/admin/plugins/document/DoSearchDocumentById.jsp'>
-							 <@formGroup labelFor='id_document' labelKey='#i18n{document.manage_documents.buttonSearch}' helpKey='#i18n{document.manage_documents.labelSearchById}'>
-								<@inputGroup>
-									<@input type='text' id='id_document' name='id_document' maxlength=10 />
-									<@inputGroupItem>
-										<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' hideTitle=['all'] />
-									</@inputGroupItem>
-								</@inputGroup>
-							</@formGroup>
-						</@tform>
-						<@tform method='post' id='FullTextSearchDocument' name='FullTextSearchDocument' action='jsp/admin/plugins/document/DocumentSearch.jsp'>
-							<@input type='hidden' id='id_document' name='id_document' />
-							<@formGroup labelFor='query' labelKey='#i18n{document.manage_documents.buttonSearch}' helpKey='#i18n{document.manage_documents.labelFullTextSearch}'>
-								<@inputGroup>
-									<@input type='text' id='query' name='query' maxlength=50 />
-									<@inputGroupItem type='btn'>
-										<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' hideTitle=['all'] />
-									</@inputGroupItem>
-								</@inputGroup>
-							</@formGroup>
-						</@tform>
-
-						<#if document_types_filter_list?size &gt; 1 >
-							<@tform method='post' name='FilterDocumentsForm' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
-								<@formGroup labelFor='document_type_code_filter' labelKey='#i18n{document.manage_documents.labelType}'>
-									<@select name='document_type_code_filter' default_value='${default_document_type}' items=document_types_filter_list />
-								</@formGroup>
-								<@formGroup labelFor='id_state_filter' labelKey='#i18n{document.manage_documents.labelState}'>
-									<@inputGroup>
-										<@select name='id_state_filter' default_value='${default_state}' items=states_filter_list />
-										<@inputGroupItem type='btn'>
-											<@button type='submit' title='#i18n{document.manage_documents.buttonFilter}' buttonIcon='filter' hideTitle=['all'] />
-										</@inputGroupItem>
-									</@inputGroup>
-								</@formGroup>
-								<@formGroup labelFor='view_type' labelKey='#i18n{document.manage_documents.labelViewType}'>
-									<@inputGroup>
-										<@select name='view_type' default_value='${view_type}' items=view_types_list />
-										<@inputGroupItem type='btn'>
-											<@button type='submit' buttonIcon='check' />
-										</@inputGroupItem>
-									</@inputGroup>
-								</@formGroup>
-							</@tform>
-						</#if>
-							
-						<#if space.documentCreationAllowed >
-							<#if document_types_list?has_content>
-								<@tform method='get' name='CreateDocument' action='jsp/admin/plugins/document/CreateDocument.jsp'>
-									<@formGroup labelFor='document_type_code' labelKey='#i18n{document.manage_documents.labelCreate}'>
-										<@inputGroup>
-											<@select name='document_type_code' default_value='' items=document_types_list />
-											<@inputGroupItem type='btn'>
-												<@button type='submit' title='#i18n{document.manage_documents.buttonCreate}' buttonIcon='plus' hideTitle=['all'] />
-											</@inputGroupItem>
-										</@inputGroup>
-									</@formGroup>
-									<#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>
-										<@button type='button' title='#i18n{document.manage_documents.buttonImport}' id='importLinkButton' buttonIcon='plus-circle' /> 
-									</#if>
-								</@tform>                                                                
-							</#if>
-						</#if>
-						
-						<hr style="margin:50px 0;"></hr>
-
-
-						<#if documents_list?size = 0>
-							<br>
-							<@alert color='warning'>
-								<@icon style='exclamation-triangle' />
-								<b>#i18n{document.manage_documents.noDocument}</b>
-							</@alert>
-						<#else>
-							<#if view_type = 'detail' >
-								<@tform id='documents_form' name='documents_form' method='post' action='jsp/admin/plugins/document/DoActionSelectionDocument.jsp'>
-									<@table>
-										<@tr>
-											<@th>
-												<@checkBox id='select_all' name='select_all' />
-											</@th>
-											<@th>
-												#i18n{document.manage_documents.labelDocumentId} <@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='id' />
-											</@th>
-											<@th>
-												#i18n{document.manage_documents.labelDocument}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='title' />
-												<@formGroup labelFor='selection' rows=2>
-													<@inputGroup>
-														<@select id='selection' name='selection' disabled=true>
-															<option value="validate">#i18n{document.manage_document.validate}</option>
-															<option value="submit">#i18n{document.manage_document.submit}</option>
-															<option value="refuse">#i18n{document.manage_document.refuse}</option>
-															<option value="remove">#i18n{document.manage_document.remove}</option>
-															<option value="archive">#i18n{document.manage_document.archive}</option>
-															<option value="unarchive">#i18n{document.manage_document.unarchive}</option>
-														</@select>
-														<@inputGroupItem type='btn'>
-															<@button type='submit' title='#i18n{document.manage_documents.applyToSelection}' buttonIcon='check' hideTitle=['all'] />
-														</@inputGroupItem>
-													</@inputGroup>
-												</@formGroup>
-											</@th>
-											<@th>#i18n{document.manage_documents.labelPublishedStatus}<@sort jsp_url='jsp/admin/plugins/document/ManageDocuments.jsp' attribute='publishedStatus' /></@th>
-											<@th>#i18n{document.manage_documents.labelActions}</@th>
-										</@tr>
-										<#list documents_list as document >
-										<@tr class='document-row' params='data-document="${document.id} ${document.title}"'>
-											<@td><@checkBox id='document_selection' name='document_selection' value='${document.id}' /></@td>
-											<@td>${document.id}</@td>
-											<@td>
-												<p>
-													<strong title="${document.title}"><#if document.title?length &gt; 60>${document.title?substring(0,60)}...<#else>${document.title}</#if></strong>
-												</p>
-												<p>
-													<@icon style='calendar' title='#i18n{document.manage_documents.labelDateModification}' />&nbsp;
-													${document.dateModification}
-													<#if document.stateId = 3>
-													&nbsp;
-													<@tag color='success' title='#i18n{document.manage_documents.labelState}' tagIcon='check-circle'>${document.state}&nbsp;&nbsp;&nbsp;</@tag>
-													<#else>
-														<@tag color='info' title='#i18n{document.manage_documents.labelState}' tagIcon='times'>${document.state}
-														</@tag>
-													</#if>
-												</p>
-												<#if document.comment != ''>
-													<@alert color='info'>
-														<@icon style='info-circle' /> ${document.comment}
-													</@alert>
-												</#if>
-											</@td>
-											<@td>
-												<#if document.publishedStatus = 0>
-													<@tag color='success' tagIcon='check-circle'>#i18n{document.manage_documents.PublishedStatus}</@tag>
-												<#else>
-													<@tag color='danger' tagIcon='times'>#i18n{document.manage_documents.UnPublishedStatus}</@tag>
-												</#if>
-											</@td>
-											<@td>
-												<#list document.actions?sort_by("idAction") as action>
-													<#if action.url?has_content>
-														<#assign aBtnColor>
-															<@setBtnAction action_nb=action.idAction />
-														</#assign>
-														<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color=aBtnColor?trim hideTitle=['all'] size='sm' />
-													</#if>
-												</#list>
-											</@td>
-										</@tr>
-										</#list>
-									</@table>
-								</@tform>
-							</#if>
-							<#if view_type = "thumbnail">
-								<@columns>
-									<@row>
-									<#list documents_list as document >
-									<@columns sm=6 class='document-row' params='data-document="${document.id} ${document.title}"'>
-										<div id="document_${document.id}" class="thumbnail" style="background-color:rgba(0,0,0,0.05); padding:10px; border-radius:4px; margin-bottom:15px;">
-											<img src="${document.thumbnail}" class="thumbnail" alt="${document.title}" title="${document.title} - ${document.type}" style="max-width:100%;" />
-											<div class="caption" style="margin-top:20px;">
-												<h3>
-													<@tag>${document.id}</@tag>
-													<strong title="${document.title}">
-														<#if document.title?length &gt; 18>${document.title?substring(0,18)}...<#else>${document.title}</#if>
-													</strong>
-												</h3>
-												<@btnGroup size='sm'>
-													<#list document.actions?sort_by("idAction") as action>
-														<#if action.url?has_content>
-															<#assign aBtnColor>
-																<@setBtnAction action_nb=action.idAction />
-															</#assign>
-															<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color=aBtnColor?trim hideTitle=['all'] />
-														</#if>
-													</#list>
-												</@btnGroup>
-											</div>
-										</div>
-										<a href="#document_${document.id}"></a>
-									</@columns>
-									</#list>
-									</@row>
-								</@columns>
-							</#if>
-							<@paginationAdmin paginator=paginator combo=1 />
-						</#if>
-					</@boxBody>
-				</@box>
-			<#else>
-				<#if child_spaces_list?size != 0 >
-					<@box>
-						<@boxHeader title='#i18n{document.manage_documents.childSpacesList}' />
-						<@boxBody>
-							<@ul>
-								<#list child_spaces_list as child_space>
-								<@li>
-									<h4>
+				<#if documents_list?size = 0>
+					<#if child_spaces_list?size != 0 >
+						<@box>
+							<@boxHeader title='#i18n{document.manage_documents.childSpacesList}' />
+							<@boxBody>
+								<@ul class='list-unstyled mb-0'>
+									<#list child_spaces_list as child_space>
+									<@li>
 										<@link href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${child_space.id}'>
-											<img src="${child_space.iconUrl}" alt="${child_space.description}" title="${child_space.description}"> ${child_space.name} <small>${child_space.description}</small>
+											<@img url=child_space.iconUrl alt=child_space.description title=child_space.description /> ${child_space.name} <small>${child_space.description}</small>
 										</@link>
-									</h4>
-								</@li>
+									</@li>
+									</#list>
+								</@ul>
+							</@boxBody>
+						</@box>
+					</#if>
+					<@empty title='#i18n{document.message.noDocumentInspace}' />
+				<#else>
+					<#if view_type = 'detail' >
+						<@tform id='documents_form' name='documents_form' method='post' action='jsp/admin/plugins/document/DoActionSelectionDocument.jsp'>
+							<@manageFeature class=''>
+								<@manageFeatureItem align='end'>
+									<@manageFeatureItemColumn align='end'>
+										<@checkBox id='select_all' orientation='switch' name='select_all' params='style="margin-block-end:0;"' />
+										<@formGroup formStyle='' labelFor='selection' rows=2>
+											<@inputGroup>
+												<@select id='selection' name='selection' disabled=true>
+													<@option value='validate' label='#i18n{document.manage_document.validate}' />
+													<@option value='submit' label='#i18n{document.manage_document.submit}' />
+													<@option value='refuse' label='#i18n{document.manage_document.refuse}' />
+													<@option value='remove' label='#i18n{document.manage_document.remove}' />
+													<@option value='archive' label='#i18n{document.manage_document.archive}' />
+													<@option value='unarchive' label='#i18n{document.manage_document.unarchive}' />
+												</@select>
+												<@button type='submit' title='#i18n{document.manage_documents.applyToSelection}' buttonIcon='check' hideTitle=['all'] />
+											</@inputGroup>
+										</@formGroup>
+									</@manageFeatureItemColumn>
+								</@manageFeatureItem>
+								</@manageFeature>
+								<@manageFeature class=''>
+								<#list documents_list as document >
+								<@manageFeatureItem class='document-row searchable' params='data-document="${document.id} ${document.title}"'>
+									<@manageFeatureItemColumn>
+										<@checkBox id='document_selection' orientation='switch' name='document_selection' value='${document.id}' /> 
+										<@p class='text-truncate fw-bold' params='title="${document.title} - id: ${document.id}"'>
+										<#assign docTitle=document.title />
+										<#assign docTitle>
+										<#list document.actions?sort_by("idAction") as action>
+											<#if action.url?has_content>
+												<#if action.idAction == 2 || action.idAction == 9>
+													<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description} ${document.title}' class='dropdown-item'>
+														${document.title}
+													</@link>
+													<#break>
+												</#if>
+											</#if>
+										</#list>
+										</#assign>
+										${docTitle}
+										</@p>
+									</@manageFeatureItemColumn>
+									<#if document.comment != ''><@manageFeatureItemColumn auto=true><@alert color='info'><@icon style='info-circle' /> ${document.comment}</@alert></@manageFeatureItemColumn></#if>
+									<@manageFeatureItemColumn auto=true>
+										<@span class='me-2' params='title="#i18n{document.manage_documents.labelDateModification}"'><@icon style='calendar'  /> ${document.dateModification}</@span>
+										<#if document.stateId=3>
+											<@tag color='success' title='#i18n{document.manage_documents.labelState}' tagIcon='check-circle'>${document.state}</@tag>
+										<#else>
+											<@tag color='info' title='#i18n{document.manage_documents.labelState}' tagIcon='times'>${document.state}
+											</@tag>
+										</#if>
+										<#if document.publishedStatus = 0>
+											<@tag color='success' class='ms-2' tagIcon='check-circle'>#i18n{document.manage_documents.PublishedStatus}</@tag>
+										<#else>
+											<@tag color='danger' class='ms-2' tagIcon='times'>#i18n{document.manage_documents.UnPublishedStatus}</@tag>
+										</#if>
+									</@manageFeatureItemColumn>
+									<@manageFeatureItemColumn auto=true>
+										<@button type='button' class='btn-action' buttonIcon='dots-vertical fs-2' dropdownMenu=true>
+										<#list document.actions?sort_by("idAction") as action>
+											<#if action.url?has_content>
+												<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}' class='dropdown-item'><@icon style='${action.iconUrl}' title=action.description />${action.name}</@link>
+											</#if>
+										</#list>
+										</@button>
+									</@manageFeatureItemColumn>
+								</@manageFeatureItem>
 								</#list>
-							</@ul>
-						</@boxBody>
-					</@box>
+							</@manageFeature>
+						</@tform>
+					</#if>
+					<#if view_type = "thumbnail">
+						<@row class='row-cards '>
+						<#list documents_list as document >
+							<@columns sm=6 lg=4 class='document-row' params='data-document="${document.id} ${document.title}"'>
+								<@box id="document_${document.id}" class='card-sm' >
+									<@boxHeader>
+										<@div class="card-actions btn-actions">
+											<#list document.actions?sort_by("idAction") as action>
+												<#if action.url?has_content>
+													<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color='' style='btn btn-action' hideTitle=['all'] />
+												</#if>
+											</#list>
+										</@div>
+									</@boxHeader>
+									<@img url=document.thumbnail! class='card-img-top' alt=document.title! title='${document.title} - ${document.type}' />
+									<@boxBody>				
+										<@h level=3 class='card-title'><#if document.title?length gt 18>${document.title?substring(0,18)}...<#else>${document.title}</#if> - ${document.id}</@h>							
+									</@boxBody>
+								</@box>
+							</@columns>
+						</#list>
+						</@row>
+					</#if>
+					<@paginationAdmin paginator=paginator combo=1 />
 				</#if>
 			</#if>
 			</@columns>
 		</@row>
 	</@pageColumn>
 </@pageContainer>
-<script src="js/jquery/plugins/ui/jstree/jquery.jstree.js"></script>
-<script src="js/jquery/plugins/ui/jstree/jquery.cookie.js"></script>
-<script type="text/javascript">
-jQuery(function($) {
-
-	/****** Space Tree ******/
-	// Set space_id
-	var spaceid = ${space.id};
-	// Get space_id from url parameter
-	var loc = location.search;
-	if ( spaceid != loc ) {
-		if ( loc.indexOf("id_space_filter") > 0 ){
-			// Set space_id from url parameter if exists
-			spaceid =  loc.slice( loc.lastIndexOf("=") + 1 );
-		}
+<script type="module">
+import LuteceTree from './themes/shared/modules/luteceTree.js';
+const tree = document.querySelector("#lutece-tree");
+const mapTree = new LuteceTree( tree );
+let sessionSpaceId = sessionStorage.getItem('document_space_id');
+let spaceid = sessionSpaceId != null ? sessionSpaceId : ${space.id};
+// Get space_id from url parameter
+const loc = location.search;
+if ( spaceid != loc ) {
+	if ( loc.indexOf('id_space_filter') > 0 ){
+		// Set space_id from url parameter if exists
+		spaceid =  loc.slice( loc.lastIndexOf('=') + 1 );
+		sessionStorage.setItem('document_space_id', spaceid );
 	}
-	// Check length of tree names
-
-	// Set the cookie of jstree
-	$.cookie("jstree_select", "#node-" + spaceid );
-		$("#tree").jstree({
-			"ui" : {
-			"select_limit" : 1,
-		},"themes" : {
-				"theme" : "classic",
-				"icons" : false
-		},"cookies" : {
-			"save_opened" : true,
-		},"core" : { "initially_open" : [ "node-${space.id}" ]},
-		"plugins" : [ "themes", "html_data", "cookies", "ui" ]
-		});
-	});
-
-
-	/****** Space actions ******/
-		/*
-	$(".btn-space-action").toggle();
-
-	$( "#tree li a" ).hover(function() {
-		var leafTool="";
-		var leafStr = $(this).attr("href");
-		var found = leafStr.split("=");
-		var nId = found[1];
-		if( nId > 0){
-			$(".box-tools a").each( function(index){
-				var found = leafStr.split("=");
-				sUrl=found[0] + nId;
-				$(this).attr("href", sUrl);
-			});
-		$(this).prev().append( $(".box-tools").html() );
-		}
-	});
-
-	$( "#tree li a" ).mouseout(function() {
-		$( "#tree li a.btn-space-action" ).remove() ;
-	});
-	$( "#tree li a" ).mouseover(function() {
-		$( "#tree li a.btn-space-action" ).toggle() ;
-	});
-	*/
-
-
-	/****** Document search ******/
-	$("#FullTextSearchDocument p.help-block").text("#i18n{document.manage_documents.labelAllTextSearch}");
-	$("#FullTextSearchDocument").submit(function(){
-		if( $.isNumeric($("#FullTextSearchDocument input#query").val()) ){
-			$("#FullTextSearchDocument input#id_document").val($("#FullTextSearchDocument input#query").val());
-			$(this).attr("action", "jsp/admin/plugins/document/DoSearchDocumentById.jsp");
-		}
-	});
-	$("#SearchDocumentById").hide();
-
-
-	/* Filter document list */
-	$("#query").on("keyup", function(){
-		var addOrRemove;
-		var search = $("#query").val().toLowerCase();
-		$(".document-row").each( function( index ) {
-			var doc = $(this).attr("data-document").toLowerCase();
-			if ( doc.match( search ) == null ){
-				$(this).slideUp(200).fadeOut(500);
-			} else {
-				$(this).slideDown(200).fadeIn(500);
-			}
-		});
-	});
-
+}
+mapTree.selectTreeNode( <#noparse>`#node-${spaceid!'0'}`</#noparse> )
 </script>
-
+<#-- Document Drag and Drop Module -->
+<script src="themes/shared/plugins/document/js/documentDragDrop.js"></script>
 <script>
-	/****** Multiple selection ******/
-	document.getElementById('select_all').addEventListener('click', function() {
-		var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-		checkboxes.forEach(function(checkbox) {
-			checkbox.checked = this.checked;
-		}, this);
-	});
-
-	document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
-		checkbox.addEventListener('click', function() {
-			var selectedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-			var selectionButton = document.getElementById('selection');
-
-			if (selectedCheckboxes.length > 0) {
-				selectionButton.removeAttribute('disabled');
-			} else {
-				selectionButton.setAttribute('disabled', 'disabled');
-			}
-		});
-	});
-</script>
-
-<#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>
-<script type="text/javascript">
-/* document MASS import redirection */
-jQuery(function($) {
-    $("#importLinkButton").click( function() {
-        $(location).attr('href','jsp/admin/plugins/files2docs/SelectFiles.jsp?browser_selected_space_id=${current_space_id}&document_type_code=' + $("#document_type_code").val());
-    });
+/****** Document search ******/
+document.querySelector("#FullTextSearchDocument .form-text").textContent = "#i18n{document.manage_documents.labelAllTextSearch}";
+document.getElementById("FullTextSearchDocument").addEventListener("submit", function(e) {
+	const queryInput = document.querySelector("#FullTextSearchDocument input#query");
+	if (!isNaN(queryInput.value) && queryInput.value.trim() !== "") {
+		document.querySelector("#FullTextSearchDocument input#id_document").value = queryInput.value;
+		this.setAttribute("action", "jsp/admin/plugins/document/DoSearchDocumentById.jsp");
+	}
 });
-</script>
+document.getElementById("SearchDocumentById").style.display = "none";
+
+/* Filter document list */
+document.getElementById("query").addEventListener("keyup", function() {
+	const search = document.getElementById("query").value.toLowerCase();
+	document.querySelectorAll(".document-row").forEach(function(row) {
+		const doc = row.getAttribute("data-document").toLowerCase();
+		if (doc.indexOf(search) === -1) {
+			row.classList.add("d-none");
+		} else {
+			row.classList.remove("d-none");
+		}
+	});
+});
+
+/****** Multiple selection ******/
+document.getElementById('select_all').addEventListener('click', function() {
+	const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+	checkboxes.forEach(function(checkbox) {
+		checkbox.checked = this.checked;
+	}, this);
+});
+
+document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+	checkbox.addEventListener('click', function() {
+		const selectedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+		const selectionButton = document.getElementById('selection');
+		if (selectedCheckboxes.length > 0) {
+			selectionButton.removeAttribute('disabled');
+		} else {
+			selectionButton.setAttribute('disabled', 'disabled');
+		}
+	});
+});
+<#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>
+/* document MASS import redirection */
+document.addEventListener('DOMContentLoaded', function() {
+	document.getElementById('importLinkButton').addEventListener('click', function() {
+		window.location.href = 'jsp/admin/plugins/files2docs/SelectFiles.jsp?browser_selected_space_id=${current_space_id}&document_type_code=' + document.getElementById('document_type_code').value;
+	});
+});
 </#if>
+</script>

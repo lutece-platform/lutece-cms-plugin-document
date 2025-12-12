@@ -1,4 +1,4 @@
-<div class="insert-service" >
+<@div class="insert-service" >
 	<@row>
 		<@columns>
 			<ol class="breadcrumb">
@@ -44,18 +44,25 @@
 			</#if>
 		</@columns>
 	</@row>
-</div>
+</@div>
 <script>
-$(document).ready( function(){
-  $("#btn-sub").remove();
-  $("#a-sub").removeClass("sr-only");
-  $("#a-sub").click( function( e ){
-	if( $("input:checked").length > 0 ){
-		$("#fsubmit").submit();
-	} else {
-		alert("Aucune page n'a été sélectionnée !" + $("input:checked").length);
+document.addEventListener('DOMContentLoaded', function() {
+	var btnSub = document.getElementById('btn-sub');
+	var aSub = document.getElementById('a-sub');
+	var fsubmit = document.getElementById('fsubmit');
+	
+	if (btnSub) btnSub.remove();
+	if (aSub) {
+		aSub.classList.remove('visually-hidden');
+		aSub.addEventListener('click', function(e) {
+			e.preventDefault();
+			if (document.querySelectorAll('input:checked').length > 0) {
+				fsubmit.submit();
+			} else {
+				alert("Aucune page n'a été sélectionnée !" + document.querySelectorAll('input:checked').length);
+			}
+			return false;
+		});
 	}
-	return false;
-  });
 });
 </script>

@@ -1,17 +1,13 @@
-<@row>
-	<@columns>
-		<@box>
-			<@boxHeader title='#i18n{document.select_space_rule.title}' />
-            <@boxBody>
-				<@tform id="spacesBrowser" name='formSelect' method='get' action='jsp/admin/plugins/document/DoSelectSpace.jsp'>
-					<@formGroup labelKey='#i18n{document.move_space.labelMove}'>
-						${spaces_browser}
-					</@formGroup>
-					<@formGroup>
-						<@button type='button' params='onclick="javascript:history.back();"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
-					</@formGroup>
-				</@tform>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
+<@pageContainer>
+    <@pageColumn>
+		<@pageHeader title='#i18n{document.select_space_rule.title}' />
+		<@tform id="spacesBrowser" name='formSelect' method='get' action='jsp/admin/plugins/document/DoSelectSpace.jsp'>
+			<@formGroup labelKey='#i18n{document.move_space.labelMove}'>
+				${spaces_browser}
+			</@formGroup>
+			<@formGroup>
+				<@button type='button' params='onclick="javascript:history.back();"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
+			</@formGroup>
+		</@tform>
+	</@pageColumn>
+</@pageContainer>

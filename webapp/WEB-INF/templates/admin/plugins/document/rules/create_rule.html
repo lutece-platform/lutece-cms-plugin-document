@@ -1,33 +1,28 @@
-<@row>
-	<@columns>
-		<@box>
-			<@boxHeader title='#i18n{document.create_rule.title}' />
-            <@boxBody>
-				<@tform method='post' name='createRule' id='createRule' action='jsp/admin/plugins/document/DoCreateRule.jsp'>
-					<@input type='hidden' name='id_rule_type' value='${rule_type_id}' />
-					<@input type='hidden' name='rule_attribute_selected' id='rule_attribute_selected' value='' />
-					${create_form}
-					<@formGroup>
-						<@button type='submit' title='#i18n{document.create_rule.buttonCreate}' buttonIcon='save' />
-						<@aButton href='jsp/admin/plugins/document/ManageRules.jsp' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
-					</@formGroup>
-				</@tform>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
-   
-<script language="javascript">
-$(document).ready(function() {
-    $(".btn-primary").click( function(){
-        var d = $(this).attr("data-space");
-        if (typeof d !== 'undefined') {
-            $("#rule_attribute_selected").val( d );
-            $("#createRule").attr("action","jsp/admin/plugins/document/SelectSpaceRule.jsp").submit();
-        } else {
-            return true;
-        }
-    });
+<@pageContainer>
+    <@pageColumn>
+		<@pageHeader title='#i18n{document.create_rule.title}' />
+		<@tform method='post' name='createRule' id='createRule' action='jsp/admin/plugins/document/DoCreateRule.jsp'>
+			<@input type='hidden' name='id_rule_type' value='${rule_type_id}' />
+			<@input type='hidden' name='rule_attribute_selected' id='rule_attribute_selected' value='' />
+			${create_form}
+			<@formGroup>
+				<@button type='submit' title='#i18n{document.create_rule.buttonCreate}' buttonIcon='save' />
+				<@aButton href='jsp/admin/plugins/document/ManageRules.jsp' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
+			</@formGroup>
+		</@tform>
+	</@pageColumn>
+</@pageContainer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	document.querySelectorAll('.btn-primary').forEach(function(btn) {
+		btn.addEventListener('click', function(e) {
+			var d = this.getAttribute('data-space');
+			if (d !== null) {
+				document.getElementById('rule_attribute_selected').value = d;
+				document.getElementById('createRule').setAttribute('action', 'jsp/admin/plugins/document/SelectSpaceRule.jsp');
+				document.getElementById('createRule').submit();
+			}
+		});
+	});
 });
-
 </script>

@@ -1,6 +1,18 @@
 <@pageContainer>
     <@pageColumn>
-		<@pageHeader title='#i18n{document.modify_document_type.pageTitle}' />
+		<@pageHeader title='#i18n{document.modify_document_type.pageTitle}' >
+			<@tform class='form-search' method='post' name='AddAttribute' action='jsp/admin/plugins/document/AddDocumentTypeAttribute.jsp' class='mb-3'>
+				<@input type='hidden' name='document_type_code' value='${document_type.code}' />
+				<@formGroup formStyle='inline' labelFor='attribute_type_code' labelKey='#i18n{document.modify_document_type.labelAddAttribute}'>
+					<@inputGroup>
+						<@select name='attribute_type_code' default_value='' items=attribute_types_list />
+						<@inputGroupItem type='btn'>
+							<@button type='submit' title='#i18n{document.modify_document_type.buttonAddAttribute}' buttonIcon='plus' hideTitle=['all'] />
+						</@inputGroupItem>
+					</@inputGroup>
+				</@formGroup>
+			</@tform>
+		</@pageHeader>
 		<@row>
 			<@columns xl=3>
 				<@box>
@@ -34,105 +46,70 @@
 					</@boxBody>
 				</@box>
 			</@columns>
-			<@columns xl=9>
+			<@columns xl=6>
 				<@box>
 					<@boxHeader title='#i18n{document.modify_document_type.titleAttributesList}' />
 					<@boxBody>
-						<@tform class='form-search' type='inline' align='right' method='post' name='AddAttribute' action='jsp/admin/plugins/document/AddDocumentTypeAttribute.jsp' class='mb-3'>
-							<@input type='hidden' name='document_type_code' value='${document_type.code}' />
-							<@formGroup formStyle='inline' labelFor='attribute_type_code' labelKey='#i18n{document.modify_document_type.labelAddAttribute}'>
-								<@inputGroup>
-									<@select name='attribute_type_code' default_value='' items=attribute_types_list />
-									<@inputGroupItem type='btn'>
-										<@button type='submit' title='#i18n{document.modify_document_type.buttonAddAttribute}' buttonIcon='plus' hideTitle=['all'] />
-									</@inputGroupItem>
-								</@inputGroup>
-							</@formGroup>
-						</@tform>
-						<@table>
-							<thead>  
-								<@tr>
-									<@th>#i18n{document.modify_document_type.columnAttributeName}</@th>
-									<@th>#i18n{document.modify_document_type.columnAttributeCode}</@th>
-									<!-- th>#i18n{document.modify_document_type.columnAttributeDescription}</th -->
-									<@th>#i18n{document.modify_document_type.columnAttributeType}</@th>
-									<@th>#i18n{document.modify_document_type.columnAttributeRequired}</@th>
-									<@th>#i18n{document.modify_document_type.columnAttributeSearchable}</@th>
-									<@th>#i18n{document.modify_document_type.columnAttributeActions}</@th>
-								</@tr>
-							</thead>      
-							<tbody>      
-								<#list document_type.attributes as attribute >
-								<@tr>
-									<@td> ${attribute.name}<br><small>${attribute.description} </small></@td>
-									<@td> ${attribute.code} </@td>
-									<@td> ${attribute.codeAttributeType} </@td>
-									<@td>
-										<#if attribute.required = true >#i18n{portal.util.labelYes}<#else>#i18n{portal.util.labelNo}</#if>
-									</@td>
-									<@td>
-										<#if attribute.searchable = true >#i18n{portal.util.labelYes}<#else>#i18n{portal.util.labelNo}</#if>
-									</@td>
-									<@td>
-										<@aButton href='jsp/admin/plugins/document/ModifyDocumentTypeAttribute.jsp?attribute_id=${attribute.id}' title='${attribute.name}' buttonIcon='edit' size='sm' hideTitle=['all'] />
-										<@aButton href='jsp/admin/plugins/document/DoAttributeMoveUp.jsp?index=${attribute.attributeOrder}' title='#i18n{document.modify_document_type.buttonMoveUp}' buttonIcon='arrow-up' size='sm' hideTitle=['all'] />
-										<@aButton href='jsp/admin/plugins/document/DoAttributeMoveDown.jsp?index=${attribute.attributeOrder}' title='#i18n{document.modify_document_type.buttonMoveDown}' buttonIcon='arrow-down' size='sm' hideTitle=['all'] />
-										<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteAttribute.jsp?document_type_code=${document_type.code}&attribute_id=${attribute.id}' title='#i18n{document.modify_document_type.buttonDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all'] />
-									</@td>
-								</@tr>
-								</#list>
-							</tbody>
-						</@table>
+						<@manageFeature>
+						<#list document_type.attributes as attribute >
+							<@manageFeatureItem valign='start'> 
+								<@manageFeatureItemColumn flex=false>
+									<@p class='mb-0'>#i18n{document.modify_document_type.columnAttributeName} <strong>${attribute.name}</strong></@p>
+									<@p class='mb-0'><small>${attribute.description}</small></@p>
+									<@p class='mb-0'>#i18n{document.modify_document_type.columnAttributeCode} : <strong>${attribute.code}</strong> - #i18n{document.modify_document_type.columnAttributeType} : <strong>${attribute.codeAttributeType}</strong></@p>
+									<@p class='mb-0'>#i18n{document.modify_document_type.columnAttributeRequired} :<#if attribute.required = true >#i18n{portal.util.labelYes}<#else>#i18n{portal.util.labelNo}</#if></@p>
+									<@p class='mb-0'>#i18n{document.modify_document_type.columnAttributeSearchable} : <#if attribute.searchable = true >#i18n{portal.util.labelYes}<#else>#i18n{portal.util.labelNo}</#if></@p>
+								</@manageFeatureItemColumn>
+								<@manageFeatureItemColumn align='end' valign='start'>
+									<@btnGroup>
+										<@aButton href='jsp/admin/plugins/document/ModifyDocumentTypeAttribute.jsp?attribute_id=${attribute.id}' title='${attribute.name}' buttonIcon='edit' hideTitle=['all'] />
+										<@aButton href='jsp/admin/plugins/document/DoAttributeMoveUp.jsp?index=${attribute.attributeOrder}' title='#i18n{document.modify_document_type.buttonMoveUp}' buttonIcon='arrow-up' hideTitle=['all'] />
+										<@aButton href='jsp/admin/plugins/document/DoAttributeMoveDown.jsp?index=${attribute.attributeOrder}' title='#i18n{document.modify_document_type.buttonMoveDown}' buttonIcon='arrow-down' hideTitle=['all'] />
+										<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteAttribute.jsp?document_type_code=${document_type.code}&attribute_id=${attribute.id}' title='#i18n{document.modify_document_type.buttonDelete}' buttonIcon='trash' color='danger' hideTitle=['all'] />
+									</@btnGroup>
+								</@manageFeatureItemColumn>
+							</@manageFeatureItem>
+							</#list>
+						</@manageFeature>
 					</@boxBody>
 				</@box>
+			</@columns>
+			<@columns xl=3>
 				<@box>
 					<@boxHeader title='#i18n{document.modify_document_type.titleStyleSheets}' />
 					<@boxBody>
 						<@tform method='post' action='jsp/admin/plugins/document/DoLoadDocumentTypeStyleSheets.jsp' enctype='multipart/form-data' name='create_stylesheet'>
 							<@input type='hidden' name='document_type_code' value='${document_type.code}' />
-							<@row>
-								<@columns sm=6 md=6>
-									<@formGroup labelFor='stylesheet_source' labelKey='#i18n{document.modify_document_type.labelStyleSheetAdmin}' rows=2>
-										<@input type='file' id='stylesheet_admin' name='stylesheet_admin' maxlength=100 />
-									</@formGroup>
-									<@formGroup rows=2>
-										<@checkBox labelFor='stylesheet_admin_update' labelKey='#i18n{document.modify_document_type.labelStyleSheetAdminUpdate}' id='stylesheet_admin_update' name='stylesheet_admin_update' value='true' />
-									</@formGroup>
-									
-									<#if document_type.adminXsl?has_content>
-										<@tag color='info'>
-											<@link href='jsp/admin/plugins/document/ViewStyleSheetFile.jsp?document_type_code=${document_type.code}&stylesheet_type=stylesheet_admin'>
-												<@icon style='download' />&nbsp;#i18n{document.modify_document_type.labelStyleSheetAdminDownload}
-											</@link>
-										</@tag>
-									<#else>
-										<@tag color='warning'>#i18n{document.modify_document_type.labelStyleSheetAdminNoFile}</@tag>
-									</#if>
-								</@columns>
-								
-								<@columns sm=6 md=6>
-									<@formGroup labelFor='stylesheet_source' labelKey='#i18n{document.modify_document_type.labelStyleSheetContent}' rows=2>
-										<@input type='file' id='stylesheet_content' name='stylesheet_content' maxlength=100 />
-									</@formGroup>
-									<@formGroup rows=2>
-										<@checkBox labelFor='stylesheet_content_update' labelKey='#i18n{document.modify_document_type.labelStyleSheetContentUpdate}' id='stylesheet_content_update' name='stylesheet_content_update' value='true' />
-									</@formGroup>
-									<#if document_type.contentServiceXsl?has_content>
-										<@tag color='info'>
-											<@link href='jsp/admin/plugins/document/ViewStyleSheetFile.jsp?document_type_code=${document_type.code}&stylesheet_type=stylesheet_content'>
-												<@icon style='download' />&nbsp;#i18n{document.modify_document_type.labelStyleSheetContentDownload}
-											</@link>
-										</@tag>
-									<#else>
-										<@tag color='warning'>#i18n{document.modify_document_type.labelStyleSheetContentNoFile}</@tag>
-									</#if>
-								</@columns>
-							</@row>
-							<hr></hr>
-							<@formGroup rows=2>
+							<@input type='hidden' name='mode_id' value='-1' />
+							<@fieldSet legend='#i18n{document.modify_document_type.fieldsetStyleSheets}' >
+							<@formGroup labelFor='stylesheet_source' labelKey='#i18n{document.modify_document_type.labelStyleSheetAdmin}' rows=2>
+								<@input type='file' id='stylesheet_admin' name='stylesheet_admin' maxlength=100 />
+								<@checkBox labelFor='stylesheet_admin_update' labelKey='#i18n{document.modify_document_type.labelStyleSheetAdminUpdate}' id='stylesheet_admin_update' name='stylesheet_admin_update' value='true' />
+							</@formGroup>
+							<#if document_type.adminXsl?has_content>
+								<@aButton class='outline-primary' href='jsp/admin/plugins/document/ViewStyleSheetFile.jsp?document_type_code=${document_type.code}&stylesheet_type=stylesheet_admin'>
+									<@icon style='download' /> #i18n{document.modify_document_type.labelStyleSheetAdminDownload}
+								</@aButton>
+							<#else>
+								<@tag color='warning'>#i18n{document.modify_document_type.labelStyleSheetAdminNoFile}</@tag>
+							</#if>
+							</@fieldSet>
+							<@fieldSet legend='#i18n{document.modify_document_type.fieldsetContent}' >
+							<@formGroup labelFor='stylesheet_source' labelKey='#i18n{document.modify_document_type.labelStyleSheetContent}' rows=2>
+								<@input type='file' id='stylesheet_content' name='stylesheet_content' maxlength=100 />
+								<@checkBox labelFor='stylesheet_content_update' labelKey='#i18n{document.modify_document_type.labelStyleSheetContentUpdate}' id='stylesheet_content_update' name='stylesheet_content_update' value='true' />
+							</@formGroup>
+							<#if document_type.contentServiceXsl?has_content>
+								<@aButton color='transparent' href='jsp/admin/plugins/document/ViewStyleSheetFile.jsp?document_type_code=${document_type.code}&stylesheet_type=stylesheet_content'>
+									<@icon style='download' /> #i18n{document.modify_document_type.labelStyleSheetContentDownload}
+								</@aButton>
+							<#else>
+								<@tag color='warning'>#i18n{document.modify_document_type.labelStyleSheetContentNoFile}</@tag>
+							</#if>
+							</@fieldSet>
+							<@formGroup rows=2 class='mt-3 d-flex justify-content-center'>
 								<@button type='submit' title='#i18n{document.modify_document_type.buttonLoadStyleSheets}' buttonIcon='upload' />
 							</@formGroup>
-							<@input type='hidden' name='mode_id' value='-1' />
 						</@tform>
 					</@boxBody>
 				</@box>

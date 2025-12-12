@@ -4,52 +4,52 @@
 	<!-- DOCUMENT-97: enable clearing internal link field. -->
 	<@button params='onclick="javascript:$(\'#show_preview_${attribute.code}\').html($(\'#${attribute.code}\').val() + \'&nbsp;\'); return false;"' buttonIcon='eye' />
 	<@button params='onclick="javascript:linkservice_clear${attribute.code}(); return false;"' title='#i18n{document.attributeType.internallink.labelLinkServiceClear}' buttonIcon='trash' color='danger' hideTitle=['all'] />
-	<p id="show_preview_section_${attribute.code}" style="display: none;">&nbsp;</p>
-	<div id="show_preview_${attribute.code}">&nbsp;</div>
-	<script>
-		function linkservice${attribute.code}() {
-			var showPreview = document.getElementById('show_preview_${attribute.code}');
-			showPreview.innerHTML = "&nbsp;";
-
-			var fen = window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=", "#i18n{document.attributeType.internallink.labelLinkService}", "toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
-			fen.focus();
-		}
-		// DOCUMENT-97: enable clearing internal link field.
-		function linkservice_clear${attribute.code}() {
-			var attributeCode = document.getElementById('${attribute.code}');
-			var showPreview = document.getElementById('show_preview_${attribute.code}');
-
-			attributeCode.value = "";
-			showPreview.innerHTML = "&nbsp;";
-		}
-		
-		var imgElement = document.querySelector("#img_linkservice_${attribute.code}");
-		if (imgElement) {
-			imgElement.style.display = "inline";
-		}
-
-
-		// DOCUMENT-97: enable clearing internal link field.
-		var imgClearElement = document.querySelector("#img_linkservice_clear_${attribute.code}");
-		if (imgClearElement) {
-			imgClearElement.style.display = "inline";
-		}
-		
-		var elementsToHover = document.querySelectorAll("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}");
-
-		elementsToHover.forEach(function(element) {
-			element.addEventListener('mouseover', function() {
-				element.style.cursor = "pointer";
-			});
-
-			element.addEventListener('mouseout', function() {
-				element.style.cursor = "auto";
-			});
-		});
-		
-		var showPreviewSection = document.querySelector("#show_preview_section_${attribute.code}");
-		if (showPreviewSection) {
-			showPreviewSection.style.display = "block";
-		}
-	</script>
+	<@p id='show_preview_section_${attribute.code}' params='style="display: none;"'></@p>
+	<@div id='show_preview_${attribute.code}'></@div>
 </@formGroup>
+<script>
+	function linkservice${attribute.code}() {
+		var showPreview = document.getElementById('show_preview_${attribute.code}');
+		showPreview.innerHTML = "&nbsp;";
+
+		var fen = window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=", "#i18n{document.attributeType.internallink.labelLinkService}", "toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
+		fen.focus();
+	}
+	// DOCUMENT-97: enable clearing internal link field.
+	function linkservice_clear${attribute.code}() {
+		var attributeCode = document.getElementById('${attribute.code}');
+		var showPreview = document.getElementById('show_preview_${attribute.code}');
+
+		attributeCode.value = "";
+		showPreview.innerHTML = "&nbsp;";
+	}
+	
+	var imgElement = document.querySelector("#img_linkservice_${attribute.code}");
+	if (imgElement) {
+		imgElement.style.display = "inline";
+	}
+
+
+	// DOCUMENT-97: enable clearing internal link field.
+	var imgClearElement = document.querySelector("#img_linkservice_clear_${attribute.code}");
+	if (imgClearElement) {
+		imgClearElement.style.display = "inline";
+	}
+	
+	var elementsToHover = document.querySelectorAll("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}");
+
+	elementsToHover.forEach(function(element) {
+		element.addEventListener('mouseover', function() {
+			element.style.cursor = "pointer";
+		});
+
+		element.addEventListener('mouseout', function() {
+			element.style.cursor = "auto";
+		});
+	});
+	
+	var showPreviewSection = document.querySelector("#show_preview_section_${attribute.code}");
+	if (showPreviewSection) {
+		showPreviewSection.style.display = "block";
+	}
+</script>

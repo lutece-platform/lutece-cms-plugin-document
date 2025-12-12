@@ -8,7 +8,7 @@
 			<@row>
 				<@columns xl=9>
 					<@box>
-						<@boxHeader title='#i18n{document.workflow.action.modifyDocument.description} ${document.title}'>
+						<@boxHeader title='${document.title}'>
 							<@btnGroup>
 								<#noescape>
 									<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
@@ -25,9 +25,7 @@
 								<@input type='textarea' name='document_summary' id='document_summary' rows=5>${document.summary}</@input> 
 							</@formGroup>
 							<@fieldSet legend='#i18n{document.modify_document.attributTitle}'>
-								<#noescape>
-									${fields}
-								</#noescape>
+								<#noescape>${fields}</#noescape>
 								<@formGroup>
 									<@button type='submit' title='#i18n{document.modify_document.buttonModify}' buttonIcon='device-floppy' />
 									<@button type='button' params='onclick="javascript:window.history.back()"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
@@ -37,68 +35,53 @@
 					</@box>
 				</@columns>
 				<@columns xl=3>
-					<@box>
-						<@boxHeader title='#i18n{document.create_document.advancedPropertiesTitle}'>
-							<@button type='button' style='card-control collapse' buttonTargetId='#advPropertiesForm' buttonIcon='minus' size='sm' />
-						</@boxHeader>
-						<@boxBody>
-							<@fieldSet fieldsetId='advPropertiesForm'>
-								<@fieldSet legend='#i18n{document.create_document.labelDocumentValidity}'>
-									<div class="input-daterange">
-										<@formGroup labelFor='document_validity_begin' labelKey='#i18n{document.create_document.labelDocumentValidityBegin}' rows=2>
-											<@inputGroup>
-												<@inputGroupItem type='text'>
-													<@icon style='calendar' />
-												</@inputGroupItem>
-												<@input type='date' name='document_validity_begin' id='document_validity_begin' value='${date_validity_begin}' />
-											</@inputGroup>
-										</@formGroup>
-										<@formGroup labelFor='document_validity_end' labelKey='#i18n{document.create_document.labelDocumentValidityEnd}' rows=2>
-											<@inputGroup>
-												<@inputGroupItem type='text'>
-													<@icon style='calendar' />
-												</@inputGroupItem>
-												<@input type='date' name='document_validity_end' id='document_validity_end' value='${date_validity_end}' />
-											</@inputGroup>
-										</@formGroup>
-									</div>
-								</@fieldSet>
-								<@formGroup labelFor='document_page_template' labelKey='#i18n{document.create_document.labelDocumentPageTemplate}' helpKey='#i18n{document.create_document.helpDocumentPageTemplate}' rows=2>
-									<#noescape>${page_template_list}</#noescape>
-								</@formGroup>
-								<@formGroup helpKey='#i18n{document.modify_document.helpSkipPortlet}' rows=2>
-									<@checkBox labelFor='document_skip_portlet' labelKey='#i18n{document.modify_document.labelSkipPortlet}' name='document_skip_portlet' id='document_skip_portlet' checked=document.skipPortlet />
-								</@formGroup>
-								<@formGroup helpKey='#i18n{document.modify_document.helpSkipCategories}' rows=2>
-									<@checkBox labelFor='document_skip_categories' labelKey='#i18n{document.modify_document.labelSkipCategories}' name='document_skip_categories' id='document_skip_categories' checked=document.skipCategories />
-								</@formGroup>
-								<@formGroup labelFor='document_comment' labelKey='#i18n{document.create_document.labelDocumentComment}' helpKey='#i18n{document.create_document.helpDocumentComment}' rows=2>
-									<@input type='textarea' type='text' name='document_comment' id='document_comment' rows=2 value=document.comment! />
-								</@formGroup>
-							</@fieldSet>
-						</@boxBody>
-					</@box>
-					<@box>
-						<@boxHeader title='#i18n{document.list_category.boxTitle}'>
-							<@button type='button' style='card-control collapse' buttonTargetId='#category' buttonIcon='minus' size='sm' />
-						</@boxHeader>
-						<@boxBody>
-							<@div id='category'>
-								<#noescape>${category}</#noescape>
-							</@div>
-						</@boxBody>
-					</@box>
-					<#if metadata?has_content>
-						<@box>
-							<@boxHeader title='#i18n{document.modify_document_type.labelMetadata}'>
-								<@button type='button' style='card-control collapse' buttonTargetId='#div_metadata' buttonIcon='plus' size='sm' />
-							</@boxHeader>
-							<@boxBody>
-								<@div id='div_metadata'>
-									<#noescape>${metadata_form}</#noescape>
+					<@accordion id='advPropertiesAccordion' class='mt-3' title='#i18n{document.create_document.advancedPropertiesTitle}' icon='chevron-down'>
+						<@fieldSet fieldsetId='advPropertiesForm'>
+							<@fieldSet legend='#i18n{document.create_document.labelDocumentValidity}'>
+								<@div class="input-daterange">
+									<@formGroup labelFor='document_validity_begin' labelKey='#i18n{document.create_document.labelDocumentValidityBegin}' rows=2>
+										<@inputGroup>
+											<@inputGroupItem type='text'>
+												<@icon style='calendar' />
+											</@inputGroupItem>
+											<@input type='date' name='document_validity_begin' id='document_validity_begin' value='${date_validity_begin}' />
+										</@inputGroup>
+									</@formGroup>
+									<@formGroup labelFor='document_validity_end' labelKey='#i18n{document.create_document.labelDocumentValidityEnd}' rows=2>
+										<@inputGroup>
+											<@inputGroupItem type='text'>
+												<@icon style='calendar' />
+											</@inputGroupItem>
+											<@input type='date' name='document_validity_end' id='document_validity_end' value='${date_validity_end}' />
+										</@inputGroup>
+									</@formGroup>
 								</@div>
-							</@boxBody>
-						</@box>
+							</@fieldSet>
+							<@formGroup labelFor='document_page_template' labelKey='#i18n{document.create_document.labelDocumentPageTemplate}' helpKey='#i18n{document.create_document.helpDocumentPageTemplate}' rows=2>
+								<#noescape>${page_template_list}</#noescape>
+							</@formGroup>
+							<@formGroup helpKey='#i18n{document.modify_document.helpSkipPortlet}' rows=2>
+								<@checkBox labelFor='document_skip_portlet' labelKey='#i18n{document.modify_document.labelSkipPortlet}' name='document_skip_portlet' id='document_skip_portlet' checked=document.skipPortlet />
+							</@formGroup>
+							<@formGroup helpKey='#i18n{document.modify_document.helpSkipCategories}' rows=2>
+								<@checkBox labelFor='document_skip_categories' labelKey='#i18n{document.modify_document.labelSkipCategories}' name='document_skip_categories' id='document_skip_categories' checked=document.skipCategories />
+							</@formGroup>
+							<@formGroup labelFor='document_comment' labelKey='#i18n{document.create_document.labelDocumentComment}' helpKey='#i18n{document.create_document.helpDocumentComment}' rows=2>
+								<@input type='textarea' type='text' name='document_comment' id='document_comment' rows=2 value=document.comment! />
+							</@formGroup>
+						</@fieldSet>
+					</@accordion>
+					<@accordion id='categoryAccordion' class='mt-3'	title='#i18n{document.list_category.boxTitle}' icon='chevron-down'>
+						<@div id='category'>
+							<#noescape>${category}</#noescape>
+						</@div>
+					</@accordion>
+					<#if metadata?has_content && metadata_form?trim!=''>
+						<@accordion id='metadataAccordion' class='mt-3' title='#i18n{document.modify_document_type.labelMetadata}' icon='chevron-down'>
+							<@div id='div_metadata'>
+								<#noescape>${metadata_form}</#noescape>
+							</@div>
+						</@accordion>
 					</#if>
 				</@columns>
 			</@row>

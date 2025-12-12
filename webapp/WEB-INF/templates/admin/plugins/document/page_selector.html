@@ -46,12 +46,12 @@
 	</@row>
 </div>
 <script>
-$(document).ready( function(){
-  $("#btn-sub").remove();
-  $("#a-sub").removeClass("sr-only");
-  $("#a-sub").click( function( e ){
-	$("#fsubmit").submit();
-	return false;
-  });
+document.addEventListener('DOMContentLoaded', function() {
+	document.getElementById('btn-sub').remove();
+	document.getElementById('a-sub').classList.remove('visually-hidden');
+	document.getElementById('a-sub').addEventListener('click', function(e) {
+		e.preventDefault();
+		document.getElementById('fsubmit').submit();
+	});
 });
 </script>

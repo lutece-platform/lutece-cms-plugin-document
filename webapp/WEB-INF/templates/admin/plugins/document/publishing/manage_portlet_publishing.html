@@ -4,8 +4,10 @@
 			<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${portlet.pageId}' title='#i18n{document.manage_portlet_publishing.labelAdminSiteAccess}' hideTitle=['xs','sm','md'] buttonIcon='globe' size='sm' />
 			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{document.manage_documents.pageTitle}' hideTitle=['xs','sm','md'] buttonIcon='folder' size='sm' />
 		</@pageHeader>
-		<blockquote><p class="lead">${portlet.id} - ${portlet.name}</p></blockquote>
-		<h4>#i18n{document.manage_portlet_publishing.labelModePublication}</h4>
+		<@blockquote>
+			<@p class='fw-bold'>${portlet.id} - ${portlet.name}</@p>
+		</@blockquote>
+		<@h level=3>#i18n{document.manage_portlet_publishing.labelModePublication}</@h>
 		<@tform name='formModifyModePublication' method='post' action='jsp/admin/plugins/document/DoConfirmChangeModePublication.jsp' enctype='multipart/form-data'>
 			<@input type='hidden' name='id_portlet' value='${portlet.id}' />
 			<@input type='hidden' name='old_mode_publication' value='${mode_publication}' />
@@ -29,32 +31,30 @@
 		<#if portlet.status = 0>
 			<@alert color='success'>
 				<@icon style='check' />
-				<b>#i18n{document.manage_portlet_publishing.columnTitleState}&nbsp;#i18n{portal.util.labelEnabled} / #i18n{document.manage_portlet_publishing.labelStatusPublished}</b>
-				<p>#i18n{document.manage_portlet_publishing.columnTitlePage} <@tag>${portlet.pageId}</@tag></p>
+				<strong>#i18n{document.manage_portlet_publishing.columnTitleState} #i18n{portal.util.labelEnabled} / #i18n{document.manage_portlet_publishing.labelStatusPublished}</strong>
+				<@p>#i18n{document.manage_portlet_publishing.columnTitlePage} <@tag>${portlet.pageId}</@tag></@p>
 			</@alert>
 		<#else>
 			<@alert color='danger'>
 				<@icon style='ban' /> 
-				<b>#i18n{document.manage_portlet_publishing.columnTitleState}&nbsp;#i18n{portal.util.labelDisabled} #i18n{document.manage_portlet_publishing.labelStatusUnPublished}</b>
-				<p>#i18n{document.manage_portlet_publishing.columnTitlePage} <@tag>${portlet.pageId}</@tag></p>
+				<strong>#i18n{document.manage_portlet_publishing.columnTitleState} #i18n{portal.util.labelDisabled} #i18n{document.manage_portlet_publishing.labelStatusUnPublished}</strong>
+				<@p>#i18n{document.manage_portlet_publishing.columnTitlePage} <@tag>${portlet.pageId}</@tag></@p>
 			</@alert>
 		</#if>
-
-		<hr></hr>
+		<hr/>
 		<#if mode_publication = 0>
 			<@row>
 				<@columns lg=6>
-					<h4>#i18n{document.manage_portlet_publishing.labelPublishedDocumentsList}</h4>
+					<@h level=3>#i18n{document.manage_portlet_publishing.labelPublishedDocumentsList}</@h>
 					${published_document_list}
-					
 				</@columns>
 				<@columns lg=6>
-					<h4>#i18n{document.manage_portlet_publishing.labelAssignedDocumentsList}</h4>
+					<@h level=3>#i18n{document.manage_portlet_publishing.labelAssignedDocumentsList}</@h>
 					${assigned_document_list} 
 				</@columns>								
 			</@row>								
 		<#else>
-			<h3>
+			<@h level=3>
 				#i18n{document.manage_portlet_publishing.labelAutoPublication}
 				<@tform name='formAddSpaceAutoPublication' method='post' action='jsp/admin/plugins/document/CreateDocumentAutoPublication.jsp' enctype='multipart/form-data'>
 					<@input type='hidden' name='id_portlet' value='${portlet.id}' />
@@ -63,16 +63,16 @@
 						<@button type='submit' title='#i18n{document.manage_portlet_publishing.buttonAddAutoPublication}' hideTitle=['xs','sm','md'] buttonIcon='plus-circle' size='sm' />
 					</@div>
 				</@tform>
-			</h3>
+			</@h>
 			<@table>
-				<thead>
+				<@thead>
 					<@tr>
 						<@th>#i18n{document.manage_portlet_publishing.colSpaceName}</@th>
 						<@th>#i18n{document.manage_portlet_publishing.colNumPublishedDocuments}</@th>
 						<@th>#i18n{document.manage_portlet_publishing.colActions}</@th>
 					</@tr>
-				</thead>
-				<tbody>
+				</@thead>
+				<@tbody>
 				<#list list_auto_publication as auto_publication >
 					<@tr>
 						<@td>${auto_publication.space_name}</@td>
@@ -82,12 +82,11 @@
 						</@td>
 					</@tr>
 				</#list>
-				</tbody>
+				</@tbody>
 			</@table>
 		</#if>
 	</@pageColumn>
 </@pageContainer>
-
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   var sections = document.querySelectorAll("section");

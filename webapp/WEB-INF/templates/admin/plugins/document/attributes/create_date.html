@@ -1,14 +1,14 @@
 <@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required>
-	<#if (parameters.currentdate)?has_content>
-		<#list parameters.currentdate as currentdate>
-			<#assign inputValue = currentdate?if_exists />
+<#if (parameters.currentdate)?has_content>
+	<#list parameters.currentdate as currentdate>
+		<#assign inputValue = currentdate?if_exists />
+	</#list>
+<#else>
+	<#if (parameters.defaultvalue)?has_content>
+		<#list parameters.defaultvalue as defaultvalue>
+			<#assign inputValue = defaultvalue?if_exists />
 		</#list>
-	<#else>
-		<#if (parameters.defaultvalue)?has_content>
-			<#list parameters.defaultvalue as defaultvalue>
-				<#assign inputValue = defaultvalue?if_exists />
-			</#list>
-		</#if>
 	</#if>
-	<@input type='date' id='${attribute.code}' name='${attribute.code}' value=inputValue />
+</#if>
+<@input type='date' id='${attribute.code}' name='${attribute.code}' value=inputValue />
 </@formGroup>

@@ -2,13 +2,13 @@
     <@pageColumn>
 		<@pageHeader title='#i18n{document.move_space.title} "${space.name}"' />
 		<@tform id='spacesBrowser' name='formMove' method='get' action='jsp/admin/plugins/document/DoMoveSpace.jsp' enctype='multipart/form-data' boxed=true>
-			<@input type='hidden' name='id_space' value='${space.id}' />
-			<#if submit_button_disabled>
-				<@formGroup>
-					<@staticText>#i18n{document.move_space.labelMove}</@staticText>
-				</@formGroup>
-			</#if>
-			${spaces_browser}
+		<@input type='hidden' name='id_space' value='${space.id}' />
+		<#if submit_button_disabled>
+		<@formGroup>
+			<@p>#i18n{document.move_space.labelMove}</@p>
+		</@formGroup>
+		</#if>
+		${spaces_browser}
 		</@tform>
 	</@pageColumn>
 </@pageContainer>

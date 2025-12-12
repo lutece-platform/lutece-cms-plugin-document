@@ -6,7 +6,7 @@
 		<@row>
 			<@columns xl=3>
 				<@box>
-					<@boxHeader title='#${document.id}</span>&nbsp;${document.title}' />
+					<@boxHeader title='#${document.id} - ${document.title}' />
 					<@boxBody>
 						<dl>
 							<dt>#i18n{document.preview_document.columnTitleType}</dt>
@@ -51,7 +51,7 @@
 						<@listGroup>
 							<#list events_list?reverse as event >
 								<@listGroupItem>
-									<@icon style='info-circle' />&nbsp;<em>${event.date}</em>&nbsp;-&nbsp;${event.description}
+									<@icon style='info-circle' /> <em>${event.date}</em> - ${event.description}
 								</@listGroupItem>
 							</#list>
 						</@listGroup>

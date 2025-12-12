@@ -1,24 +1,19 @@
-<@row>
-	<@columns>
-		<@box>
-			<@boxHeader title='#i18n{document.create_auto_publication.boxTitle}' />
-            <@boxBody>
-				<@tform id=spacesBrowser name='formCreateAutoPublication' method='get' action='jsp/admin/plugins/document/DoCreateAutoPublication.jsp' enctype='multipart/form-data'>
-					<@input type='hidden' name='id_portlet' value='${portlet_id}' />
-					<@input type='hidden' name='mode_publication' value='1' />
-					<h4>#i18n{document.create_auto_publication.spaceChoice}</h4>
-					${spaces_browser}
-				</@tform>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
-
+<@pageContainer>
+    <@pageColumn> 
+        <@pageHeader title='#i18n{document.create_auto_publication.boxTitle}' />
+		<@tform id=spacesBrowser name='formCreateAutoPublication' method='get' action='jsp/admin/plugins/document/DoCreateAutoPublication.jsp' enctype='multipart/form-data'>
+			<@input type='hidden' name='id_portlet' value='${portlet_id}' />
+			<@input type='hidden' name='mode_publication' value='1' />
+			<@h level=3>#i18n{document.create_auto_publication.spaceChoice}</@h>
+			${spaces_browser}
+		</@tform>
+	</@pageColumn>
+</@pageContainer>
 <script>
-	document.addEventListener("DOMContentLoaded", function() {
-	  var sections = document.querySelectorAll("section");
-	  sections.forEach(function(section) {
+document.addEventListener("DOMContentLoaded", function() {
+	var sections = document.querySelectorAll("section");
+	sections.forEach(function(section) {
 		section.classList.remove("no-padding");
-	  });
 	});
+});
 </script>

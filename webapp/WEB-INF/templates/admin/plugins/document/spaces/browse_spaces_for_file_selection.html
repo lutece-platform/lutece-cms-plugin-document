@@ -1,36 +1,36 @@
 <!--  quick select mode for tinyMce file picker -->
-	<#if selected_space?has_content && selected_space.documentCreationAllowed>
-		<#assign value = true />
-	<#else>
-		<#assign value = false />
+<#if selected_space?has_content && selected_space.documentCreationAllowed>
+<#assign value = true />
+<#else>
+<#assign value = false />
+</#if>
+<@input type='hidden' id='isDocumentCreationAllowed' name='isDocumentCreationAllowed' value=value?c />
+<@input type='hidden' name='browser_id_space' value='${space.id}' />
+<@input type='hidden' name='browser_selected_space_id' value='${space.id}' />
+<#if space?has_content && space.documentCreationAllowed >
+<@formGroup>
+	<@aButton href='javascript:goUp();' title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' color='default' />
+	<@staticText><img src="${space.iconUrl}" alt="${space.name}"> ${space.name}</@staticText>
+</@formGroup>	
+<#else>
+<@formGroup>
+	<#if space.id &gt; 0 && go_up >
+		<@aButton href='javascript:goUp();' title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' color='default' />
 	</#if>
-	<@input type='hidden' id='isDocumentCreationAllowed' name='isDocumentCreationAllowed' value=value?c />
-	<@input type='hidden' name='browser_id_space' value='${space.id}' />
-	<@input type='hidden' name='browser_selected_space_id' value='${space.id}' />
-	<#if space?has_content && space.documentCreationAllowed >
-		<@formGroup>
-			<@aButton href='javascript:goUp();' title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' color='default' />
-			<@staticText><img src="${space.iconUrl}" alt="${space.name}"> ${space.name}</@staticText>
-		</@formGroup>	
-	<#else>
-		<@formGroup>
-			<#if space.id &gt; 0 && go_up >
-				<@aButton href='javascript:goUp();' title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' color='default' />
-			</#if>
-		</@formGroup>
-        </#if>
-		<@formGroup>
-			<@listGroup>
-				<#list spaces_list as item_space >
-					<@listGroupItem>
-						<@link href='javascript:openSpace(${item_space.id});' title='${item_space.name}'>
-							<img src="${item_space.iconUrl}" alt="${item_space.name}" title=""> 
-							${item_space.name}
-						</@link>
-					</@listGroupItem>
-				</#list>
-			</@listGroup>
-		</@formGroup>
+</@formGroup>
+</#if>
+<@formGroup>
+	<@listGroup>
+		<#list spaces_list as item_space >
+			<@listGroupItem>
+				<@link href='javascript:openSpace(${item_space.id});' title='${item_space.name}'>
+					<img src="${item_space.iconUrl}" alt="${item_space.name}" class="img-fluid"> 
+					${item_space.name}
+				</@link>
+			</@listGroupItem>
+		</#list>
+	</@listGroup>
+</@formGroup>
 <script>
 formId = 0;
 function goUp(){ 

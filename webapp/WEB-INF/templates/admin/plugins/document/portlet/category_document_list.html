@@ -1,13 +1,9 @@
 <#if category_list?has_content>
     <@select id='categories' name='categories' multiple=10>			
         <#list category_list as categoryDisplay>
-            <#if categoryDisplay.assigned = true> 			
-                <option selected="selected" value="${categoryDisplay.category.id}" >${categoryDisplay.category.name}</option>
-            <#else>
-                <option value="${categoryDisplay.category.id}" >${categoryDisplay.category.name}</option>
-            </#if>
+            <@option selected=(categoryDisplay.assigned == true) value=categoryDisplay.category.id label=categoryDisplay.category.name />
         </#list>		
     </@select>
 <#else>
-    <@staticText>#i18n{document.portlet_document_type.labelNoCategory}</@staticText>
+    <@empty title='#i18n{document.portlet_document_type.labelNoCategory}' subTitle=' ' />
 </#if>

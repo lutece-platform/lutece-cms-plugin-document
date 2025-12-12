@@ -1,8 +1,6 @@
 <#assign labelKey>
-	<img src="${document_page_template.picture}" class="thumblist" alt="${document_page_template.description}" />
+	<img src="${document_page_template.picture}" class="thumbnail thumbnail-sm" alt="${document_page_template.description}" />
 	${document_page_template.description}
 </#assign>
-
 <#if checked = 'checked="checked"'><#assign checked=true /><#else><#assign checked=false /></#if>
-
 <@radioButton labelFor='${document_page_template.id}' labelKey=labelKey name='page_template_id' id='${document_page_template.id}' value='${document_page_template.id}' checked=checked />

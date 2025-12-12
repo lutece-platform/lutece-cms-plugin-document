@@ -1,6 +1,6 @@
 <#if status == status_published>
 <@tr>
-	<@td><img src="${page_template_picture}" alt="" title=""></@td>            
+	<@td><@img url=page_template_picture alt='' /></@td>            
 	<@td>${document_published.title}</@td>
 	<@td>
 		<@tform type='inline' method='post' name='modifyOrderDocument' action='jsp/admin/plugins/document/DoModifyDocumentOrder.jsp'>

@@ -1,36 +1,36 @@
 <@pageContainer>
     <@pageColumn>
 		<@pageHeader title='#i18n{document.modify_category.boxTitle}' />
-			<@tform method='post' action='jsp/admin/plugins/document/DoModifyCategory.jsp' enctype='multipart/form-data' boxed=true>
-				<@input type='hidden' name='category_id' value='${categoryDisplay.category.id}' />
-				<@formGroup labelFor='category_name' labelKey='#i18n{document.modify_category.labelName}' mandatory=true>
-					<@input type='text' id='category_name' name='category_name' maxlength=100 value=categoryDisplay.category.name />
-				</@formGroup>
-				<@formGroup labelFor='category_description' labelKey='#i18n{document.modify_category.labelDescription}' mandatory=true>
-					<@input type='text' id='category_description' name='category_description' value=categoryDisplay.category.description! maxlength=255 />
-				</@formGroup>
-				<@formGroup labelFor='workgroup_key' labelKey='#i18n{document.modify_category.labelWorkgroup}'>
-					<#if categoryDisplay.category.workgroup?has_content > 
-						<@select name='workgroup_key' items=user_workgroup_list default_value=categoryDisplay.category.workgroup />
-					<#else>
-						<@select name='workgroup_key' items=user_workgroup_list default_value=0 />
-					</#if>
-				</@formGroup>
-				<@formGroup labelFor='category_icon' labelKey='#i18n{document.modify_category.labelIcon}'>
-					<@staticText>
-					<#if categoryDisplay.iconUrl??>
-						<img src=${categoryDisplay.iconUrl} alt="#i18n{document.modify_category.altIcon}" class="img-thumbnail" />
-					</#if>
-					</@staticText>
-					<@input type='file' id='category_icon' name='category_icon' />
-				</@formGroup>
-				<@formGroup>
-					<@checkBox labelFor='update_icon' labelKey='#i18n{document.modify_category.labelUpdateIcon}' name='update_icon' id='update_icon' />
-				</@formGroup>
-				<@formGroup>
-					<@button type='submit' title='#i18n{document.modify_category.buttonLabelModify}' buttonIcon='device-floppy' />
-					<@aButton href='jsp/admin/plugins/document/ManageCategory.jsp?plugin_name=document' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
-				</@formGroup>
-			</@tform>
+		<@tform method='post' action='jsp/admin/plugins/document/DoModifyCategory.jsp' enctype='multipart/form-data' boxed=true>
+			<@input type='hidden' name='category_id' value='${categoryDisplay.category.id}' />
+			<@formGroup labelFor='category_name' labelKey='#i18n{document.modify_category.labelName}' mandatory=true>
+				<@input type='text' id='category_name' name='category_name' maxlength=100 value=categoryDisplay.category.name />
+			</@formGroup>
+			<@formGroup labelFor='category_description' labelKey='#i18n{document.modify_category.labelDescription}' mandatory=true>
+				<@input type='text' id='category_description' name='category_description' value=categoryDisplay.category.description! maxlength=255 />
+			</@formGroup>
+			<@formGroup labelFor='workgroup_key' labelKey='#i18n{document.modify_category.labelWorkgroup}'>
+				<#if categoryDisplay.category.workgroup?has_content > 
+					<@select name='workgroup_key' items=user_workgroup_list default_value=categoryDisplay.category.workgroup />
+				<#else>
+					<@select name='workgroup_key' items=user_workgroup_list default_value=0 />
+				</#if>
+			</@formGroup>
+			<@formGroup labelFor='category_icon' labelKey='#i18n{document.modify_category.labelIcon}'>
+				<@staticText>
+				<#if categoryDisplay.iconUrl??>
+					<@img url=categoryDisplay.iconUrl! alt='#i18n{document.modify_category.altIcon}' class='img-thumbnail' />
+				</#if>
+				</@staticText>
+				<@input type='file' id='category_icon' name='category_icon' />
+			</@formGroup>
+			<@formGroup>
+				<@checkBox labelFor='update_icon' labelKey='#i18n{document.modify_category.labelUpdateIcon}' name='update_icon' id='update_icon' />
+			</@formGroup>
+			<@formGroup>
+				<@button type='submit' title='#i18n{document.modify_category.buttonLabelModify}' buttonIcon='device-floppy' />
+				<@aButton href='jsp/admin/plugins/document/ManageCategory.jsp?plugin_name=document' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
+			</@formGroup>
+		</@tform>
 	</@pageColumn>
 </@pageContainer>

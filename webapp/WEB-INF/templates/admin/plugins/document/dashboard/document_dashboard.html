@@ -1,145 +1,57 @@
-<@row>
-	<@columns>
-		<@box id='site_dashboard_document_last_modified'>
-			<@boxHeader title='#i18n{document.dashboard.columnLastModifiedDocument}'>
-				<@button style='card-control collapse' buttonTargetId='#site_dashboard_document_last_modified_card_body' buttonIcon='minus' size='sm' />
-				<@button style='card-control remove' buttonTargetId='#site_dashboard_document_last_modified' buttonIcon='times' size='sm' />
-			</@boxHeader>
-			<@boxBody id='site_dashboard_document_last_modified_card_body'>
-				<@table>
-					<thead class="sr-only">
-						<@tr>
-							<@th>#i18n{document.dashboard.columnLastModifiedDocument}</@th>
-							<@th>#i18n{document.dashboard.columnActions}</@th>
-						</@tr>
-					</thead>
-					<tbody>
-						<#if last_modified_document??>
-							<@tr>
-								<@td>
-									<strong>
-										<#if last_modified_document.publishedStatus=0>
-											<@tag color='success' title='#i18n{document.dashboard.PublishedStatus}'><@icon style='check' /></@tag>
-										  <#else>
-											<@tag color='danger' title='#i18n{document.dashboard.UnPublishedStatus}'><@icon style='times' /></@tag>
-										</#if>&nbsp;${last_modified_document.id} - ${last_modified_document.title}
-									</strong>
-									<p>
-										<small>${last_modified_document.type} -
-										<strong>#i18n{document.dashboard.labelState} : </strong>${last_modified_document.state} -
-										<strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_modified_document.dateModification}</small>
-									</p>
-									<#if last_modified_document.comment!="">
-										<@alert color='danger'>
-											${last_modified_document.comment}
-										</@alert>
-									</#if>
-								</@td>
-								<@td>
-									<p>
-										<#list last_modified_document.actions as action>
-											<#if action.url?exists>
-												<#if action.idAction==1 || action.idAction==6 || action.idAction==8>
-													<#assign color = 'danger' />
-												<#elseif action.idAction==3>
-													<#assign color = 'warning' />
-												<#elseif action.idAction==4 || action.idAction==12>
-													<#assign color = 'success' />
-												<#else>
-													<#assign color = 'primary' />
-												</#if>
-												<@aButton color=color href='${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}' title='${action.description}' hideTitle=['all'] buttonIcon=action.iconUrl size='sm' />
-											</#if>
-										</#list>
-									</p>
-								</@td>
-							</@tr>
-						<#else>
-							<@tr>
-								<@td colspan=3>
-									#i18n{document.manage_documents.noDocument}
-								</@td>
-							</@tr>
+<#if last_modified_document??>
+<@adminDashboardWidget title='#i18n{document.dashboard.columnLastModifiedDocument}' id='site_dashboard_document_last_modified' url=url>
+	<@card class='mb-1'>
+		<@row class='align-items-center'>
+			<@columns>						
+				<@p>
+					<#if last_modified_document.publishedStatus=0><@tag color='success' title='#i18n{document.dashboard.PublishedStatus}'><@icon style='check' /></@tag><#else><@tag color='danger' title='#i18n{document.dashboard.UnPublishedStatus}'><@icon style='times' /></@tag></#if>
+					<strong>${last_modified_document.id} - ${last_modified_document.title}</strong>
+				</@p>
+				<@p class='mb-0'>${last_modified_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_modified_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_modified_document.dateModification}</small></@p>
+				<#if last_modified_document.comment!="">
+					<@alert color='danger'>
+						${last_modified_document.comment}
+					</@alert>
+				</#if>
+			</@columns>
+			<@div class='col-auto'>
+				<@button type='button' class='btn-action' buttonIcon='dots-vertical fs-2' dropdownMenu=true>
+					<#list last_modified_document.actions as action>
+						<#if action.url?exists>
+							<@link href='${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}' title='${action.description}' class='dropdown-item'>
+								<@icon style=action.iconUrl! /> ${action.name!}
+							</@link>
 						</#if>
-					</tbody>
-				</@table>
-			</@boxBody>
-			<@boxFooter align='center'>
-				<@link href='${url}' title='#i18n{document.plugin.description}'>
-				  #i18n{document.plugin.description} <@icon style='arrow-circle-right' />
-				</@link>
-			</@boxFooter>
-		</@box>
-	</@columns>
-</@row>
-
-<@row>
-	<@columns>
-		<@box id='site_dashboard_document_last_published'>
-			<@boxHeader title='#i18n{document.dashboard.columnLastPublishedDocument}'>
-				<@button style='card-control collapse' buttonTargetId='#site_dashboard_document_last_published_card_body' buttonIcon='minus' size='sm' />
-				<@button style='card-control remove' buttonTargetId='#site_dashboard_document_last_published' buttonIcon='times' size='sm' />
-			</@boxHeader>
-			<@boxBody id='site_dashboard_document_last_published_card_body'>
-				<!-- LAST PUBLISHED DOCUMENT -->
-				<@table>
-					<thead class="sr-only">
-						<@tr>
-							<@th>#i18n{document.dashboard.columnLastPublishedDocument}</@th>
-							<@th>#i18n{document.dashboard.columnActions}</@th>
-						</@tr>
-					</thead>
-					<tbody>
-					<#if last_published_document??>
-						<@tr>
-							<@td>
-								<strong>
-								<#if last_published_document.publishedStatus=0>
-									<@tag color='success' title='#i18n{document.dashboard.PublishedStatus}'><@icon style='check' /></@tag>
-								<#else>
-									<@tag color='danger' title='#i18n{document.dashboard.UnPublishedStatus}'><@icon style='times' /></@tag>
-								</#if>
-								&nbsp;${last_published_document.id} - ${last_published_document.title}
-								<br />
-								</strong>
-								<p>
-									<small>${last_published_document.type} -
-									<strong>#i18n{document.dashboard.labelState} : </strong>${last_published_document.state} -
-									<strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_published_document.dateModification}</small>
-								</p>
-							</@td>
-							<@td>
-								<#list last_published_document.actions as action>
-									<#if action.url?exists>
-										<#if action.idAction==1 || action.idAction==6 || action.idAction==8>
-											<#assign buttonColor='danger' />
-										<#elseif action.idAction==3>
-											<#assign buttonColor='warning' />
-										<#elseif action.idAction==4 || action.idAction==12>
-											<#assign buttonColor='success' />
-										<#else>
-											<#assign buttonColor='primary' />
-										</#if>
-										<@aButton href='${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}' title='${action.description}' hideTitle=['all'] color=buttonColor buttonIcon=action.iconUrl size='sm' />
-									</#if>
-								</#list>
-							</@td>
-						</@tr>
-					<#else>
-						<@tr>
-							<@td colspan=3>
-								#i18n{document.manage_documents.noDocument}
-							</@td>
-						</@tr>
+					</#list>
+				</@button>
+			</@div>		
+		</@row>
+	</@card>
+	</@adminDashboardWidget>			
+</#if>
+<#if last_published_document??>
+<@adminDashboardWidget title='#i18n{document.dashboard.columnLastPublishedDocument}' id='site_dashboard_document_last_published' url=url>
+<@card class='mb-1'>
+	<@row class='align-items-center'>
+		<@columns>		
+			<@p>
+				<#if last_published_document.publishedStatus=0><@tag color='success' title='#i18n{document.dashboard.PublishedStatus}'><@icon style='check' /></@tag><#else><@tag color='danger' title='#i18n{document.dashboard.UnPublishedStatus}'><@icon style='times' /></@tag></#if>
+				<strong>${last_published_document.id} - ${last_published_document.title}</strong>
+			</@p>
+			<@p class='mb-0'>${last_published_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_published_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_published_document.dateModification}</@p>
+		</@columns>
+		<@div class='col-auto'>
+			<@button type='button' class='btn-action' buttonIcon='dots-vertical fs-2' dropdownMenu=true>
+				<#list last_published_document.actions as action>
+					<#if action.url?exists>
+						<@link href='${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}' title='${action.description}' class='dropdown-item' >
+							<@icon style=action.iconUrl! /> ${action.name!}
+						</@link>
 					</#if>
-					</tbody>
-				</@table>
-			</@boxBody>
-			<@boxFooter align='center'>
-				<@link href='${url}' title='#i18n{document.plugin.description}'>
-				  #i18n{document.plugin.description} <@icon style='arrow-circle-right' />
-				</@link>
-			</@boxFooter>
-		</@box>
-	</@columns>
-</@row>
+				</#list>
+			</@button>
+		</@div>
+	</@row>
+</@card>
+</@adminDashboardWidget>
+</#if>

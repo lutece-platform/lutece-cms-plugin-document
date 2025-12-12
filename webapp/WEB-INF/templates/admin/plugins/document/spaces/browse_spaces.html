@@ -7,7 +7,7 @@
 <#else>
 	<@input type='hidden' name='browser_id_space' value='${space.id}' />
 	<@formGroup>
-		<#if space.id &gt; 0 && go_up >
+		<#if space.id gt 0 && go_up >
 			<@aButton href='javascript:goUp();' title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' />
 		</#if>
 		<@button type='submit' title='#i18n{portal.util.labelValidate}' buttonIcon='check' />
@@ -16,7 +16,7 @@
 	<@formGroup>
 		<#list spaces_list as item_space>
 			<#assign labelKey>
-				<img src="${item_space.iconUrl}" alt="${item_space.name}" title="">
+				<img src="${item_space.iconUrl}" alt="${item_space.name}" class="img-fluid">
 				<#if has_childs?seq_contains(item_space.id)>
 					<@link href='javascript:openSpace(${item_space.id});' title='${item_space.name}'>${item_space.name}</@link>
 				<#else>
@@ -27,48 +27,47 @@
 		</#list>
 	</@formGroup>
 	<@formGroup>
-		<#if space.id &gt; 0 && go_up >
+		<#if space.id gt 0 && go_up >
 		<@aButton href='javascript:goUp();' title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' />
 		</#if>
 		<@button type='submit' title='#i18n{portal.util.labelValidate}' buttonIcon='check' />
 		<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
 	</@formGroup>
 </#if>
-
 <script>
-	formId = "spacesBrowser";
-	<!-- formId = "selectFilesForm"; -->
-	function goUp(){ 
-		document.forms[formId].action='${action}';
-		document.forms[formId].browser_id_space.value='${space.idParent}';
-		unselectRadioBtn( formId );
-		document.forms[formId].submit();
-	}
+formId = "spacesBrowser";
+<!-- formId = "selectFilesForm"; -->
+function goUp(){ 
+	document.forms[formId].action='${action}';
+	document.forms[formId].browser_id_space.value='${space.idParent}';
+	unselectRadioBtn( formId );
+	document.forms[formId].submit();
+}
 
-	function openSpace(idSpace){
-		document.forms[formId].action='${action}';
-		document.forms[formId].browser_id_space.value=idSpace;
-		unselectRadioBtn( formId );
-		document.forms[formId].submit();
-	}
+function openSpace(idSpace){
+	document.forms[formId].action='${action}';
+	document.forms[formId].browser_id_space.value=idSpace;
+	unselectRadioBtn( formId );
+	document.forms[formId].submit();
+}
 
-	function unselectRadioBtn( formId ){
-	if(document.forms[formId].browser_selected_space_id != undefined){
-		if( document.forms[formId].browser_selected_space_id.length > 0 ){
-			for( var i=0; i<document.forms[formId].browser_selected_space_id.length; i++ ){
-				if (document.forms[formId].browser_selected_space_id[i].checked){
-					document.forms[formId].browser_selected_space_id[i].checked=false;
-				}
-			}
-		} else {
-			document.forms[formId].browser_selected_space_id.checked=false;
+function unselectRadioBtn( formId ){
+if(document.forms[formId].browser_selected_space_id != undefined){
+	if( document.forms[formId].browser_selected_space_id.length > 0 ){
+		for( var i=0; i<document.forms[formId].browser_selected_space_id.length; i++ ){
+			if (document.forms[formId].browser_selected_space_id[i].checked){
+				document.forms[formId].browser_selected_space_id[i].checked=false;
 			}
 		}
+	} else {
+		document.forms[formId].browser_selected_space_id.checked=false;
+		}
 	}
+}
 
-	function modifyChoice(){
-		document.forms[formId].browser_selected_space_id.value=null;
-		document.forms[formId].action='${action}';
-		document.forms[formId].submit();
-	}
+function modifyChoice(){
+	document.forms[formId].browser_selected_space_id.value=null;
+	document.forms[formId].action='${action}';
+	document.forms[formId].submit();
+}
 </script>
