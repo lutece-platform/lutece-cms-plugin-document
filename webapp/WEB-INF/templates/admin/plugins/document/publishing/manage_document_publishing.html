@@ -28,7 +28,7 @@
 							<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
 							<dd>${document.dateModification}</dd>
 						</dl>
-						<@h level=3 class='h4'>#i18n{document.preview_document.columnTitleDateValidity} fdsfds</@h>
+						<@h level=3 class='h4'>#i18n{document.preview_document.columnTitleDateValidity}</@h>
 						<#assign dateBegin="">
 						<#if document.dateValidityBegin?has_content>
 						<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
@@ -65,10 +65,15 @@
 					<@boxBody>
 						<@tform method='post' action='jsp/admin/plugins/document/ManageDocumentPublishing.jsp'>
 							<@input type='hidden' name='id_document' value='${document.id}' />
-							<@fieldSet legend='#i18n{document.manage_documents.buttonSearch}'>
+							<#if !portlet_filter?? || portlet_filter.displayLatestPortlets><@input type='hidden' name='is_display_latest_portlets' value='false' /><#else><@input type='hidden' name='is_display_latest_portlets' value='true' /></#if>
+							<@fieldSet class='h5' legend='#i18n{document.manage_documents.buttonSearch}'>
 							<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{document.manage_document_publishing.labelSearchBy}' hideLabel=['all']>
 								<#if portlet_filter??><#assign value = portlet_filter.searchValue /><#else><#assign value = '' /></#if>
-								<@input type='text' name='portlet_filter_value' placeHolder='#i18n{document.manage_document_publishing.labelSearchBy}' value=value />
+								<@inputGroup>
+									<@input type='text' name='portlet_filter_value' placeHolder='#i18n{document.manage_document_publishing.labelSearchBy}' value=value />
+									<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' />
+									<#if !portlet_filter?? || portlet_filter.displayLatestPortlets><#else><@button type='submit' title='Supprimer le filtre' buttonIcon='times' color='danger' /></#if>
+								</@inputGroup>
 							</@formGroup>
 							<@row>
 								<@columns md=4>
@@ -99,19 +104,6 @@
 										</@select>
 									</@formGroup>
 								</@columns>
-							</@row>
-							<@row class='align-items-center mt-3'>
-								<@columns class='d-flex justify-content-end'>
-									<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' />
-								</@columns>
-								<#if !portlet_filter?? || portlet_filter.displayLatestPortlets>
-									<@input type='hidden' name='is_display_latest_portlets' value='false' />
-								<#else>
-								<@columns>
-									<@button type='submit' title='Supprimer le filtre' buttonIcon='times' color='danger' />
-									<@input type='hidden' name='is_display_latest_portlets' value='true' />
-								</@columns>
-								</#if>
 							</@row>
 							</@fieldSet>
 						</@tform>
@@ -195,11 +187,13 @@
 					<@box>
 						<@boxHeader title='#i18n{document.manage_document_publishing.labelPublishedPortletList}' />
 						<@boxBody>
-							<@table>
+							<@manageFeature>
 								<#list assigned_portlet_list as assigned_portlet_publication>
-									<@tr>
-										<@td><strong><@tag color='info'>${assigned_portlet_publication.portlet.id}</@tag> ${assigned_portlet_publication.portlet.name}</strong></@td>
-										<@td params='style="display:flex;"'>
+									<@manageFeatureItem>
+										<@manageFeatureItemColumn>
+											<strong><@tag color='info'>${assigned_portlet_publication.portlet.id}</@tag> ${assigned_portlet_publication.portlet.name}</strong>
+										</@manageFeatureItemColumn>
+										<@manageFeatureItemColumn auto=true>
 											<#if permission_publish?exists>
 												<#if assigned_portlet_publication.publication.status == status_unpublished>
 													<@tform method='post' name='publishing' action='jsp/admin/plugins/document/DoAssignedDocument.jsp'>
@@ -229,10 +223,10 @@
 													<@button type='submit' title='#i18n{document.manage_document_publishing.labelManagePortlet}' hideTitle=['all'] buttonIcon='settings' size='sm' />
 												</@tform>
 											</#if>
-										</@td>
-									</@tr>
+										</@manageFeatureItemColumn>
+									</@manageFeatureItem>
 								</#list>
-							</@table>
+							</@manageFeature>
 						</@boxBody>
 					</@box>
 				<#else>	

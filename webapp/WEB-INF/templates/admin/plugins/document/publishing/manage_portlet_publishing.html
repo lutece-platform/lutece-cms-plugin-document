@@ -1,57 +1,64 @@
 <@pageContainer>
     <@pageColumn> 
-        <@pageHeader title='#i18n{document.manage_document_publishing.labelManagePortlet}'>
+        <@pageHeader title='#i18n{document.manage_document_publishing.labelManagePortlet} - ${portlet.name} - #i18n{document.manage_portlet_publishing.columnTitlePage} : ${portlet.pageId}'>
 			<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${portlet.pageId}' title='#i18n{document.manage_portlet_publishing.labelAdminSiteAccess}' hideTitle=['xs','sm','md'] buttonIcon='globe' size='sm' />
-			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{document.manage_documents.pageTitle}' hideTitle=['xs','sm','md'] buttonIcon='folder' size='sm' />
+			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{document.manage_portlet_publishing.columnManageDocumentAccess}' hideTitle=['xs','sm','md'] buttonIcon='folder' size='sm' />
 		</@pageHeader>
-		<@blockquote>
-			<@p class='fw-bold'>${portlet.id} - ${portlet.name}</@p>
-		</@blockquote>
-		<@h level=3>#i18n{document.manage_portlet_publishing.labelModePublication}</@h>
-		<@tform name='formModifyModePublication' method='post' action='jsp/admin/plugins/document/DoConfirmChangeModePublication.jsp' enctype='multipart/form-data'>
-			<@input type='hidden' name='id_portlet' value='${portlet.id}' />
-			<@input type='hidden' name='old_mode_publication' value='${mode_publication}' />
-			<@btnGroup>
-				<#if mode_publication = 0>
-					<#assign buttonClass = 'active' />
-				<#else>
-					<#assign buttonClass = '' />
-				</#if>
-				<@button type='submit' value='0' name='mode_publication' id='standard_publication' class=buttonClass buttonIcon='check' title='#i18n{document.manage_portlet_publishing.radioStandardPublication}' />
-				
-				<#if mode_publication = 1>
-					<#assign buttonClass = 'active' />
-				<#else>
-					<#assign buttonClass = '' />
-				</#if>
-				<@button type='submit' value='1' name='mode_publication' id='auto_publication' class=buttonClass buttonIcon='cog' title='#i18n{document.manage_portlet_publishing.radioAutoPublication}' />
-			</@btnGroup>
-		</@tform>  
-		<br>                
-		<#if portlet.status = 0>
-			<@alert color='success'>
-				<@icon style='check' />
-				<strong>#i18n{document.manage_portlet_publishing.columnTitleState} #i18n{portal.util.labelEnabled} / #i18n{document.manage_portlet_publishing.labelStatusPublished}</strong>
-				<@p>#i18n{document.manage_portlet_publishing.columnTitlePage} <@tag>${portlet.pageId}</@tag></@p>
-			</@alert>
-		<#else>
-			<@alert color='danger'>
-				<@icon style='ban' /> 
-				<strong>#i18n{document.manage_portlet_publishing.columnTitleState} #i18n{portal.util.labelDisabled} #i18n{document.manage_portlet_publishing.labelStatusUnPublished}</strong>
-				<@p>#i18n{document.manage_portlet_publishing.columnTitlePage} <@tag>${portlet.pageId}</@tag></@p>
-			</@alert>
-		</#if>
-		<hr/>
+		<@row>
+			<@columns md=3>
+			<@box>
+				<@boxBody>
+					<@h level=3>#i18n{document.manage_portlet_publishing.labelModePublication}</@h>
+					<@tform name='formModifyModePublication' method='post' action='jsp/admin/plugins/document/DoConfirmChangeModePublication.jsp' enctype='multipart/form-data'>
+						<@input type='hidden' name='id_portlet' value='${portlet.id}' />
+						<@input type='hidden' name='old_mode_publication' value='${mode_publication}' />
+						<@btnGroup>
+							<#if mode_publication = 0>
+								<#assign buttonClass = 'active' />
+							<#else>
+								<#assign buttonClass = '' />
+							</#if>
+							<@button type='submit' value='0' name='mode_publication' id='standard_publication' class=buttonClass buttonIcon='check' title='#i18n{document.manage_portlet_publishing.radioStandardPublication}' />
+							<#if mode_publication = 1>
+								<#assign buttonClass = 'active' />
+							<#else>
+								<#assign buttonClass = '' />
+							</#if>
+							<@button type='submit' value='1' name='mode_publication' id='auto_publication' class=buttonClass buttonIcon='cog' title='#i18n{document.manage_portlet_publishing.radioAutoPublication}' />
+						</@btnGroup>
+					</@tform>  
+					<#if portlet.status = 0>
+						<@alert color='success mt-3'>
+							<@icon style='check' />
+							<strong>#i18n{document.manage_portlet_publishing.columnTitleState} #i18n{portal.util.labelEnabled} / #i18n{document.manage_portlet_publishing.labelStatusPublished}</strong>
+						</@alert>
+					<#else>
+						<@alert color='danger'>
+							<@icon style='ban' /> 
+							<strong>#i18n{document.manage_portlet_publishing.columnTitleState} #i18n{portal.util.labelDisabled} #i18n{document.manage_portlet_publishing.labelStatusUnPublished}</strong>
+							<@p></@p>
+						</@alert>
+					</#if>
+				</@boxBody>
+			</@box>
+		</@columns>
+		<@columns md=9>
 		<#if mode_publication = 0>
 			<@row>
 				<@columns lg=6>
-					<@h level=3>#i18n{document.manage_portlet_publishing.labelPublishedDocumentsList}</@h>
-					${published_document_list}
+					<@box title='#i18n{document.manage_portlet_publishing.labelPublishedDocuments}'>
+						<@boxBody>
+							${published_document_list}
+						</@boxBody>
+					</@box>
 				</@columns>
 				<@columns lg=6>
-					<@h level=3>#i18n{document.manage_portlet_publishing.labelAssignedDocumentsList}</@h>
-					${assigned_document_list} 
-				</@columns>								
+					<@box title='#i18n{document.manage_portlet_publishing.labelAssignedDocuments}'>
+						<@boxBody>
+							${assigned_document_list} 
+						</@boxBody>								
+					</@box>								
+				</@columns>
 			</@row>								
 		<#else>
 			<@h level=3>
@@ -85,6 +92,8 @@
 				</@tbody>
 			</@table>
 		</#if>
+		</@columns>
+	</@row>
 	</@pageColumn>
 </@pageContainer>
 <script>
