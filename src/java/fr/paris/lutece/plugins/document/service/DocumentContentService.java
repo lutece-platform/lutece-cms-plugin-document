@@ -83,8 +83,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
 import javax.cache.event.CacheEntryEvent;
@@ -152,9 +150,6 @@ public class DocumentContentService extends ContentService
     private static final String TARGET_TOP = "target=_top";
     private static final String PROPERTY_RESOURCE_TYPE = "document";
 
-    // Performance patch
-    private static ConcurrentMap<String, String> _keyMemory = new ConcurrentHashMap<String, String>(  );
-
     //Portlet cache
     //Should be equal to PortletCacheService.CACHE_PORTLET_PREFIX without the final semicolon
     private static final String PARAMETER_PORTLET = "portlet";
@@ -194,20 +189,6 @@ public class DocumentContentService extends ContentService
         if ( strCache.equalsIgnoreCase( "true" ) )
         {
             _cache.enableCache( true );
-            
-            // Register listener avec Factory pattern comme PageCacheService
-            Factory<CacheEntryListener<String, String>> factory = 
-                new DocumentContentCacheEntryListenerFactory();
-            
-            MutableCacheEntryListenerConfiguration<String, String> listenerConfig =
-                new MutableCacheEntryListenerConfiguration<>(
-                    factory,
-                    null,
-                    false,
-                    false
-                );
-
-            _cache.registerCacheEntryListener(listenerConfig);
         }
         else
         {
@@ -253,34 +234,18 @@ public class DocumentContentService extends ContentService
 
         if ( strPage == null )
         {
-            // only one thread can evaluate the page
-            synchronized ( strKey )
+            AppLogService.debug( " -- Page generation " + strKey + " : doc=" + strDocumentId + " portletid=" +
+                    strPortletId + "site_locale=" + strSiteLocale + "nMode=" + nMode );
+            strPage = buildPage( request, strDocumentId, strPortletId, strSiteLocale, nMode );
+
+            if ( IntegerUtils.isNumeric( strDocumentId ) )
             {
-                // can be useful if an other thread had evaluate the page
-                strPage = (String) _cache.get( strKey );
+                int nDocumentId = IntegerUtils.convert( strDocumentId );
+                Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-                // ignore CheckStyle, this double verification is useful when page cache has been created when thread is
-                // blocked on synchronized
-                if ( strPage == null )
+                if ( ( document != null ) )
                 {
-                    AppLogService.debug( " -- Page generation " + strKey + " : doc=" + strDocumentId + " portletid=" +
-                        strPortletId + "site_locale=" + strSiteLocale + "nMode=" + nMode );
-                    strPage = buildPage( request, strDocumentId, strPortletId, strSiteLocale, nMode );
-
-                    if ( IntegerUtils.isNumeric( strDocumentId ) )
-                    {
-                        int nDocumentId = IntegerUtils.convert( strDocumentId );
-                        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
-
-                        if ( ( document != null ) )
-                        {
-                        	_cache.put( strKey, strPage );
-                        }
-                    }
-                }
-                else
-                {
-                    AppLogService.debug( "Page read from cache after synchronisation " + strKey );
+                    _cache.put( strKey, strPage );
                 }
             }
         }
@@ -590,8 +555,7 @@ public class DocumentContentService extends ContentService
                     htParamRequest.put( PARAMETER_PORTLET, String.valueOf( portlet.getId(  ) ) );
 
                     //Add [documentContentService] to not clash with PageService keys because we don't synchronize
-                    String strKey = getKey( _cksPortlet.getKey( htParamRequest, nMode, user ) +
-                            PORTLET_CACHE_KEY_SUFFIX );
+                    String strKey =_cksPortlet.getKey( htParamRequest, nMode, user ) + PORTLET_CACHE_KEY_SUFFIX;
 
                     // get portlet from cache
                     String strPortlet = (String) _cachePortlets.get( strKey );
@@ -698,49 +662,18 @@ public class DocumentContentService extends ContentService
     }
 
     /**
-     * Build the Cache HashMap key for pages Goal is to be able to have a
-     * synchronized on the key but a synchronize only work with strict
-     * reference. So we manage an hashmap of string reference for cache keys to
-     * be able to get them back.
+     * Build the Cache key for pages
      *
      * @param strDocumentId The id of the document
      * @param strPortletId The id of the portlet of the document
      * @param strSiteLocale The site locale
      * @param nMode The mode
-     * @return The HashMap key for articles pages as a String.
+     * @return The key for articles pages as a String.
      */
     private String getKey( String strDocumentId, String strPortletId, String strSiteLocale, int nMode )
     {
-        String key = "D" + strDocumentId + "P" + strPortletId + "L" + strSiteLocale + "M" + nMode;
-        String keyInMemory = _keyMemory.putIfAbsent( key, key );
-
-        if ( keyInMemory != null )
-        {
-            return keyInMemory;
-        }
-
-        return key;
+        return "D" + strDocumentId + "P" + strPortletId + "L" + strSiteLocale + "M" + nMode;
     }
-
-    /**
-     * Same as above, for portlet keys. Use the same hashmap because they don't collide
-     * @param strDocumentId The id of the document
-     * @return The HashMap key for portlet as a String.
-     */
-    private String getKey( String strPortletKey )
-    {
-        String keyInMemory = _keyMemory.putIfAbsent( strPortletKey, strPortletKey );
-
-        if ( keyInMemory != null )
-        {
-            return keyInMemory;
-        }
-
-        return strPortletKey;
-    }
-
-
-
 
     /**
      * Remove a document from the cache
@@ -760,44 +693,6 @@ public class DocumentContentService extends ContentService
             _cache.remove( strKey );
         }
     }
-    
-	private static class DocumentContentCacheEntryListener<K, V> implements CacheEntryRemovedListener<K, V>, CacheEntryExpiredListener<K, V>, Serializable
-	{
-
-		@Override
-		public void onExpired( Iterable < CacheEntryEvent < ? extends K, ? extends V > > events )
-				throws CacheEntryListenerException
-		{
-			for (CacheEntryEvent<? extends K, ? extends V> event : events)
-	        {
-				_keyMemory.remove( (String) event.getKey( ) );
-	        }
-		}
-
-		@Override
-		public void onRemoved( Iterable < CacheEntryEvent < ? extends K, ? extends V > > events )
-				throws CacheEntryListenerException
-		{
-			for ( CacheEntryEvent<? extends K, ? extends V> event : events )
-            {
-                _keyMemory.remove( (String) event.getKey( ) );
-            }
-		}
-		
-	}
-	
-	
-	private static class DocumentContentCacheEntryListenerFactory implements Factory < CacheEntryListener < String, String > >
-	{
-
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public CacheEntryListener < String, String > create( )
-		{
-			return new DocumentContentCacheEntryListener <>( );
-		}
-	}
 	
 	public void loachInit( )
 	{
