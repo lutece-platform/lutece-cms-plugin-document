@@ -1,15 +1,15 @@
 <@pageContainer>
     <@pageColumn> 
-        <@pageHeader title='#i18n{document.manage_document_publishing.labelManagePortlet} - ${portlet.name} - #i18n{document.manage_portlet_publishing.columnTitlePage} : ${portlet.pageId}'>
-			<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${portlet.pageId}' title='#i18n{document.manage_portlet_publishing.labelAdminSiteAccess}' hideTitle=['xs','sm','md'] buttonIcon='globe' size='sm' />
-			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{document.manage_portlet_publishing.columnManageDocumentAccess}' hideTitle=['xs','sm','md'] buttonIcon='folder' size='sm' />
+        <@pageHeader class='col-md-6 col-lg-6' title='#i18n{document.manage_document_publishing.labelManagePortlet} - ${portlet.name} - #i18n{document.manage_portlet_publishing.columnTitlePage} ${portlet.pageId}'>
+			<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${portlet.pageId}' title='#i18n{document.manage_portlet_publishing.labelAdminSiteAccess}' hideTitle=['xs','sm','md'] buttonIcon='globe' />
+			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{document.manage_portlet_publishing.columnManageDocumentAccess}' hideTitle=['xs','sm','md'] buttonIcon='folder' />
 		</@pageHeader>
 		<@row>
 			<@columns md=3>
 			<@box>
 				<@boxBody>
 					<@h level=3>#i18n{document.manage_portlet_publishing.labelModePublication}</@h>
-					<@tform name='formModifyModePublication' method='post' action='jsp/admin/plugins/document/DoConfirmChangeModePublication.jsp' enctype='multipart/form-data'>
+					<@tform name='formModifyModePublication' method='post' class='mb-3' action='jsp/admin/plugins/document/DoConfirmChangeModePublication.jsp' enctype='multipart/form-data'>
 						<@input type='hidden' name='id_portlet' value='${portlet.id}' />
 						<@input type='hidden' name='old_mode_publication' value='${mode_publication}' />
 						<@btnGroup>
@@ -28,16 +28,9 @@
 						</@btnGroup>
 					</@tform>  
 					<#if portlet.status = 0>
-						<@alert color='success mt-3'>
-							<@icon style='check' />
-							<strong>#i18n{document.manage_portlet_publishing.columnTitleState} #i18n{portal.util.labelEnabled} / #i18n{document.manage_portlet_publishing.labelStatusPublished}</strong>
-						</@alert>
+						<@alert color='success'><@icon style='check' /><strong>#i18n{document.manage_portlet_publishing.columnTitleState} #i18n{document.manage_portlet_publishing.labelStatusPublished}</strong></@alert>
 					<#else>
-						<@alert color='danger'>
-							<@icon style='ban' /> 
-							<strong>#i18n{document.manage_portlet_publishing.columnTitleState} #i18n{portal.util.labelDisabled} #i18n{document.manage_portlet_publishing.labelStatusUnPublished}</strong>
-							<@p></@p>
-						</@alert>
+						<@alert color='danger'><@icon style='ban' /><strong>#i18n{document.manage_portlet_publishing.columnTitleState}  #i18n{document.manage_portlet_publishing.labelStatusUnPublished}</strong></@alert>
 					</#if>
 				</@boxBody>
 			</@box>
@@ -46,17 +39,13 @@
 		<#if mode_publication = 0>
 			<@row>
 				<@columns lg=6>
-					<@box title='#i18n{document.manage_portlet_publishing.labelPublishedDocuments}'>
-						<@boxBody>
-							${published_document_list}
-						</@boxBody>
+					<@box title='#i18n{document.manage_portlet_publishing.labelPublishedDocumentsList}'>
+					${published_document_list}
 					</@box>
 				</@columns>
 				<@columns lg=6>
-					<@box title='#i18n{document.manage_portlet_publishing.labelAssignedDocuments}'>
-						<@boxBody>
-							${assigned_document_list} 
-						</@boxBody>								
+					<@box title='#i18n{document.manage_portlet_publishing.labelAssignedDocumentsList}'>
+					${assigned_document_list} 
 					</@box>								
 				</@columns>
 			</@row>								
@@ -67,7 +56,7 @@
 					<@input type='hidden' name='id_portlet' value='${portlet.id}' />
 					<@input type='hidden' name='mode_publication' value='1' />
 					<@div align='right'>
-						<@button type='submit' title='#i18n{document.manage_portlet_publishing.buttonAddAutoPublication}' hideTitle=['xs','sm','md'] buttonIcon='plus-circle' size='sm' />
+						<@button type='submit' title='#i18n{document.manage_portlet_publishing.buttonAddAutoPublication}' hideTitle=['xs','sm','md'] buttonIcon='plus'  />
 					</@div>
 				</@tform>
 			</@h>
@@ -85,7 +74,7 @@
 						<@td>${auto_publication.space_name}</@td>
 						<@td>${auto_publication.number_auto_published_documents}</@td>
 						<@td>
-							<@aButton href='jsp/admin/plugins/document/DeleteAutoPublication.jsp?id_portlet=${auto_publication.document_auto_publication.idPortlet}&id_space=${auto_publication.document_auto_publication.idSpace}&mode_publication=1' buttonIcon='trash' color='danger' size='sm' />
+							<@aButton href='jsp/admin/plugins/document/DeleteAutoPublication.jsp?id_portlet=${auto_publication.document_auto_publication.idPortlet}&id_space=${auto_publication.document_auto_publication.idSpace}&mode_publication=1' buttonIcon='trash' color='danger' />
 						</@td>
 					</@tr>
 				</#list>
