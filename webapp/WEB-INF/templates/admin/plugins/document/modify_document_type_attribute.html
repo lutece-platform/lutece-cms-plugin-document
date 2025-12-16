@@ -51,15 +51,15 @@
 					</@boxHeader>
 					<@boxBody>	
 						<@table>
-							<@thead>
+							<@tableHead>
 								<@tr>
 									<@th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowTitle}</@th>
 									<@th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowInformationMessage}</@th>
 									<@th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowValidExemple}</@th>
 									<@th>#i18n{document.modify_document_type_attribute.manageRegularExpression.rowAction}</@th>
 								</@tr>
-							</@thead>
-							<@tbody>
+							</@tableHead>
+							<@tableBody>
 								<#list regular_expression_added_list as regular_expression>
 								<@tr>
 									<@td>${regular_expression.title}</@td>
@@ -74,7 +74,7 @@
 									</@td>
 								</@tr>
 								</#list>
-							</@tbody>
+							</@tableBody>
 						</@table>
 					</@boxBody>
 				</@box>

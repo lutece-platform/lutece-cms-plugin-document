@@ -61,14 +61,14 @@
 				</@tform>
 			</@h>
 			<@table>
-				<@thead>
+				<@tableHead>
 					<@tr>
 						<@th>#i18n{document.manage_portlet_publishing.colSpaceName}</@th>
 						<@th>#i18n{document.manage_portlet_publishing.colNumPublishedDocuments}</@th>
 						<@th>#i18n{document.manage_portlet_publishing.colActions}</@th>
 					</@tr>
-				</@thead>
-				<@tbody>
+				</@tableHead>
+				<@tableBody>
 				<#list list_auto_publication as auto_publication >
 					<@tr>
 						<@td>${auto_publication.space_name}</@td>
@@ -78,7 +78,7 @@
 						</@td>
 					</@tr>
 				</#list>
-				</@tbody>
+				</@tableBody>
 			</@table>
 		</#if>
 		</@columns>
