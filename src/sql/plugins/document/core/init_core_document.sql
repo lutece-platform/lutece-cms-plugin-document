@@ -5,13 +5,13 @@
 -- Dumping data for table core_admin_right
 --
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url) VALUES 
-('DOCUMENT_TYPES_MANAGEMENT','document.adminFeature.document_types_management.name',1,'jsp/admin/plugins/document/ManageDocumentTypes.jsp','document.adminFeature.document_types_management.description',0,'document','CONTENT','images/admin/skin/plugins/document/manage_document_types.png',NULL);
+('DOCUMENT_TYPES_MANAGEMENT','document.adminFeature.document_types_management.name',1,'jsp/admin/plugins/document/ManageDocumentTypes.jsp','document.adminFeature.document_types_management.description',0,'document','CONTENT','ti ti-file-info',NULL);
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url) VALUES 
-('DOCUMENT_MANAGEMENT','document.adminFeature.documents_management.name',3,'jsp/admin/plugins/document/ManageDocuments.jsp','document.adminFeature.documents_management.description',0,'document','CONTENT','images/admin/skin/plugins/document/manage_documents.png',NULL);
+('DOCUMENT_MANAGEMENT','document.adminFeature.documents_management.name',3,'jsp/admin/plugins/document/ManageDocuments.jsp','document.adminFeature.documents_management.description',0,'document','CONTENT','ti ti-file-description',NULL);
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url) VALUES 
-('DOCUMENT_RULES_MANAGEMENT','document.adminFeature.rules_management.name',1,'jsp/admin/plugins/document/ManageRules.jsp','document.adminFeature.rules_management.description',0,'document','CONTENT','images/admin/skin/plugins/document/manage_rules.png',NULL);
+('DOCUMENT_RULES_MANAGEMENT','document.adminFeature.rules_management.name',1,'jsp/admin/plugins/document/ManageRules.jsp','document.adminFeature.rules_management.description',0,'document','CONTENT','ti ti-reorder',NULL);
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url) VALUES 
-('DOCUMENT_CATEGORY_MANAGEMENT','document.adminFeature.category_management.name',1,'jsp/admin/plugins/document/ManageCategory.jsp','document.adminFeature.category_management.description',0,'document','CONTENT','images/admin/skin/plugins/document/manage_category.png',NULL);
+('DOCUMENT_CATEGORY_MANAGEMENT','document.adminFeature.category_management.name',1,'jsp/admin/plugins/document/ManageCategory.jsp','document.adminFeature.category_management.description',0,'document','CONTENT','ti ti-bookmarks',NULL);
 
 --
 -- Dumping data for table core_admin_role
@@ -60,7 +60,6 @@ INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home
 ('DOCUMENT_LIST_PORTLET','document.portlet.documentListPortlet.name','plugins/document/CreateDocumentListPortlet.jsp','plugins/document/ModifyDocumentListPortlet.jsp','fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome','document','plugins/document/DoCreateDocumentListPortlet.jsp','/admin/portlet/script_create_portlet.html','/admin/plugins/document/portlet/document_list_portlet_type.html','','plugins/document/DoModifyDocumentListPortlet.jsp','/admin/portlet/script_modify_portlet.html','/admin/plugins/document/portlet/document_list_portlet_type.html','');
 INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home_class,plugin_name,url_docreate,create_script,create_specific,create_specific_form,url_domodify,modify_script,modify_specific,modify_specific_form) VALUES 
 ('DOCUMENT_PORTLET','document.portlet.documentPortlet.name','plugins/document/CreateDocumentPortlet.jsp','plugins/document/ModifyDocumentPortlet.jsp','fr.paris.lutece.plugins.document.business.portlet.DocumentPortletHome','document','plugins/document/DoCreateDocumentPortlet.jsp','/admin/portlet/script_create_portlet.html','/admin/plugins/document/portlet/document_portlet_type.html','','plugins/document/DoModifyDocumentPortlet.jsp','/admin/portlet/script_modify_portlet.html','/admin/plugins/document/portlet/document_portlet_type.html','');
-
 
 --
 -- Dumping data for table `core_style`
