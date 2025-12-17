@@ -108,18 +108,18 @@ INSERT INTO document_space_document_type (id_space,code_document_type) VALUES (1
 --
 -- Dumping data for table document_space_icon
 --
-INSERT INTO document_space_icon VALUES (1, 'folder-root');
-INSERT INTO document_space_icon VALUES (2, 'folder');
-INSERT INTO document_space_icon VALUES (3, 'folder-down');
-INSERT INTO document_space_icon VALUES (4, 'folder');
-INSERT INTO document_space_icon VALUES (5, 'folder');
-INSERT INTO document_space_icon VALUES (6, 'folder');
-INSERT INTO document_space_icon VALUES (7, 'folder');
-INSERT INTO document_space_icon VALUES (8, 'folder');
-INSERT INTO document_space_icon VALUES (9, 'folder-x');
-INSERT INTO document_space_icon VALUES (10, 'folder-cog');
-INSERT INTO document_space_icon VALUES (11, 'folder-check');
-INSERT INTO document_space_icon VALUES (12, 'folder-bolt');
+INSERT INTO document_space_icon VALUES (1, 'themes\\shared\\plugins\\document\\images\\spaces\\folder.svg');
+INSERT INTO document_space_icon VALUES (2, 'themes\\shared\\plugins\\document\\images\\spaces\\folder-down.svg');
+INSERT INTO document_space_icon VALUES (3, 'themes\\shared\\plugins\\document\\images\\spaces\\folder-x.svg');
+INSERT INTO document_space_icon VALUES (4, 'themes\\shared\\plugins\\document\\images\\spaces\\folder-cog.svg');
+INSERT INTO document_space_icon VALUES (5, 'themes\\shared\\plugins\\document\\images\\spaces\\folder-check.svg');
+INSERT INTO document_space_icon VALUES (6, 'themes\\shared\\plugins\\document\\images\\spaces\\folder-bolt.svg');
+INSERT INTO document_space_icon VALUES (7, 'themes\\shared\\plugins\\document\\images\\spaces\\folder-root.svg');
+INSERT INTO document_space_icon VALUES (8, 'themes\\shared\\plugins\\document\\images\\spaces\\folder-photo.svg');
+INSERT INTO document_space_icon VALUES (9, 'themes\\shared\\plugins\\document\\images\\spaces\\folder-star.svg');
+INSERT INTO document_space_icon VALUES (10, 'themes\\shared\\plugins\\document\\images\\spaces\\folder-exclamation.svg');
+INSERT INTO document_space_icon VALUES (11, 'themes\\shared\\plugins\\document\\images\\spaces\\folder-heart.svg');
+INSERT INTO document_space_icon VALUES (12, 'themes\\shared\\plugins\\document\\images\\spaces\\folder-photo-up.svg');
 
 --
 -- Dumping data for table document_type

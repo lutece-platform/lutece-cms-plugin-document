@@ -152,21 +152,9 @@
 									<@manageFeatureItemColumn>
 										<@checkBox id='document_selection' orientation='switch' name='document_selection' value='${document.id}' /> 
 										<@p class='text-truncate fw-bold' params='title="${document.title} - id: ${document.id}"'>
-										<#assign docTitle=document.title />
-										<#assign docTitle>
-										<#list document.actions?sort_by("idAction") as action>
-											<#if action.url?has_content>
-												<#if action.idAction == 2 || action.idAction == 9>
-													<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description} ${document.title}' class='dropdown-item'>
-														${document.title}
-													</@link>
-													<#break>
-												</#if>
-											</#if>
-										</#list>
-										</#assign>
-										${docTitle}
-										</@p>
+										<#assign docTitle=''/>
+										<#assign docTitle><#list document.actions?sort_by("idAction") as action><#if action.url?has_content><#if action.idAction == 2 || action.idAction == 9><@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description} ${document.title}' class='dropdown-item'>${document.title}</@link><#break></#if></#if></#list></#assign>
+										<#if docTitle?trim !=''>${docTitle}<#else></#if>${document.title}</@p>
 									</@manageFeatureItemColumn>
 									<#if document.comment != ''><@manageFeatureItemColumn auto=true><@alert color='info'><@icon style='info-circle' /> ${document.comment}</@alert></@manageFeatureItemColumn></#if>
 									<@manageFeatureItemColumn auto=true>
