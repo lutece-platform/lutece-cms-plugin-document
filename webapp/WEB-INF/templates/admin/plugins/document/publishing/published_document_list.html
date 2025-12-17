@@ -1,33 +1,32 @@
 <#if status == status_published>
-<@tr>
-	<@td><@img url=page_template_picture alt='' /></@td>            
-	<@td>${document_published.title}</@td>
-	<@td>
+<@manageFeatureItem>
+	<@manageFeatureItemColumn>
+		<@img url=page_template_picture alt='' /> ${document_published.title}
+	</@manageFeatureItemColumn>            
+	<@manageFeatureItemColumn auto=true align='around'>
 		<@tform type='inline' method='post' name='modifyOrderDocument' action='jsp/admin/plugins/document/DoModifyDocumentOrder.jsp'>
 			<@input type='hidden' name='id_document' value='${document_published.id}' />
 			<@input type='hidden' name='id_portlet' value='${portlet_id}' />
-			<@formGroup formStyle='inline'>
+			<@formGroup formStyle=''>
 				<@inputGroup>
-					<@select name='document_order' default_value='${document_order}' size='xs' items=document_order_list />
-					<@button type='submit' title='#i18n{document.published_document_list.labelChangeOrder}' hideTitle=['all'] buttonIcon='arrows-down-up' size='sm' />
+					<@select name='document_order' default_value='${document_order}' items=document_order_list />
+					<@button type='submit' title='#i18n{document.published_document_list.labelChangeOrder}' hideTitle=['all'] buttonIcon='arrows-down-up' />
 				</@inputGroup>
 			</@formGroup>
 		</@tform>
-	</@td>
-	<@td>
 		<@tform method='post' name='unpublishDocument' action='jsp/admin/plugins/document/DoUnPublishingDocument.jsp'>
 			<@input type='hidden' name='id_document' value='${document_published.id}' />
 			<@input type='hidden' name='id_portlet' value='${portlet_id}' />
-			<@button type='submit' title='#i18n{document.published_document_list.buttonUnPublish}' hideTitle=['all'] buttonIcon='stop' color='warning' size='sm' />
+			<@button type='submit' title='#i18n{document.published_document_list.buttonUnPublish}' hideTitle=['all'] buttonIcon='stop' color='warning' />
 		</@tform>
 		<@tform method='post' name='previewDocument' action='jsp/admin/plugins/document/PreviewDocument.jsp'>
 			<@input type='hidden' name='id_document' value='${document_published.id}' />
-			<@button type='submit' title='#i18n{document.published_document_list.labelPreview}' hideTitle=['all'] buttonIcon='eye' size='sm' />
+			<@button type='submit' title='#i18n{document.published_document_list.labelPreview}' hideTitle=['all'] buttonIcon='eye'  />
 		</@tform>
 		<@tform method='post' name='manageDocument' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
 			<@input type='hidden' name='id_space_filter' value='${document_published.spaceId}' />
-			<@button type='submit' title='#i18n{document.published_document_list.labelManageDocument}' hideTitle=['all'] buttonIcon='folder-open' size='sm' />
+			<@button type='submit' title='#i18n{document.published_document_list.labelManageDocument}' hideTitle=['all'] buttonIcon='folder-open' />
 		</@tform>
-	</@td>
-</@tr>
+	</@manageFeatureItemColumn>
+</@manageFeatureItem>
 </#if>
