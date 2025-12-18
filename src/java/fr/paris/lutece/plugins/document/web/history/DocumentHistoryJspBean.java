@@ -46,9 +46,8 @@ import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -60,7 +59,7 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-@SessionScoped
+@RequestScoped
 @Named
 public class DocumentHistoryJspBean extends PluginAdminPageJspBean
 {

@@ -135,7 +135,7 @@ public class MoveSpaceRule extends AbstractRule implements Serializable
         }
         catch ( Exception e )
         {
-            AppLogService.error( "Error in MoveSpaceRule event : " + e.getMessage(  ), e );
+            AppLogService.error( "Error in MoveSpaceRule event : {}", e.getMessage(  ), e );
             throw new DocumentException( PROPERTY_RULE_UNKNOWN_ERROR );
         }
     }

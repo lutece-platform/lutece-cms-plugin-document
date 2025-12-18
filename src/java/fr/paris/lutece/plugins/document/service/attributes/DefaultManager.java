@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.servlet.http.HttpServletRequest;
 
 
@@ -322,8 +323,9 @@ public abstract class DefaultManager implements AttributeManager
     @Override
     public String validateValue( int nAttributeId, String strValue, Locale locale )
     {
+    	RegularExpressionService regularExpressionService = CDI.current( ).select( RegularExpressionService.class ).get( );
         // Regular expression validation
-        if ( RegularExpressionService.getInstance(  ).isAvailable(  ) && ( strValue != null ) &&
+        if ( regularExpressionService.isAvailable(  ) && ( strValue != null ) &&
                 !strValue.equals( "" ) )
         {
             Collection<Integer> colRegularExpression = DocumentAttributeHome.getListRegularExpressionKeyByIdAttribute( nAttributeId );
@@ -332,10 +334,9 @@ public abstract class DefaultManager implements AttributeManager
             {
                 for ( Integer nExpressionId : colRegularExpression )
                 {
-                    RegularExpression regularExpression = RegularExpressionService.getInstance(  )
-                                                                                  .getRegularExpressionByKey( nExpressionId );
+                    RegularExpression regularExpression = regularExpressionService.getRegularExpressionByKey( nExpressionId );
 
-                    if ( !RegularExpressionService.getInstance(  ).isMatches( strValue, regularExpression ) )
+                    if ( !regularExpressionService.isMatches( strValue, regularExpression ) )
                     {
                         return regularExpression.getErrorMessage(  );
                     }

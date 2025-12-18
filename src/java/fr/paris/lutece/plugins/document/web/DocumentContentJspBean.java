@@ -44,12 +44,9 @@ import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
+import jakarta.enterprise.context.RequestScoped;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,7 +55,7 @@ import jakarta.servlet.http.HttpServletRequest;
 /**
  * Document Content JspBean
  */
-@SessionScoped
+@RequestScoped
 @Named
 public class DocumentContentJspBean implements java.io.Serializable
 {

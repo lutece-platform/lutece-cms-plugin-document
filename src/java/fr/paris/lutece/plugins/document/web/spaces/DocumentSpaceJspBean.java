@@ -58,13 +58,13 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,10 +73,8 @@ import jakarta.servlet.http.HttpServletRequest;
 /**
  * JSP Bean for spaces management
  */
-import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Named;
 
-@SessionScoped
+@RequestScoped
 @Named
 public class DocumentSpaceJspBean extends PluginAdminPageJspBean
 {
@@ -131,7 +129,7 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
     private DocumentSpacesService _documentSpacesService;
 	
     @Inject
-    Models _model;
+    private Models _model;
 	    
     /**
      * Gets the create space page

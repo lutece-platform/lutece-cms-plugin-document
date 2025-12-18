@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.web.category;
 
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
 import fr.paris.lutece.plugins.document.business.category.Category;
@@ -70,7 +70,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * This class provides the user interface to manage Lutece group features (
  * manage, create, modify, remove )
  */
-@SessionScoped
+@RequestScoped
 @Named
 public class CategoryJspBean extends AdminFeaturesPageJspBean
 {

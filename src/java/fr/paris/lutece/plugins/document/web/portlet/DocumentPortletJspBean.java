@@ -49,6 +49,8 @@ import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -62,10 +64,8 @@ import jakarta.servlet.http.HttpServletRequest;
 /**
  * This class provides the user interface to manage Document Portlet
  */
-import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Named;
 
-@SessionScoped
+@RequestScoped
 @Named
 public class DocumentPortletJspBean extends PortletJspBean
 {
