@@ -33,11 +33,16 @@
  */
 package fr.paris.lutece.plugins.document.business;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Document Resource (such as binary resources)
  */
-public class DocumentResource
+public class DocumentResource implements Serializable
 {
+    @Serial
+    private static final long serialVersionUID = 1L;
     // Variables declarations
     private byte [ ] _strContent;
     private String _strContentType;

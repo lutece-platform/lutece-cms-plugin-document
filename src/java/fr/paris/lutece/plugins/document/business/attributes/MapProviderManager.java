@@ -44,11 +44,10 @@ import java.util.List;
 /**
  *
  * MapProviderManager : manages all map providers register. <br />
- * Map providers are registered through {@link SpringContextService#getBeansOfType}. Such providers implement {@link IMapProvider} and need to be declared in a
- * spring context file.
+ * Map providers are discovered and injected using Jakarta CDI. Such providers implement {@link IMapProvider} and must be declared as CDI beans
+ * (e.g. using {@code @ApplicationScoped}, {@code @Dependent}, etc.).
  * 
  * @see IMapProvider
- * @see SpringContextService#getBeansOfType
  *
  */
 public final class MapProviderManager
@@ -84,7 +83,7 @@ public final class MapProviderManager
             }
         }
 
-        AppLogService.info( MapProviderManager.class.getName( ) + " : No map provider found for key " + strKey );
+        AppLogService.info( "{} : No map provider found for key {}", MapProviderManager.class.getName( ), strKey );
 
         return null;
     }

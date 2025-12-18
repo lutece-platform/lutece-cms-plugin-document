@@ -208,7 +208,7 @@ public class NotifyUsersRule extends AbstractRule implements Serializable
         }
         catch ( Exception e )
         {
-            AppLogService.error( "Error in NotifyUserRule event : " + e.getMessage(  ), e );
+            AppLogService.error( "Error in NotifyUserRule event : {}", e.getMessage(  ), e );
         }
     }
 

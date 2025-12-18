@@ -35,13 +35,18 @@ package fr.paris.lutece.plugins.document.business.attributes;
 
 import fr.paris.lutece.util.ReferenceItem;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  *
  * MapProvider
  *
  */
-public class MapProvider implements IMapProvider
+public class MapProvider implements IMapProvider, Serializable
 {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private String _strKey;
     private String _strDisplayedName;
     private String _strHtmlCode;

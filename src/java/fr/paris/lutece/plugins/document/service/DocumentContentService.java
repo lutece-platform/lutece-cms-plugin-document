@@ -234,8 +234,8 @@ public class DocumentContentService extends ContentService
 
         if ( strPage == null )
         {
-            AppLogService.debug( " -- Page generation " + strKey + " : doc=" + strDocumentId + " portletid=" +
-                    strPortletId + "site_locale=" + strSiteLocale + "nMode=" + nMode );
+            AppLogService.debug( " -- Page generation {} : doc={} portletid={} site_locale={} nMode={}",
+                    strKey, strDocumentId, strPortletId, strSiteLocale, nMode );
             strPage = buildPage( request, strDocumentId, strPortletId, strSiteLocale, nMode );
 
             if ( IntegerUtils.isNumeric( strDocumentId ) )
@@ -251,7 +251,7 @@ public class DocumentContentService extends ContentService
         }
         else
         {
-            AppLogService.debug( "Page read from cache " + strKey );
+            AppLogService.debug( "Page read from cache {}", strKey );
         }
 
         return strPage;

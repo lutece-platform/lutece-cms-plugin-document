@@ -62,7 +62,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
@@ -70,7 +70,7 @@ import jakarta.servlet.http.HttpServletRequest;
 /**
  * AdvancedSearch
  */
-@SessionScoped
+@RequestScoped
 @Named( "document.xpage.advanced_search" )
 @Controller( xpageName = "advanced_search" , pageTitleI18nKey = "document.advanced_search.title" , pagePathI18nKey = "document.advanced_search.title" )
 public class AdvancedSearch implements XPageApplication

@@ -149,7 +149,7 @@ public class DocumentHistoryService
 		}
 		catch( Exception e )
 		{
-			AppLogService.error( "Error in History even : " + e.getMessage( ), e );
+			AppLogService.error( "Error in History event : {}", e.getMessage( ), e );
 		}
 	}
 

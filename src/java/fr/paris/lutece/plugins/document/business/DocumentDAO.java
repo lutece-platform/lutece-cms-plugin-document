@@ -64,7 +64,7 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_SELECT_FROM_SPACE_ID = " SELECT a.id_document, a.title, a.document_summary"
             + " FROM document a WHERE a.id_space = ?  ";
     private static final String SQL_QUERY_INSERT = " INSERT INTO document ( code_document_type, title, date_creation, "
-            + " date_modification, xml_working_content, xml_validated_content, id_space, id_state	, document_summary, document_comment , "
+            + " date_modification, xml_working_content, xml_validated_content, id_space, id_state, document_summary, document_comment, "
             + " date_validity_begin , date_validity_end , xml_metadata , id_creator, "
             + " id_mailinglist, id_page_template_document, skip_portlet, skip_categories ) "
             + " VALUES ( ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ? ) ";

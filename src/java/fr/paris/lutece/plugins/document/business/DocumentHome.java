@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.document.business;
 import fr.paris.lutece.plugins.document.service.docsearch.DocSearchService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.resource.ExtendableResourceRemovalListenerService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.Collection;
@@ -361,6 +362,7 @@ public final class DocumentHome
         }
         catch ( Exception e )
         {
+            AppLogService.error( "Error while retrieving MySQL variable 'max_allowed_packet' : {}", e.getMessage(  ), e );
             // Return null if unable to query
             strMaxPacket = null;
         }
