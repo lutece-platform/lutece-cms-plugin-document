@@ -4,7 +4,7 @@
 			<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${portlet.pageId}' title='#i18n{document.manage_portlet_publishing.labelAdminSiteAccess}' hideTitle=['xs','sm','md'] buttonIcon='globe' />
 			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{document.manage_portlet_publishing.columnManageDocumentAccess}' hideTitle=['xs','sm','md'] buttonIcon='folder' />
 		</@pageHeader>
-		<@row>
+		<@row class='mt-3'>
 			<@columns md=3>
 			<@box>
 				<@boxBody>
@@ -39,14 +39,14 @@
 		<#if mode_publication = 0>
 			<@row>
 				<@columns lg=6>
-					<@box title='#i18n{document.manage_portlet_publishing.labelPublishedDocumentsList}'>
-					${published_document_list}
-					</@box>
-				</@columns>
-				<@columns lg=6>
 					<@box title='#i18n{document.manage_portlet_publishing.labelAssignedDocumentsList}'>
 					${assigned_document_list} 
 					</@box>								
+				</@columns>
+				<@columns lg=6>
+					<@box title='#i18n{document.manage_portlet_publishing.labelPublishedDocumentsList}'>
+					${published_document_list}
+					</@box>
 				</@columns>
 			</@row>								
 		<#else>
