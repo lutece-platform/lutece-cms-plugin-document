@@ -34,9 +34,9 @@ INSERT INTO document_attr_type_parameter (code_attr_type, parameter_name, parame
 --
 -- Dumping data for table document_page_template
 --
-INSERT INTO document_page_template (page_template_path,picture_path,description) VALUES ('/skin/plugins/document/document_content_service.html','images/admin/skin/plugins/document/page_templates/page_template_document0.png','Défaut');
-INSERT INTO document_page_template (page_template_path,picture_path,description) VALUES ('/skin/plugins/document/page_templates/page_template_document1.html','images/admin/skin/plugins/document/page_templates/page_template_document1.png','Pleine page');
-INSERT INTO document_page_template (page_template_path,picture_path,description) VALUES ('/skin/plugins/document/page_templates/page_template_document2.html','images/admin/skin/plugins/document/page_templates/page_template_document2.png','Rubrique en-dessous');
+INSERT INTO document_page_template (page_template_path,picture_path,description) VALUES ('/skin/plugins/document/document_content_service.html','themes/shared/plugins/document/images/page_templates/page_template_document0.png','Défaut');
+INSERT INTO document_page_template (page_template_path,picture_path,description) VALUES ('/skin/plugins/document/page_templates/page_template_document1.html','themes/shared/plugins/document/images/page_templates/page_template_document1.png','Pleine page');
+INSERT INTO document_page_template (page_template_path,picture_path,description) VALUES ('/skin/plugins/document/page_templates/page_template_document2.html','themes/shared/plugins/document/images/page_templates/page_template_document2.png','Rubrique en-dessous');
 
 --
 -- Dumping data for table document_rule
