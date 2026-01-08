@@ -61,10 +61,10 @@
 								<#noescape>${page_template_list}</#noescape>
 							</@formGroup>
 							<@formGroup helpKey='#i18n{document.modify_document.helpSkipPortlet}' rows=2>
-								<@checkBox labelFor='document_skip_portlet' labelKey='#i18n{document.modify_document.labelSkipPortlet}' name='document_skip_portlet' id='document_skip_portlet' checked=document.skipPortlet />
+								<@checkBox orientation='switch' labelFor='document_skip_portlet' labelKey='#i18n{document.modify_document.labelSkipPortlet}' name='document_skip_portlet' id='document_skip_portlet' checked=document.skipPortlet />
 							</@formGroup>
 							<@formGroup helpKey='#i18n{document.modify_document.helpSkipCategories}' rows=2>
-								<@checkBox labelFor='document_skip_categories' labelKey='#i18n{document.modify_document.labelSkipCategories}' name='document_skip_categories' id='document_skip_categories' checked=document.skipCategories />
+								<@checkBox orientation='switch' labelFor='document_skip_categories' labelKey='#i18n{document.modify_document.labelSkipCategories}' name='document_skip_categories' id='document_skip_categories' checked=document.skipCategories />
 							</@formGroup>
 							<@formGroup labelFor='document_comment' labelKey='#i18n{document.create_document.labelDocumentComment}' helpKey='#i18n{document.create_document.helpDocumentComment}' rows=2>
 								<@input type='textarea' type='text' name='document_comment' id='document_comment' rows=2 value=document.comment! />
