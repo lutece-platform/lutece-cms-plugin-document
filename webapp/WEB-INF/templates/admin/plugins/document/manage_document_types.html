@@ -5,16 +5,16 @@
 				<@button type='submit' title='#i18n{document.manage_document_types.buttonCreate}' buttonIcon='plus' hideTitle=['xs','sm'] />
 			</@tform>
 		</@pageHeader>
-		<@listGroup>
+		<@manageFeature>
 		<#list document_types_list?sort_by('name') as type >
-		<@listGroupItem class='d-flex justify-content-between align-items-center'>
-			<@p>${type.name} - ${type.description}</@p>
-			<@p>
+		<@manageFeatureItem>
+			<@manageFeatureItemColumn auto=true>${type.name} - ${type.description}</@manageFeatureItemColumn>
+			<@manageFeatureItemColumn align='end'>
 				<@aButton href='jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.modify_document_type.buttonModify}' buttonIcon='edit'  hideTitle=['all'] />
 				<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.manage_document_types.buttonDelete}' buttonIcon='trash' color='danger' hideTitle=['all'] />
-			</@p>
-		</@listGroupItem>
+			</@manageFeatureItemColumn>
+		</@manageFeatureItem>
 		</#list>
-		</@listGroup>
+		</@manageFeature>
 	</@pageColumn>
 </@pageContainer>

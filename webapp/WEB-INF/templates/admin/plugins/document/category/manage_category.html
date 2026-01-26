@@ -5,21 +5,21 @@
 				<@button type='submit' title='#i18n{document.manage_category.buttonLabelCreate}' buttonIcon='plus' hideTitle=['xs','sm'] />
 			</@tform>
 		</@pageHeader>
-		<@listGroup>
+		<@manageFeature>
 		<#if category_list?has_content >
 			<#list category_list as categoryDisplay>
-			<@listGroupItem class='d-flex justify-content-between align-items-center'>
-				<@p>
-					<#if categoryDisplay.iconUrl??><@img class='img-thumbnail thumbnail-sm' url=categoryDisplay.iconUrl! alt='${(categoryDisplay.category).name}' title='${(categoryDisplay.category).name}' /></#if>
+			<@manageFeatureItem>
+				<@manageFeatureItemColumn auto=true>
+					<#if categoryDisplay.iconUrl??><@img class='img-thumbnail thumbnail-sm me-5' url=categoryDisplay.iconUrl! alt='${(categoryDisplay.category).name}' title='${(categoryDisplay.category).name}' /></#if>
 					${(categoryDisplay.category).name} : ${(categoryDisplay.category).description!} - #i18n{document.manage_category.columnTitleCountLinkedDocuments} : ${categoryDisplay.countLinkedDocuments!}
-				</@p>
-				<@p>
+				</@manageFeatureItemColumn>
+				<@manageFeatureItemColumn align='end'>
 					<@aButton href='jsp/admin/plugins/document/ModifyCategory.jsp?category_id=${(categoryDisplay.category).id}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' hideTitle=['all'] />
 					<@aButton href='jsp/admin/plugins/document/RemoveCategory.jsp?category_id=${(categoryDisplay.category).id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' hideTitle=['all'] />
-				</@p>
-			</@listGroupItem>
+				</@manageFeatureItemColumn>
+			</@manageFeatureItem>
 			</#list>
 		</#if>
-		</@listGroup>
+		</@manageFeature>
 	</@pageColumn>
 </@pageContainer>

@@ -10,13 +10,15 @@
 				</@formGroup>
 			</@tform>
 		</@pageHeader>
-		<@listGroup>
+		<@manageFeature>
 			<#list rules_list as rule >
-				<@listGroupItem class='d-flex justify-content-between align-items-center'>
-					<@p>#i18n{document.manage_rules.columnRule} : ${rule.rule} </@p>
-					<@aButton href='jsp/admin/plugins/document/DeleteRule.jsp?id_rule=${rule.id}' title='#i18n{document.manage_rules.tooltipDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' />
-				</@listGroupItem>
+				<@manageFeatureItem>
+					<@manageFeatureItemColumn>${rule.rule}</@manageFeatureItemColumn>
+					<@manageFeatureItemColumn align='end' auto=true>
+						<@aButton href='jsp/admin/plugins/document/DeleteRule.jsp?id_rule=${rule.id}' title='#i18n{document.manage_rules.tooltipDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' />
+					</@manageFeatureItemColumn>
+				</@manageFeatureItem>
 			</#list>
-		</@listGroup>
+		</@manageFeature>
 	</@pageColumn>
 </@pageContainer>
