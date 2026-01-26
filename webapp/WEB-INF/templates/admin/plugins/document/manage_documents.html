@@ -99,12 +99,6 @@
 			</@columns>
 			<@columns sm=8 xl=9>
 			<#if space?has_content>
-				<#if is_parser_plugin_active?has_content && !is_parser_plugin_active>
-					<@alert color='warning' dismissible=true>
-						<@icon style='alert-triangle' />
-						#i18n{document.manage_documents.parserPluginWarning}
-					</@alert>
-				</#if>
 				<#if documents_list?size = 0>
 					<#if child_spaces_list?size != 0 >
 						<@box>
