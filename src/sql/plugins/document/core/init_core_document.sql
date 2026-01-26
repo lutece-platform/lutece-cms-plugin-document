@@ -28,30 +28,30 @@ INSERT INTO core_admin_role (role_key,role_description) VALUES ('view_space_vali
 --
 -- Dumping data for table core_admin_role_resource
 --
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (87,'view_spaces_multimedia','DOCUMENT_SPACE','5','VIEW');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (86,'view_space_work','DOCUMENT_SPACE','2','VIEW');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (85,'manage_spaces','DOCUMENT_SPACE','*','CREATE');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (84,'manage_spaces','DOCUMENT_SPACE','*','MOVE');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (83,'manage_spaces','DOCUMENT_SPACE','*','MODIFY');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (82,'manage_spaces','DOCUMENT_SPACE','*','DELETE');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (81,'view_spaces_all','DOCUMENT_SPACE','0','VIEW');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (78,'super_admin','DOCUMENT_TYPE','*','*');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (88,'content_contributor','DOCUMENT_TYPE','*','SUBMIT');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (89,'content_contributor','DOCUMENT_TYPE','*','DELETE');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (90,'content_contributor','DOCUMENT_TYPE','*','MODIFY');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (91,'content_contributor','DOCUMENT_TYPE','*','VIEW');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (92,'content_contributor','DOCUMENT_TYPE','*','VIEW_HISTORY');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (93,'content_contributor','DOCUMENT_TYPE','*','CREATE');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (94,'content_validator','DOCUMENT_TYPE','*','VIEW');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (95,'content_validator','DOCUMENT_TYPE','*','VIEW_HISTORY');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (96,'content_validator','DOCUMENT_TYPE','*','VALIDATE');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (97,'content_publisher','DOCUMENT_TYPE','*','ARCHIVE');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (98,'content_publisher','DOCUMENT_TYPE','*','VIEW');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (99,'content_publisher','DOCUMENT_TYPE','*','VIEW_HISTORY');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (100,'content_publisher','DOCUMENT_TYPE','*','PUBLISH');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (102,'view_space_validation','DOCUMENT_SPACE','3','VIEW');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (107,'content_contributor','DOCUMENT_TYPE','*','CHANGE');
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (108,'content_publisher','DOCUMENT_TYPE','*','ASSIGN');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('view_spaces_multimedia','DOCUMENT_SPACE','5','VIEW');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('view_space_work','DOCUMENT_SPACE','2','VIEW');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('manage_spaces','DOCUMENT_SPACE','*','CREATE');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('manage_spaces','DOCUMENT_SPACE','*','MOVE');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('manage_spaces','DOCUMENT_SPACE','*','MODIFY');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('manage_spaces','DOCUMENT_SPACE','*','DELETE');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('view_spaces_all','DOCUMENT_SPACE','0','VIEW');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('super_admin','DOCUMENT_TYPE','*','*');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_contributor','DOCUMENT_TYPE','*','SUBMIT');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_contributor','DOCUMENT_TYPE','*','DELETE');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_contributor','DOCUMENT_TYPE','*','MODIFY');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_contributor','DOCUMENT_TYPE','*','VIEW');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_contributor','DOCUMENT_TYPE','*','VIEW_HISTORY');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_contributor','DOCUMENT_TYPE','*','CREATE');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_validator','DOCUMENT_TYPE','*','VIEW');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_validator','DOCUMENT_TYPE','*','VIEW_HISTORY');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_validator','DOCUMENT_TYPE','*','VALIDATE');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_publisher','DOCUMENT_TYPE','*','ARCHIVE');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_publisher','DOCUMENT_TYPE','*','VIEW');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_publisher','DOCUMENT_TYPE','*','VIEW_HISTORY');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_publisher','DOCUMENT_TYPE','*','PUBLISH');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('view_space_validation','DOCUMENT_SPACE','3','VIEW');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_contributor','DOCUMENT_TYPE','*','CHANGE');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('content_publisher','DOCUMENT_TYPE','*','ASSIGN');
 
 --
 -- Dumping data for table core_portlet_type
