@@ -179,8 +179,8 @@
 							</@manageFeature>
 						</@tform>
 					</#if>
-					<#if view_type = "thumbnail">
-						<@row class='row-cards '>
+					<#if view_type = 'thumbnail'>
+						<@row class='row-cards h-100'>
 						<#list documents_list as document >
 							<@columns sm=6 lg=4 class='document-row' params='data-document="${document.id} ${document.title}"'>
 								<@box id="document_${document.id}" class='card-sm' >
@@ -193,7 +193,7 @@
 											</#list>
 										</@div>
 									</@boxHeader>
-									<@img url=document.thumbnail! class='card-img-top' alt=document.title! title='${document.title} - ${document.type}' />
+									<@img url=document.thumbnail! class='card-img-top object-fit-contain' alt=document.title! title='${document.title} - ${document.type}' params='style="max-height:120px"' />
 									<@boxBody>				
 										<@h level=3 class='card-title'><#if document.title?length gt 18>${document.title?substring(0,18)}...<#else>${document.title}</#if> - ${document.id}</@h>							
 									</@boxBody>
