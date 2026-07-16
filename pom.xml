@@ -39,6 +39,13 @@
             <version>[7.0.10,7.9.9)</version>
             <type>lutece-core</type>
         </dependency>
+        <!-- XSL/XML transformation services moved out of lutece-core (LUT-32172) -->
+        <dependency>
+            <groupId>fr.paris.lutece.plugins</groupId>
+            <artifactId>plugin-xmltransformer</artifactId>
+            <version>[1.0.0,1.9.9]</version>
+            <type>lutece-plugin</type>
+        </dependency>
         <!-- Add to resize image -->
         <dependency>
             <groupId>org.imgscalr</groupId>
