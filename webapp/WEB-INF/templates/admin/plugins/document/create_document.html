@@ -9,9 +9,7 @@
 				<@row>
 					<@columns lg=9>
 						<@box>
-							<#assign boxHeaderTitle>
-								#i18n{document.create_document.title} <em>${document_type?cap_first}</em>
-							</#assign>
+							<#assign boxHeaderTitle = '#i18n{document.create_document.title} <em>${document_type?cap_first}</em>'>
 							<@boxHeader title=boxHeaderTitle />
 							<@boxBody> 
 								<@formGroup labelFor='document_title' labelKey='#i18n{document.create_document.labelDocumentTitle}' helpKey='#i18n{document.create_document.helpDocumentTitle}' mandatory=true rows=2>

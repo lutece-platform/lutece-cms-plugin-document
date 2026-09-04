@@ -18,9 +18,7 @@
 				<#list icons_list as item>
 					<#assign default_value = space.idIcon />
 					<#if default_value?string=item.code><#assign checked=true /><#else><#assign checked=false /></#if>
-					<#assign radioLabelKey>
-						<img src="${item.name}" alt="${item.name}" title="${item.name}" class="img-fluid" />
-					</#assign>
+					<#assign radioLabelKey = '<img src="${item.name}" alt="${item.name}" title="${item.name}" class="img-fluid" />'>
 					<@radioButton orientation='inline' labelFor='${item.name}' labelKey=radioLabelKey checked=checked name='icon' id='${item.name}' value='${item.code}' />
 				</#list>
 			</@formGroup>
