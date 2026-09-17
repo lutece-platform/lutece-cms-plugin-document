@@ -1,4 +1,5 @@
 -- liquibase formatted sql
+-- lutece runAfter:xmltransformer
 -- changeset document:init_core_document.sql
 -- preconditions onFail:MARK_RAN onError:WARN
 --
