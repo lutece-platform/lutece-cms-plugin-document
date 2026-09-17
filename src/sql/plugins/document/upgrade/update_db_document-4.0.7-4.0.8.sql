@@ -1,6 +1,8 @@
 -- liquibase formatted sql
 -- changeset document:update_db_document-4.0.7-4.0.8.sql
 -- preconditions onFail:MARK_RAN onError:WARN
+-- comment Legacy XSL style tables left the core for plugin-xmltransformer and are absent from many databases: skip instead of failing the whole update
+-- precondition-sql-check expectedResult:1 SELECT COUNT(1) from INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=database() AND TABLE_NAME IN ('core_stylesheet');
 -- This will update the default stylesheets. If you have changed one, you must back it up
 -- and merge with the changes from this version.
 -- changes:

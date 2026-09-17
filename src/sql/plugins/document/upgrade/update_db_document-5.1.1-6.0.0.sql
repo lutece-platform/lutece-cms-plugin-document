@@ -9,10 +9,10 @@ ALTER TABLE document_type_attr MODIFY COLUMN id_document_attr int AUTO_INCREMENT
 ALTER TABLE document_category MODIFY COLUMN id_category int AUTO_INCREMENT;
 ALTER TABLE document_rule MODIFY COLUMN id_rule int AUTO_INCREMENT;
 ALTER TABLE document_indexer_action MODIFY COLUMN id_action int AUTO_INCREMENT;
-ALTER TABLE document_page_template MODIFY COLUMN id_page_template_document int AUTO_INCREMENT;
 
 -- changeset document:update_db_document-5.1.1-6.0.0-mariaDB-mySQL.sql dbms:mariadb,mysql
 SET SESSION sql_mode='NO_AUTO_VALUE_ON_ZERO';
+ALTER TABLE document_page_template MODIFY COLUMN id_page_template_document int AUTO_INCREMENT;
 ALTER TABLE document_space MODIFY COLUMN id_space int AUTO_INCREMENT;
 
 -- changeset document:update_db_document-5.1.1-6.0.0-postgreSQL.sql dbms:postgresql
