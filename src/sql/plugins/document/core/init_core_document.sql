@@ -152,9 +152,3 @@ INSERT INTO core_dashboard(dashboard_name, dashboard_column, dashboard_order) VA
 
 -- Enable the cache by default (was previously in lutece-core/webapp/WEB-INF/conf/caches.dat)
 INSERT INTO core_datastore (entity_key, entity_value) VALUES ('core.cache.status.DocumentResourceServletCache.enabled', 1);
-
--- Plugin Library DataStore entries
-INSERT INTO core_datastore (entity_key, entity_value) VALUES ('library.insert_service_media_type_image', 1);
-INSERT INTO core_datastore (entity_key, entity_value) VALUES ('library.insert_service_media_type_image_space', 1);
-INSERT INTO core_datastore (entity_key, entity_value) VALUES ('library.insert_service_media_type_pdf', 1);
-INSERT INTO core_datastore (entity_key, entity_value) VALUES ('library.insert_service_media_type_pdf_space', 1);
