@@ -47,7 +47,7 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
 @SessionScoped
-@Named
+@Named( "document.resourceJspBean" )
 public class ResourceJspBean implements java.io.Serializable
 {
     //////////////////////////////////////////////////////////////////////////////
