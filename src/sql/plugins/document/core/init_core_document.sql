@@ -150,5 +150,6 @@ INSERT INTO core_user_role (role_key,id_user) VALUES ('view_spaces_all',2);
 --
 INSERT INTO core_dashboard(dashboard_name, dashboard_column, dashboard_order) VALUES('DOCUMENT', 2, 1);
 
--- Enable the cache by default (was previously in lutece-core/webapp/WEB-INF/conf/caches.dat)
-INSERT INTO core_datastore (entity_key, entity_value) VALUES ('core.cache.status.DocumentResourceServletCache.enabled', 1);
+-- Cache of the downloaded files disabled by default: the browser cache (Expires header) and a caching proxy serve
+-- the files better, without holding whole files in the heap of every instance
+INSERT INTO core_datastore (entity_key, entity_value) VALUES ('core.cache.status.DocumentResourceServletCache.enabled', 0);
