@@ -179,21 +179,10 @@ public class DocumentContentService extends ContentService
     	
     	//LuteceCache creation
     	LuteceCacheManager cacheManager= CDI.current( ).select( LuteceCacheManager.class ).get( ); 
-    	_cache = cacheManager.createCache(  CONTENT_SERVICE_NAME, String.class, String.class );
-
-    	
-        // Initialize the cache according property value. 
-        // If the property isn't found the default is true
-        String strCache = AppPropertiesService.getProperty( PROPERTY_CACHE_ENABLED, "true" );
-
-        if ( strCache.equalsIgnoreCase( "true" ) )
-        {
-            _cache.enableCache( true );
-        }
-        else
-        {
-            _cache.enableCache( false );
-        }
+        // The property gives the status of a new cache only: the status chosen in the back office is kept across
+        // restarts. If the property isn't found the default is true
+        boolean bEnabledByDefault = AppPropertiesService.getProperty( PROPERTY_CACHE_ENABLED, "true" ).equalsIgnoreCase( "true" );
+    	_cache = cacheManager.createCache(  CONTENT_SERVICE_NAME, String.class, String.class, bEnabledByDefault );
         
         _bInit = true;
     }
