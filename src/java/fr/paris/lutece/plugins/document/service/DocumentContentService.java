@@ -49,6 +49,8 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.business.style.ModeHome;
+import fr.paris.lutece.portal.service.cache.CacheService;
+import fr.paris.lutece.portal.service.cache.CacheableService;
 import fr.paris.lutece.portal.service.cache.ICacheKeyService;
 import fr.paris.lutece.portal.service.cache.Lutece107Cache;
 import fr.paris.lutece.portal.service.cache.LuteceCacheManager;
@@ -218,7 +220,14 @@ public class DocumentContentService extends ContentService
             strSiteLocale = LOCALE_FR;
         }
 
-        String strKey = getKey( strDocumentId, strPortletId, strSiteLocale, nMode );
+        // A page reserved to a role depends on the user (the document or the access page): never cached
+        if ( !isPublicPortlet( strPortletId ) )
+        {
+            return buildPage( request, strDocumentId, strPortletId, strSiteLocale, nMode );
+        }
+
+        // The templates are built with the locale of the request: part of the key
+        String strKey = getKey( strDocumentId, strPortletId, strSiteLocale + "-" + request.getLocale( ).getLanguage( ), nMode );
         String strPage = (String) _cache.get( strKey );
 
         if ( strPage == null )
@@ -665,21 +674,61 @@ public class DocumentContentService extends ContentService
     }
 
     /**
+     * Tells whether the page of a portlet can be seen by every visitor (no role, or no authentication)
+     *
+     * @param strPortletId the portlet id
+     * @return true if the page of the portlet is public
+     */
+    private boolean isPublicPortlet( String strPortletId )
+    {
+        if ( !SecurityService.isAuthenticationEnable( ) || !IntegerUtils.isNumeric( strPortletId ) )
+        {
+            return true;
+        }
+        Portlet portlet = PortletHome.findByPrimaryKey( IntegerUtils.convert( strPortletId ) );
+        if ( portlet == null )
+        {
+            return true;
+        }
+        Page page = PageHome.getPage( portlet.getPageId( ) );
+        return ( page == null ) || Page.ROLE_NONE.equals( page.getRole( ) );
+    }
+
+    /**
+     * Removes every page of a document from the cache (any portlet, locale and mode): the document was published,
+     * unpublished, modified, archived or moved
+     *
+     * @param nDocumentId the document id
+     */
+    public static void removeDocumentFromCache( int nDocumentId )
+    {
+        CacheableService<?, ?> cs = CacheService.getCache( CONTENT_SERVICE_NAME );
+        if ( cs instanceof Lutece107Cache )
+        {
+            @SuppressWarnings( "unchecked" )
+            Lutece107Cache<String, String> cache = (Lutece107Cache<String, String>) cs;
+            String strPrefix = "D" + nDocumentId + "P";
+            for ( String strKey : cache.getKeys( ) )
+            {
+                if ( strKey.startsWith( strPrefix ) )
+                {
+                    cache.remove( strKey );
+                }
+            }
+        }
+    }
+
+    /**
      * Remove a document from the cache
      * @param strDocumentId the document id
      * @param strPortletId the portlet id
      */
     public void removeFromCache( String strDocumentId, String strPortletId )
     {
-        if ( _cache != null && _cache.isCacheEnable( ) )
+        // Every page of the document: the keys also hold the locale of the request
+        if ( IntegerUtils.isNumeric( strDocumentId ) )
         {
-            String strKey = getKey( strDocumentId, strPortletId, LOCALE_FR, PortalJspBean.MODE_HTML );
-
-            _cache.remove( strKey );
-
-            strKey = getKey( strDocumentId, strPortletId, LOCALE_EN, PortalJspBean.MODE_HTML );
-
-            _cache.remove( strKey );
+            removeDocumentFromCache( IntegerUtils.convert( strDocumentId ) );
         }
     }
 	

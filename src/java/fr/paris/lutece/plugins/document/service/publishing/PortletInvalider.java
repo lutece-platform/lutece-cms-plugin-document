@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.document.service.publishing;
 
 import fr.paris.lutece.plugins.document.business.portlet.DocumentPortletHome;
+import fr.paris.lutece.plugins.document.service.DocumentContentService;
 import fr.paris.lutece.plugins.document.service.DocumentEvent;
 import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
@@ -81,6 +82,8 @@ public class PortletInvalider
 	{
 		int nPortletId = event.getPortletId( );
 		PortletHome.invalidate( nPortletId );
+		// The page of the document in this portlet (document_id and portlet_id) is cached apart from the portlet
+		DocumentContentService.removeDocumentFromCache( event.getnDocumentId( ) );
 	}
 
 	/**
@@ -97,6 +100,7 @@ public class PortletInvalider
 		{
 			PortletHome.invalidate( nPortletId );
 		}
+		DocumentContentService.removeDocumentFromCache( event.getDocument( ).getId( ) );
 	}
 
 	/**
