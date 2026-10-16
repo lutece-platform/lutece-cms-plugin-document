@@ -46,6 +46,8 @@ import fr.paris.lutece.plugins.document.service.metadata.MetadataService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
 import fr.paris.lutece.portal.service.cache.CacheService;
+import fr.paris.lutece.portal.service.cache.CacheableService;
+import fr.paris.lutece.util.xml.XmlTransformer;
 import fr.paris.lutece.portal.service.fileupload.FileUploadService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -163,6 +165,8 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	private static final String SEPARATOR = "_";
 	private static final String FILE_EXTENSION = ".xsl";
 	private static final Object UPDATE_VALUE = "true";
+	// The caches of the rendered documents: document pages, portlets and portal pages
+	private static final String [ ] CACHES_RENDERED_DOCUMENTS = { "Document Content Service", "PortletCacheService", "PageCacheService" };
 	private static final String PATTERN_CODE = "[a-zA-Z0-9_\\-]+";
 	private static final int NO_THUMBNAIL_ATTRIBUTE = 0;
 	private String _strDocumentTypeCode;
@@ -928,8 +932,16 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 			DocumentTypeHome.setContentStyleSheet( baXslContent, strCode );
 		}
 
-		// clear the cache
-		CacheService.resetCaches( );
+		// clear the caches holding the documents rendered with these stylesheets, not every cache of the webapp
+		XmlTransformer.cleanTransformerList( );
+		for( String strCacheName : CACHES_RENDERED_DOCUMENTS )
+		{
+			CacheableService<?, ?> cache = CacheService.getCache( strCacheName );
+			if( cache != null )
+			{
+				cache.resetCache( );
+			}
+		}
 
 		return strErrorUrl;
 	}
