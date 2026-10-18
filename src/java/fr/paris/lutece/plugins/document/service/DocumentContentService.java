@@ -49,8 +49,6 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.business.style.ModeHome;
-import fr.paris.lutece.portal.service.cache.CacheService;
-import fr.paris.lutece.portal.service.cache.CacheableService;
 import fr.paris.lutece.portal.service.cache.ICacheKeyService;
 import fr.paris.lutece.portal.service.cache.Lutece107Cache;
 import fr.paris.lutece.portal.service.cache.LuteceCacheManager;
@@ -76,13 +74,17 @@ import fr.paris.lutece.util.xml.XmlUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fr.paris.lutece.portal.web.l10n.LocaleService;
 import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 import java.util.Map;
 import java.util.Properties;
 
@@ -96,6 +98,7 @@ import javax.cache.event.CacheEntryRemovedListener;
 import jakarta.enterprise.inject.literal.NamedLiteral;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -118,6 +121,7 @@ public class DocumentContentService extends ContentService
     private static final String DOCUMENT_STYLE_PREFIX_ID = "document-";
     private static final String LOCALE_EN = "en";
     private static final String LOCALE_FR = "fr";
+    private static final String KEY_GENERATION_PREFIX = "G";
 
     // XML tags
     private static final String XML_TAG_CONTENT = "content";
@@ -220,31 +224,33 @@ public class DocumentContentService extends ContentService
             strSiteLocale = LOCALE_FR;
         }
 
+        // The page is built and cached in a language of the site: any other language of the request gives the page
+        // of the default language, so the key has a bounded number of languages
+        HttpServletRequest localizedRequest = withSiteLocale( request );
+
         // A page reserved to a role depends on the user (the document or the access page): never cached
-        if ( !isPublicPortlet( strPortletId ) )
+        String strGeneration = isPublicPortlet( strPortletId ) ? getGeneration( strDocumentId ) : null;
+        if ( strGeneration == null )
         {
-            return buildPage( request, strDocumentId, strPortletId, strSiteLocale, nMode );
+            return buildPage( localizedRequest, strDocumentId, strPortletId, strSiteLocale, nMode ).getContent( );
         }
 
-        // The templates are built with the locale of the request: part of the key
-        String strKey = getKey( strDocumentId, strPortletId, strSiteLocale + "-" + request.getLocale( ).getLanguage( ), nMode );
-        String strPage = (String) _cache.get( strKey );
+        // The generation of the document is part of the key: removing it drops every page of the document at once
+        String strKey = getKey( strDocumentId, strGeneration, strPortletId, strSiteLocale + "-" + localizedRequest.getLocale( ).getLanguage( ), nMode );
+        String strPage = _cache.get( strKey );
 
         if ( strPage == null )
         {
             AppLogService.debug( " -- Page generation {} : doc={} portletid={} site_locale={} nMode={}",
                     strKey, strDocumentId, strPortletId, strSiteLocale, nMode );
-            strPage = buildPage( request, strDocumentId, strPortletId, strSiteLocale, nMode );
+            BuiltPage page = buildPage( localizedRequest, strDocumentId, strPortletId, strSiteLocale, nMode );
+            strPage = page.getContent( );
 
-            if ( IntegerUtils.isNumeric( strDocumentId ) )
+            // Only the page of a document published in the portlet: the default page shown for an unknown document
+            // or portlet is not kept
+            if ( page.isCacheable( ) )
             {
-                int nDocumentId = IntegerUtils.convert( strDocumentId );
-                Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
-
-                if ( ( document != null ) )
-                {
-                    _cache.put( strKey, strPage );
-                }
+                _cache.put( strKey, strPage );
             }
         }
         else
@@ -256,17 +262,94 @@ public class DocumentContentService extends ContentService
     }
 
     /**
+     * Returns the request with a locale of the site: the language of the request if the site supports it, the default
+     * language otherwise. The templates and dates of the page are built in this locale, the key holds its language.
+     *
+     * @param request the HTTP request
+     * @return the request with a supported locale
+     */
+    private static HttpServletRequest withSiteLocale( HttpServletRequest request )
+    {
+        Locale localeRequest = request.getLocale( );
+        Locale localeLanguage = new Locale( ( localeRequest != null ) ? localeRequest.getLanguage( ) : "" );
+        final Locale locale = LocaleService.isSupported( localeLanguage ) ? localeLanguage : LocaleService.getDefault( );
+
+        return new HttpServletRequestWrapper( request )
+        {
+            @Override
+            public Locale getLocale( )
+            {
+                return locale;
+            }
+
+            @Override
+            public java.util.Enumeration<Locale> getLocales( )
+            {
+                return Collections.enumeration( Collections.singletonList( locale ) );
+            }
+        };
+    }
+
+    /**
+     * Returns the current generation of a document in the cache, created if absent
+     *
+     * @param strDocumentId the document id
+     * @return the generation, or null if the page can't be cached (cache disabled, invalid id)
+     */
+    private String getGeneration( String strDocumentId )
+    {
+        if ( !IntegerUtils.isNumeric( strDocumentId ) || !_cache.isCacheEnable( ) )
+        {
+            return null;
+        }
+        String strGenerationKey = KEY_GENERATION_PREFIX + strDocumentId;
+        String strGeneration = _cache.get( strGenerationKey );
+        if ( strGeneration == null )
+        {
+            // Two instances may create it together: the first one wins, both read it back
+            _cache.putIfAbsent( strGenerationKey, UUID.randomUUID( ).toString( ).substring( 0, 8 ) );
+            strGeneration = _cache.get( strGenerationKey );
+        }
+        return strGeneration;
+    }
+
+    /**
+     * A built page and whether it can be cached
+     */
+    private static final class BuiltPage
+    {
+        private final String _strContent;
+        private final boolean _bCacheable;
+
+        BuiltPage( String strContent, boolean bCacheable )
+        {
+            _strContent = strContent;
+            _bCacheable = bCacheable;
+        }
+
+        String getContent( )
+        {
+            return _strContent;
+        }
+
+        boolean isCacheable( )
+        {
+            return _bCacheable;
+        }
+    }
+
+    /**
      * Build the document page
      * @param request The HTTP Request
      * @param strDocumentId The document ID
      * @param strPortletId The portlet ID
      * @param strSiteLocale the site locale code
      * @param nMode The current mode
-     * @return
+     * @return the page, cacheable when it shows the document published in the portlet
      * @throws fr.paris.lutece.portal.service.security.UserNotSignedException
      * @throws fr.paris.lutece.portal.service.message.SiteMessageException
      */
-    private String buildPage( HttpServletRequest request, String strDocumentId, String strPortletId,
+    private BuiltPage buildPage( HttpServletRequest request, String strDocumentId, String strPortletId,
         String strSiteLocale, int nMode ) throws UserNotSignedException, SiteMessageException
     {
         int nPortletId;
@@ -281,14 +364,14 @@ public class DocumentContentService extends ContentService
         }
         catch ( NumberFormatException nfe )
         {
-            return PortalService.getDefaultPage( request, nMode );
+            return new BuiltPage( PortalService.getDefaultPage( request, nMode ), false );
         }
 
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
         if ( ( document == null ) || ( !document.isValid(  ) ) )
         {
-            return PortalService.getDefaultPage( request, nMode );
+            return new BuiltPage( PortalService.getDefaultPage( request, nMode ), false );
         }
 
         DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
@@ -347,7 +430,7 @@ public class DocumentContentService extends ContentService
                             request.getLocale(  ), modelAccessControledTemplate );
                     data.setContent( tAccessControled.getHtml(  ) );
 
-                    return PortalService.buildPageContent( data, nMode, request );
+                    return new BuiltPage( PortalService.buildPageContent( data, nMode, request ), false );
                 }
 
                 if ( !SecurityService.getInstance().isUserInRole( request, strRole ) )
@@ -358,7 +441,7 @@ public class DocumentContentService extends ContentService
                             request.getLocale(  ) );
                     data.setContent( tAccessDenied.getHtml(  ) );
 
-                    return PortalService.buildPageContent( data, nMode, request );
+                    return new BuiltPage( PortalService.buildPageContent( data, nMode, request ), false );
                 }
             }
 
@@ -408,11 +491,11 @@ public class DocumentContentService extends ContentService
 
             data.setContent( template.getHtml(  ) );
 
-            return PortalService.buildPageContent( data, nMode, request );
+            return new BuiltPage( PortalService.buildPageContent( data, nMode, request ), true );
         }
 
         //portlet does not exists
-        return PortalService.getDefaultPage( request, nMode );
+        return new BuiltPage( PortalService.getDefaultPage( request, nMode ), false );
     }
 
     /**
@@ -663,14 +746,15 @@ public class DocumentContentService extends ContentService
      * Build the Cache key for pages
      *
      * @param strDocumentId The id of the document
+     * @param strGeneration The generation of the document
      * @param strPortletId The id of the portlet of the document
      * @param strSiteLocale The site locale
      * @param nMode The mode
      * @return The key for articles pages as a String.
      */
-    private String getKey( String strDocumentId, String strPortletId, String strSiteLocale, int nMode )
+    private String getKey( String strDocumentId, String strGeneration, String strPortletId, String strSiteLocale, int nMode )
     {
-        return "D" + strDocumentId + "P" + strPortletId + "L" + strSiteLocale + "M" + nMode;
+        return "D" + strDocumentId + KEY_GENERATION_PREFIX + strGeneration + "P" + strPortletId + "L" + strSiteLocale + "M" + nMode;
     }
 
     /**
@@ -685,35 +769,28 @@ public class DocumentContentService extends ContentService
         {
             return true;
         }
-        Portlet portlet = PortletHome.findByPrimaryKey( IntegerUtils.convert( strPortletId ) );
-        if ( portlet == null )
-        {
-            return true;
-        }
-        Page page = PageHome.getPage( portlet.getPageId( ) );
-        return ( page == null ) || Page.ROLE_NONE.equals( page.getRole( ) );
+        // One query for the page of the portlet; an unknown portlet gives an empty page (the default page is shown)
+        Page page = PageHome.getPageByIdPortlet( IntegerUtils.convert( strPortletId ) );
+        return ( page == null ) || ( page.getId( ) == 0 ) || ( page.getRole( ) == null ) || Page.ROLE_NONE.equals( page.getRole( ) );
     }
 
     /**
      * Removes every page of a document from the cache (any portlet, locale and mode): the document was published,
-     * unpublished, modified, archived or moved
+     * unpublished, modified, archived or moved. Its generation is removed, so its pages are no longer read and expire;
+     * the removal reaches the other instances even if the cache is disabled or not used yet on this one.
      *
      * @param nDocumentId the document id
      */
     public static void removeDocumentFromCache( int nDocumentId )
     {
-        CacheableService<?, ?> cs = CacheService.getCache( CONTENT_SERVICE_NAME );
-        if ( cs instanceof Lutece107Cache )
+        for ( ContentService cs : PortalService.getContentServicesList( ) )
         {
-            @SuppressWarnings( "unchecked" )
-            Lutece107Cache<String, String> cache = (Lutece107Cache<String, String>) cs;
-            String strPrefix = "D" + nDocumentId + "P";
-            for ( String strKey : cache.getKeys( ) )
+            if ( cs instanceof DocumentContentService )
             {
-                if ( strKey.startsWith( strPrefix ) )
-                {
-                    cache.remove( strKey );
-                }
+                DocumentContentService dcs = (DocumentContentService) cs;
+                dcs.loachInit( );
+                dcs._cache.remove( KEY_GENERATION_PREFIX + nDocumentId );
+                return;
             }
         }
     }
