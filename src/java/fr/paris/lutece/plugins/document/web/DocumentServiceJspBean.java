@@ -63,6 +63,7 @@ import jakarta.enterprise.context.RequestScoped;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -72,6 +73,7 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 /**
@@ -205,6 +207,28 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_PAGE, _user.getLocale(  ), _model );
 
         return template.getHtml(  );
+    }
+
+    /**
+     * Return the html form for page selection, or redirect to a stop message when the input is missing.
+     *
+     * @param request The HTTP request
+     * @param response The HTTP response
+     * @return The html form of the page selection page, or null if the response has been redirected
+     * @throws IOException if the redirection fails
+     */
+    public String getSelectPage( HttpServletRequest request, HttpServletResponse response )
+        throws IOException
+    {
+        if ( StringUtils.isBlank( request.getParameter( PARAMETER_INPUT ) ) )
+        {
+            response.sendRedirect( AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS,
+                    AdminMessage.TYPE_STOP ) );
+
+            return null;
+        }
+
+        return getSelectPage( request );
     }
 
     /**

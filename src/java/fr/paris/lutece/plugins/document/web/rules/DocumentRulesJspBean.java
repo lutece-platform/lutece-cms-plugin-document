@@ -93,6 +93,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_CANCEL = "cancel";
     private static final String PROPERTY_CONFIRM_RULE_DELETE = "document.rules.message.confirmRuleDelete";
     private static final String PROPERTY_RULE_ALREADY_EXISTS = "document.rules.message.ruleAlreadyExists";
+    private static final String PROPERTY_RULE_NOT_FOUND = "document.rules.message.ruleNotFound";
     private static final String PROPERTY_CREATE_RULE_PAGE_TITLE = "document.create_rule.pageTitle";
     private static final String PROPERTY_SELECT_SPACE_PAGE_TITLE = "document.create_rule.selectSpace";
     private Rule _rule;
@@ -234,6 +235,11 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
+        if ( getRuleSession(  ) == null )
+        {
+            return getHomeUrl( request );
+        }
+
         int nSpaceId = IntegerUtils.convert( strSpaceId );
     getRuleSession(  ).setAttribute( getRuleAttributeSelectedSession(  ), Integer.toString( nSpaceId ) );
 
@@ -335,6 +341,12 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
     {
         String strRuleId = request.getParameter( PARAMETER_RULE_ID );
         Rule rule = RuleHome.findByPrimaryKey( IntegerUtils.convert( strRuleId ) );
+
+        if ( rule == null )
+        {
+            return AdminMessageService.getMessageUrl( request, PROPERTY_RULE_NOT_FOUND, AdminMessage.TYPE_STOP );
+        }
+
         UrlItem url = new UrlItem( JSP_DO_DELETE_RULE );
         url.addParameter( PARAMETER_RULE_ID, strRuleId );
         rule.setLocale( getLocale(  ) );

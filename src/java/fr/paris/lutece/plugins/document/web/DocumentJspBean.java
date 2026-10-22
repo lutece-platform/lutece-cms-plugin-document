@@ -443,6 +443,12 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         }
 
         DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strDocumentTypeCode );
+
+        if ( documentType == null )
+        {
+            return getManageDocuments( request );
+        }
+
         DateFormat dateFormat = new SimpleDateFormat( CONSTANT_DATE_FORMAT, getLocale(  ) );
         String strCurrentDate = dateFormat.format( new Date(  ) );
 

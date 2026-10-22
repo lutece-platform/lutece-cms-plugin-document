@@ -632,6 +632,8 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 			return getManageDocumentTypes( request );
 		}
 
+		_strDocumentTypeCode = attribute.getCodeDocumentType( );
+
 		AttributeManager manager = _attributeService.getManager( attribute.getCodeAttributeType( ) );
 
 		UrlItem url = new UrlItem( request.getRequestURI( ) );

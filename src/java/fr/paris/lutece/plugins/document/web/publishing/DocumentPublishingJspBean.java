@@ -72,6 +72,7 @@ import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.portal.web.cdi.mvc.Models;
+import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -79,6 +80,7 @@ import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -88,6 +90,7 @@ import java.util.Map;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 /**
@@ -173,6 +176,9 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     private static final String JSP_DELETE_AUTO_PUBLICATION = "jsp/admin/plugins/document/DoDeleteAutoPublication.jsp";
     private static final String JSP_CHANGE_MODE_PUBLICATION = "jsp/admin/plugins/document/DoChangeModePublication.jsp";
     private static final String MESSAGE_AUTO_PUBLICATION_ALREADY_EXISTS = "document.message.autoPublication.alreadyExists";
+    private static final String MESSAGE_AUTO_PUBLICATION_NOT_FOUND = "document.message.autoPublication.notFound";
+    private static final String MESSAGE_DOCUMENT_NOT_FOUND = "document.message.documentNotFound";
+    private static final String MESSAGE_DOCUMENT_NOT_AUTHORIZED = "document.message.documentNotAuthorized";
     private static final String MESSAGE_CONFIRM_DELETE_AUTO_PUBLICATION = "document.message.autoPublication.confirmDeleteAutoPublication";
     private static final String MESSAGE_CONFIRM_CHANGE_MODE_PUBLICATION_STANDARD = "document.message.modePublication.confirmChangeModePublication.standard";
     private static final String MESSAGE_CONFIRM_CHANGE_MODE_PUBLICATION_AUTO_PUBLICATION = "document.message.modePublication.confirmChangeModePublication.autoPublication";
@@ -203,9 +209,14 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      *
      * @param request
      *            The Http request
-     * @return the html code for display the modes list
+     * @param response
+     *            The Http response
+     * @return the html code for display the modes list, or null if the response has been redirected
+     * @throws IOException
+     *             if the redirection fails
      */
-    public String getManageDocumentPublishing( HttpServletRequest request )
+    public String getManageDocumentPublishing( HttpServletRequest request, HttpServletResponse response )
+        throws IOException
     {
         setPageTitleProperty( PROPERTY_PUBLISHING_SPACE_PAGE_TITLE );
 
@@ -315,6 +326,13 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             _model.put( MARK_LABEL_DISPLAY_LATEST_PORTLETS,
                 I18nService.getLocalizedString( PROPERTY_DISPLAY_LATEST_PORTLETS,
                     messageNumberOfMaxLatestPortletsDisplay, getLocale(  ) ) );
+        }
+        else
+        {
+            String strMessage = ( document == null ) ? MESSAGE_DOCUMENT_NOT_FOUND : MESSAGE_DOCUMENT_NOT_AUTHORIZED;
+            response.sendRedirect( AdminMessageService.getMessageUrl( request, strMessage, AdminMessage.TYPE_STOP ) );
+
+            return null;
         }
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_PUBLISHING, getLocale(  ), _model );
@@ -775,10 +793,23 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      *
      * @param request
      *            The {@link HttpServletRequest} request
-     * @return The Html code
+     * @param response
+     *            The {@link HttpServletResponse} response
+     * @return The Html code, or null if the response has been redirected
+     * @throws IOException
+     *             if the redirection fails
      */
-    public String getCreateAutoPublication( HttpServletRequest request )
+    public String getCreateAutoPublication( HttpServletRequest request, HttpServletResponse response )
+        throws IOException
     {
+        if ( IntegerUtils.isNotNumeric( request.getParameter( PARAMETER_PORTLET_ID ) ) )
+        {
+            response.sendRedirect( AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS,
+                    AdminMessage.TYPE_STOP ) );
+
+            return null;
+        }
+
         String strSpaceId = request.getParameter( DocumentSpacesService.PARAMETER_BROWSER_SELECTED_SPACE_ID );
         boolean bSubmitButtonDisabled = Boolean.TRUE;
 
@@ -848,6 +879,12 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         String strSpaceId = request.getParameter( PARAMETER_SPACE_ID );
         int nPortletId = IntegerUtils.convert( strPortletId );
         int nSpaceId = IntegerUtils.convert( strSpaceId );
+
+        if ( DocumentAutoPublicationHome.findByPrimaryKey( nPortletId, nSpaceId ) == null )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_AUTO_PUBLICATION_NOT_FOUND, AdminMessage.TYPE_STOP );
+        }
+
         UrlItem url = new UrlItem( JSP_DELETE_AUTO_PUBLICATION );
         url.addParameter( PARAMETER_PORTLET_ID, nPortletId );
         url.addParameter( PARAMETER_MODE_PUBLICATION, MODE_PUBLICATION_AUTO_PUBLICATION );
@@ -870,6 +907,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         String strSpaceId = request.getParameter( PARAMETER_SPACE_ID );
         int nPortletId = IntegerUtils.convert( strPortletId );
         int nSpaceId = IntegerUtils.convert( strSpaceId );
+
+        if ( DocumentAutoPublicationHome.findByPrimaryKey( nPortletId, nSpaceId ) == null )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_AUTO_PUBLICATION_NOT_FOUND, AdminMessage.TYPE_STOP );
+        }
 
         // delete auto publication
         DocumentAutoPublicationHome.remove( nPortletId, nSpaceId );
