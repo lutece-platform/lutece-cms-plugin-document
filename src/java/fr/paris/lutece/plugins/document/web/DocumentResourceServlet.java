@@ -175,6 +175,8 @@ public class DocumentResourceServlet extends HttpServlet
 
             if ( resource == null )
             {
+                response.setStatus( HttpServletResponse.SC_NOT_FOUND );
+
                 return;
             }
 
