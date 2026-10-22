@@ -31,14 +31,12 @@
 										</@link>
 									</@h>
 									</hr>
-									<@formGroup labelFor='datepicker' labelKey='Du'>
-										<@div class='input-daterange' id='datepicker'>
-											<@inputGroup>
-												<@input type='text' name='date_min' value='${date_min!}' />
-												<@inputGroupItem type='text'>au</@inputGroupItem>
-												<@input type='text' name='date_max' value='${date_max!}' />
-											</@inputGroup>
-										</@div>
+									<@formGroup labelFor='date_min' labelKey='Du'>
+										<@inputGroup>
+											<@input type='text' name='date_min' id='date_min' value='${date_min!}' />
+											<@inputGroupItem type='text'>au</@inputGroupItem>
+											<@input type='text' name='date_max' id='date_max' value='${date_max!}' />
+										</@inputGroup>
 									</@formGroup>
 								</@boxBody>
 							</@box>
@@ -64,11 +62,12 @@
 						</@columns>
 					</@row>
 					<@formGroup>
-						<@button type='submit' name='action' value='apply' title='#i18n{document.manage_document.mass_archival.archiveLbl}' buttonIcon='search' />
+						<@button type='submit' title='#i18n{document.manage_document.mass_archival.archiveLbl}' buttonIcon='search' params='formaction="jsp/admin/plugins/document/DoSearchMassArchivalDocument.jsp"' />
 					</@formGroup>
 				</@tform>
 			</@boxBody>
 		</@box>
 	</@columns>
 </@row>
-<@getDatePickerRangeBootstrap language=locale />                               
+<@getDate idField='date_min' language=locale format='d/m/Y' showFormat='d/m/Y' />
+<@getDate idField='date_max' language=locale format='d/m/Y' showFormat='d/m/Y' />
