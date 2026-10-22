@@ -1,34 +1,31 @@
+<#include "/skin/themes/global_theme_commons.ftl" />
+<#if plugin_theme??><#assign thetheme=plugin_theme /><#elseif theme??><#assign thetheme=theme /></#if>
 <!DOCTYPE html>
-<html>
+<html lang="${.lang}">
 <head>
 <title>#i18n{document.page_print_document.labelPrintPreview}</title>
-<base href="${base_url}" />
-<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-<meta http-equiv="Expires" content="0" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Cache-Control" content="no-cache" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<!-- Set the viewport width to device width for mobile -->
+<base href="${base_url}">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Le styles -->
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css" href="css/admin/print_admin.css" media="print" />
-<link rel="stylesheet" href="css/print_template_styles.css" type="text/css" />
-<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-<!--[if lt IE 9]>
-<link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery.ui.1.8.16.ie.css" />
-<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
-<!-- Le fav and touch icons -->
-<link rel="shortcut icon" href="favicon.ico">
-<script src="js/jquery/jquery.min.js"></script>
+<#if themeCSSLinks??>
+<@themeCSSLinks />
+<#elseif thetheme??>
+<link href="${thetheme.pathCss!}/bootstrap.min.css?theme=${thetheme.codeTheme!}${thetheme.themeVersion!}" crossorigin="anonymous" rel="stylesheet">
+<link href="${thetheme.pathCss!}/theme.min.css?theme=${thetheme.codeTheme!}${thetheme.themeVersion!}" crossorigin="anonymous" rel="stylesheet">
+</#if>
 </head>
 <body>
-<div class="row">
-	<div class="col-xs-12 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11">
-		<h3>${portal_domain} <a class="btn pull-right"href="javascript:window.print();"><i class="glyphicon glyphicon-print"></i>&nbsp;#i18n{document.document_content_service.buttonPrint}</a></h3>
-		${preview}
-		</div>
+<main class="container my-4">
+	<div class="d-flex justify-content-between align-items-center mb-3">
+		<h1 class="h3 mb-0">${portal_domain}</h1>
+		<button type="button" class="btn btn-secondary d-print-none" id="print-document">#i18n{document.document_content_service.buttonPrint}</button>
 	</div>
+	${preview}
+</main>
+<script>
+document.getElementById('print-document').addEventListener('click', function() {
+	window.print();
+});
+</script>
 </body>
 </html>

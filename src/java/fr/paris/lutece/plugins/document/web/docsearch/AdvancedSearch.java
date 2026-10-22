@@ -230,7 +230,7 @@ public class AdvancedSearch implements XPageApplication
 	 */
 	private boolean isValidDate( String strDate )
 	{
-		SimpleDateFormat f = new SimpleDateFormat( "dd/MM/yy" );
+		SimpleDateFormat f = new SimpleDateFormat( DocSearchService.PATTERN_DATE );
 		f.setLenient( false );
 
 		try

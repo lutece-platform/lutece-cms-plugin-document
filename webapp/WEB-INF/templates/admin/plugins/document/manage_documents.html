@@ -254,30 +254,38 @@ document.getElementById("query").addEventListener("keyup", function() {
 });
 
 /****** Multiple selection ******/
-document.getElementById('select_all').addEventListener('click', function() {
-	const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-	checkboxes.forEach(function(checkbox) {
-		checkbox.checked = this.checked;
-	}, this);
-});
+{
+	const documentsForm = document.getElementById('documents_form');
+	if (documentsForm) {
+		document.getElementById('select_all').addEventListener('click', function() {
+			const checkboxes = documentsForm.querySelectorAll('input[type="checkbox"]');
+			checkboxes.forEach(function(checkbox) {
+				checkbox.checked = this.checked;
+			}, this);
+		});
 
-document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
-	checkbox.addEventListener('click', function() {
-		const selectedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-		const selectionButton = document.getElementById('selection');
-		if (selectedCheckboxes.length > 0) {
-			selectionButton.removeAttribute('disabled');
-		} else {
-			selectionButton.setAttribute('disabled', 'disabled');
-		}
-	});
-});
+		documentsForm.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+			checkbox.addEventListener('click', function() {
+				const selectedCheckboxes = documentsForm.querySelectorAll('input[type="checkbox"]:checked');
+				const selectionButton = document.getElementById('selection');
+				if (selectedCheckboxes.length > 0) {
+					selectionButton.removeAttribute('disabled');
+				} else {
+					selectionButton.setAttribute('disabled', 'disabled');
+				}
+			});
+		});
+	}
+}
 <#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>
 /* document MASS import redirection */
 document.addEventListener('DOMContentLoaded', function() {
-	document.getElementById('importLinkButton').addEventListener('click', function() {
-		window.location.href = 'jsp/admin/plugins/files2docs/SelectFiles.jsp?browser_selected_space_id=${current_space_id}&document_type_code=' + document.getElementById('document_type_code').value;
-	});
+	const importLinkButton = document.getElementById('importLinkButton');
+	if (importLinkButton) {
+		importLinkButton.addEventListener('click', function() {
+			window.location.href = 'jsp/admin/plugins/files2docs/SelectFiles.jsp?browser_selected_space_id=${current_space_id}&document_type_code=' + document.getElementById('document_type_code').value;
+		});
+	}
 });
 </#if>
 </script>

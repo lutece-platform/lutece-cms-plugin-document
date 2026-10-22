@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
+import fr.paris.lutece.portal.service.portal.ThemesService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.web.cdi.mvc.Models;
@@ -70,6 +71,7 @@ public class DocumentContentJspBean implements java.io.Serializable
     private static final String MARK_BASE_URL = "base_url";
     private static final String MARK_PREVIEW = "preview";
     private static final String MARK_PORTAL_DOMAIN = "portal_domain";
+    private static final String MARK_THEME = "theme";
 
     // Templates
     private static final String TEMPLATE_PAGE_PRINT_DOCUMENT = "skin/plugins/document/page_print_document.html";
@@ -108,6 +110,7 @@ public class DocumentContentJspBean implements java.io.Serializable
         _model.put( MARK_BASE_URL, AppPathService.getBaseUrl( request ) );
         _model.put( MARK_PREVIEW, strPreview );
         _model.put( MARK_PORTAL_DOMAIN, request.getServerName(  ) );
+        _model.put( MARK_THEME, ThemesService.getGlobalThemeObject(  ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PAGE_PRINT_DOCUMENT, request.getLocale(  ),
                 _model );
