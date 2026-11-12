@@ -1120,7 +1120,7 @@ public final class DocumentDAO implements IDocumentDAO
      */
     private void insertCategories( List<Category> listCategory, int nIdDocument )
     {
-        if ( listCategory != null )
+        if ( listCategory != null && !listCategory.isEmpty( ) )
         {
             try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_LINK_CATEGORY_DOCUMENT ) )
             {

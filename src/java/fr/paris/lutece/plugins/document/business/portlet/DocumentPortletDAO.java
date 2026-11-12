@@ -101,7 +101,7 @@ public class DocumentPortletDAO implements IDocumentPortletDAO
     {
         DocumentPortlet p = (DocumentPortlet) portlet;
 
-        if ( p.getIdCategory( ) != null )
+        if ( p.getIdCategory( ) != null && p.getIdCategory( ).length > 0 )
         {
             try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CATEGORY_PORTLET ) )
             {
