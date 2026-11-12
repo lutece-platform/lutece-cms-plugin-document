@@ -339,8 +339,16 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         int nCurrentSpaceId = IntegerUtils.convert( _strCurrentSpaceId );
         DocumentSpace currentSpace = DocumentSpaceHome.findByPrimaryKey( nCurrentSpaceId );
 
-        listSpaceActions = (List<SpaceAction>) RBACService.getAuthorizedActionsCollection( listSpaceActions,
-                currentSpace, ( User ) getUser(  ) );
+        if ( currentSpace != null )
+        {
+            listSpaceActions = (List<SpaceAction>) RBACService.getAuthorizedActionsCollection( listSpaceActions,
+                    currentSpace, ( User ) getUser(  ) );
+        }
+        else
+        {
+            // the user has no space to work in
+            listSpaceActions = new ArrayList<>( );
+        }
 
         // Build filter combos
         // Document Types

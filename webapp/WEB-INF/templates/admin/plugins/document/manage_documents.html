@@ -204,6 +204,8 @@
 					</#if>
 					<@paginationAdmin paginator=paginator combo=1 />
 				</#if>
+			<#else>
+				<@empty title='#i18n{document.manage_documents.noAuthorizedSpace}' />
 			</#if>
 			</@columns>
 		</@row>
@@ -214,7 +216,7 @@ import LuteceTree from './themes/shared/modules/luteceTree.js';
 const tree = document.querySelector("#lutece-tree");
 const mapTree = new LuteceTree( tree );
 let sessionSpaceId = sessionStorage.getItem('document_space_id');
-let spaceid = sessionSpaceId != null ? sessionSpaceId : ${space.id};
+let spaceid = sessionSpaceId != null ? sessionSpaceId : <#if space?has_content>${space.id}<#else>null</#if>;
 // Get space_id from url parameter
 const loc = location.search;
 if ( spaceid != loc ) {
