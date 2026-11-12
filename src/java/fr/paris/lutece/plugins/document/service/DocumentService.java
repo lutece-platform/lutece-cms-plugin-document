@@ -775,6 +775,9 @@ public class DocumentService
 
 			AttributeManager manager = _attributeService.getManager( attribute.getCodeAttributeType( ) );
 
+			// the file kept from the previous version was checked when it was sent
+			boolean bKeptFile = false;
+
 			if( ! bIsUpdatable )
 			{
 				// there is no new value then take the old file value
@@ -787,6 +790,7 @@ public class DocumentService
 					strContentType = oldAttribute.getValueContentType( );
 					strFileName = oldAttribute.getTextValue( );
 					strExtension = FilenameUtils.getExtension( strFileName );
+					bKeptFile = true;
 				}
 			}
 
@@ -819,15 +823,16 @@ public class DocumentService
 					return AdminMessageService.getMessageUrl( mRequest, MESSAGE_FILE_SIZE_ERROR, params,
 							AdminMessage.TYPE_STOP );
 				}
-			}
-			else if( StringUtils.isNotBlank( extensionList ) && ! extensionList.contains( strExtension ) )
-			{
-				Object [ ] params = new Object [ 2 ];
-				params [0] = attribute.getName( );
-				params [1] = extensionList;
+				// Check the extension of every new file
+				if( ! bKeptFile && ! isExtensionAllowed( extensionList, strExtension ) )
+				{
+					Object [ ] params = new Object [ 2 ];
+					params [0] = attribute.getName( );
+					params [1] = extensionList;
 
-				return AdminMessageService.getMessageUrl( mRequest, MESSAGE_EXTENSION_ERROR, params,
-						AdminMessage.TYPE_STOP );
+					return AdminMessageService.getMessageUrl( mRequest, MESSAGE_EXTENSION_ERROR, params,
+							AdminMessage.TYPE_STOP );
+				}
 			}
 
 			// Check for specific attribute validation
@@ -876,6 +881,31 @@ public class DocumentService
 		}
 
 		return null;
+	}
+
+	/**
+	 * Tells whether the extension of a file is in the list of the extensions allowed for an attribute
+	 *
+	 * @param strExtensionList
+	 *            the allowed extensions, separated by commas; blank to allow every extension
+	 * @param strExtension
+	 *            the extension of the file
+	 * @return true if the extension is allowed
+	 */
+	static boolean isExtensionAllowed( String strExtensionList, String strExtension )
+	{
+		if( StringUtils.isBlank( strExtensionList ) )
+		{
+			return true;
+		}
+		for( String strAllowed : strExtensionList.split( "[,;\\s]+" ) )
+		{
+			if( StringUtils.isNotBlank( strAllowed ) && strAllowed.trim( ).replaceFirst( "^\\.", "" ).equalsIgnoreCase( strExtension ) )
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
