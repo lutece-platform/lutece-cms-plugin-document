@@ -52,6 +52,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -291,7 +292,9 @@ public class MoveSpaceRule extends AbstractRule implements Serializable
             strState = state.getName(  );
         }
 
-        String[] ruleArgs = { strSourceSpace, strState, strDestinationSpace };
+        // the description is HTML: its arguments are escaped
+        String[] ruleArgs = { StringEscapeUtils.escapeHtml4( strSourceSpace ), StringEscapeUtils.escapeHtml4( strState ),
+                StringEscapeUtils.escapeHtml4( strDestinationSpace ) };
 
         return I18nService.getLocalizedString( PROPERTY_RULE_DESCRIPTION, ruleArgs, getLocale(  ) );
     }

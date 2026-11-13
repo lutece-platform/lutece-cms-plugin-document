@@ -40,7 +40,9 @@ import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.message.MessageHtml;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.portal.web.cdi.mvc.Models;
@@ -53,7 +55,9 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
@@ -83,6 +87,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
     private static final String TEMPLATE_SELECT_SPACE = "/admin/plugins/document/rules/select_space_rule.html";
     private static final String MARK_RULES_LIST = "rules_list";
     private static final String MARK_RULE_TYPES_LIST = "rule_types_list";
+    private static final String MARK_RULES_DESCRIPTIONS = "rules_descriptions";
     private static final String MARK_CREATE_FORM = "create_form";
     private static final String MARK_RULE_TYPE_ID = "rule_type_id";
     private static final String MARK_SPACES_BROWSER = "spaces_browser";
@@ -158,6 +163,8 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
 
         List<Rule> listRules = RuleHome.findAll( getLocale(  ) );
         List<Rule> listRulesAuthorized = new ArrayList<Rule>(  );
+        // the description of each rule, by rule id: HTML built by the rule from escaped data
+        Map<String, Object> mapRulesDescriptions = new HashMap<>(  );
 
         for ( Rule rule : listRules )
         {
@@ -165,6 +172,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
             {
                 rule.setUser( user );
                 listRulesAuthorized.add( rule );
+                mapRulesDescriptions.put( Integer.toString( rule.getId(  ) ), HtmlMarkup.of( rule.getRule(  ) ) );
             }
         }
 		
@@ -172,6 +180,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
         
         //_model.put( MARK_RULES_LIST, listRulesAuthorized );
         _model.put( MARK_RULE_TYPES_LIST, RuleHome.getRuleTypesList( getLocale(  ) ) );
+        _model.put( MARK_RULES_DESCRIPTIONS, mapRulesDescriptions );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_RULES, getLocale(  ), _model );
 
@@ -214,7 +223,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
         // Spaces browser
         _model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
         _model.put( MARK_SPACES_BROWSER,
-            _documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), false, true ) );
+            HtmlMarkup.of( _documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), false, true ) ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECT_SPACE, getLocale(  ), _model );
 
@@ -269,7 +278,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
             strRuleTypeId = rule.getRuleTypeId(  );
         }
 
-        _model.put( MARK_CREATE_FORM, rule.getCreateForm( getUser(  ), getLocale(  ) ) );
+        _model.put( MARK_CREATE_FORM, HtmlMarkup.of( rule.getCreateForm( getUser(  ), getLocale(  ) ) ) );
         _model.put( MARK_RULE_TYPE_ID, strRuleTypeId );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_RULE, getLocale(  ), _model );
@@ -351,7 +360,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
         url.addParameter( PARAMETER_RULE_ID, strRuleId );
         rule.setLocale( getLocale(  ) );
 
-        String[] args = { rule.getRule(  ) };
+        Object[] args = { MessageHtml.of( rule.getRule(  ) ) };
 
         return AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_RULE_DELETE, args, null, url.getUrl(  ), null,
             AdminMessage.TYPE_CONFIRMATION,null, JSP_MANAGE_RULES );

@@ -40,7 +40,7 @@
 					</#if>
 				</@tform>
 				<#if !advanced_search??>
-					<#if query??><#assign aButtonUrl = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true&query=${query}' /><#else><#assign aButtonUrl = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true' /></#if>
+					<#if query??><#assign aButtonUrl = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true&query=${query?url}' /><#else><#assign aButtonUrl = 'jsp/admin/plugins/document/DocumentSearch.jsp?advanced_search=true' /></#if>
 					<@aButton href=aButtonUrl buttonIcon='list-search' title='#i18n{document.manage_document_publishing.labelAdvancedSearch}' />
 				</#if>
 			</@columns>

@@ -47,8 +47,10 @@ import fr.paris.lutece.plugins.document.web.DocumentJspBean;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.message.MessageHtml;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.RemovalListenerService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
@@ -345,8 +347,8 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
         if ( !
         		_removalListenerService.checkForRemoval( Integer.toString( nSpaceId ), listErrors, getLocale(  ) ) )
         {
-            String strCause = AdminMessageService.getFormattedList( listErrors, getLocale(  ) );
-            Object[] args = { strCause };
+            MessageHtml cause = AdminMessageService.getFormattedList( listErrors, getLocale(  ) );
+            Object[] args = { cause };
 
             return AdminMessageService.getMessageUrl( request, MESSAGE_CANNOT_DELETE, args, AdminMessage.TYPE_STOP );
         }
@@ -423,7 +425,7 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
         _model.put( MARK_SPACE, spaceToMove );
         _model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
         _model.put( MARK_SPACES_BROWSER,
-        		_documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), true, true ) );
+        		HtmlMarkup.of( _documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), true, true ) ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MOVE_SPACE, getLocale(  ), _model );
 

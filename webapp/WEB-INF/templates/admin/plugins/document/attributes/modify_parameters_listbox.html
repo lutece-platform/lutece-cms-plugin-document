@@ -10,7 +10,7 @@
 	<@inputGroup>
 		<@input type='text' id='${items.name}_value' name='${items.name}_value' placeHolder='${items.description}' />
 		<@inputGroupItem>
-			<@button type='submit' name='add' value='add' params='onclick="manageItems(1);return false;"' buttonIcon='plus-circle' title='#i18n{document.attributeType.listbox.btnAddItem}' />
+			<@button type='submit' id='${items.name}_add' name='add' value='add' buttonIcon='plus-circle' title='#i18n{document.attributeType.listbox.btnAddItem}' />
 		</@inputGroupItem>
 	</@inputGroup>
 </@formGroup>
@@ -20,24 +20,27 @@
 			<option value="${values}" <#list defaultValue.valueList as defaultvalue ><#if values==defaultvalue> class="bg-primary"</#if></#list>>${values}</option>
 		</#list>
 	</@select>
-	<@div params='style="display:none;"'>
+	<@div class="d-none">
 		<@select id='${items.name}' name='${items.name}' multiple=4>
 			<#list items.valueList as values >
 				<option value="${values}" selected="selected">${values}</option>
 			</#list>
 		</@select>
 	</@div>
-	<@button type='submit' name='delete' value='delete' params='onclick="manageItems(-1);return false;"' title='#i18n{document.attributeType.listbox.btnDelItem}' buttonIcon='trash' color='danger' />
-	<@button type='submit' name='bydefault' value='bydefault' params='onclick="setByDefault('${items.name}_select');return false;"' title='#i18n{document.attributeType.listbox.btnDefItem}' buttonIcon='star' />
+	<@button type='submit' id='${items.name}_delete' name='delete' value='delete' title='#i18n{document.attributeType.listbox.btnDelItem}' buttonIcon='trash' color='danger' />
+	<@button type='submit' id='${items.name}_bydefault' name='bydefault' value='bydefault' title='#i18n{document.attributeType.listbox.btnDefItem}' buttonIcon='star' />
 	<@input type='hidden' id='${defaultValue.name}' name='${defaultValue.name}' value='${valueDefaultValue!}' />
 </@formGroup>
 <script src="js/selectbox.js"></script>
 <script>
-function manageItems( actionItem ){
-objVisible = document.getElementsByName('${items.name}_select')[0];
-objHidden = document.getElementsByName('${items.name}')[0];
-objValue = document.getElementsByName('${items.name}_value')[0];
-objDefaultValue = document.getElementsByName('${defaultValue.name}')[0];
+{
+const itemsName = '${items.name?js_string?no_esc}';
+const defaultValueName = '${defaultValue.name?js_string?no_esc}';
+const manageItems = function( actionItem ){
+objVisible = document.getElementsByName(itemsName + '_select')[0];
+objHidden = document.getElementsByName(itemsName)[0];
+objValue = document.getElementsByName(itemsName + '_value')[0];
+objDefaultValue = document.getElementsByName(defaultValueName)[0];
 objHidden.selectedIndex = objVisible.selectedIndex;
 
 // add an option into list
@@ -57,11 +60,15 @@ if( actionItem == 1){
 	 selectAllOptions(objHidden);
 }
 
-function setByDefault(objName){
+const setByDefault = function(objName){
 objSelect = document.getElementsByName(objName)[0];
 choice = objSelect.selectedIndex;
 if(choice > -1){
-	document.getElementsByName("${defaultValue.name}")[0].value = objSelect.options[choice].text;
+	document.getElementsByName(defaultValueName)[0].value = objSelect.options[choice].text;
 	}
+};
+document.getElementById(itemsName + '_add').addEventListener('click', function(e){ e.preventDefault(); manageItems(1); });
+document.getElementById(itemsName + '_delete').addEventListener('click', function(e){ e.preventDefault(); manageItems(-1); });
+document.getElementById(itemsName + '_bydefault').addEventListener('click', function(e){ e.preventDefault(); setByDefault(itemsName + '_select'); });
 }
 </script>

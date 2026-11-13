@@ -54,6 +54,7 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.regularexpression.RegularExpressionService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.upload.MultipartItem;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
@@ -387,12 +388,12 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 		{
 			_model.put( MARK_ATTRIBUTE, _attribute );
 			_model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS,
-					manager.getCreateParametersFormHtml( _attribute.getParameters( ), getLocale( ) ) );
+					HtmlMarkup.of( manager.getCreateParametersFormHtml( _attribute.getParameters( ), getLocale( ) ) ) );
 		}
 		else
 		{
 			_attribute = new DocumentAttribute( );
-			_model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, manager.getCreateParametersFormHtml( getLocale( ) ) );
+			_model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS, HtmlMarkup.of( manager.getCreateParametersFormHtml( getLocale( ) ) ) );
 		}
 
 		ReferenceList listAttributeTypes = AttributeTypeHome.getAttributeTypesList( getLocale( ) );
@@ -683,14 +684,14 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 		{
 			_model.put( MARK_ATTRIBUTE, _attribute );
 			_model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS,
-					manager.getCreateParametersFormHtml( _attribute.getParameters( ), getLocale( ) ) );
+					HtmlMarkup.of( manager.getCreateParametersFormHtml( _attribute.getParameters( ), getLocale( ) ) ) );
 		}
 		else
 		{
 			_attribute = new DocumentAttribute( );
 			_model.put( MARK_ATTRIBUTE, attribute );
 			_model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS,
-					manager.getModifyParametersFormHtml( getLocale( ), nAttributeId ) );
+					HtmlMarkup.of( manager.getModifyParametersFormHtml( getLocale( ), nAttributeId ) ) );
 		}
 
 		// Regular expressions

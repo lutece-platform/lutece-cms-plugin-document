@@ -41,7 +41,7 @@
 			</option>
 		</#list>
 	</@select>
-	<@div params='style="display:none;"'>
+	<@div class="d-none">
 		<@select id='${items.name}' name='${items.name}' multiple=4>
 			<#list listValues as values >
 				<option value="${values}" selected="selected">${values}</option>
@@ -55,10 +55,10 @@
 <script src="js/selectbox.js"></script>
 <script>
 function manageItems( actionItem ){
-	objVisible = document.getElementsByName('${items.name}_select')[0];
-	objHidden = document.getElementsByName('${items.name}')[0];
-	objValue = document.getElementsByName('${items.name}_value')[0];
-	objDefaultValue = document.getElementsByName('${defaultValue.name}')[0];
+	objVisible = document.getElementsByName('${items.name?js_string?no_esc}_select')[0];
+	objHidden = document.getElementsByName('${items.name?js_string?no_esc}')[0];
+	objValue = document.getElementsByName('${items.name?js_string?no_esc}_value')[0];
+	objDefaultValue = document.getElementsByName('${defaultValue.name?js_string?no_esc}')[0];
 	objHidden.selectedIndex = objVisible.selectedIndex;
 	
 	// add an option into list
@@ -82,7 +82,7 @@ function manageItems( actionItem ){
 	objSelect = document.getElementsByName(objName)[0];
 	choice = objSelect.selectedIndex;
 	if(choice > -1){
-		document.getElementsByName("${defaultValue.name}")[0].value = objSelect.options[choice].text;
+		document.getElementsByName('${defaultValue.name?js_string?no_esc}')[0].value = objSelect.options[choice].text;
 	}
 }
 </script>

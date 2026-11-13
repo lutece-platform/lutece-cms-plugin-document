@@ -3,15 +3,15 @@
 		<@box>
 			<@boxHeader title='#i18n{document.manage_document.mass_archival_labelBtn}' />
 			<@boxBody>
-				<@tform id='massArchivalForm' name='massArchivalForm' method='post' action='jsp/admin/plugins/document/MassArchivalDocument.jsp'>
-					<@input type='hidden' name='archival_criteria" id="archival_criteria' value='space' />
+				<@tform id='massArchivalForm' name='massArchivalForm' method='post' action='jsp/admin/plugins/document/DoSearchMassArchivalDocument.jsp'>
+					<@input type='hidden' name='archival_criteria' id='archival_criteria' value='space' />
 					<@p>#i18n{document.manage_document.mass_archival.archiveInfo}</@p>
 					<@row>
 						<@columns sm=4 md=4>
 							<@box>
 								<@boxBody>
 									<@h level=3>
-										<@link params='data-toggle="collapse" data-criteria="space" data-parent="#accordion"' href='#collapseSpace'>
+										<@link params={"data-toggle": "collapse", "data-criteria": "space", "data-parent": "#accordion"} href='#collapseSpace'>
 											#i18n{document.manage_document.mass_archival.criteriaSpace}
 										</@link>
 									</@h>
@@ -26,7 +26,7 @@
 							<@box>
 								<@boxBody>
 									<@h level=3>
-										<@link params='data-toggle="collapse" data-criteria="date" data-parent="#accordion"r href=r#collapseDate' class='collapsed'>
+										<@link params={"data-toggle": "collapse", "data-criteria": "date", "data-parent": "#accordion"} href='#collapseDate' class='collapsed'>
 											#i18n{document.manage_document.mass_archival.criteriaDate}
 										</@link>
 									</@h>
@@ -45,7 +45,7 @@
 							<@box>
 								<@boxBody>
 									<@h level=3>	
-										<@link params='data-toggle="collapse" data-criteria="type" data-parent="#accordion"' href='#collapseType' class='collapsed'>
+										<@link params={"data-toggle": "collapse", "data-criteria": "type", "data-parent": "#accordion"} href='#collapseType' class='collapsed'>
 											#i18n{document.manage_document.mass_archival.criteriaType}
 										</@link>
 									</@h>
@@ -62,7 +62,7 @@
 						</@columns>
 					</@row>
 					<@formGroup>
-						<@button type='submit' title='#i18n{document.manage_document.mass_archival.archiveLbl}' buttonIcon='search' params='formaction="jsp/admin/plugins/document/DoSearchMassArchivalDocument.jsp"' />
+						<@button type='submit' title='#i18n{document.manage_document.mass_archival.archiveLbl}' buttonIcon='search' />
 					</@formGroup>
 				</@tform>
 			</@boxBody>

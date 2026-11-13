@@ -7,7 +7,7 @@
 		<strong>#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</strong> 
 		</#if>
 	</@p>
-	<@button type='submit' params='data-space="id_space_source"' title='#i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}' buttonIcon='check' />
+	<@button type='submit' params={"data-space": "id_space_source"} title='#i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}' buttonIcon='check' />
 </@formGroup>
 <@formGroup labelFor='id_state' labelKey='#i18n{module.document.rulemovespace.create_rule_move_space.ruleText2}'>
 	<#if id_state?exists >
@@ -25,5 +25,5 @@
 			<strong>#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</strong> 
 		</#if>
 	</@p>
-	<@button type='submit' params='data-space="id_space_destination"' title='#i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}' buttonIcon='check' />
+	<@button type='submit' params={"data-space": "id_space_destination"} title='#i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}' buttonIcon='check' />
 </@formGroup>

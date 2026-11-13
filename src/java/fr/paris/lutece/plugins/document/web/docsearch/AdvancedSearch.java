@@ -194,9 +194,6 @@ public class AdvancedSearch implements XPageApplication
 				}
 			}
 
-			// replace all quotes by html code
-			strSearchQuery = strSearchQuery.replaceAll( "\"", "&quot;" );
-
 			model.put( MARK_QUERY, strSearchQuery );
 			model.put( MARK_DATE_QUERY, strDate );
 

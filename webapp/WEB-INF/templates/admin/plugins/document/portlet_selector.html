@@ -2,8 +2,8 @@
 	<@row>
 		<@columns>
 			<ol class="breadcrumb">
-			  <li><a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input}&amp;selected_text="><i class="fa fa-home"></i></a></li>
-			  <li><a href="javascript:history.go(-1);"> Page </a></li>
+			  <li><a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&amp;selected_text="><i class="fa fa-home"></i></a></li>
+			  <li><a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&amp;selected_text=" data-lutece-action="back"> Page </a></li>
 			  <li>#i18n{document.selector.portlet.portletChoice}</li>
 			</ol>
             <#if portlets_list?size = 0>
@@ -12,7 +12,7 @@
 						<@icon style='exclamation-triangle' /> #i18n{document.selector.portlet.noPortlet} 
 					</p>
 					<br />
-					<@button type='button' params='onclick="javascript:history.go(-1);"' title='#i18n{portal.util.labelBack}' buttonIcon='times' />
+					<@aButton href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelBack}' buttonIcon='times' />
 				</@alert>
             <#else>
                 <@tform method='post' name='fsubmit' id='fsubmit' action='jsp/admin/plugins/document/DoSelectPortlet.jsp'>
@@ -28,7 +28,7 @@
 					<nav>
 						<ul class="pager">
 							<li>
-								<@link href='javascript:history.go(-1);' title='#i18n{portal.util.labelPrevious}'>
+								<@link href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelPrevious}'>
 									<@icon style='chevron-left' /> #i18n{portal.util.labelPrevious}
 								</@link>
 							</li>
@@ -66,3 +66,5 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 });
 </script>
+<#-- the insert service pages do not load the admin scripts: data-lutece-action="back" needs lutece-actions.js -->
+<script src="themes/admin/shared/js/util/lutece-actions.js"></script>

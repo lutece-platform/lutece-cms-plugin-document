@@ -41,7 +41,7 @@
 			</@formGroup>
 			<@formGroup>
 				<@button type='submit' title='#i18n{document.modify_space.buttonModify}' buttonIcon='device-floppy' />
-				<@button type='button' params='onclick="javascript:window.history.go(-1)"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
+				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${space.id?c}' params={"data-lutece-action": "back"} title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
 			</@formGroup>
 		</@tform>
 	</@pageColumn>

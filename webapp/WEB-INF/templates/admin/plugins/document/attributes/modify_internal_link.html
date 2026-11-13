@@ -1,54 +1,10 @@
 <@formGroup formStyle='inline' labelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required>
 	<@input type='textarea' id='${attribute.code}' name='${attribute.code}' readonly=true rows=5 cols=60>${attribute.textValue}</@input> 
-	<@button type='button' params='onclick="javascript:linkservice${attribute.code}();return false;"' buttonIcon='link' color='warning' />
+	<@button type='button' params={"data-document-internal-link": "service", "data-code": attribute.code} buttonIcon='link' color='warning' />
 	<!-- DOCUMENT-97: enable clearing internal link field. -->
-	<@button type='button' id='btnShowPreview_${attribute.code}' title='Link Service' buttonIcon='eye' hideTitle=['all'] />
-	<@button type='button' params='onclick="javascript:linkservice_clear${attribute.code}();return false;"' title='#i18n{document.attributeType.internallink.labelLinkServiceClear}' buttonIcon='trash' color='danger' hideTitle=['all'] />
+	<@button type='button' params={"data-document-internal-link": "preview", "data-code": attribute.code} title='Link Service' buttonIcon='eye' hideTitle=['all'] />
+	<@button type='button' params={"data-document-internal-link": "clear", "data-code": attribute.code} title='#i18n{document.attributeType.internallink.labelLinkServiceClear}' buttonIcon='trash' color='danger' hideTitle=['all'] />
 	<p id="show_preview_section_${attribute.code}">&nbsp;</p>
-	<div id="show_preview_${attribute.code}">&nbsp;</div>
+	<div id="show_preview_${attribute.code}"></div>
 </@formGroup>
-<script>
-// jQuery("img_linkservice_${attribute.code}").style.display = "inline";
-// DOCUMENT-97: enable clearing internal link field.
-// document.getElementById('img_linkservice_clear_${attribute.code}').style.display = "inline";
-const elementsToHover = document.querySelectorAll("#img_linkservice_${attribute.code}, #img_linkservice_clear_${attribute.code}");
-elementsToHover.forEach(function(element) {
-	element.addEventListener('mouseover', function() {
-		element.style.cursor = "pointer";
-	});
-
-	element.addEventListener('mouseout', function() {
-		element.style.cursor = "auto";
-	});
-});
-
-function linkservice${attribute.code}() {
-	const showPreview = document.getElementById('show_preview_${attribute.code}');
-	showPreview.innerHTML = "&nbsp;";
-
-	const fen = window.open("${base_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=${attribute.code}&selected_text=", "#i18n{document.attributeType.internallink.labelLinkService}", "toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, width=550, height=450");
-	fen.focus();
-}
-
-// DOCUMENT-97: enable clearing internal link field.
-function linkservice_clear${attribute.code}() {
-	const attributeCode = document.getElementById('${attribute.code}');
-	const showPreview = document.getElementById('show_preview_${attribute.code}');
-
-	attributeCode.value = "";
-	showPreview.innerHTML = "&nbsp;";
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-	const showPreview = document.getElementById('show_preview_${attribute.code}');
-	const btnShowPreview = document.getElementById('btnShowPreview_${attribute.code}');
-	const attributeCode = document.getElementById('${attribute.code}');
-
-	showPreview.style.display = 'none';
-
-	btnShowPreview.addEventListener('click', function () {
-		showPreview.innerHTML = attributeCode.value + '&nbsp;';
-		showPreview.style.display = (showPreview.style.display === 'none') ? 'block' : 'none';
-	});
-});
-</script>
+<script src="themes/shared/plugins/document/js/documentInternalLink.js"></script>

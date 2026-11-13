@@ -9,13 +9,13 @@
 <@input type='hidden' name='browser_selected_space_id' value='${space.id}' />
 <#if space?has_content && space.documentCreationAllowed >
 <@formGroup>
-	<@aButton href='javascript:goUp();' title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' color='default' />
+	<@aButton href='#' params={"data-document-space-browser": "up"} title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' color='default' />
 	<@staticText><img src="${space.iconUrl}" alt="${space.name}"> ${space.name}</@staticText>
 </@formGroup>	
 <#else>
 <@formGroup>
 	<#if space.id &gt; 0 && go_up >
-		<@aButton href='javascript:goUp();' title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' color='default' />
+		<@aButton href='#' params={"data-document-space-browser": "up"} title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' color='default' />
 	</#if>
 </@formGroup>
 </#if>
@@ -23,7 +23,7 @@
 	<@listGroup>
 		<#list spaces_list as item_space >
 			<@listGroupItem>
-				<@link href='javascript:openSpace(${item_space.id});' title='${item_space.name}'>
+				<@link href='#' params={"data-document-space-browser": "open", "data-space-id": item_space.id?c} title='${item_space.name}'>
 					<img src="${item_space.iconUrl}" alt="${item_space.name}" class="img-fluid"> 
 					${item_space.name}
 				</@link>
@@ -34,16 +34,41 @@
 <script>
 formId = 0;
 function goUp(){ 
-	document.forms[formId].action='${action}';
-	document.forms[formId].browser_id_space.value='${space.idParent}';
-	document.forms[formId].browser_selected_space_id='${space.idParent}';
+	document.forms[formId].action='${action?js_string?no_esc}';
+	document.forms[formId].browser_id_space.value='${space.idParent?c}';
+	document.forms[formId].browser_selected_space_id='${space.idParent?c}';
 	document.forms[formId].submit();
 }
 
 function openSpace(idSpace){
-	document.forms[formId].action='${action}';
+	document.forms[formId].action='${action?js_string?no_esc}';
 	document.forms[formId].browser_id_space.value=idSpace;
 		document.forms[formId].browser_selected_space_id.value=idSpace;  
 	document.forms[formId].submit();
+}
+
+<#-- the links of the browser call goUp, openSpace and modifyChoice when clicked: a page that includes the browser may wrap them -->
+if ( !window.documentSpaceBrowserReady ) {
+	window.documentSpaceBrowserReady = true;
+	document.addEventListener( 'click', function( event ) {
+		const link = event.target.closest( '[data-document-space-browser]' );
+		if ( !link ) {
+			return;
+		}
+		event.preventDefault( );
+		switch ( link.dataset.documentSpaceBrowser ) {
+			case 'up':
+				window.goUp( );
+				break;
+			case 'open':
+				window.openSpace( link.dataset.spaceId );
+				break;
+			case 'modify':
+				window.modifyChoice( );
+				break;
+			default:
+				break;
+		}
+	} );
 }
 </script>

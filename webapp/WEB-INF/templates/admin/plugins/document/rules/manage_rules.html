@@ -13,7 +13,7 @@
 		<@manageFeature>
 			<#list rules_list as rule >
 				<@manageFeatureItem>
-					<@manageFeatureItemColumn>${rule.rule}</@manageFeatureItemColumn>
+					<@manageFeatureItemColumn>${rules_descriptions[rule.id?c]!}</@manageFeatureItemColumn>
 					<@manageFeatureItemColumn align='end' auto=true>
 						<@aButton href='jsp/admin/plugins/document/DeleteRule.jsp?id_rule=${rule.id}' title='#i18n{document.manage_rules.tooltipDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' />
 					</@manageFeatureItemColumn>

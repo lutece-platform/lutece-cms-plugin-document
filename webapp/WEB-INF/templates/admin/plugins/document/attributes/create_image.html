@@ -16,7 +16,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     var cropGroup = document.getElementById('crop_group');
     var cropCheckbox = document.getElementById('crop');
-    var attributeCodeWidth = document.getElementById('${attribute.code}_width');
+    var attributeCodeWidth = document.getElementById('${attribute.code?js_string?no_esc}_width');
 
     cropGroup.style.display = 'none';
     attributeCodeWidth.disabled = true;

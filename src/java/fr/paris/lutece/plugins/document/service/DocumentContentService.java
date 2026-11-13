@@ -62,6 +62,7 @@ import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -467,16 +468,16 @@ public class DocumentContentService extends ContentService
                     type.getContentServiceXslSource(  ), DOCUMENT_STYLE_PREFIX_ID + type.getStyleSheetId( nMode ),
                     htParamRequest, null );
 
-            model.put( MARK_DOCUMENT, strDocument );
+            model.put( MARK_DOCUMENT, HtmlMarkup.of( strDocument ) );
             
             if ( !document.isSkipPortlet() )
             {
-            	model.put( MARK_PORTLET, getPortlet( request, strPortletId, nMode ) );
+            	model.put( MARK_PORTLET, HtmlMarkup.of( getPortlet( request, strPortletId, nMode ) ) );
             }
             
             if ( !document.isSkipCategories() )
             {
-            	model.put( MARK_CATEGORY, getRelatedDocumentsPortlet( request, document, nPortletId, nMode ) );
+            	model.put( MARK_CATEGORY, HtmlMarkup.of( getRelatedDocumentsPortlet( request, document, nPortletId, nMode ) ) );
             }
             
             model.put( MARK_DOCUMENT_ID, strDocumentId );

@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.content.PageData;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.includes.PageInclude;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppPathService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -97,7 +98,7 @@ public class DocumentMetaPageInclude implements PageInclude
                 }
             }
 
-            rootModel.put( MARK_DOCUMENT_META, strMeta );
+            rootModel.put( MARK_DOCUMENT_META, HtmlMarkup.of( strMeta ) );
         }
     }
 
