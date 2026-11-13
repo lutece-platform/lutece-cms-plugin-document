@@ -10,12 +10,12 @@
 			<#list category_list as categoryDisplay>
 			<@manageFeatureItem>
 				<@manageFeatureItemColumn auto=true>
-					<#if categoryDisplay.iconUrl??><@img class='img-thumbnail thumbnail-sm me-5' url=categoryDisplay.iconUrl! alt='${(categoryDisplay.category).name}' title='${(categoryDisplay.category).name}' /></#if>
+					<#if categoryDisplay.iconUrl??><@img class='img-thumbnail thumbnail-sm me-5' url=categoryDisplay.iconUrl! alt='' /></#if>
 					${(categoryDisplay.category).name} : ${(categoryDisplay.category).description!} - #i18n{document.manage_category.columnTitleCountLinkedDocuments} : ${categoryDisplay.countLinkedDocuments!}
 				</@manageFeatureItemColumn>
 				<@manageFeatureItemColumn align='end'>
-					<@aButton href='jsp/admin/plugins/document/ModifyCategory.jsp?category_id=${(categoryDisplay.category).id}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' hideTitle=['all'] />
-					<@aButton href='jsp/admin/plugins/document/RemoveCategory.jsp?category_id=${(categoryDisplay.category).id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' hideTitle=['all'] />
+					<@aButton href='jsp/admin/plugins/document/ModifyCategory.jsp?category_id=${(categoryDisplay.category).id}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' hideTitle=['all'] params={"aria-label": "#i18n{portal.util.labelModify} ${(categoryDisplay.category).name}"} />
+					<@aButton href='jsp/admin/plugins/document/RemoveCategory.jsp?category_id=${(categoryDisplay.category).id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' hideTitle=['all'] params={"aria-label": "#i18n{portal.util.labelDelete} ${(categoryDisplay.category).name}"} />
 				</@manageFeatureItemColumn>
 			</@manageFeatureItem>
 			</#list>

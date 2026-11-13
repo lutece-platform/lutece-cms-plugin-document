@@ -18,7 +18,7 @@
 					<@listGroup>
 						<#list pages_list as page>
 							<@listGroupItem>
-								<@radioButton id='page_id_${page.id}' name='page_id' value='${page.id}' />
+								<@radioButton id='page_id_${page.id}' name='page_id' value='${page.id}'><span class="visually-hidden">${page.name}</span></@radioButton>
 								<@link href='jsp/admin/plugins/document/SelectPage.jsp?page_id=${page.id?c}&input=${.data_model.input?url}&subcategory=${type_filter?url}'>
 									${page.name} - ${page.description}
 								</@link>

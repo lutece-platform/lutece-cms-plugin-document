@@ -26,14 +26,14 @@
 						</@formGroup>
 						<@formGroup labelFor='query' labelKey='#i18n{document.search_results.labelSearch}' rows=2>
 							<@inputGroup>
-								<@input type='text' name='query' value=queryvalue placeholder='Exemple : card' />
+								<@input type='text' name='query' id='query' value=queryvalue placeholder='Exemple : card' />
 								<@button type='submit' title='#i18n{document.search_results.buttonSearch}' buttonIcon='search' />
 							</@inputGroup>
 						</@formGroup>
 					<#else>
 						<@formGroup labelFor='query' labelKey='#i18n{document.search_results.labelSearch}' hideLabel=['all'] class='' rows=2>
 						<@inputGroup>
-							<@input type='text' name='query' value=queryvalue placeholder='Exemple : card' />
+							<@input type='text' name='query' id='query' value=queryvalue placeholder='Exemple : card' />
 							<@button type='submit' title='#i18n{document.search_results.buttonSearch}' buttonIcon='search' />
 						</@inputGroup>
 						</@formGroup>

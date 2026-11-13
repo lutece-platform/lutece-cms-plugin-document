@@ -10,8 +10,8 @@
 		<@manageFeatureItem>
 			<@manageFeatureItemColumn auto=true>${type.name} - ${type.description}</@manageFeatureItemColumn>
 			<@manageFeatureItemColumn align='end'>
-				<@aButton href='jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.modify_document_type.buttonModify}' buttonIcon='edit'  hideTitle=['all'] />
-				<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.manage_document_types.buttonDelete}' buttonIcon='trash' color='danger' hideTitle=['all'] />
+				<@aButton href='jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.modify_document_type.buttonModify}' buttonIcon='edit' hideTitle=['all'] params={"aria-label": "#i18n{document.modify_document_type.buttonModify} ${type.name}"} />
+				<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.manage_document_types.buttonDelete}' buttonIcon='trash' color='danger' hideTitle=['all'] params={"aria-label": "#i18n{document.manage_document_types.buttonDelete} ${type.name}"} />
 			</@manageFeatureItemColumn>
 		</@manageFeatureItem>
 		</#list>

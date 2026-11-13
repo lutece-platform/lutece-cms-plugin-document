@@ -75,7 +75,7 @@
 					<@formGroup labelFor='view_type' labelKey='#i18n{document.manage_documents.labelViewType}'>
 							<@inputGroup>
 								<@select name='view_type' default_value='${view_type}' items=view_types_list />
-								<@button type='submit' buttonIcon='check' />
+								<@button type='submit' title='#i18n{portal.util.labelValidate}' buttonIcon='check' hideTitle=['all'] />
 							</@inputGroup>
 						</@formGroup>
 					</@tform>
@@ -123,8 +123,8 @@
 							<@manageFeature class=''>
 								<@manageFeatureItem align='end'>
 									<@manageFeatureItemColumn align='end'>
-										<@checkBox id='select_all' orientation='switch' name='select_all' wrapperClass='mb-0' />
-										<@formGroup formStyle='' labelFor='selection' rows=2>
+										<@checkBox id='select_all' orientation='switch' name='select_all' wrapperClass='mb-0' labelKey='#i18n{document.manage_documents.labelSelectAll}' labelClass='visually-hidden' />
+										<@formGroup formStyle='' labelFor='selection' labelKey='#i18n{document.manage_documents.labelSelectionAction}' hideLabel=['all'] rows=2>
 											<@inputGroup>
 												<@select id='selection' name='selection' disabled=true>
 													<@option value='validate' label='#i18n{document.manage_document.validate}' />
@@ -144,7 +144,7 @@
 								<#list documents_list as document >
 								<@manageFeatureItem class='document-row searchable' params={"data-document": "${document.id?c} ${document.title}"}>
 									<@manageFeatureItemColumn>
-										<@checkBox id='document_selection' orientation='switch' name='document_selection' value='${document.id}' /> 
+										<@checkBox id='document_selection_${document.id?c}' orientation='switch' name='document_selection' value='${document.id}' labelKey=i18n( 'document.manage_documents.labelSelectDocument', document.title ) labelClass='visually-hidden' /> 
 										<@p class='text-truncate fw-bold' params={"title": "${document.title} - id: ${document.id?c}"}>
 										<#assign docTitle=''/>
 										<#assign docTitle><#list document.actions?sort_by("idAction") as action><#if action.url?has_content><#if action.idAction == 2 || action.idAction == 9><@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description} ${document.title}' class='dropdown-item'>${document.title}</@link><#break></#if></#if></#list></#assign>
@@ -166,7 +166,7 @@
 										</#if>
 									</@manageFeatureItemColumn>
 									<@manageFeatureItemColumn auto=true>
-										<@button type='button' class='btn-action' buttonIcon='dots-vertical fs-2' dropdownMenu=true>
+										<@button type='button' class='btn-action' title='#i18n{document.manage_documents.labelActions}' hideTitle=['all'] params={"aria-label": "#i18n{document.manage_documents.labelActions} ${document.title}"} buttonIcon='dots-vertical fs-2' dropdownMenu=true>
 										<#list document.actions?sort_by("idAction") as action>
 											<#if action.url?has_content>
 												<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}' class='dropdown-item'><@icon style='${action.iconUrl}' title=action.description />${action.name}</@link>
@@ -188,7 +188,7 @@
 										<@div class="card-actions btn-actions">
 											<#list document.actions?sort_by("idAction") as action>
 												<#if action.url?has_content>
-													<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color='' style='btn btn-action' hideTitle=['all'] />
+													<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description}' buttonIcon='${action.iconUrl}' color='' style='btn btn-action' hideTitle=['all'] params={"aria-label": "${action.description} ${document.title}"} />
 												</#if>
 											</#list>
 										</@div>

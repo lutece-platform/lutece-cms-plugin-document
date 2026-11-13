@@ -1,10 +1,10 @@
 <@formGroup formStyle='inline' labelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required>
 	<@input type='textarea' id='${attribute.code}' name='${attribute.code}' readonly=true rows=5 cols=60>${attribute.textValue}</@input> 
-	<@button type='button' params={"data-document-internal-link": "service", "data-code": attribute.code} buttonIcon='link' color='warning' />
+	<@button type='button' params={"data-document-internal-link": "service", "data-code": attribute.code} title='#i18n{document.attributeType.internallink.labelLinkService}' buttonIcon='link' color='warning' hideTitle=['all'] />
 	<!-- DOCUMENT-97: enable clearing internal link field. -->
-	<@button type='button' params={"data-document-internal-link": "preview", "data-code": attribute.code} title='Link Service' buttonIcon='eye' hideTitle=['all'] />
+	<@button type='button' params={"data-document-internal-link": "preview", "data-code": attribute.code} title='#i18n{document.attributeType.internallink.buttonShowPreview}' buttonIcon='eye' hideTitle=['all'] />
 	<@button type='button' params={"data-document-internal-link": "clear", "data-code": attribute.code} title='#i18n{document.attributeType.internallink.labelLinkServiceClear}' buttonIcon='trash' color='danger' hideTitle=['all'] />
 	<p id="show_preview_section_${attribute.code}">&nbsp;</p>
-	<div id="show_preview_${attribute.code}"></div>
+	<div id="show_preview_${attribute.code}" aria-live="polite"></div>
 </@formGroup>
 <script src="themes/shared/plugins/document/js/documentInternalLink.js"></script>
