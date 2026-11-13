@@ -251,7 +251,7 @@ public class CategoryService implements ImageResourceProvider
 		url.addParameter( Parameters.RESOURCE_TYPE, IMAGE_RESOURCE_TYPE_ID );
 		url.addParameter( Parameters.RESOURCE_ID, Integer.toString( nCategoryId ) );
 
-		return url.getUrlWithEntity( );
+		return url.getUrl( );
 	}
 
 	/**
