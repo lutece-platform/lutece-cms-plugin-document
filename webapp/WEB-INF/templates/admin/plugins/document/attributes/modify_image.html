@@ -13,11 +13,8 @@
 						</@formGroup>
 					</@columns>
 					<@columns lg=6>
-						<#assign params = 'data-title="${attribute.textValue}"' />
-						<#if attribute.valueContentType?contains('image')>
-							<#assign params += ' data-lightbox="image-document"' />
-						</#if>
-						<@link href='servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true&nocache' params=params>
+						<#assign linkParams = { "data-title": attribute.textValue } + attribute.valueContentType?contains('image')?then( { "data-lightbox": "image-document" }, {} ) />
+						<@link href='servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true&nocache' params=linkParams>
 							<#assign imgUrl><@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" /></#assign>
 						   <@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='thumbnail thumbnail-lg' />
 						</@link>
@@ -38,10 +35,11 @@
 </@formGroup>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const attributeCode = '${attribute.code?js_string?no_esc}';
     const cropGroup = document.getElementById('crop_group');
 	if( cropGroup != null ){
-		const cropCheckbox = document.getElementById('${attribute.code}_crop');
-		const attributeCodeWidth = document.getElementById('${attribute.code}_width');
+		const cropCheckbox = document.getElementById(attributeCode + '_crop');
+		const attributeCodeWidth = document.getElementById(attributeCode + '_width');
 		cropGroup.style.display = 'none';
 		attributeCodeWidth.disabled = true;
 		attributeCodeWidth.classList.add('disabled');
@@ -60,22 +58,20 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	}
 
-    const updateCheckbox${attribute.code} = document.getElementById('update_${attribute.code}');
-	const ${attribute.code}Input = document.getElementById('${attribute.code}');
+    const updateCheckbox = document.getElementById('update_' + attributeCode);
+	const fileInput = document.getElementById(attributeCode);
 
-	${attribute.code}Input.required = false;
-	updateCheckbox${attribute.code}.addEventListener('change', function() {
-		if (updateCheckbox${attribute.code}.checked) {
-			updateCheckbox${attribute.code}.required = true;
-		} else {
-			updateCheckbox${attribute.code}.required = false;
-		}
-	});
+	fileInput.required = false;
+	if (updateCheckbox) {
+		updateCheckbox.addEventListener('change', function() {
+			updateCheckbox.required = updateCheckbox.checked;
+		});
 
-	${attribute.code}Input.addEventListener('change', function() {
-		if (${attribute.code}Input.value !== '') {
-			updateCheckbox${attribute.code}.checked = true;
-		}
-	});
+		fileInput.addEventListener('change', function() {
+			if (fileInput.value !== '') {
+				updateCheckbox.checked = true;
+			}
+		});
+	}
 });
 </script>

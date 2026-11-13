@@ -123,7 +123,7 @@
 							<@manageFeature class=''>
 								<@manageFeatureItem align='end'>
 									<@manageFeatureItemColumn align='end'>
-										<@checkBox id='select_all' orientation='switch' name='select_all' params='style="margin-block-end:0;"' />
+										<@checkBox id='select_all' orientation='switch' name='select_all' wrapperClass='mb-0' />
 										<@formGroup formStyle='' labelFor='selection' rows=2>
 											<@inputGroup>
 												<@select id='selection' name='selection' disabled=true>
@@ -142,17 +142,17 @@
 								</@manageFeature>
 								<@manageFeature class=''>
 								<#list documents_list as document >
-								<@manageFeatureItem class='document-row searchable' params='data-document="${document.id} ${document.title}"'>
+								<@manageFeatureItem class='document-row searchable' params={"data-document": "${document.id?c} ${document.title}"}>
 									<@manageFeatureItemColumn>
 										<@checkBox id='document_selection' orientation='switch' name='document_selection' value='${document.id}' /> 
-										<@p class='text-truncate fw-bold' params='title="${document.title} - id: ${document.id}"'>
+										<@p class='text-truncate fw-bold' params={"title": "${document.title} - id: ${document.id?c}"}>
 										<#assign docTitle=''/>
 										<#assign docTitle><#list document.actions?sort_by("idAction") as action><#if action.url?has_content><#if action.idAction == 2 || action.idAction == 9><@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}' title='${action.description} ${document.title}' class='dropdown-item'>${document.title}</@link><#break></#if></#if></#list></#assign>
-										<#if docTitle?trim !=''>${docTitle}<#else></#if>${document.title}</@p>
+										<#if docTitle?markup_string?trim !=''>${docTitle}<#else></#if>${document.title}</@p>
 									</@manageFeatureItemColumn>
 									<#if document.comment != ''><@manageFeatureItemColumn auto=true><@alert color='info'><@icon style='info-circle' /> ${document.comment}</@alert></@manageFeatureItemColumn></#if>
 									<@manageFeatureItemColumn auto=true>
-										<@span class='me-2' params='title="#i18n{document.manage_documents.labelDateModification}"'><@icon style='calendar'  /> ${document.dateModification}</@span>
+										<@span class='me-2' params={"title": "#i18n{document.manage_documents.labelDateModification}"}><@icon style='calendar'  /> ${document.dateModification}</@span>
 										<#if document.stateId=3>
 											<@tag color='success' title='#i18n{document.manage_documents.labelState}' tagIcon='check-circle'>${document.state}</@tag>
 										<#else>
@@ -182,7 +182,7 @@
 					<#if view_type = 'thumbnail'>
 						<@row class='row-cards h-100'>
 						<#list documents_list as document >
-							<@columns sm=6 lg=4 class='document-row' params='data-document="${document.id} ${document.title}"'>
+							<@columns sm=6 lg=4 class='document-row' params={"data-document": "${document.id?c} ${document.title}"}>
 								<@box id="document_${document.id}" class='card-sm' >
 									<@boxHeader>
 										<@div class="card-actions btn-actions">
@@ -193,7 +193,7 @@
 											</#list>
 										</@div>
 									</@boxHeader>
-									<@img url=document.thumbnail! class='card-img-top object-fit-contain' alt=document.title! title='${document.title} - ${document.type}' params='style="max-height:120px"' />
+									<@img url=document.thumbnail! class='card-img-top object-fit-contain' alt=document.title! title='${document.title} - ${document.type}' params={"height": "120"} />
 									<@boxBody>				
 										<@h level=3 class='card-title'><#if document.title?length gt 18>${document.title?substring(0,18)}...<#else>${document.title}</#if> - ${document.id}</@h>							
 									</@boxBody>
@@ -216,7 +216,7 @@ import LuteceTree from './themes/shared/modules/luteceTree.js';
 const tree = document.querySelector("#lutece-tree");
 const mapTree = new LuteceTree( tree );
 let sessionSpaceId = sessionStorage.getItem('document_space_id');
-let spaceid = sessionSpaceId != null ? sessionSpaceId : <#if space?has_content>${space.id}<#else>null</#if>;
+let spaceid = sessionSpaceId != null ? sessionSpaceId : <#if space?has_content>${space.id?c}<#else>null</#if>;
 // Get space_id from url parameter
 const loc = location.search;
 if ( spaceid != loc ) {
@@ -232,7 +232,7 @@ mapTree.selectTreeNode( <#noparse>`#node-${spaceid}`</#noparse> )
 <script src="themes/shared/plugins/document/js/documentDragDrop.js"></script>
 <script>
 /****** Document search ******/
-document.querySelector("#FullTextSearchDocument .form-text").textContent = "#i18n{document.manage_documents.labelAllTextSearch}";
+document.querySelector("#FullTextSearchDocument .form-text").textContent = '${i18n('document.manage_documents.labelAllTextSearch')?js_string?no_esc}';
 document.getElementById("FullTextSearchDocument").addEventListener("submit", function(e) {
 	const queryInput = document.querySelector("#FullTextSearchDocument input#query");
 	if (!isNaN(queryInput.value) && queryInput.value.trim() !== "") {
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const importLinkButton = document.getElementById('importLinkButton');
 	if (importLinkButton) {
 		importLinkButton.addEventListener('click', function() {
-			window.location.href = 'jsp/admin/plugins/files2docs/SelectFiles.jsp?browser_selected_space_id=${current_space_id}&document_type_code=' + document.getElementById('document_type_code').value;
+			window.location.href = 'jsp/admin/plugins/files2docs/SelectFiles.jsp?browser_selected_space_id=${current_space_id?url?js_string?no_esc}&document_type_code=' + encodeURIComponent( document.getElementById('document_type_code').value );
 		});
 	}
 });

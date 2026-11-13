@@ -2,7 +2,7 @@
 	<div class="col-xs-12 col-sm-12 col-md-12">
 		<div class="well">
 		<h3>#i18n{document.advanced_search.title}</h3>
-		<form id="advanced_search_form" name="advanced_search_form" action="${url}?page=advanced_search&search_query=true" method="post">
+		<form id="advanced_search_form" name="advanced_search_form" action="${safeUrl(url)}?page=advanced_search&amp;search_query=true" method="post">
 			<label for="searchinput">#i18n{document.advanced_search.query}:</label><input name="query" id="searchinput" type="text" value="<#if query??>${query}</#if>"/>
 			<label for="title">#i18n{document.advanced_search.limit}:</label>
 			#i18n{document.advanced_search.checkbox.title}<input name="title" id="title" type="checkbox" <#if title??>checked</#if>/>
@@ -12,7 +12,7 @@
 			<#if date_error??><div id="error">${date_error}</div></#if>
 			<label for="document_type">#i18n{document.advanced_search.list.type}:</label><@combo name="document_type"  items=document_type_list default_value=selected_type />
 			<input id="searchsubmit" class="site-buttons" type="submit" value="#i18n{document.advanced_search.button.search}"/>
-			<input id="button-erase" class="site-buttons" type="button"  onclick="window.clear()" value="#i18n{document.advanced_search.button.erase}"/>
+			<input id="button-erase" class="site-buttons" type="button" value="#i18n{document.advanced_search.button.erase}"/>
 		</form>
 		</div>
 	</div>
@@ -25,7 +25,7 @@
 		<#list content as document>
 			<li>
 				<#if document.idPortlet != (-1) >
-			        <a href="${url}?document_id=${document.docSearchItem.id}&#38;portlet_id=${document.idPortlet}">
+			        <a href="${safeUrl(url)}?document_id=${document.docSearchItem.id}&#38;portlet_id=${document.idPortlet?c}">
 			            ${document.docSearchItem.title}
 					</a> 
 				</#if>          
@@ -43,11 +43,11 @@
 </#if>
 <@getDate idField="date" language=locale />
 <script>
-function clear() {
+document.getElementById("button-erase").addEventListener("click", function() {
 	document.getElementById("advanced_search_form").elements["searchinput"].value = "";
 	document.getElementById("advanced_search_form").elements["title"].checked = false;
 	document.getElementById("advanced_search_form").elements["summary"].checked = false;
 	document.getElementById("advanced_search_form").elements["date"].value = "";
 	document.getElementById("advanced_search_form").elements["document_type"].selectedIndex = 0;
-}
+});
 </script>

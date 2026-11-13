@@ -41,6 +41,7 @@ import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.portal.ThemesService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -108,7 +109,7 @@ public class DocumentContentJspBean implements java.io.Serializable
 
 
         _model.put( MARK_BASE_URL, AppPathService.getBaseUrl( request ) );
-        _model.put( MARK_PREVIEW, strPreview );
+        _model.put( MARK_PREVIEW, HtmlMarkup.of( strPreview ) );
         _model.put( MARK_PORTAL_DOMAIN, request.getServerName(  ) );
         _model.put( MARK_THEME, ThemesService.getGlobalThemeObject(  ) );
 

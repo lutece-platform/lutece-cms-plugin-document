@@ -19,21 +19,22 @@
 	</#if>
 </@row>
 <script>
-const updateCheckbox${attribute.code} = document.getElementById('update_${attribute.code}');
-const ${attribute.code}Input = document.getElementById('${attribute.code}');
+{
+const attributeCode = '${attribute.code?js_string?no_esc}';
+const updateCheckbox = document.getElementById('update_' + attributeCode);
+const fileInput = document.getElementById(attributeCode);
 
-${attribute.code}Input.required = false;
-updateCheckbox${attribute.code}.addEventListener('change', function() {
-	if (updateCheckbox${attribute.code}.checked) {
-		updateCheckbox${attribute.code}.required = true;
-	} else {
-		updateCheckbox${attribute.code}.required = false;
-	}
-});
+fileInput.required = false;
+if (updateCheckbox) {
+	updateCheckbox.addEventListener('change', function() {
+		updateCheckbox.required = updateCheckbox.checked;
+	});
 
-${attribute.code}Input.addEventListener('change', function() {
-	if (${attribute.code}Input.value !== '') {
-		updateCheckbox${attribute.code}.checked = true;
-	}
-});
+	fileInput.addEventListener('change', function() {
+		if (fileInput.value !== '') {
+			updateCheckbox.checked = true;
+		}
+	});
+}
+}
 </script>

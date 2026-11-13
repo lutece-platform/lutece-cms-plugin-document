@@ -110,7 +110,7 @@
 						<#if document_list_portlet_list?size gt 0 || document_portlet_list?size gt 0 >
 							<@tform name='assignDocument' method='post' action='jsp/admin/plugins/document/DoAssignedDocument.jsp'>
 							<@input type='hidden' name='id_document' value='${document.id}' />
-							<@input type='hidden' name='status" id="status' value='${status_published}' />
+							<@input type='hidden' name='status' id='status' value='${status_published}' />
 							<@row>
 								<@columns>
 									<@tabs>
@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const btnAssign = document.getElementById('btnAssign');
 	if (btnAssign) {
 		btnAssign.addEventListener('click', function() {
-			document.getElementById('status').value = "${status_unpublished}";
+			document.getElementById('status').value = '${status_unpublished?c}';
 		});
 	}
 	

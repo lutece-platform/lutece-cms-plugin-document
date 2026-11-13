@@ -78,6 +78,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.search.IndexationService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -404,7 +405,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             Collections.sort( listDocuments, new AttributeComparator( strSortedAttributeName, bIsAscSort ) );
         }
 
-        _model.put( MARK_SPACES_TREE, strSpacesTree );
+        _model.put( MARK_SPACES_TREE, HtmlMarkup.of( strSpacesTree ) );
         _model.put( MARK_SPACE_ACTIONS_LIST, listSpaceActions );
         _model.put( MARK_SPACE, currentSpace );
         _model.put( MARK_PAGINATOR, paginator );
@@ -463,11 +464,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         _model.put( MARK_LOCALE, getLocale(  ).getLanguage(  ) );
         _model.put( MARK_DOCUMENT_TYPE, documentType.getCode(  ) );
 
-        _model.put( MARK_CATEGORY, getCategoryCreateForm( request ) );
+        _model.put( MARK_CATEGORY, HtmlMarkup.of( getCategoryCreateForm( request ) ) );
 
-        _model.put( MARK_METADATA, getMetadataCreateForm( request, strDocumentTypeCode ) );
-        _model.put( MARK_FIELDS,
-        		_documentService.getCreateForm( strDocumentTypeCode, getLocale(  ), AppPathService.getBaseUrl( request ) ) );
+        _model.put( MARK_METADATA, HtmlMarkup.of( getMetadataCreateForm( request, strDocumentTypeCode ) ) );
+        _model.put( MARK_FIELDS, HtmlMarkup.of(
+        		_documentService.getCreateForm( strDocumentTypeCode, getLocale(  ), AppPathService.getBaseUrl( request ) ) ) );
         _model.put( MARK_CURRENT_DATE, strCurrentDate );
 
         // PageTemplate
@@ -492,7 +493,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             _model.put( entry.getKey( ), entry.getValue( ) );
         }
 
-        _model.put( MARK_DOCUMENT_PAGE_TEMPLATES_LIST, strPageTemplatesRow );
+        _model.put( MARK_DOCUMENT_PAGE_TEMPLATES_LIST, HtmlMarkup.of( strPageTemplatesRow.toString(  ) ) );
 
         ReferenceList listMailingLists = AdminMailingListService.getMailingLists( getUser(  ) );
         _model.put( MARK_MAILINGLISTS_LIST, listMailingLists );
@@ -699,15 +700,15 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             nIndexRow++;
         }
 
-        _model.put( MARK_DOCUMENT_PAGE_TEMPLATES_LIST, strPageTemplatesRow );
+        _model.put( MARK_DOCUMENT_PAGE_TEMPLATES_LIST, HtmlMarkup.of( strPageTemplatesRow.toString(  ) ) );
 
         ReferenceList listMailingLists = AdminMailingListService.getMailingLists( getUser(  ) );
         _model.put( MARK_MAILINGLISTS_LIST, listMailingLists );
 
-        _model.put( MARK_CATEGORY, getCategoryModifyForm( request, document ) );
-        _model.put( MARK_METADATA, getMetadataModifyForm( request, document ) );
-        _model.put( MARK_FIELDS,
-        		_documentService.getModifyForm( document, getLocale(  ), AppPathService.getBaseUrl( request ) ) );
+        _model.put( MARK_CATEGORY, HtmlMarkup.of( getCategoryModifyForm( request, document ) ) );
+        _model.put( MARK_METADATA, HtmlMarkup.of( getMetadataModifyForm( request, document ) ) );
+        _model.put( MARK_FIELDS, HtmlMarkup.of(
+        		_documentService.getModifyForm( document, getLocale(  ), AppPathService.getBaseUrl( request ) ) ) );
         _model.put( MARK_STATE_ID, strStateId );
 
         
@@ -1436,7 +1437,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
        
         _model.put( MARK_DOCUMENT, document );
-        _model.put( MARK_PREVIEW, strPreview );
+        _model.put( MARK_PREVIEW, HtmlMarkup.of( strPreview ) );
 
         Map<String, Object> model = new HashMap<>( );
         
@@ -1483,7 +1484,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         // Spaces browser
         _model.put( MARK_SPACES_BROWSER,
-        		_documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), true, true ) );
+        		HtmlMarkup.of( _documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), true, true ) ) );
         _model.put( MARK_DOCUMENT, document );
         _model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
 
@@ -1570,7 +1571,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         _model.put( MARK_SELECTED_CRITERIA, Objects.toString( strCriteria, "date" ) );
         _model.put( MARK_LOCALE, getLocale(  ).getLanguage(  ) );
         _model.put( MARK_SPACES_BROWSER,
-        		_documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), false, true ) );
+        		HtmlMarkup.of( _documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), false, true ) ) );
         _model.put( MARK_DOCUMENT_TYPES_LIST, DocumentTypeHome.findAll(  ) );
         _model.put( MARK_DOCUMENT_TYPE, StringUtils.defaultString( strTypeCode ) );
         _model.put( MARK_DATE_MIN, StringUtils.defaultString( strDateMin ) );

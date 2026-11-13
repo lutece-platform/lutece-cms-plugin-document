@@ -3,7 +3,6 @@
 <@pageContainer>
     <@pageColumn>
 		<@pageHeader title='#i18n{document.adminFeature.documents_management.name}' />
-		<#escape x as x?html>
 			<@tform method='post' action='jsp/admin/plugins/document/DoCreateDocument.jsp' enctype='multipart/form-data'>
 				<@input type='hidden' name='document_type_code' value='${document_type}' />    
 				<@row>
@@ -21,10 +20,10 @@
 									<@input type='textarea' name='document_summary' id='document_summary' />
 								</@formGroup>
 								<@fieldSet legend='#i18n{document.create_document.attributTitle}'>
-									<#noescape>${fields}</#noescape>
+									${fields}
 									<@formGroup rows=2>
 										<@button type='submit' title='#i18n{document.create_document.buttonCreate}' buttonIcon='check' />
-										<@button type='button' params='onclick="javascript:history.go(-1)"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
+										<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' params={"data-lutece-action": "back"} title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
 									</@formGroup>
 								</@fieldSet>
 							</@boxBody>
@@ -34,7 +33,7 @@
 						<@box>
 							<@boxHeader title='#i18n{document.list_category.boxTitle}' />
 							<@boxBody> 
-								<#noescape>${category}</#noescape>
+								${category}
 							</@boxBody>
 						</@box>
 						<@box>
@@ -57,7 +56,7 @@
 									</@div>
 								</@fieldSet>
 								<@formGroup labelFor='document_page_template' labelKey='#i18n{document.create_document.labelDocumentPageTemplate}' helpKey='#i18n{document.create_document.helpDocumentPageTemplate}' rows=2>
-									<@staticText><#noescape>${page_template_list}</#noescape></@staticText>
+									<@staticText>${page_template_list}</@staticText>
 								</@formGroup>
 								<@formGroup labelFor='document_skip_portlet' labelKey='#i18n{document.create_document.labelSkipPortlet}'  helpKey='#i18n{document.create_document.helpSkipPortlet}' rows=2>
 									<@checkBox name='document_skip_portlet' id='document_skip_portlet' labelKey=''/>
@@ -79,7 +78,7 @@
 								</@boxHeader>
 								<@boxBody> 
 									<@div id='div_metadata'>
-										<#noescape>${metadata_form}</#noescape>
+										${metadata_form}
 									</@div>
 								</@boxBody>
 							</@box>
@@ -87,7 +86,6 @@
 					</@columns>
 				</@row>
 			</@tform>
-		</#escape>
 	</@pageColumn>
 </@pageContainer>
 <#include "/admin/util/editor/editor.html" />

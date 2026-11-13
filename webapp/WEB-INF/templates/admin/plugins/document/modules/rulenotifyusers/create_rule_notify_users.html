@@ -7,7 +7,7 @@
 			<strong>#i18n{module.document.rulenotifyusers.create_rule_notify_users.noSpaceSelected}</strong> 
 		</#if>
 	</@staticText>
-	<@button type='submit' params='data-space="id_space_source"' title='#i18n{module.document.rulenotifyusers.create_rule_notify_users.buttonChoose}' buttonIcon='check' />
+	<@button type='submit' params={"data-space": "id_space_source"} title='#i18n{module.document.rulenotifyusers.create_rule_notify_users.buttonChoose}' buttonIcon='check' />
 </@formGroup>
 <@formGroup labelFor='id_state' labelKey='#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText2}'>
 	<#if id_state?exists >

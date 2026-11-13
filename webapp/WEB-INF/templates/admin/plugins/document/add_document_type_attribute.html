@@ -33,7 +33,7 @@
 				${attribute_parameters}
 				<@formGroup>
 					<@button type='submit' name='save' value='save' title='#i18n{document.add_document_type_attribute.buttonAddAttribute}' buttonIcon='device-floppy' />
-					<@button type='button' params='onclick="javascript:window.history.back();"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
+					<@aButton href='jsp/admin/plugins/document/ManageDocumentTypes.jsp' params={"data-lutece-action": "back"} title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
 				</@formGroup>
 				<@input type='hidden' name='attribute_type_code' value='${attribute_type_code}' />
 			</@fieldSet>

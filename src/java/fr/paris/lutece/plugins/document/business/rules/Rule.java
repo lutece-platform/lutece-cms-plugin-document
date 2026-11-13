@@ -153,7 +153,7 @@ public interface Rule extends Localizable
     /**
      * Gets the Rule definition
      * 
-     * @return The Rule definition
+     * @return The Rule definition, as HTML whose data is escaped
      */
     String getRule( );
 

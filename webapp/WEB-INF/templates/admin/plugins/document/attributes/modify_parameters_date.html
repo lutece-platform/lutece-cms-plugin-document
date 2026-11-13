@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		if (checkbox.checked) {
 			params.forEach(function (param) {
-				param.value = "${parameter.description}";
+				param.value = '${parameter.description?js_string?no_esc}';
 				param.setAttribute("readonly", "readonly");
 				param.classList.add('readonly', 'disabled');
 				param.disabled = true;

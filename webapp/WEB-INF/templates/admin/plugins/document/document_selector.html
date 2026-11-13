@@ -2,15 +2,15 @@
 	<@row>
 		<@columns>
 			<ol class="breadcrumb">
-			  <li><@link href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input}&amp;selected_text='><@icon style='home' /></@link></li>
-			  <li><@link href='javascript:history.go(-1);'> Page </@link></li>
-			  <li><@link href='javascript:history.go(-1);'> Rubrique </@link></li>
+			  <li><@link href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input?url}&selected_text='><@icon style='home' /></@link></li>
+			  <li><@link href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input?url}&selected_text=' params={"data-lutece-action": "back"}> Page </@link></li>
+			  <li><@link href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input?url}&selected_text=' params={"data-lutece-action": "back"}> Rubrique </@link></li>
 			  <li>#i18n{document.selector.document.documentChoiceTitle}</li>
 			</ol>
 			<#if documents_list?size = 0>
 				<@alert color='danger'>#i18n{document.selector.document.noDocument}</@alert>
 				<@p>
-					<@button type='button' params='onclick="javascript:history.go(-1);"' title='#i18n{portal.util.labelBack}' buttonIcon='times' color='default' />
+					<@aButton href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelBack}' buttonIcon='times' color='default' />
 				</@p>
 			<#else>
 				<@tform method='post' name='fsubmit' action='jsp/admin/plugins/document/DoInsertDocumentLink.jsp'>
@@ -58,7 +58,7 @@
 						</@columns>
 					</@row>
 					<@formGroup>
-						<@button type='button' params='onclick="javascript:history.go(-1);"' title='#i18n{portal.util.labelBack}' buttonIcon='chevron-left' />
+						<@aButton href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelBack}' buttonIcon='chevron-left' />
 						<@button type='submit' title='#i18n{portal.util.labelValidate}' buttonIcon='check' />
 					</@formGroup>
 				</@tform>
@@ -66,3 +66,5 @@
 		</@columns>
 	</@row>
 </@div>
+<#-- the insert service pages do not load the admin scripts: data-lutece-action="back" needs lutece-actions.js -->
+<script src="themes/admin/shared/js/util/lutece-actions.js"></script>
