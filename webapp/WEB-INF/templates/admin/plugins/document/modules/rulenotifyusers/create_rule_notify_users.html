@@ -16,14 +16,14 @@
 		<@select name='id_state' default_value='' items=states_list />
 	</#if>
 </@formGroup>
-<@formGroup labelFor='id_space_destination' labelKey='#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText3}'>
+<@formGroup labelFor='id_mailinglist' labelKey='#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText3}'>
 	<#if id_mailinglist?exists>
 		<@select name='id_mailinglist' default_value='${id_mailinglist}' items=mailinglists_list />
 	<#else>
 		<@select name='id_mailinglist' default_value='' items=mailinglists_list />
 	</#if>
 </@formGroup>
-<@formGroup labelFor='id_space_destination' labelKey='#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText3} #i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText4}'>
+<@formGroup labelFor='message_template_key' labelKey='#i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText3} #i18n{module.document.rulenotifyusers.create_rule_notify_users.ruleText4}'>
 	<#if message_template_key?exists >
 		<@select name='message_template_key' default_value='${message_template_key}'  items=message_templates_list />
 	<#else>

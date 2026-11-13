@@ -3,7 +3,7 @@
     <@pageColumn> 
         <@pageHeader title='#i18n{document.manage_document_publishing.labelPublishTitle}'>
 			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder-open' />
-			<@button type='button' class='btn-action' buttonIcon='dots-vertical fs-2 ms-3' dropdownMenu=true>
+			<@button type='button' class='btn-action' title='#i18n{document.manage_documents.labelActions}' hideTitle=['all'] buttonIcon='dots-vertical fs-2 ms-3' dropdownMenu=true>
 			<#list document.actions?sort_by("idAction") as action>
 				<#if action.url?has_content>
 					<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}' class='dropdown-item'><@icon style='${action.iconUrl}' title=action.description />${action.name}</@link>
@@ -139,7 +139,7 @@
 												<@row class='mt-3'>
 												<#if permission_assign?exists>
 													<@columns>
-														<@button id='btnAssign' type='submit' title='#i18n{document.manage_document_publishing.buttonAssignedOnPortlet}' hideTitle=['xs','sm'] buttonIcon='link' />
+														<@button id='btnAssignList' type='submit' title='#i18n{document.manage_document_publishing.buttonAssignedOnPortlet}' hideTitle=['xs','sm'] buttonIcon='link' />
 													</@columns>
 													</#if>	                                   		
 													<#if permission_publish?exists>
@@ -159,7 +159,7 @@
 												<@row class='mt-3'>
 													<#if permission_assign?exists>
 														<@columns>
-															<@button id='btnAssign' type='submit' title='#i18n{document.manage_document_publishing.buttonAssignedOnPortlet}' hideTitle=['xs','sm'] buttonIcon='link' />
+															<@button id='btnAssignDocument' type='submit' title='#i18n{document.manage_document_publishing.buttonAssignedOnPortlet}' hideTitle=['xs','sm'] buttonIcon='link' />
 														</@columns>
 														</#if>	                                   		
 														<#if permission_publish?exists>
@@ -200,14 +200,14 @@
 														<@input type='hidden' name='id_portlet' value='${assigned_portlet_publication.portlet.id}' />
 														<@input type='hidden' name='id_document' value='${document.id}' />
 														<@input type='hidden' name='status' value='${status_published}' />
-														<@button type='submit' title='#i18n{document.manage_document_publishing.buttonPublish}' hideTitle=['all'] buttonIcon='play' color='success' size='sm' />
+														<@button type='submit' title='#i18n{document.manage_document_publishing.buttonPublish}' hideTitle=['all'] buttonIcon='play' color='success' size='sm' params={"aria-label": "#i18n{document.manage_document_publishing.buttonPublish} ${assigned_portlet_publication.portlet.name}"} />
 													</@tform>
 												<#else>
 													<@tform method='post' name='unpublishing' action='jsp/admin/plugins/document/DoUnAssignedDocument.jsp'>
 														<@input type='hidden' name='id_portlet' value='${assigned_portlet_publication.portlet.id}' />
 														<@input type='hidden' name='status' value='${assigned_portlet_publication.publication.status}' />	
 														<@input type='hidden' name='id_document' value='${document.id}' />
-														<@button type='submit' title='#i18n{document.manage_document_publishing.buttonUnPublish}' hideTitle=['all'] buttonIcon='stop' color='warning' size='sm' />
+														<@button type='submit' title='#i18n{document.manage_document_publishing.buttonUnPublish}' hideTitle=['all'] buttonIcon='stop' color='warning' size='sm' params={"aria-label": "#i18n{document.manage_document_publishing.buttonUnPublish} ${assigned_portlet_publication.portlet.name}"} />
 													</@tform>
 												</#if>
 											</#if>
@@ -216,11 +216,11 @@
 													<@input type='hidden' name='id_document' value='${document.id}' />
 													<@input type='hidden' name='id_portlet' value='${assigned_portlet_publication.portlet.id}' />
 													<@input type='hidden' name='status' value='${status_unpublished}' />
-													<@button type='submit' title='#i18n{document.manage_document_publishing.labelUnAssigned}' hideTitle=['all'] buttonIcon='unlink' size='sm' />
+													<@button type='submit' title='#i18n{document.manage_document_publishing.labelUnAssigned}' hideTitle=['all'] buttonIcon='unlink' size='sm' params={"aria-label": "#i18n{document.manage_document_publishing.labelUnAssigned} ${assigned_portlet_publication.portlet.name}"} />
 												</@tform>
 												<@tform class='ms-1' method='post' name='managePublishing' action='jsp/admin/plugins/document/ManagePublishing.jsp'>
 													<@input type='hidden' name='id_portlet' value='${assigned_portlet_publication.portlet.id}' />
-													<@button type='submit' title='#i18n{document.manage_document_publishing.labelManagePortlet}' hideTitle=['all'] buttonIcon='settings' size='sm' />
+													<@button type='submit' title='#i18n{document.manage_document_publishing.labelManagePortlet}' hideTitle=['all'] buttonIcon='settings' size='sm' params={"aria-label": "#i18n{document.manage_document_publishing.labelManagePortlet} ${assigned_portlet_publication.portlet.name}"} />
 												</@tform>
 											</#if>
 										</@manageFeatureItemColumn>
@@ -247,12 +247,11 @@
 </#if>
 <script> 
 document.addEventListener('DOMContentLoaded', function() {
-	const btnAssign = document.getElementById('btnAssign');
-	if (btnAssign) {
+	document.querySelectorAll('#btnAssignList, #btnAssignDocument').forEach(function(btnAssign) {
 		btnAssign.addEventListener('click', function() {
 			document.getElementById('status').value = '${status_unpublished?c}';
 		});
-	}
+	});
 	
 	const displayLatestTrue = document.getElementById('is_display_latest_portlets_true');
 	if (displayLatestTrue) {

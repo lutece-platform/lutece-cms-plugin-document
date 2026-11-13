@@ -40,14 +40,14 @@
 							<@formGroup>
 								<@table>
 									<@tr>
-										<@th></@th>
+										<@th><span class="visually-hidden">#i18n{portal.util.labelSelect}</span></@th>
 										<@th>#i18n{document.selector.document.colTitle}</@th>
 										<@th>#i18n{document.selector.document.colSummary}</@th>
 									</@tr>
 									<#list documents_list as document>
 									<@tr>
 										<@td>
-											<@radioButton id='document_id_${document.id}' name='document_id' value=document.id />
+											<@radioButton id='document_id_${document.id}' name='document_id' value=document.id><span class="visually-hidden">${document.title!}</span></@radioButton>
 										</@td>
 										<@td>${document.title!}</@td>
 										<@td>${document.summary!}</@td>

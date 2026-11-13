@@ -33,7 +33,7 @@
 	</@inputGroup>
 </@formGroup>
 
-<@formGroup  labelFor='${items.name}_select'>
+<@formGroup labelFor='${items.name}_select' labelKey='${items.label}' hideLabel=['all']>
 	<@select id='${items.name}_select' name='${items.name}_select' multiple=4>
 		<#list listValues as values >
 			<option value="${values}"<#if values==valueDefaultValue> class="bg-primary"</#if>>

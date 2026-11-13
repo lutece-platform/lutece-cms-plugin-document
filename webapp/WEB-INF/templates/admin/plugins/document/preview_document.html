@@ -2,7 +2,7 @@
     <@pageColumn>
 		<@pageHeader title='#i18n{document.attributeType.internallink.buttonShowPreview} : ${document.title}' class='mb-3'>
 		<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder'  />
-		<@button type='button' class='btn-action' buttonIcon='dots-vertical fs-2 ms-3' dropdownMenu=true>
+		<@button type='button' class='btn-action' title='#i18n{document.manage_documents.labelActions}' hideTitle=['all'] buttonIcon='dots-vertical fs-2 ms-3' dropdownMenu=true>
 		<#list document.actions?sort_by("idAction") as action>
 			<#if action.url?has_content>
 				<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}' class='dropdown-item'><@icon style='${action.iconUrl}' title=action.description />${action.name}</@link>

@@ -10,7 +10,7 @@
 					<@columns md=3>
 						<@div id='document_info'>
 							<blockquote>
-								<p class="lead">${document.id}</span>&nbsp;${document.title}</p>
+								<p class="lead">${document.id}&nbsp;${document.title}</p>
 							</blockquote>
 							<dl>
 								<dt>#i18n{document.preview_document.columnTitleType}</dt>
@@ -24,7 +24,7 @@
 								<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
 								<dd>${document.dateModification}</dd>
 							</dl>
-							<h4>#i18n{document.preview_document.columnTitleDateValidity}</h4>
+							<h3 class="h4">#i18n{document.preview_document.columnTitleDateValidity}</h3>
 							<#assign dateBegin="">
 							<#if document.dateValidityBegin?has_content>
 								<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>

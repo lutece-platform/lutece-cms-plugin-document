@@ -24,7 +24,7 @@
 		<#list spaces_list as item_space >
 			<@listGroupItem>
 				<@link href='#' params={"data-document-space-browser": "open", "data-space-id": item_space.id?c} title='${item_space.name}'>
-					<img src="${item_space.iconUrl}" alt="${item_space.name}" class="img-fluid"> 
+					<img src="${item_space.iconUrl}" alt="" class="img-fluid"> 
 					${item_space.name}
 				</@link>
 			</@listGroupItem>

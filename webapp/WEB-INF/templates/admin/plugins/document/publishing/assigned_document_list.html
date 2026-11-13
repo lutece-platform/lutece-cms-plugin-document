@@ -6,7 +6,7 @@
         <@tform method='post' name='publishDocument' action='jsp/admin/plugins/document/DoPublishingDocument.jsp'>
             <@input type='hidden' name='id_document' value='${document_published.id}' />
             <@input type='hidden' name='id_portlet' value='${portlet_id}' />
-            <@button type='submit' title='#i18n{document.manage_document_publishing.buttonPublish}' buttonIcon='mailbox'  hideTitle=['all'] color='outline-success' size='sm' />
+            <@button type='submit' title='#i18n{document.manage_document_publishing.buttonPublish}' buttonIcon='mailbox'  hideTitle=['all'] color='outline-success' size='sm' params={"aria-label": "#i18n{document.manage_document_publishing.buttonPublish} ${document_published.title}"} />
         </@tform>
         </#if>
         <#if permission_assign?exists>
@@ -14,16 +14,16 @@
             <@input type='hidden' name='id_document' value='${document_published.id}' />
             <@input type='hidden' name='id_portlet' value='${portlet_id}' />
             <@input type='hidden' name='status' value='${status_unpublished}' />	                                            
-            <@button type='submit' title='#i18n{document.manage_document_publishing.labelUnAssigned}' buttonIcon='link-off' hideTitle=['all'] color='outline-warning' size='sm' />
+            <@button type='submit' title='#i18n{document.manage_document_publishing.labelUnAssigned}' buttonIcon='link-off' hideTitle=['all'] color='outline-warning' size='sm' params={"aria-label": "#i18n{document.manage_document_publishing.labelUnAssigned} ${document_published.title}"} />
         </@tform>
         </#if>        
         <@tform method='post' class='ms-1' name='previewDocument' action='jsp/admin/plugins/document/PreviewDocument.jsp'>
             <@input type='hidden' name='id_document' value='${document_published.id}' />
-            <@button type='submit' title='#i18n{document.published_document_list.labelPreview}' buttonIcon='eye' hideTitle=['all'] color='outline-primary' size='sm' />
+            <@button type='submit' title='#i18n{document.published_document_list.labelPreview}' buttonIcon='eye' hideTitle=['all'] color='outline-primary' size='sm' params={"aria-label": "#i18n{document.published_document_list.labelPreview} ${document_published.title}"} />
         </@tform>
         <@tform method='post' class='ms-1' name='manageDocument' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
             <@input type='hidden' name='id_space_filter' value='${document_published.spaceId}' />
-            <@button type='submit' title='#i18n{document.published_document_list.labelManageDocument}' buttonIcon='folder-open' hideTitle=['all'] color='outline-primary' size='sm' />
+            <@button type='submit' title='#i18n{document.published_document_list.labelManageDocument}' buttonIcon='folder-open' hideTitle=['all'] color='outline-primary' size='sm' params={"aria-label": "#i18n{document.published_document_list.labelManageDocument} ${document_published.title}"} />
         </@tform>
     </@manageFeatureItemColumn>
 </@manageFeatureItem>

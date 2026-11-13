@@ -30,7 +30,7 @@
 											#i18n{document.manage_document.mass_archival.criteriaDate}
 										</@link>
 									</@h>
-									</hr>
+									<hr>
 									<@formGroup labelFor='date_min' labelKey='Du'>
 										<@inputGroup>
 											<@input type='text' name='date_min' id='date_min' value='${date_min!}' />
@@ -50,7 +50,7 @@
 										</@link>
 									</@h>
 									<hr>
-									<@formGroup labelFor='document_code' labelKey='Type de document'>
+									<@formGroup labelFor='document_type_code' labelKey='#i18n{document.manage_documents.labelType}'>
 										<@select name='document_type_code' id='document_type_code'>
 											<#list document_types_list as type>
 												<@option selected=( document_type == type.code) value=type.code label=type.name />

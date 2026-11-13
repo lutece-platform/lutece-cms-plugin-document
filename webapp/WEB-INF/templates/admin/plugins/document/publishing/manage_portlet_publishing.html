@@ -74,7 +74,7 @@
 						<@td>${auto_publication.space_name}</@td>
 						<@td>${auto_publication.number_auto_published_documents}</@td>
 						<@td>
-							<@aButton href='jsp/admin/plugins/document/DeleteAutoPublication.jsp?id_portlet=${auto_publication.document_auto_publication.idPortlet}&id_space=${auto_publication.document_auto_publication.idSpace}&mode_publication=1' buttonIcon='trash' color='danger' />
+							<@aButton href='jsp/admin/plugins/document/DeleteAutoPublication.jsp?id_portlet=${auto_publication.document_auto_publication.idPortlet}&id_space=${auto_publication.document_auto_publication.idSpace}&mode_publication=1' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' params={"aria-label": "#i18n{portal.util.labelDelete} ${auto_publication.space_name}"} />
 						</@td>
 					</@tr>
 				</#list>
