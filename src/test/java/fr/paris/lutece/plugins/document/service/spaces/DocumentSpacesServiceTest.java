@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.document.service.spaces;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +43,7 @@ import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.test.LuteceTestCase;
+import fr.paris.lutece.test.mocks.MockHttpServletRequest;
 
 /**
  * DocumentSpacesService tests: a space id that no longer leads to a space (space removed while the tree is built)
@@ -104,6 +106,21 @@ public class DocumentSpacesServiceTest extends LuteceTestCase
         {
             DocumentSpaceHome.remove( space.getId( ) );
         }
+    }
+
+    /**
+     * The spaces browser shows the default space when the space id of the request leads to no space
+     */
+    @Test
+    public void testGetSpacesBrowserWithMissingSpaceId( )
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest( );
+        request.setParameter( DocumentSpacesService.PARAMETER_BROWSER_SPACE_ID, String.valueOf( MISSING_SPACE_ID ) );
+
+        String strHtml = new DocumentSpacesService( ).getSpacesBrowser( request, new AdminUser( ), Locale.FRENCH, false, false );
+
+        assertNotNull( strHtml );
+        assertFalse( strHtml.contains( String.valueOf( MISSING_SPACE_ID ) ) );
     }
 
     private static Object invoke( Object target, String strMethod, Class<?> [ ] types, Object... args ) throws Exception

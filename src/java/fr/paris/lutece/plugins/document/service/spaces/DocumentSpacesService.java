@@ -522,6 +522,12 @@ public class DocumentSpacesService
 		else
 		{
 			nIdSpace = IntegerUtils.convert( strIdSpace );
+
+			// the requested space no longer exists: use the default space
+			if( nIdSpace != - 1 && DocumentSpaceHome.findByPrimaryKey( nIdSpace ) == null )
+			{
+				nIdSpace = getUserDefaultSpace( user );
+			}
 		}
 
 		// set space list
