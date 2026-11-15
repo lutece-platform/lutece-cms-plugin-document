@@ -228,7 +228,8 @@ public class DocumentSpacesService
 	{
 		DocumentSpace space = DocumentSpaceHome.findByPrimaryKey( nSpaceId );
 
-		if( AdminWorkgroupService.isAuthorized( space, ( User ) user ) )
+		// the space may have been removed since its id was read
+		if( ( space != null ) && AdminWorkgroupService.isAuthorized( space, ( User ) user ) )
 		{
 			XmlUtil.beginElement( sbXML, TAG_SPACE );
 			XmlUtil.addElement( sbXML, TAG_SPACE_ID, space.getId( ) );
@@ -271,7 +272,8 @@ public class DocumentSpacesService
 		boolean bValidSpace = false;
 		boolean bChildValidity = false;
 
-		if( AdminWorkgroupService.isAuthorized( space, ( User ) user ) )
+		// the space may have been removed since its id was read
+		if( ( space != null ) && AdminWorkgroupService.isAuthorized( space, ( User ) user ) )
 		{
 			Collection < DocumentSpace > listChilds = DocumentSpaceHome.findChilds( nSpaceId );
 
@@ -638,7 +640,8 @@ public class DocumentSpacesService
 	{
 		DocumentSpace documentSpace = DocumentSpaceHome.findByPrimaryKey( nSpaceId );
 
-		if( AdminWorkgroupService.isAuthorized( documentSpace, ( User ) user ) )
+		// the parent space may have been removed
+		if( ( documentSpace != null ) && AdminWorkgroupService.isAuthorized( documentSpace, ( User ) user ) )
 		{
 			if( documentSpace.getIdParent( ) != - 1 )
 			{
