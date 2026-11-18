@@ -229,8 +229,10 @@ public class DocumentContentService extends ContentService
         // of the default language, so the key has a bounded number of languages
         HttpServletRequest localizedRequest = withSiteLocale( request );
 
-        // A page reserved to a role depends on the user (the document or the access page): never cached
-        String strGeneration = isPublicPortlet( strPortletId ) ? getGeneration( strDocumentId ) : null;
+        // A page reserved to a role depends on the user (the document or the access page): never cached.
+        // The whole page holds the header of the user (name, logout link): the page of a signed in user is never cached
+        // either, and never read from the cache (it would show the header of the visitor who built it)
+        String strGeneration = ( isPublicPortlet( strPortletId ) && !isUserSignedIn( request ) ) ? getGeneration( strDocumentId ) : null;
         if ( strGeneration == null )
         {
             return buildPage( localizedRequest, strDocumentId, strPortletId, strSiteLocale, nMode ).getContent( );
@@ -260,6 +262,17 @@ public class DocumentContentService extends ContentService
         }
 
         return strPage;
+    }
+
+    /**
+     * Tells if a front office user is signed in
+     *
+     * @param request the HTTP request
+     * @return true if the authentication is enabled and a user is signed in
+     */
+    private static boolean isUserSignedIn( HttpServletRequest request )
+    {
+        return SecurityService.isAuthenticationEnable( ) && ( SecurityService.getInstance( ).getRegisteredUser( request ) != null );
     }
 
     /**
