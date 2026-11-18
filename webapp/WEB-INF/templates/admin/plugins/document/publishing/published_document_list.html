@@ -1,7 +1,7 @@
 <#if status == status_published>
 <@manageFeatureItem>
 	<@manageFeatureItemColumn>
-		<@img url=page_template_picture alt='' /> ${document_published.title}
+		<#if page_template_picture?has_content><@img url=page_template_picture alt='' /> </#if>${document_published.title}
 	</@manageFeatureItemColumn>            
 	<@manageFeatureItemColumn auto=true align='around'>
 		<@tform type='inline' method='post' name='modifyOrderDocument' action='jsp/admin/plugins/document/DoModifyDocumentOrder.jsp'>

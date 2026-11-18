@@ -991,8 +991,9 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         _model.put( MARK_DOCUMENT_ORDER, Integer.toString( documentPublication.getDocumentOrder(  ) ) );
 
         // Page Template display
+        // a document created without page template (import files2docs: id 0) has no picture
         DocumentPageTemplate documentPageTemplate = DocumentPageTemplateHome.findByPrimaryKey( document.getPageTemplateDocumentId(  ) );
-        _model.put( MARK_DOCUMENT_PAGE_TEMPLATE_PICTURE, documentPageTemplate.getPicture(  ) );
+        _model.put( MARK_DOCUMENT_PAGE_TEMPLATE_PICTURE, ( documentPageTemplate != null ) ? documentPageTemplate.getPicture(  ) : "" );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PUBLISHED_DOCUMENT_LIST, getLocale(  ), _model );
 
