@@ -1115,7 +1115,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
                 Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-                if ( isAuthorized( DocumentAction.ACTION_ARCHIVE, document ) )
+                // only the validated documents can be archived, as when no document of the selection is published
+                if ( ( document != null ) && ( document.getStateId(  ) == DocumentState.STATE_VALIDATE ) &&
+                        isAuthorized( DocumentAction.ACTION_ARCHIVE, document ) )
                 {
                     try
                     {
