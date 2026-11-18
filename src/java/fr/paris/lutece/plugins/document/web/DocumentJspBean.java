@@ -237,6 +237,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MESSAGE_DOCUMENT_IS_PUBLISHED = "document.message.documentIsPublished";
     private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "document.message.errorDocumentIsPublished";
     private static final String MESSAGE_DOCUMENT_ERROR = "document.message.documentError"; //TODO message erreur
+    private static final String MESSAGE_ACTION_NOT_AVAILABLE = "document.message.actionNotAvailable";
     private static final String MESSAGE_CONFIRM_DELETE_SELECTION = "document.message.confirmDeleteSelection";
     private static final String MESSAGE_CONFIRM_ARCHIVE_SELECTION = "document.message.selectionPublished";
     private static final String MESSAGE_ERROR_DOCUMENT_SELECTED_IS_PUBLISHED = "document.message.errorDocumentSelectedIsPublished";
@@ -908,6 +909,12 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             return getHomeUrl( request );
         }
 
+        if ( !isActionAvailable( document, nActionId ) )
+        {
+            // action of another state (page of the browser history, second tab): validating again an approved document would delete its content
+            return AdminMessageService.getMessageUrl( request, MESSAGE_ACTION_NOT_AVAILABLE, AdminMessage.TYPE_STOP );
+        }
+
         try
         {
         	_documentService.changeDocumentState( document, getUser(  ), action.getFinishDocumentState(  ).getId(  ) );
@@ -952,6 +959,12 @@ public class DocumentJspBean extends PluginAdminPageJspBean
                     document.getCodeDocumentType(  ), action.getPermission(  ), getUser(  ) ) )
         {
             return getHomeUrl( request );
+        }
+
+        if ( !isActionAvailable( document, nActionId ) )
+        {
+            // action of another state (page of the browser history, second tab): validating again an approved document would delete its content
+            return AdminMessageService.getMessageUrl( request, MESSAGE_ACTION_NOT_AVAILABLE, AdminMessage.TYPE_STOP );
         }
 
         try
@@ -1909,6 +1922,18 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             space.setViewType( strViewType );
             DocumentSpaceHome.update( space );
         }
+    }
+
+    /**
+     * Tells if an action is offered for the current state of a document
+     * @param document The document
+     * @param nIdAction The action id
+     * @return true if the action is one of the actions of the state of the document
+     */
+    private boolean isActionAvailable( Document document, int nIdAction )
+    {
+        return DocumentActionHome.getActionsList( document, getLocale(  ) ).stream(  )
+                                 .anyMatch( documentAction -> documentAction.getIdAction(  ) == nIdAction );
     }
 
     /**
