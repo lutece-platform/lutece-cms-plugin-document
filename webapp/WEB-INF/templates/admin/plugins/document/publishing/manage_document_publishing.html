@@ -1,7 +1,9 @@
 <#if document?exists>
+<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#assign bc><@documentBreadcrumb spaces=breadcrumb_spaces![] items=[ { 'label': document.title!, 'url': 'jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${document.id?c}' } ] current='#i18n{document.breadcrumb.publishing}' /></#assign>
 <@pageContainer>
     <@pageColumn> 
-        <@pageHeader title='#i18n{document.manage_document_publishing.labelPublishTitle}'>
+        <@pageHeader title='#i18n{document.manage_document_publishing.labelPublishTitle}' breadcrumb=bc>
 			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder-open' />
 			<@button type='button' class='btn-action' title='#i18n{document.manage_documents.labelActions}' hideTitle=['all'] buttonIcon='dots-vertical fs-2 ms-3' dropdownMenu=true>
 			<#list document.actions?sort_by("idAction") as action>

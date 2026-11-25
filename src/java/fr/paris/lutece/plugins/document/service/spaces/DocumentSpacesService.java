@@ -704,6 +704,31 @@ public class DocumentSpacesService
 	}
 
 	/**
+	 * The path of a document space, from the root to the space itself, for a
+	 * breadcrumb
+	 *
+	 * @param nIdDocumentSpace the id of the document space
+	 * @param user             the user
+	 * @return the parents of the space the user is allowed to see followed by the
+	 *         space, or an empty list if the space does not exist
+	 */
+	public List < DocumentSpace > getSpacePath( int nIdDocumentSpace, AdminUser user )
+	{
+		DocumentSpace documentSpace = DocumentSpaceHome.findByPrimaryKey( nIdDocumentSpace );
+
+		if( documentSpace == null )
+		{
+			return new ArrayList<>( );
+		}
+
+		List < DocumentSpace > listPath = ( documentSpace.getIdParent( ) != - 1 ) ? getSpaceParents( documentSpace, user )
+				: new ArrayList<>( );
+		listPath.add( documentSpace );
+
+		return listPath;
+	}
+
+	/**
 	 * This method observes the initialization of the {@link ApplicationScoped}
 	 * context.
 	 * It ensures that this CDI beans are instantiated at the application startup.

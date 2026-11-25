@@ -1,6 +1,8 @@
+<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#assign bc><@documentBreadcrumb spaces=breadcrumb_spaces![] items=[ { 'label': document.title!, 'url': 'jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${document.id?c}' } ] current='#i18n{document.breadcrumb.modify}' /></#assign>
 <@pageContainer>
     <@pageColumn>
-		<@pageHeader title='#i18n{document.modify_document.title}' />
+		<@pageHeader title='#i18n{document.modify_document.title}' breadcrumb=bc />
 		<@tform method='post' action='jsp/admin/plugins/document/DoModifyDocument.jsp' enctype='multipart/form-data'>
 			<@input type='hidden' name='token' value='${token}' />
 			<@input type='hidden' name='id_document' value='${document.id}' />

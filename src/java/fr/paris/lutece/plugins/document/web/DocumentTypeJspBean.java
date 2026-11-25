@@ -391,6 +391,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 		_strDocumentTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
 
 		_model.put( MARK_ATTRIBUTE_TYPE_CODE, strAttributeTypeCode );
+		_model.put( MARK_DOCUMENT_TYPE, DocumentTypeHome.findByPrimaryKey( _strDocumentTypeCode ) );
 
 		// model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS , manager.getExtraParameters(
 		// getLocale() ) );
@@ -685,6 +686,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 		}
 
 		_model.put( MARK_DOCUMENT_TYPE_CODE, _strDocumentTypeCode );
+		_model.put( MARK_DOCUMENT_TYPE, DocumentTypeHome.findByPrimaryKey( _strDocumentTypeCode ) );
 		_model.put( MARK_ATTRIBUTE_TYPE_CODE, attribute.getCodeAttributeType( ) );
 
 		// model.put( MARK_ATTRIBUTE_EXTRAS_PARAMETERS , listParameters );

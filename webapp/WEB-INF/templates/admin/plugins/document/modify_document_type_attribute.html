@@ -1,6 +1,8 @@
+<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#assign bc><@documentBreadcrumb section='types' items=[ { 'label': document_type.name!, 'url': 'jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${document_type.code}' }, { 'label': attribute.name! } ] /></#assign>
 <@pageContainer>
     <@pageColumn>
-		<@pageHeader title='#i18n{document.modify_document_type_attribute.pageTitle}' />
+		<@pageHeader title='#i18n{document.modify_document_type_attribute.pageTitle}' breadcrumb=bc />
 		<@row>
 			<@columns xl=3>
 				<@box>

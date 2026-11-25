@@ -1,6 +1,53 @@
+<#-- Values shared by the title and the actions menu of a document: the modify link and the move modal attributes -->
+<#macro documentRefs document>
+<#assign documentModifyUrl = '' />
+<#list document.actions?sort_by("idAction") as action>
+	<#-- 2: modify, 9: change a published document -->
+	<#if action.url?has_content && ( action.idAction == 2 || action.idAction == 9 )>
+		<#assign documentModifyUrl = '${action.url}id_document=${document.id}&id_action=${action.idAction}&token=${token}' />
+		<#break>
+	</#if>
+</#list>
+<#assign moveDocumentParams><#outputformat "HTML">data-bs-toggle="modal" data-bs-target="#moveDocumentModal" data-document-id="${document.id?c}" data-document-title="${document.title}" data-document-type="${document.codeDocumentType}" data-space-id="${document.spaceId?c}"</#outputformat></#assign>
+</#macro>
+<#-- Title of a document, a link to its modification when the user may modify it -->
+<#macro documentTitle document>
+<#if documentModifyUrl != ''>
+	<@link href=documentModifyUrl class='text-reset fw-bold d-block text-truncate' title='#i18n{portal.util.labelModify} ${document.title}'>${document.title}</@link>
+<#else>
+	<strong class="d-block text-truncate" title="${document.title}">${document.title}</strong>
+</#if>
+</#macro>
+<#-- Workflow state and publication of a document, as soft badges -->
+<#macro documentStatus document>
+<#-- 1 writing, 2 waiting for approval, 3 approved, 4 rejected, 5 archived, 6 in change, 7 waiting for changes approval -->
+<#assign stateColors = { '1': 'azure', '2': 'yellow', '3': 'green', '4': 'red', '5': 'secondary', '6': 'blue', '7': 'yellow' } />
+<@div class='badge-list flex-nowrap'>
+	<@tag color='' class='bg-${stateColors[document.stateId?c]!"secondary"}-lt' title='#i18n{document.manage_documents.labelState}'>${document.state}</@tag>
+	<#if document.publishedStatus = 0>
+		<@tag color='' class='bg-green-lt' tagIcon='world'>#i18n{document.manage_documents.PublishedStatus}</@tag>
+	<#else>
+		<@tag color='' class='bg-secondary-lt' tagIcon='world-off'>#i18n{document.manage_documents.UnPublishedStatus}</@tag>
+	</#if>
+</@div>
+</#macro>
+<#-- Actions menu of a document -->
+<#macro documentActions document>
+<@button type='button' id='document-actions-${document.id?c}' buttonIcon='dots' title='#i18n{document.manage_documents.labelActions}' hideTitle=['all'] params={"aria-label": "#i18n{document.manage_documents.labelActions} ${document.title}"} dropdownMenu=true>
+<#list document.actions?sort_by("idAction") as action>
+	<#if action.idAction == 16 && move_document_form?has_content>
+		<@link href='#' class='dropdown-item' params=moveDocumentParams><@icon style='${action.iconUrl}' class='me-2' />${action.name}</@link>
+	<#elseif action.url?has_content>
+		<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}&token=${token}' class='dropdown-item${(action.idAction == 1)?then(" text-danger", "")}' title='${action.description}'><@icon style='${action.iconUrl}' class='me-2' />${action.name}</@link>
+	</#if>
+</#list>
+</@button>
+</#macro>
+<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#assign bc><@documentBreadcrumb spaces=breadcrumb_spaces![] /></#assign>
 <@pageContainer>
     <@pageColumn>
-		<@pageHeader title='#i18n{document.adminFeature.documents_management.name}' >
+		<@pageHeader title='#i18n{document.adminFeature.documents_management.name}' breadcrumb=bc>
 		<#if view_type = 'detail' >
 			<#-- The action controls sit in the header but submit the documents_form of the list, where the document_selection checkboxes are -->
 			<@div class='d-inline-flex align-items-center'>
@@ -146,47 +193,33 @@
 							</@boxBody>
 						</@box>
 					</#if>
-					<@empty title='#i18n{document.message.noDocumentInspace}' />
+					<@card>
+						<@empty title='#i18n{document.message.noDocumentInspace}' iconName='file-off' subtitle='#i18n{document.manage_documents.emptySpaceHelp}' />
+					</@card>
 				<#else>
 					<#if view_type = 'detail' >
 						<@tform id='documents_form' name='documents_form' method='post' action='jsp/admin/plugins/document/DoActionSelectionDocument.jsp'>
 							<@input type='hidden' name='token' value='${token}' />
 							<@manageFeature class=''>
 								<#list documents_list as document >
+								<@documentRefs document=document />
 								<@manageFeatureItem class='document-row searchable' params={"data-document": "${document.id?c} ${document.title}"}>
-									<@manageFeatureItemColumn>
-										<@checkBox id='document_selection_${document.id?c}' orientation='switch' name='document_selection' value='${document.id}' labelKey=i18n( 'document.manage_documents.labelSelectDocument', document.title ) labelClass='visually-hidden' /> 
-										<@p class='text-truncate fw-bold' params={"title": "${document.title} - id: ${document.id?c}"}>
-										<#assign docTitle=''/>
-										<#assign docTitle><#list document.actions?sort_by("idAction") as action><#if action.url?has_content><#if action.idAction == 2 || action.idAction == 9><@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}&token=${token}' title='${action.description} ${document.title}' class='dropdown-item'>${document.title}</@link><#break></#if></#if></#list></#assign>
-										<#if docTitle?markup_string?trim !=''>${docTitle}<#else></#if>${document.title}</@p>
-									</@manageFeatureItemColumn>
-									<#if document.comment != ''><@manageFeatureItemColumn auto=true><@alert color='info'><@icon style='info-circle' /> ${document.comment}</@alert></@manageFeatureItemColumn></#if>
 									<@manageFeatureItemColumn auto=true>
-										<@span class='me-2' params={"title": "#i18n{document.manage_documents.labelDateModification}"}><@icon style='calendar'  /> ${document.dateModification}</@span>
-										<#if document.stateId=3>
-											<@tag color='success' title='#i18n{document.manage_documents.labelState}' tagIcon='circle-check'>${document.state}</@tag>
-										<#else>
-											<@tag color='info' title='#i18n{document.manage_documents.labelState}' tagIcon='times'>${document.state}
-											</@tag>
-										</#if>
-										<#if document.publishedStatus = 0>
-											<@tag color='success' class='ms-2' tagIcon='circle-check'>#i18n{document.manage_documents.PublishedStatus}</@tag>
-										<#else>
-											<@tag color='danger' class='ms-2' tagIcon='times'>#i18n{document.manage_documents.UnPublishedStatus}</@tag>
-										</#if>
+										<@checkBox id='document_selection_${document.id?c}' orientation='switch' name='document_selection' value='${document.id}' labelKey=i18n( 'document.manage_documents.labelSelectDocument', document.title ) labelClass='visually-hidden' wrapperClass='mb-0' />
+									</@manageFeatureItemColumn>
+									<@manageFeatureItemColumn flex=false class='text-truncate'>
+										<@documentTitle document=document />
+										<@div class='text-secondary small text-truncate'>
+											#${document.id}
+											<span class="ms-2" title="#i18n{document.manage_documents.labelDateModification}"><@icon style='calendar' /> ${document.dateModification}</span>
+											<#if document.comment != ''><span class="ms-2" title="${document.comment}"><@icon style='message-circle' /> ${document.comment}</span></#if>
+										</@div>
 									</@manageFeatureItemColumn>
 									<@manageFeatureItemColumn auto=true>
-										<@button type='button' title='#i18n{document.manage_documents.labelActions}' hideTitle=['all'] params={"aria-label": "#i18n{document.manage_documents.labelActions} ${document.title}"} buttonIcon='dots fs-2' dropdownMenu=true>
-										<#assign moveDocumentParams><#outputformat "HTML">data-bs-toggle="modal" data-bs-target="#moveDocumentModal" data-document-id="${document.id?c}" data-document-title="${document.title}" data-document-type="${document.codeDocumentType}" data-space-id="${document.spaceId?c}"</#outputformat></#assign>
-										<#list document.actions?sort_by("idAction") as action>
-											<#if action.idAction == 16 && move_document_form?has_content>
-												<@link href='#' class='dropdown-item' params=moveDocumentParams><@icon style='${action.iconUrl}' title=action.description />${action.name}</@link>
-											<#elseif action.url?has_content>
-												<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}&token=${token}' class='dropdown-item'><@icon style='${action.iconUrl}' title=action.description />${action.name}</@link>
-											</#if>
-										</#list>
-										</@button>
+										<@documentStatus document=document />
+									</@manageFeatureItemColumn>
+									<@manageFeatureItemColumn auto=true>
+										<@documentActions document=document />
 									</@manageFeatureItemColumn>
 								</@manageFeatureItem>
 								</#list>
@@ -194,25 +227,21 @@
 						</@tform>
 					</#if>
 					<#if view_type='thumbnail'>
-						<@row class='row-cols-2 row-cols-lg-3 row-cols-xl-4'>
+						<@row class='row-cards row-cols-2 row-cols-lg-3 row-cols-xl-4'>
 						<#list documents_list as document >
+							<@documentRefs document=document />
 							<@columns class='document-row' params={"data-document": "${document.id?c} ${document.title}"}>
-								<@box id="document_${document.id}" class='card-sm' >
-									<@boxHeader>
-										<@div class="card-actions btn-actions">
-											<#assign moveDocumentParams><#outputformat "HTML">data-bs-toggle="modal" data-bs-target="#moveDocumentModal" data-document-id="${document.id?c}" data-document-title="${document.title}" data-document-type="${document.codeDocumentType}" data-space-id="${document.spaceId?c}"</#outputformat></#assign>
-											<#list document.actions?sort_by("idAction") as action>
-												<#if action.idAction == 16 && move_document_form?has_content>
-													<@button type='button' params=moveDocumentParams title='${action.description}' buttonIcon='${action.iconUrl}' color='' style='btn btn-action' hideTitle=['all'] />
-												<#elseif action.url?has_content>
-													<@aButton href='${action.url}id_document=${document.id}&id_action=${action.idAction}&token=${token}' title='${action.description}' buttonIcon='${action.iconUrl}' color='' style='btn btn-action' hideTitle=['all'] params={"aria-label": "${action.description} ${document.title}"} />
-												</#if>
-											</#list>
+								<@box id="document_${document.id}" class='card-sm h-100'>
+									<@img url=document.thumbnail! class='card-img-top object-fit-contain' alt='' params={"height": "120"} />
+									<@boxBody>
+										<@div class='d-flex align-items-start'>
+											<@div class='flex-fill text-truncate'>
+												<@documentTitle document=document />
+												<@div class='text-secondary small text-truncate'>#${document.id} <span class="ms-1">${document.type}</span></@div>
+											</@div>
+											<@div class='ms-2'><@documentActions document=document /></@div>
 										</@div>
-									</@boxHeader>
-									<@img url=document.thumbnail! class='card-img-top object-fit-contain' alt=document.title! title='${document.title} - ${document.type}' params={"height": "120"} />
-									<@boxBody>				
-										<@h level=3 class='card-title'><#if document.title?length gt 18>${document.title?substring(0,18)}...<#else>${document.title}</#if> - ${document.id}</@h>							
+										<@div class='mt-2'><@documentStatus document=document /></@div>
 									</@boxBody>
 								</@box>
 							</@columns>
@@ -300,27 +329,21 @@ if (searchForm) {
 
 /****** Multiple selection ******/
 /* select_all (in the page header) and selection only exist when the space lists documents in detail view */
-const documentsForm = document.getElementById('documents_form');
 const selectAll = document.getElementById('select_all');
-const selectionButton = document.getElementById('selection');
-if (documentsForm && selectAll && selectionButton) {
-	const refreshSelection = function() {
-		if (documentsForm.querySelectorAll('input[type="checkbox"]:checked').length > 0) {
-			selectionButton.removeAttribute('disabled');
-		} else {
-			selectionButton.setAttribute('disabled', 'disabled');
-		}
-	};
-	selectAll.addEventListener('click', function() {
-		documentsForm.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
-			checkbox.checked = this.checked;
-		}, this);
-		refreshSelection();
-	});
-	documentsForm.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
-		checkbox.addEventListener('click', refreshSelection);
+const selectionAction = document.getElementById('selection');
+const documentCheckboxes = document.querySelectorAll('#documents_form input[name="document_selection"]');
+function updateSelectionAction() {
+	if (!selectionAction) { return; }
+	const anyChecked = Array.from(documentCheckboxes).some(function(checkbox) { return checkbox.checked; });
+	selectionAction.disabled = !anyChecked;
+}
+if (selectAll) {
+	selectAll.addEventListener('change', function() {
+		documentCheckboxes.forEach(function(checkbox) { checkbox.checked = selectAll.checked; });
+		updateSelectionAction();
 	});
 }
+documentCheckboxes.forEach(function(checkbox) { checkbox.addEventListener('change', updateSelectionAction); });
 <#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>
 /* document MASS import redirection */
 const importLinkButton = document.getElementById('importLinkButton');
