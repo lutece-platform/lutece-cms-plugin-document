@@ -1,55 +1,71 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12">
-		<div class="well">
-		<h3>#i18n{document.advanced_search.title}</h3>
-		<form id="advanced_search_form" name="advanced_search_form" action="${safeUrl(url)}?page=advanced_search&amp;search_query=true" method="post">
-			<label for="searchinput">#i18n{document.advanced_search.query}:</label><input name="query" id="searchinput" type="text" value="<#if query??>${query}</#if>"/>
-			<fieldset>
-				<legend>#i18n{document.advanced_search.limit}</legend>
-				<input name="title" id="title" type="checkbox" <#if title??>checked</#if>/><label for="title">#i18n{document.advanced_search.checkbox.title}</label>
-				<input name="summary" id="summary" type="checkbox" <#if summary??>checked</#if>/><label for="summary">#i18n{document.advanced_search.checkbox.summary}</label>
-			</fieldset>
-			<label for="date">#i18n{document.advanced_search.checkbox.date}:</label>
-			<input type="text" name="date" id="date" size="10"  value="<#if date_query??>${date_query}</#if>"<#if date_error??> aria-invalid="true" aria-describedby="error"</#if>/>
-			<#if date_error??><div id="error" role="alert">${date_error}</div></#if>
-			<label for="document_type">#i18n{document.advanced_search.list.type}:</label><@combo name="document_type"  items=document_type_list default_value=selected_type />
-			<input id="searchsubmit" class="site-buttons" type="submit" value="#i18n{document.advanced_search.button.search}"/>
-			<input id="button-erase" class="site-buttons" type="button" value="#i18n{document.advanced_search.button.erase}"/>
-		</form>
-		</div>
-	</div>
+<@cTpl>
+<#assign searchAction = safeUrl(url) + '?page=advanced_search&search_query=true'>
+<@cRow>
+	<@cCol>
+		<@cBlock class='p-3 bg-light border rounded'>
+			<@cTitle level=3>#i18n{document.advanced_search.title}</@cTitle>
+			<@cForm id='advanced_search_form' name='advanced_search_form' action=searchAction method='post'>
+				<@cField label='#i18n{document.advanced_search.query}' for='searchinput'>
+					<@cInput name='query' id='searchinput' value=query!'' />
+				</@cField>
+				<@cFieldset legend='#i18n{document.advanced_search.limit}'>
+					<@cFormCheck type='checkbox' name='title' id='title' value='true' label='#i18n{document.advanced_search.checkbox.title}' checked=title?? inline=true />
+					<@cFormCheck type='checkbox' name='summary' id='summary' value='true' label='#i18n{document.advanced_search.checkbox.summary}' checked=summary?? inline=true />
+				</@cFieldset>
+				<@cInputDate name='date' id='date' label='#i18n{document.advanced_search.checkbox.date}' value=date_query!'' errorMsg=date_error!'' />
+				<@cField label='#i18n{document.advanced_search.list.type}' for='document_type'>
+					<@cSelect name='document_type' id='document_type'>
+						<#list document_type_list as documentType>
+							<@cOption value=documentType.code label=documentType.name selected=(documentType.code == selected_type!'') />
+						</#list>
+					</@cSelect>
+				</@cField>
+				<@cRow class='mt-3'>
+					<@cCol>
+						<@cBtn type='submit' id='searchsubmit' label='#i18n{document.advanced_search.button.search}' />
+						<@cBtn type='button' id='button-erase' class='secondary' label='#i18n{document.advanced_search.button.erase}' />
+					</@cCol>
+				</@cRow>
+			</@cForm>
+		</@cBlock>
+	</@cCol>
 	<#if query??>
-	<div class="col-xs-12 col-sm-12 col-md-12">
-		<fieldset>
-		<legend>#i18n{document.advanced_search.result}</legend>
-    	<#if content??>
-		<ul>
-		<#list content as document>
-			<li>
-				<#if document.idPortlet != (-1) >
-			        <a href="${safeUrl(url)}?document_id=${document.docSearchItem.id}&#38;portlet_id=${document.idPortlet?c}">
-			            ${document.docSearchItem.title}
-					</a> 
-				</#if>          
-				<p class="label label-info">${document.docSearchItem.type}</p>
-				<em>${document.docSearchItem.summary}</em>
-		    </li>
-	    </#list>
-	    </ul>			
-	    <#else>
-	    	<div class="alert alert-danger">#i18n{document.advanced_search.noresult}</div>
-	    </#if>
-	</fieldset>
-	</div>
-</div>
-</#if>
-<@getDate idField="date" language=locale />
+	<@cCol>
+		<@cFieldset legend='#i18n{document.advanced_search.result}'>
+			<#if content??>
+			<@chList>
+				<#list content as document>
+				<@chItem>
+					<#if document.idPortlet != -1>
+						<#assign documentUrl = safeUrl(url) + '?document_id=' + document.docSearchItem.id + '&portlet_id=' + document.idPortlet?c>
+						<@cLink href=documentUrl label=document.docSearchItem.title />
+					</#if>
+					<@cBadge label=document.docSearchItem.type class='text-bg-info' hasp=false />
+					<@cText><@cInline type='em'>${document.docSearchItem.summary}</@cInline></@cText>
+				</@chItem>
+				</#list>
+			</@chList>
+			<#else>
+			<@cAlert type='danger' title='#i18n{document.advanced_search.noresult}' />
+			</#if>
+		</@cFieldset>
+	</@cCol>
+	</#if>
+</@cRow>
 <script>
-document.getElementById("button-erase").addEventListener("click", function() {
-	document.getElementById("advanced_search_form").elements["searchinput"].value = "";
-	document.getElementById("advanced_search_form").elements["title"].checked = false;
-	document.getElementById("advanced_search_form").elements["summary"].checked = false;
-	document.getElementById("advanced_search_form").elements["date"].value = "";
-	document.getElementById("advanced_search_form").elements["document_type"].selectedIndex = 0;
+document.addEventListener('DOMContentLoaded', () => {
+	const eraseButton = document.getElementById('button-erase');
+	if (!eraseButton) {
+		return;
+	}
+	eraseButton.addEventListener('click', () => {
+		const form = document.getElementById('advanced_search_form');
+		form.elements['query'].value = '';
+		form.elements['title'].checked = false;
+		form.elements['summary'].checked = false;
+		form.elements['date'].value = '';
+		form.elements['document_type'].selectedIndex = 0;
+	});
 });
 </script>
+</@cTpl>

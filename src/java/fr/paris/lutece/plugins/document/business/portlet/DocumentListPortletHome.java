@@ -62,17 +62,6 @@ public class DocumentListPortletHome extends PortletHome
 	}
 
 	/**
-	 * Returns the instance of DocumentListPortletHome
-	 *
-	 * @return the DocumentListPortletHome instance
-	 */
-	@Deprecated( since = "8.0", forRemoval = true )
-	public static PortletHome getInstance( )
-	{
-		return CDI.current( ).select( DocumentListPortletHome.class ).get( );
-	}
-
-	/**
 	 * Returns the identifier of the portlet type
 	 *
 	 * @return the portlet type identifier

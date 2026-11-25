@@ -1,77 +1,140 @@
-<#if !attribute.textValue?has_content><#assign helpKey = attribute.description /></#if>
-<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey! mandatory=attribute.required>
-	<@row>
-		<@columns xl=8 class='mb-2'>
-			<@input type='file' name='${attribute.code}' id='${attribute.code}' />
-		</@columns>
-		<@columns xl=12>
-			<#if attribute.textValue?has_content>
-				<@row>
-					<@columns lg=6>
-						<@formGroup helpKey='#i18n{document.attributeType.image.deleteField}'>
-							<@checkBox labelKey='#i18n{document.attributeType.image.updateField}' name='update_${attribute.code}' id='update_${attribute.code}' value='1' />
-						</@formGroup>
-					</@columns>
-					<@columns lg=6>
-						<#assign linkParams = { "data-title": attribute.textValue } + attribute.valueContentType?contains('image')?then( { "data-lightbox": "image-document" }, {} ) />
-						<@link href='servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true&nocache' params=linkParams>
-							<#assign imgUrl><@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" /></#assign>
-						   <@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='thumbnail thumbnail-lg' />
-						</@link>
-					</@columns>
-				</@row>
-			</#if>
-			<@formGroup>
-				<@checkBox labelKey='#i18n{document.attributeType.image.resize}' name='${attribute.code}_croppable' id='${attribute.code}_crop' />
-			</@formGroup>
-			<@formGroup labelKey='#i18n{document.attributeType.image.resize}' hideLabel=['all'] id='crop_group'>
-				<@inputGroup>
-					<@input type='text' name='${attribute.code}_width' id='${attribute.code}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' />
+<#include "/admin/plugins/document/attributes/file_dropzone.html" />
+<#assign attrCode = attribute.code />
+<#assign hasValue = attribute.textValue?has_content />
+<#assign resourceUrl = 'servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true' />
+<#if hasValue>
+	<#assign helpKey = '#i18n{document.attributeType.image.deleteField}' />
+<#else>
+	<#assign helpKey = attribute.description />
+</#if>
+<@formGroup labelFor=attrCode labelKey=attribute.name helpKey=helpKey! mandatory=attribute.required rows=2>
+	<@row class='g-3'>
+		<@columns md=6>
+			<@documentFileDropzone id=attrCode name=attrCode accept='image/*' title='#i18n{document.attributeType.image.dropzoneTitle}' />
+			<@div class='d-flex flex-wrap gap-3 mt-2'>
+				<#if hasValue>
+				<@checkBox orientation='switch' wrapperClass='mb-0' labelKey='#i18n{document.attributeType.image.updateField}' name='update_${attrCode}' id='update_${attrCode}' value='1' />
+				</#if>
+				<@checkBox orientation='switch' wrapperClass='mb-0' labelKey='#i18n{document.attributeType.image.resize}' name='${attrCode}_croppable' id='${attrCode}_crop' value='1' />
+			</@div>
+			<@div id='${attrCode}_crop_group' class='mt-2 d-none'>
+				<@inputGroup params='style="max-width:16rem"'>
+					<@inputGroupItem type='text'><@icon style='arrows-horizontal' /></@inputGroupItem>
+					<@input type='number' name='${attrCode}_width' id='${attrCode}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' params='min="1" aria-label="#i18n{document.attributeType.image.width}"' disabled=true />
 					<@inputGroupItem type='text'>px</@inputGroupItem>
 				</@inputGroup>
-			</@formGroup>
+			</@div>
+		</@columns>
+		<@columns md=6>
+			<@div id='${attrCode}_preview' class='d-flex flex-wrap gap-3'>
+				<#if hasValue>
+					<@div id='${attrCode}_current' class='card mb-0'>
+						<@link href='${resourceUrl}&nocache' target='_blank' class='d-flex align-items-center justify-content-center bg-light rounded-top' params='style="height:10rem;width:14rem"'>
+							<#assign imgUrl><@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl=resourceUrl + "&nocache" /></#assign>
+							<@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='mw-100 mh-100' params='style="object-fit:contain" loading="lazy"' />
+						</@link>
+						<@div class='card-body p-2' params='style="width:14rem"'>
+							<@div class='small fw-bold'>#i18n{document.attributeType.image.labelCurrent}</@div>
+							<@div class='small text-truncate' params='title="${attribute.textValue}"'>${attribute.textValue}</@div>
+							<@div class='small text-muted' id='${attrCode}_current_size'>${attribute.valueContentType!}</@div>
+						</@div>
+					</@div>
+				</#if>
+				<@div id='${attrCode}_new' class='card mb-0 d-none'>
+					<@div class='d-flex align-items-center justify-content-center bg-light rounded-top' params='style="height:10rem;width:14rem"'>
+						<@img id='${attrCode}_new_img' alt='' class='mw-100 mh-100' params='style="object-fit:contain"' />
+					</@div>
+					<@div class='card-body p-2' params='style="width:14rem"'>
+						<@div class='small fw-bold text-primary'>#i18n{document.attributeType.image.labelNew}</@div>
+						<@div class='small text-truncate' id='${attrCode}_new_name'></@div>
+						<@div class='small text-muted' id='${attrCode}_new_size'></@div>
+					</@div>
+				</@div>
+			</@div>
 		</@columns>
 	</@row>
 </@formGroup>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const attributeCode = '${attribute.code?js_string?no_esc}';
-    const cropGroup = document.getElementById('crop_group');
-	if( cropGroup != null ){
-		const cropCheckbox = document.getElementById(attributeCode + '_crop');
-		const attributeCodeWidth = document.getElementById(attributeCode + '_width');
-		cropGroup.style.display = 'none';
-		attributeCodeWidth.disabled = true;
-		attributeCodeWidth.classList.add('disabled');
+document.addEventListener( 'DOMContentLoaded', () => {
+	const code = '${attrCode?js_string?no_esc}';
+	const fileInput = document.getElementById( code );
+	const updateCheckbox = document.getElementById( 'update_' + code );
+	const cropCheckbox = document.getElementById( code + '_crop' );
+	const cropGroup = document.getElementById( code + '_crop_group' );
+	const widthInput = document.getElementById( code + '_width' );
+	const current = document.getElementById( code + '_current' );
+	const newCard = document.getElementById( code + '_new' );
+	const newImg = document.getElementById( code + '_new_img' );
+	let objectUrl = null;
 
-		cropCheckbox.addEventListener('click', function() {
-			cropGroup.style.display = (cropCheckbox.checked) ? 'block' : 'none';
+	const describe = ( img, target, prefix ) => {
+		const show = ( ) => { target.textContent = prefix + img.naturalWidth + ' × ' + img.naturalHeight + ' px'; };
+		if ( img.complete && img.naturalWidth ) { show( ); } else { img.addEventListener( 'load', show, { once: true } ); }
+	};
 
-			if (cropCheckbox.checked) {
-				attributeCodeWidth.disabled = false;
-				attributeCodeWidth.classList.toggle('disabled');
-			} else {
-				attributeCodeWidth.value = '';
-				attributeCodeWidth.disabled = true;
-				attributeCodeWidth.classList.toggle('disabled');
-			}
-		});
+	const refreshCurrent = ( ) => {
+		// Update checked with no new file means the current image is removed
+		const replacing = !updateCheckbox || updateCheckbox.checked;
+		fileInput.required = ${attribute.required?c} && replacing;
+		if ( current ) {
+			current.classList.toggle( 'opacity-50', replacing );
+		}
+	};
+
+	const clearNew = ( ) => {
+		if ( objectUrl ) { URL.revokeObjectURL( objectUrl ); objectUrl = null; }
+		newImg.removeAttribute( 'src' );
+		newCard.classList.add( 'd-none' );
+	};
+
+	if ( current ) {
+		const img = current.querySelector( 'img' );
+		const size = document.getElementById( code + '_current_size' );
+		if ( img.getAttribute( 'src' ).startsWith( 'servlet/' ) ) {
+			describe( img, size, size.textContent + ' · ' );
+		}
 	}
 
-    const updateCheckbox = document.getElementById('update_' + attributeCode);
-	const fileInput = document.getElementById(attributeCode);
+	refreshCurrent( );
 
-	fileInput.required = false;
-	if (updateCheckbox) {
-		updateCheckbox.addEventListener('change', function() {
-			updateCheckbox.required = updateCheckbox.checked;
-		});
+	fileInput.addEventListener( 'change', ( ) => {
+		clearNew( );
+		const file = fileInput.files[0];
+		// Without the update flag the server keeps the current image. Clearing the chosen image keeps the current one:
+		// the update flag with no image deletes it, which is only done by ticking the flag on purpose
+		if ( updateCheckbox ) { updateCheckbox.checked = !!file; }
+		if ( !file ) {
+			refreshCurrent( );
+			return;
+		}
+		document.getElementById( code + '_new_name' ).textContent = file.name;
+		document.getElementById( code + '_new_size' ).textContent = file.type || '';
+		if ( file.type.startsWith( 'image/' ) ) {
+			objectUrl = URL.createObjectURL( file );
+			newImg.src = objectUrl;
+			newImg.alt = file.name;
+			describe( newImg, document.getElementById( code + '_new_size' ), ( file.type ? file.type + ' · ' : '' ) );
+		}
+		newCard.classList.remove( 'd-none' );
+		refreshCurrent( );
+	} );
 
-		fileInput.addEventListener('change', function() {
-			if (fileInput.value !== '') {
-				updateCheckbox.checked = true;
+	if ( updateCheckbox ) {
+		updateCheckbox.addEventListener( 'change', ( ) => {
+			if ( !updateCheckbox.checked && fileInput.value !== '' ) {
+				fileInput.value = '';
+				// Refreshes the drop zone and the preview
+				fileInput.dispatchEvent( new Event( 'change', { bubbles: true } ) );
 			}
-		});
+			refreshCurrent( );
+		} );
 	}
-});
+
+	cropCheckbox.addEventListener( 'change', ( ) => {
+		cropGroup.classList.toggle( 'd-none', !cropCheckbox.checked );
+		widthInput.disabled = !cropCheckbox.checked;
+		widthInput.required = cropCheckbox.checked;
+		if ( cropCheckbox.checked ) { widthInput.focus( ); } else { widthInput.value = ''; }
+	} );
+} );
 </script>

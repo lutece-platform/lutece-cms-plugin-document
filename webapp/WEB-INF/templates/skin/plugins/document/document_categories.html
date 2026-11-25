@@ -1,20 +1,26 @@
+<@cTpl>
 <#if document_categories_list?has_content>
-	<div class="row">
-		<div class="col-xs-12 col-sm-12 col-md-12">
-		<h3>#i18n{document.document_categories.portletTitle}</h3>
-			<ul>
-			<#list document_categories_list as document >
-				<#if document?has_content >
-				<li>
-					<p>
-						<a href="jsp/site/Portal.jsp?document_id=${document.id}&#38;portlet_id=<#if portlet_id_list?has_content ><#list portlet_id_list as item ><#if item.code = '${document.id}' >${item.name}</#if></#list></#if>" target="_top">
-						${document.title}
-						</a>
-					</p>
-					<p>${document.summary}</p>
+<@cRow>
+	<@cCol>
+		<@cTitle level=3>#i18n{document.document_categories.portletTitle}</@cTitle>
+		<@chList>
+			<#list document_categories_list as document>
+			<#if document?has_content>
+			<#assign documentPortletId = ''>
+			<#list portlet_id_list![] as item>
+				<#if item.code == document.id?c>
+					<#assign documentPortletId = item.name>
 				</#if>
 			</#list>
-			</ul>
-		</div>
-	</div>
+			<#assign documentUrl = 'jsp/site/Portal.jsp?document_id=' + document.id?c + '&portlet_id=' + documentPortletId>
+			<@chItem>
+				<@cText><@cLink href=documentUrl label=document.title target='_top' /></@cText>
+				<@cText>${document.summary}</@cText>
+			</@chItem>
+			</#if>
+			</#list>
+		</@chList>
+	</@cCol>
+</@cRow>
 </#if>
+</@cTpl>

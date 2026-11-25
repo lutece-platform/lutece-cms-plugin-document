@@ -5,10 +5,13 @@
 				<@button type='submit' title='#i18n{document.manage_document_types.buttonCreate}' buttonIcon='plus' hideTitle=['xs','sm'] />
 			</@tform>
 		</@pageHeader>
+		<#if legacy_stylesheets_types?has_content>
+		<@alert color='warning'>#i18n{document.manage_document_types.helpLegacyStylesheets}</@alert>
+		</#if>
 		<@manageFeature>
 		<#list document_types_list?sort_by('name') as type >
 		<@manageFeatureItem>
-			<@manageFeatureItemColumn auto=true>${type.name} - ${type.description}</@manageFeatureItemColumn>
+			<@manageFeatureItemColumn auto=true>${type.name} - ${type.description}<#if (legacy_stylesheets_types![])?seq_contains(type.code)> <@tag color='warning'>#i18n{document.manage_document_types.labelLegacyStylesheets}</@tag></#if></@manageFeatureItemColumn>
 			<@manageFeatureItemColumn align='end'>
 				<@aButton href='jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.modify_document_type.buttonModify}' buttonIcon='edit' hideTitle=['all'] params={"aria-label": "#i18n{document.modify_document_type.buttonModify} ${type.name}"} />
 				<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.manage_document_types.buttonDelete}' buttonIcon='trash' color='danger' hideTitle=['all'] params={"aria-label": "#i18n{document.manage_document_types.buttonDelete} ${type.name}"} />

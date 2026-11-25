@@ -1,9 +1,53 @@
+<#-- Categories of a portlet: a dropdown of checkboxes, no category checked meaning documents of any category.
+     A native details element opens it, so that it does not depend on the scripts of the page. -->
 <#if category_list?has_content>
-    <@select id='categories' name='categories' multiple=10>			
-        <#list category_list as categoryDisplay>
-            <@option selected=(categoryDisplay.assigned == true) value=categoryDisplay.category.id label=categoryDisplay.category.name />
-        </#list>		
-    </@select>
+<#assign assignedNames = [] />
+<#list category_list as categoryDisplay><#if categoryDisplay.assigned><#assign assignedNames += [ categoryDisplay.category.name ] /></#if></#list>
+<#assign categoriesLabel = assignedNames?has_content?then( assignedNames?join( ', ' ), '#i18n{document.document_portlet_type.labelAllCategories}' ) />
+<style>
+#categories-dropdown > summary { list-style: none; }
+#categories-dropdown > summary::-webkit-details-marker { display: none; }
+#categories-dropdown > .dropdown-menu { inset: 100% auto auto 0; max-height: 20rem; overflow-y: auto; }
+</style>
+<details class="dropdown" id="categories-dropdown" data-label-all="#i18n{document.document_portlet_type.labelAllCategories}">
+	<summary id="categories" class="btn btn-default w-100 d-flex justify-content-between align-items-center text-start dropdown-toggle" aria-labelledby="categories-label categories" title="${categoriesLabel}">
+		<span class="text-truncate" data-categories-label>${categoriesLabel}</span>
+	</summary>
+	<div class="dropdown-menu show w-100">
+		<#list category_list as categoryDisplay>
+		<label class="dropdown-item gap-2">
+			<input type="checkbox" class="form-check-input m-0" name="categories" value="${categoryDisplay.category.id?c}"<#if categoryDisplay.assigned> checked</#if>>
+			<span data-category-name>${categoryDisplay.category.name}</span>
+		</label>
+		</#list>
+	</div>
+</details>
+<script>
+document.addEventListener( 'DOMContentLoaded', function( ) {
+	const dropdown = document.getElementById( 'categories-dropdown' );
+	const toggle = document.getElementById( 'categories' );
+	const text = toggle.querySelector( '[data-categories-label]' );
+	dropdown.addEventListener( 'change', function( ) {
+		const names = Array.from( dropdown.querySelectorAll( 'input[name="categories"]:checked' ),
+			input => input.closest( 'label' ).querySelector( '[data-category-name]' ).textContent );
+		const label = names.length === 0 ? dropdown.dataset.labelAll : names.join( ', ' );
+		text.textContent = label;
+		toggle.title = label;
+	});
+	// Closed by a click outside or by Escape, as a dropdown
+	document.addEventListener( 'click', function( e ) {
+		if ( dropdown.open && !dropdown.contains( e.target ) ) {
+			dropdown.open = false;
+		}
+	});
+	dropdown.addEventListener( 'keydown', function( e ) {
+		if ( e.key === 'Escape' && dropdown.open ) {
+			dropdown.open = false;
+			toggle.focus( );
+		}
+	});
+});
+</script>
 <#else>
-    <@empty title='#i18n{document.document_portlet_type.labelNoCategory}' subTitle=' ' />
+<@empty title='#i18n{document.document_portlet_type.labelNoCategory}' subTitle=' ' />
 </#if>

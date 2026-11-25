@@ -41,7 +41,6 @@ import fr.paris.lutece.plugins.document.service.DocumentException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Named;
 import jakarta.servlet.ServletContext;
 
@@ -61,36 +60,6 @@ public class RuleEngine
      */
     public RuleEngine(  )
     {
-    }
-
-    /**
-     * Returns the unique instance of the {@link RuleEngine} service.
-     * 
-     * <p>This method is deprecated and is provided for backward compatibility only. 
-     * For new code, use dependency injection with {@code @Inject} to obtain the 
-     * {@link RuleEngine} instance instead.</p>
-     * 
-     * @return The unique instance of {@link RuleEngine}.
-     * 
-     * @deprecated Use {@code @Inject} to obtain the {@link RuleEngine} 
-     * instance. This method will be removed in future versions.
-     */
-    @Deprecated( since = "8.0", forRemoval = true )
-    public static RuleEngine getInstance(  )
-    {
-        return CDI.current( ).select( RuleEngine.class ).get( );
-    }
-
-    /**
-     * Initialize
-     */
-    public void init(  )
-    {
-        // Initialize rules 
-        for ( Rule ruleType : RuleHome.getRuleTypes(  ) )
-        {
-            ruleType.init(  );
-        }
     }
 
     /**

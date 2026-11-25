@@ -1,5 +1,6 @@
 -- liquibase formatted sql
 -- changeset document:create_db_document.sql
+-- validCheckSum: ANY
 -- preconditions onFail:MARK_RAN onError:WARN
 --
 -- Structure for table document
@@ -13,18 +14,18 @@ CREATE TABLE document (
 	title varchar(255) default NULL,
 	id_space int default NULL,
 	id_state int default NULL,
-	xml_working_content long varchar,
-	xml_validated_content long varchar,
 	document_summary long varchar,
 	document_comment long varchar,
 	date_validity_begin timestamp NULL,
 	date_validity_end timestamp NULL,
-	xml_metadata long varchar,
+	metadata long varchar,
 	id_creator int default NULL,
 	id_mailinglist int default 0 NOT NULL,
 	id_page_template_document int default 0 NOT NULL,
 	skip_portlet    SMALLINT DEFAULT 0 NOT NULL,
 	skip_categories SMALLINT DEFAULT 0 NOT NULL,
+	validated_title varchar(255) default NULL,
+	validated_summary long varchar,
 	PRIMARY KEY (id_document)
 );
 
@@ -264,8 +265,8 @@ CREATE TABLE document_type (
 	description varchar(255) default NULL,
 	thumbnail_attr_id int default NULL,
 	default_thumbnail_url varchar(255) default NULL,
-	admin_xsl long varbinary,
-	content_service_xsl long varbinary,
+	admin_template long varchar,
+	content_template long varchar,
 	metadata_handler varchar(100) default NULL,
 	PRIMARY KEY (code_document_type)
 );

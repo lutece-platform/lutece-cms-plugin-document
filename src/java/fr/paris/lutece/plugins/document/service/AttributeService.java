@@ -64,23 +64,6 @@ public class AttributeService
     {
     }
     
-    /**
-     * Returns the unique instance of the {@link AttributeService} service.
-     * 
-     * <p>This method is deprecated and is provided for backward compatibility only. 
-     * For new code, use dependency injection with {@code @Inject} to obtain the 
-     * {@link AttributeService} instance instead.</p>
-     * 
-     * @return The unique instance of {@link AttributeService}.
-     * 
-     * @deprecated Use {@code @Inject} to obtain the {@link AttributeService} 
-     * instance. This method will be removed in future versions.
-     */
-    @Deprecated( since = "8.0", forRemoval = true )
-    public static synchronized AttributeService getInstance(  )
-    {
-    	return CDI.current( ).select( AttributeService.class ).get( );
-    }
 
     /**
      * Initializes the service
@@ -97,19 +80,11 @@ public class AttributeService
 
             try
             {
-                AttributeManager manager = (AttributeManager) Class.forName( strManagerClass ).newInstance(  );
+                AttributeManager manager = (AttributeManager) Class.forName( strManagerClass ).getDeclaredConstructor(  ).newInstance(  );
                 manager.setAttributeTypeCode( item.getCode(  ) );
                 _mapManagers.put( strManagerKey, manager );
             }
-            catch ( IllegalAccessException e )
-            {
-                AppLogService.error( e.getMessage(  ), e );
-            }
-            catch ( ClassNotFoundException e )
-            {
-                AppLogService.error( e.getMessage(  ), e );
-            }
-            catch ( InstantiationException e )
+            catch ( ReflectiveOperationException e )
             {
                 AppLogService.error( e.getMessage(  ), e );
             }

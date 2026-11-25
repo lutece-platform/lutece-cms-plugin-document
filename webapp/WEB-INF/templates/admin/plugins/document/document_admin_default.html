@@ -1,0 +1,10 @@
+<div class="document document-${document.codeDocumentType}">
+	<p><strong>#i18n{document.document_admin_default.labelTitle} : </strong><@documentValue value=document.title /></p>
+	<p><strong>#i18n{document.document_admin_default.labelSummary} : </strong><@documentValue value=document.summary /></p>
+	<#list document_type.attributes as attribute>
+	<div class="mb-3">
+		<strong><@documentValue value=attribute.name /> : </strong>
+		<@documentAttribute document=document attribute=attribute />
+	</div>
+	</#list>
+</div>

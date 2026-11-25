@@ -42,6 +42,7 @@ import jakarta.enterprise.inject.spi.CDI;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * This class provides instances management methods (create, find, ...) for Document objects
@@ -262,14 +263,23 @@ public final class DocumentHome
     }
 
     /**
+     * Gets the ids of the documents whose validated content has a text value containing a fragment
+     *
+     * @param strFragment
+     *            The fragment searched in the text values
+     * @param nExcludedDocumentId
+     *            The id of a document to leave out
+     * @return The ids of the documents
+     */
+    public static Collection<Integer> findIdsByValidatedTextValue( String strFragment, int nExcludedDocumentId )
+    {
+        return _dao.selectIdsByValidatedTextValue( strFragment, nExcludedDocumentId );
+    }
+
+    /**
      * Get the list of every documents
      * 
      * @return The list of every documents
-     */
-    public static List<Document> findAll( )
-    {
-        return _dao.selectAll( );
-    }
 
     /**
      * Load document attributes
@@ -339,6 +349,67 @@ public final class DocumentHome
     public static Document loadLastPublishedDocument( )
     {
         return _dao.loadLastPublishedDocument( );
+    }
+
+    /**
+     * Returns a page of the documents of a type that have a validated version, the last created first. The documents are returned without their
+     * attributes nor their categories, with their space name.
+     *
+     * @param strCodeDocumentType
+     *            The document type code
+     * @param strTitleFragment
+     *            A fragment the working or the validated title contains, ignoring case, or an empty string for any title
+     * @param listSpaceIds
+     *            The spaces the documents belong to
+     * @param nOffset
+     *            The number of documents skipped
+     * @param nLimit
+     *            The maximum number of documents returned
+     * @return The list of the documents
+     */
+    public static List<Document> findWithValidatedVersion( String strCodeDocumentType, String strTitleFragment, Collection<Integer> listSpaceIds,
+            int nOffset, int nLimit )
+    {
+        return _dao.selectWithValidatedVersion( strCodeDocumentType, strTitleFragment, listSpaceIds, nOffset, nLimit );
+    }
+
+    /**
+     * Counts the documents of a type that have a validated version
+     *
+     * @param strCodeDocumentType
+     *            The document type code
+     * @param strTitleFragment
+     *            A fragment the working or the validated title contains, ignoring case, or an empty string for any title
+     * @param listSpaceIds
+     *            The spaces the documents belong to
+     * @return The number of documents
+     */
+    public static int countWithValidatedVersion( String strCodeDocumentType, String strTitleFragment, Collection<Integer> listSpaceIds )
+    {
+        return _dao.countWithValidatedVersion( strCodeDocumentType, strTitleFragment, listSpaceIds );
+    }
+
+    /**
+     * Returns the metadata of the documents still stored in the legacy XML column, before the migration to JSON
+     *
+     * @return The legacy XML metadata by document identifier
+     */
+    public static Map<Integer, String> findLegacyMetadata( )
+    {
+        return _dao.selectLegacyMetadata( );
+    }
+
+    /**
+     * Stores the metadata migrated from the legacy XML column, and clears the legacy column
+     *
+     * @param nDocumentId
+     *            The document identifier
+     * @param strMetadata
+     *            The metadata, as a JSON object
+     */
+    public static void storeMigratedMetadata( int nDocumentId, String strMetadata )
+    {
+        _dao.storeMigratedMetadata( nDocumentId, strMetadata );
     }
 
     /**

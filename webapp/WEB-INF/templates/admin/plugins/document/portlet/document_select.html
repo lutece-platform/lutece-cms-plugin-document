@@ -1,0 +1,213 @@
+<#-- Document selector of the portlet forms: the selected documents, and a paginated list of the documents of the portlet type to pick them from -->
+<#macro documentTitle document><#if document.validatedTitle?has_content>${document.validatedTitle}<#else>${( document.title!'' )}</#if></#macro>
+<#macro documentItem id='' type='' title='' sortable=multiple>
+<@listGroupItem class='d-flex align-items-center gap-2' params='data-document-item data-type="${type}"'>
+	<#if sortable>
+	<span class="cursor-move text-muted" data-drag-handle title="#i18n{document.document_list_portlet_type.labelDragToReorder}"><@icon style='grip-vertical' /></span>
+	</#if>
+	<input type="hidden" name="id_document" value="${id}">
+	<span class="flex-fill" data-document-title>${title}</span>
+	<@btnGroup size='sm'>
+		<#if sortable>
+		<@button size='sm' color='default' buttonIcon='arrow-up' title='#i18n{document.document_list_portlet_type.buttonMoveUp}' hideTitle=['all'] params='data-action="up"' />
+		<@button size='sm' color='default' buttonIcon='arrow-down' title='#i18n{document.document_list_portlet_type.buttonMoveDown}' hideTitle=['all'] params='data-action="down"' />
+		</#if>
+		<@button size='sm' color='danger' buttonIcon='x' title='#i18n{document.document_list_portlet_type.buttonRemove}' hideTitle=['all'] params='data-action="remove"' />
+	</@btnGroup>
+</@listGroupItem>
+</#macro>
+<@listGroup id='document-selection' class='mb-2'>
+	<#list document_selected_list as document>
+	<#assign title><@documentTitle document=document /></#assign>
+	<@documentItem id=document.id?c type=document.codeDocumentType title=title />
+	</#list>
+</@listGroup>
+<p id="document-selection-empty" class="text-muted"<#if document_selected_list?has_content> hidden</#if>><#if multiple>#i18n{document.document_list_portlet_type.labelNoDocumentSelected}<#else>#i18n{document.portlet_document_browser.labelNoDocumentChosen}</#if></p>
+<template id="document-item-template"><@documentItem /></template>
+<#-- The action buttons of the document rows, cloned by the script -->
+<template id="document-browser-pick"><#if multiple><@button size='sm' color='primary' buttonIcon='plus' title='#i18n{document.portlet_document_browser.buttonAdd}' /><#else><@button size='sm' color='primary' buttonIcon='check' title='#i18n{document.portlet_document_browser.buttonChoose}' /></#if></template>
+<template id="document-browser-picked"><#if multiple><@button size='sm' color='default' buttonIcon='circle-check' title='#i18n{document.portlet_document_browser.labelAdded}' disabled=true /><#else><@button size='sm' color='default' buttonIcon='circle-check' title='#i18n{document.portlet_document_browser.labelChosen}' disabled=true /></#if></template>
+<div id="document-browser" class="border rounded" data-url="jsp/admin/plugins/document/SearchPortletDocuments.jsp" data-multiple="${multiple?c}"
+	data-label-total="#i18n{document.portlet_document_browser.labelTotal}"
+	data-label-empty="#i18n{document.portlet_document_browser.labelNoDocumentFound}"
+	data-label-error="#i18n{document.portlet_document_browser.labelError}"
+	data-label-loading="#i18n{portal.util.labelLoading}">
+	<div class="p-2 border-bottom">
+		<@input type='search' name='document_search' id='document-search' placeHolder='#i18n{document.portlet_document_browser.labelFilter}' params='aria-label="#i18n{document.portlet_document_browser.labelFilter}" autocomplete="off"' />
+	</div>
+	<@table class='table-vcenter card-table mb-0' hover=false>
+		<@tableHead>
+			<@tr>
+				<@th>#i18n{document.portlet_document_browser.columnTitle}</@th>
+				<@th hide=['xs','sm']>#i18n{document.portlet_document_browser.columnSpace}</@th>
+				<@th>#i18n{document.portlet_document_browser.columnDateCreation}</@th>
+				<@th class='w-1'><span class="visually-hidden">#i18n{document.portlet_document_browser.columnActions}</span></@th>
+			</@tr>
+		</@tableHead>
+		<@tableBody id='document-browser-rows' />
+	</@table>
+	<p id="document-browser-message" class="text-muted text-center p-3 mb-0" role="status" hidden></p>
+	<div class="d-flex align-items-center justify-content-between gap-2 p-2 border-top">
+		<span id="document-browser-total" class="text-muted"></span>
+		<div class="d-flex align-items-center gap-2">
+			<@button id='document-browser-previous' size='sm' color='default' buttonIcon='chevron-left' title='#i18n{portal.util.labelPrevious}' hideTitle=['all'] />
+			<span id="document-browser-page" class="text-muted"></span>
+			<@button id='document-browser-next' size='sm' color='default' buttonIcon='chevron-right' title='#i18n{portal.util.labelNext}' hideTitle=['all'] />
+		</div>
+	</div>
+</div>
+<script>
+document.addEventListener( 'DOMContentLoaded', function( ) {
+	const typeSelect = document.getElementById( 'document_type_code' );
+	const browser = document.getElementById( 'document-browser' );
+	if ( typeSelect == null || browser == null ) {
+		return;
+	}
+	const multiple = browser.dataset.multiple === 'true';
+	const labels = browser.dataset;
+	const selection = document.getElementById( 'document-selection' );
+	const emptySelection = document.getElementById( 'document-selection-empty' );
+	const template = document.getElementById( 'document-item-template' );
+	const pickTemplate = document.getElementById( 'document-browser-pick' );
+	const pickedTemplate = document.getElementById( 'document-browser-picked' );
+	const searchInput = document.getElementById( 'document-search' );
+	const rows = document.getElementById( 'document-browser-rows' );
+	const message = document.getElementById( 'document-browser-message' );
+	const total = document.getElementById( 'document-browser-total' );
+	const pageLabel = document.getElementById( 'document-browser-page' );
+	const previous = document.getElementById( 'document-browser-previous' );
+	const next = document.getElementById( 'document-browser-next' );
+	let current = { page: 1, pageCount: 1, items: [] };
+	let request = 0;
+
+	const selectedIds = function( ) {
+		return Array.from( selection.querySelectorAll( 'input[name="id_document"]' ), input => input.value );
+	};
+	const showMessage = function( text ) {
+		message.textContent = text;
+		message.hidden = ( text === '' );
+	};
+	const refreshSelection = function( ) {
+		emptySelection.hidden = ( selection.querySelector( '[data-document-item]' ) != null );
+		renderRows( );
+	};
+	const pick = function( item ) {
+		if ( !multiple ) {
+			selection.replaceChildren( );
+		}
+		const element = template.content.firstElementChild.cloneNode( true );
+		element.dataset.type = item.type;
+		element.querySelector( 'input[name="id_document"]' ).value = String( item.id );
+		element.querySelector( '[data-document-title]' ).textContent = item.title;
+		selection.appendChild( element );
+		refreshSelection( );
+	};
+	const cell = function( text, className ) {
+		const td = document.createElement( 'td' );
+		td.textContent = text;
+		if ( className ) {
+			td.className = className;
+		}
+		return td;
+	};
+	const renderRows = function( ) {
+		const ids = selectedIds( );
+		rows.replaceChildren( );
+		current.items.forEach( function( item ) {
+			const picked = ids.includes( String( item.id ) );
+			const button = ( picked ? pickedTemplate : pickTemplate ).content.firstElementChild.cloneNode( true );
+			// The visible label is the same on every row: the accessible name also gives the document title
+			button.setAttribute( 'aria-label', button.textContent.trim( ) + ' : ' + item.title );
+			button.removeAttribute( 'title' );
+			if ( !picked ) {
+				button.addEventListener( 'click', function( ) {
+					pick( item );
+				});
+			}
+			const actions = cell( '', 'text-end' );
+			actions.appendChild( button );
+			const tr = document.createElement( 'tr' );
+			tr.append( cell( item.title ), cell( item.space, 'd-none d-md-table-cell text-muted' ), cell( item.dateCreation, 'text-nowrap text-muted' ), actions );
+			rows.appendChild( tr );
+		});
+	};
+	const render = function( data ) {
+		current = data;
+		renderRows( );
+		showMessage( data.items.length === 0 ? labels.labelEmpty : '' );
+		total.textContent = labels.labelTotal.replace( '{0}', data.total );
+		pageLabel.textContent = data.page + ' / ' + data.pageCount;
+		previous.disabled = ( data.page <= 1 );
+		next.disabled = ( data.page >= data.pageCount );
+	};
+	const load = async function( page ) {
+		const requestId = ++request;
+		const params = new URLSearchParams( { document_type_code: typeSelect.value, q: searchInput.value, page: page } );
+		showMessage( labels.labelLoading );
+		try {
+			const response = await fetch( browser.dataset.url + '?' + params, { credentials: 'same-origin', headers: { 'Accept': 'application/json' } } );
+			if ( !response.ok ) {
+				throw new Error( response.statusText );
+			}
+			const data = await response.json( );
+			if ( requestId === request ) {
+				render( data );
+			}
+		} catch ( error ) {
+			if ( requestId === request ) {
+				current = { page: 1, pageCount: 1, items: [] };
+				rows.replaceChildren( );
+				showMessage( labels.labelError );
+			}
+		}
+	};
+
+	let debounce = null;
+	searchInput.addEventListener( 'input', function( ) {
+		clearTimeout( debounce );
+		debounce = setTimeout( ( ) => load( 1 ), 300 );
+	});
+	searchInput.addEventListener( 'keydown', function( e ) {
+		// Enter filters the list instead of submitting the portlet form
+		if ( e.key === 'Enter' ) {
+			e.preventDefault( );
+			clearTimeout( debounce );
+			load( 1 );
+		}
+	});
+	previous.addEventListener( 'click', ( ) => load( current.page - 1 ) );
+	next.addEventListener( 'click', ( ) => load( current.page + 1 ) );
+	typeSelect.addEventListener( 'change', function( ) {
+		selection.querySelectorAll( '[data-document-item]' ).forEach( function( item ) {
+			if ( item.dataset.type !== typeSelect.value ) {
+				item.remove( );
+			}
+		});
+		refreshSelection( );
+		load( 1 );
+	});
+	selection.addEventListener( 'click', function( e ) {
+		const button = e.target.closest( '[data-action]' );
+		if ( button == null ) {
+			return;
+		}
+		const item = button.closest( '[data-document-item]' );
+		if ( button.dataset.action === 'up' && item.previousElementSibling != null ) {
+			selection.insertBefore( item, item.previousElementSibling );
+		} else if ( button.dataset.action === 'down' && item.nextElementSibling != null ) {
+			selection.insertBefore( item.nextElementSibling, item );
+		} else if ( button.dataset.action === 'remove' ) {
+			item.remove( );
+			refreshSelection( );
+		}
+	});
+	if ( multiple && typeof Sortable !== 'undefined' ) {
+		new Sortable( selection, {
+			draggable: '[data-document-item]',
+			handle: '[data-drag-handle]',
+			animation: 150
+		});
+	}
+	load( 1 );
+});
+</script>

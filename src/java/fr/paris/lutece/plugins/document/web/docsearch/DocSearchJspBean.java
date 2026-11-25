@@ -186,7 +186,7 @@ public class DocSearchJspBean extends PluginAdminPageJspBean
                 url.addParameter( PARAMETER_DATE, strDate );
             }
 
-            _model.put( MARK_TYPE_LIST, AdvancedSearch.getRefListDocumentType(  ) );
+            _model.put( MARK_TYPE_LIST, AdvancedSearch.getRefListDocumentType( getLocale(  ) ) );
 
             listResults = _docSearchService.getSearchResults( strQuery, bTitle, bSummary, strDate,
                     docType );

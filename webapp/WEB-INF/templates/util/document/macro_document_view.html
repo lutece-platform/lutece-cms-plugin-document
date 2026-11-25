@@ -1,0 +1,61 @@
+<#ftl output_format="HTML">
+<#--
+ # Macros to display a document in the templates of the document types.
+ # This file uses the HTML output format: the values are HTML-escaped whatever the auto-escaping setting of the site.
+ #
+ # Model of a document template:
+ #   document          the document (DocumentView): id, codeDocumentType, title, summary, dateValidityBegin, dateValidityEnd,
+ #                     categories (list of names), validated, attributes (map of the values by attribute code)
+ #   document_type     the document type, with its attributes (code, name, codeAttributeType)
+ #   front office only: publication_date (may be null), site_locale, request_parameters (map)
+ #
+ # An attribute value is a string, or a file (url, fileName, contentType, image) for the file and image attributes.
+ # An attribute without value is absent from document.attributes: test it with ?? before using it.
+-->
+
+<#-- documentValue
+ # Print a plain text value, HTML-escaped
+ # param value the value, may be null
+-->
+<#macro documentValue value=''>${value!}</#macro>
+
+<#-- documentHtml
+ # Print an HTML value (rich text) as is
+ # param html the HTML, may be null
+-->
+<#macro documentHtml html=''>${(html!)?no_esc}</#macro>
+
+<#-- documentFile
+ # Print a file attribute value: the image itself for an image, otherwise a link to the file
+ # param file the file value
+ # param class the CSS class of the image or of the link
+ # param alt the alternative text of the image
+ # param params additional HTML attributes of the image or of the link, as a map of escaped values (ex: { "width": "40", "height": "40" })
+-->
+<#macro documentFile file class='' alt='' params={}><#if file.image><img src="${file.url}" alt="${alt}"<#if class?has_content> class="${class}"</#if><#list params as name, value> ${name}="${value}"</#list>><#else><a href="${file.url}"<#if class?has_content> class="${class}"</#if><#list params as name, value> ${name}="${value}"</#list>><img src="<@documentFileIcon file=file />" alt=""> ${file.fileName!}</a></#if></#macro>
+
+<#-- documentFileIcon
+ # Print the URL of the icon of a file type: image, PDF or other file
+ # param file the file value
+-->
+<#macro documentFileIcon file>themes/shared/plugins/document/images/filetypes/<#if file.image>photo.svg<#elseif file.contentType == 'application/pdf'>file-type-pdf.svg<#else>file.svg</#if></#macro>
+
+<#-- documentAttribute
+ # Print the value of an attribute according to its type: file, HTML (richtext, internallink) or escaped text
+ # param document the document
+ # param attribute the attribute of the document type
+-->
+<#macro documentAttribute document attribute>
+<#if document.attributes[attribute.code]??>
+<#local value = document.attributes[attribute.code] />
+<#if value?is_hash && value.url??><@documentFile file=value />
+<#elseif attribute.codeAttributeType == 'richtext' || attribute.codeAttributeType == 'internallink'><@documentHtml html=value />
+<#else><@documentValue value=value /></#if>
+</#if>
+</#macro>
+
+<#-- documentTemplateSource
+ # Print the source of a template, HTML-escaped (for a textarea)
+ # param source the source, may be null
+-->
+<#macro documentTemplateSource source=''>${source!}</#macro>

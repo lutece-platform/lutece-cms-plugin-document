@@ -80,26 +80,6 @@ public class PublishingService
     }
 
     /**
-	 * Returns the unique instance of the {@link PublishingService} service.
-	 * 
-	 * <p>
-	 * This method is deprecated and is provided for backward compatibility only.
-	 * For new code, use dependency injection with {@code @Inject} to obtain the
-	 * {@link PublishingService} instance instead.
-	 * </p>
-	 * 
-	 * @return The unique instance of {@link PublishingService}.
-	 * 
-	 * @deprecated Use {@code @Inject} to obtain the {@link PublishingService}
-	 *             instance. This method will be removed in future versions.
-	 */
-    @Deprecated( since = "8.0", forRemoval = true )
-    public static PublishingService getInstance(  )
-    {
-        return CDI.current( ).select( PublishingService.class ).get( );
-    }
-
-    /**
      * Assign {@link Document} to a {@link Portlet}
      *
      * @param nDocumentId The {@link Document} identifier

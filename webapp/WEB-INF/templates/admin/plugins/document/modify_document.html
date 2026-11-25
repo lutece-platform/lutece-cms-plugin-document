@@ -2,17 +2,17 @@
     <@pageColumn>
 		<@pageHeader title='#i18n{document.modify_document.title}' />
 		<@tform method='post' action='jsp/admin/plugins/document/DoModifyDocument.jsp' enctype='multipart/form-data'>
+			<@input type='hidden' name='token' value='${token}' />
 			<@input type='hidden' name='id_document' value='${document.id}' />
 			<@input type='hidden' name='id_state' value='${id_state}' />
-			<@row>
-				<@columns xl=9>
+			<@row class='document-form-layout'>
+				<@columns xl=8 class='document-main-column'>
 					<@box>
-						<@boxHeader title='${document.title}'>
-							<@btnGroup>
+						<@boxHeader title=document.title boxTools=true>
 								<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
 									${extendableResourceActionsHtml!}
 								</#if>
-							</@btnGroup>
+							<@button type='button' class='document-properties-show' color='light' size='sm' buttonIcon='layout-sidebar-right-expand' title='#i18n{document.create_document.buttonShowProperties}' hideTitle=['all'] params='aria-controls="documentPropertiesColumn" aria-expanded="false"' />
 						</@boxHeader>
 						<@boxBody>
 							<@formGroup labelFor='document_title' labelKey='#i18n{document.modify_document.labelDocumentTitle}' helpKey='#i18n{document.modify_document.helpDocumentTitle}' mandatory=true rows=2>
@@ -25,65 +25,77 @@
 								${fields}
 								<@formGroup>
 									<@button type='submit' title='#i18n{document.modify_document.buttonModify}' buttonIcon='device-floppy' />
-									<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' params={"data-lutece-action": "back"} title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
+									<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' params={"data-lutece-action": "back"} title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='light' />
 								</@formGroup>
 							</@fieldSet>	
 						</@boxBody>
 					</@box>
 				</@columns>
-				<@columns xl=3>
-					<@accordion id='advPropertiesAccordion' class='mt-3' title='#i18n{document.create_document.advancedPropertiesTitle}' icon='chevron-down'>
-						<@fieldSet fieldsetId='advPropertiesForm'>
-							<@fieldSet legend='#i18n{document.create_document.labelDocumentValidity}'>
-								<@div class="input-daterange">
-									<@formGroup labelFor='document_validity_begin' labelKey='#i18n{document.create_document.labelDocumentValidityBegin}' rows=2>
-										<@inputGroup>
-											<@inputGroupItem type='text'>
-												<@icon style='calendar' />
-											</@inputGroupItem>
-											<@input type='date' name='document_validity_begin' id='document_validity_begin' value='${date_validity_begin}' />
-										</@inputGroup>
+				<@columns xl=4 id='documentPropertiesColumn' class='document-properties-column'>
+					<#assign has_metadata = metadata?has_content && ( metadata_form?is_markup_output?then( metadata_form?markup_string, metadata_form!'' ) )?trim?has_content />
+					<@tabs id='documentPropertiesTabs' keepState=false>
+						<@tabList>
+							<@tabLink href='#advProperties' active=true tabIcon='cog' title='#i18n{document.modify_document.tabProperties}' />
+							<@tabLink href='#categories' tabIcon='tags' title='#i18n{document.list_category.boxTitle}' />
+							<#if has_metadata>
+							<@tabLink href='#metadata' tabIcon='file-info' title='#i18n{document.modify_document_type.labelMetadata}' />
+							</#if>
+							<@tabLink href='' tabClass='ms-auto'><@button type='button' class='document-properties-hide' color='light' size='sm' buttonIcon='layout-sidebar-right-collapse' title='#i18n{document.create_document.buttonHideProperties}' hideTitle=['all'] params='aria-controls="documentPropertiesColumn" aria-expanded="true"' /></@tabLink>
+						</@tabList>
+						<@tabContent>
+							<@tabPanel id='advProperties' active=true>
+								<@fieldSet fieldsetId='advPropertiesForm'>
+									<@fieldSet legend='#i18n{document.create_document.labelDocumentValidity}'>
+										<@div class="input-daterange">
+											<@formGroup labelFor='document_validity_begin' labelKey='#i18n{document.create_document.labelDocumentValidityBegin}' rows=2>
+												<@inputGroup>
+													<@inputGroupItem type='text'>
+														<@icon style='calendar' />
+													</@inputGroupItem>
+													<@input type='date' name='document_validity_begin' id='document_validity_begin' value='${date_validity_begin}' />
+												</@inputGroup>
+											</@formGroup>
+											<@formGroup labelFor='document_validity_end' labelKey='#i18n{document.create_document.labelDocumentValidityEnd}' rows=2>
+												<@inputGroup>
+													<@inputGroupItem type='text'>
+														<@icon style='calendar' />
+													</@inputGroupItem>
+													<@input type='date' name='document_validity_end' id='document_validity_end' value='${date_validity_end}' />
+												</@inputGroup>
+											</@formGroup>
+										</@div>
+									</@fieldSet>
+									<@formGroup labelFor='document_page_template' labelKey='#i18n{document.create_document.labelDocumentPageTemplate}' helpKey='#i18n{document.create_document.helpDocumentPageTemplate}' rows=2>
+										${page_template_list}									</@formGroup>
+									<@formGroup helpKey='#i18n{document.modify_document.helpSkipPortlet}' rows=2>
+										<@checkBox orientation='switch' labelKey='#i18n{document.modify_document.labelSkipPortlet}' name='document_skip_portlet' id='document_skip_portlet' value='1' checked=document.skipPortlet />
 									</@formGroup>
-									<@formGroup labelFor='document_validity_end' labelKey='#i18n{document.create_document.labelDocumentValidityEnd}' rows=2>
-										<@inputGroup>
-											<@inputGroupItem type='text'>
-												<@icon style='calendar' />
-											</@inputGroupItem>
-											<@input type='date' name='document_validity_end' id='document_validity_end' value='${date_validity_end}' />
-										</@inputGroup>
+									<@formGroup helpKey='#i18n{document.modify_document.helpSkipCategories}' rows=2>
+										<@checkBox orientation='switch' labelKey='#i18n{document.modify_document.labelSkipCategories}' name='document_skip_categories' id='document_skip_categories' value='1' checked=document.skipCategories />
 									</@formGroup>
-								</@div>
-							</@fieldSet>
-							<@formGroup labelFor='document_page_template' labelKey='#i18n{document.create_document.labelDocumentPageTemplate}' helpKey='#i18n{document.create_document.helpDocumentPageTemplate}' rows=2>
-								${page_template_list}
-							</@formGroup>
-							<@formGroup helpKey='#i18n{document.modify_document.helpSkipPortlet}' rows=2>
-								<@checkBox orientation='switch' labelFor='document_skip_portlet' labelKey='#i18n{document.modify_document.labelSkipPortlet}' name='document_skip_portlet' id='document_skip_portlet' checked=document.skipPortlet />
-							</@formGroup>
-							<@formGroup helpKey='#i18n{document.modify_document.helpSkipCategories}' rows=2>
-								<@checkBox orientation='switch' labelFor='document_skip_categories' labelKey='#i18n{document.modify_document.labelSkipCategories}' name='document_skip_categories' id='document_skip_categories' checked=document.skipCategories />
-							</@formGroup>
-							<@formGroup labelFor='document_comment' labelKey='#i18n{document.create_document.labelDocumentComment}' helpKey='#i18n{document.create_document.helpDocumentComment}' rows=2>
-								<@input type='textarea' name='document_comment' id='document_comment' rows=2 value=document.comment! />
-							</@formGroup>
-						</@fieldSet>
-					</@accordion>
-					<@accordion id='categoryAccordion' class='mt-3'	title='#i18n{document.list_category.boxTitle}' icon='chevron-down'>
-						<@div id='category'>
-							${category}
-						</@div>
-					</@accordion>
-					<#if metadata?has_content && metadata_form?markup_string?trim!=''>
-						<@accordion id='metadataAccordion' class='mt-3' title='#i18n{document.modify_document_type.labelMetadata}' icon='chevron-down'>
-							<@div id='div_metadata'>
-								${metadata_form}
-							</@div>
-						</@accordion>
-					</#if>
+									<@formGroup labelFor='document_comment' labelKey='#i18n{document.create_document.labelDocumentComment}' helpKey='#i18n{document.create_document.helpDocumentComment}' rows=2>
+										<@input type='textarea' name='document_comment' id='document_comment' rows=2 value=document.comment! />
+									</@formGroup>
+								</@fieldSet>
+							</@tabPanel>
+							<@tabPanel id='categories'>
+								<@div id='category'>
+									${category}								</@div>
+							</@tabPanel>
+							<#if has_metadata>
+							<@tabPanel id='metadata'>
+								<@div id='div_metadata'>
+								${metadata_form}								</@div>
+							</@tabPanel>
+							</#if>
+						</@tabContent>
+					</@tabs>
 				</@columns>
 			</@row>
 		</@tform>
 	</@pageColumn>
 </@pageContainer>
+<link rel="stylesheet" href="themes/shared/plugins/document/css/documentForm.css?v=${documentAssetsVersion!}" />
+<script src="themes/shared/plugins/document/js/documentPropertiesToggle.js?v=${documentAssetsVersion!}"></script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />

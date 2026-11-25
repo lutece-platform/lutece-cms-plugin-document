@@ -1,40 +1,79 @@
-<@row>
-	<@columns lg=7>
-		<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey=helpKey mandatory=attribute.required rows=2>
-			<@input type='file' name='${attribute.code}' id='${attribute.code}' /> 
-		</@formGroup>
-	</@columns>
-	<#if attribute.textValue?has_content>
-	<@columns lg=3>
-		<@formGroup helpKey='#i18n{document.attributeType.file.deleteField}' rows=2>
-			<@checkBox labelKey='#i18n{document.attributeType.file.updateField}' name='update_${attribute.code}' id='update_${attribute.code}' value='1' />
-		</@formGroup>
-	</@columns>
-	<@columns lg=2>
-		<@link href='servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true&nocache' title='preview'>
-			<#assign imgUrl><@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl="servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true" /></#assign>
-			<@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='thumbnail thumbnail-lg' />
-		</@link>
-	</@columns>
-	</#if>
-</@row>
+<#include "/admin/plugins/document/attributes/file_dropzone.html" />
+<#assign attrCode = attribute.code />
+<#assign hasValue = attribute.textValue?has_content />
+<#assign resourceUrl = 'servlet/plugins/document/resource?id=${document.id}&id_attribute=${attribute.id}&working_content=true' />
+<#if hasValue>
+	<#assign helpKey = '#i18n{document.attributeType.file.deleteField}' />
+<#else>
+	<#assign helpKey = attribute.description />
+</#if>
+<@formGroup labelFor=attrCode labelKey=attribute.name helpKey=helpKey! mandatory=attribute.required rows=2>
+	<@row class='g-3'>
+		<@columns md=6>
+			<@documentFileDropzone id=attrCode name=attrCode preview='${attrCode}_new' />
+			<#if hasValue>
+				<@checkBox orientation='switch' wrapperClass='mt-2 mb-0' labelKey='#i18n{document.attributeType.file.updateField}' name='update_${attrCode}' id='update_${attrCode}' value='1' />
+			</#if>
+		</@columns>
+		<@columns md=6>
+			<@div class='d-flex flex-wrap gap-3'>
+				<#if hasValue>
+				<@div id='${attrCode}_current' class='card mb-0'>
+					<#assign imgUrl><@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl=resourceUrl + "&nocache" /></#assign>
+					<@link href='${resourceUrl}&nocache' target='_blank' class='d-flex align-items-center justify-content-center bg-light rounded-top' params='style="height:10rem;width:14rem"'>
+						<#if attribute.valueContentType?starts_with( 'image/' )>
+						<@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='mw-100 mh-100' params='style="object-fit:contain" loading="lazy"' />
+						<#else>
+						<@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='' params='style="height:4rem"' />
+						</#if>
+					</@link>
+					<@div class='card-body p-2' params='style="width:14rem"'>
+						<@div class='small fw-bold'>#i18n{document.attributeType.file.labelCurrent}</@div>
+						<@link href='${resourceUrl}&nocache' target='_blank' class='small d-block text-truncate' title=attribute.textValue>${attribute.textValue}</@link>
+						<@div class='small text-muted'>${attribute.valueContentType!}</@div>
+					</@div>
+				</@div>
+				</#if>
+				<@documentFileNewCard id='${attrCode}_new' />
+			</@div>
+		</@columns>
+	</@row>
+</@formGroup>
 <script>
-{
-const attributeCode = '${attribute.code?js_string?no_esc}';
-const updateCheckbox = document.getElementById('update_' + attributeCode);
-const fileInput = document.getElementById(attributeCode);
+document.addEventListener( 'DOMContentLoaded', () => {
+	const code = '${attrCode?js_string?no_esc}';
+	const fileInput = document.getElementById( code );
+	const updateCheckbox = document.getElementById( 'update_' + code );
+	const current = document.getElementById( code + '_current' );
 
-fileInput.required = false;
-if (updateCheckbox) {
-	updateCheckbox.addEventListener('change', function() {
-		updateCheckbox.required = updateCheckbox.checked;
-	});
-
-	fileInput.addEventListener('change', function() {
-		if (fileInput.value !== '') {
-			updateCheckbox.checked = true;
+	const refresh = ( ) => {
+		// Update checked with no new file means the current file is removed
+		const replacing = !updateCheckbox || updateCheckbox.checked;
+		fileInput.required = ${attribute.required?c} && replacing;
+		if ( current ) {
+			current.classList.toggle( 'opacity-50', replacing );
 		}
-	});
-}
-}
+	};
+	refresh( );
+
+	fileInput.addEventListener( 'change', ( ) => {
+		// Without the update flag the server keeps the current file. Clearing the chosen file keeps the current one:
+		// the update flag with no file deletes it, which is only done by ticking the flag on purpose
+		if ( updateCheckbox ) {
+			updateCheckbox.checked = fileInput.value !== '';
+		}
+		refresh( );
+	} );
+
+	if ( updateCheckbox ) {
+		updateCheckbox.addEventListener( 'change', ( ) => {
+			if ( !updateCheckbox.checked && fileInput.value !== '' ) {
+				fileInput.value = '';
+				// Refreshes the drop zone, which shows the chosen file
+				fileInput.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+			}
+			refresh( );
+		} );
+	}
+} );
 </script>

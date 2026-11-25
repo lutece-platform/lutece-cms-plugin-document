@@ -360,7 +360,7 @@ public abstract class DefaultManager implements AttributeManager
      * {@inheritDoc}
      */
     @Override
-    public String getAttributeXmlValue( Document document, DocumentAttribute attribute )
+    public Object getAttributeValue( Document document, DocumentAttribute attribute, boolean bValidated )
     {
         return attribute.getTextValue(  );
     }

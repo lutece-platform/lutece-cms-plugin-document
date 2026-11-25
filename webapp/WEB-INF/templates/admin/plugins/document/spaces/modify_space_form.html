@@ -1,0 +1,55 @@
+<#--
+ # Form to modify a space. Rendered on the modify space page, and in a modal of the documents management page (in_modal=true).
+ # id_prefix keeps the identifiers of the fields unique when several space forms are in the same page.
+-->
+<#assign idPrefix = id_prefix!'' />
+<#macro modifySpaceFields>
+	<@input type='hidden' name='token' value='${token}' />
+	<@input type='hidden' name='id_space' value='${space.id}' />
+	<@input type='hidden' name='id_parent_space' value='${space.idParent}' />
+	<@formGroup labelFor='${idPrefix}name' labelKey='#i18n{document.modify_space.labelName}' mandatory=true rows=2>
+		<@input type='text' name='name' id='${idPrefix}name' value='${space.name}' />
+	</@formGroup>
+	<@formGroup labelFor='${idPrefix}description' labelKey='#i18n{document.modify_space.labelDescription}' mandatory=true rows=2>
+		<@input type='text' name='description' id='${idPrefix}description' value='${space.description}' />
+	</@formGroup>
+	<@formGroup labelFor='${idPrefix}view_type' labelKey='#i18n{document.modify_space.labelView}' rows=2>
+		<@select name='view_type' id='${idPrefix}view_type' default_value='${space.viewType!view_type}' items=view_types_list />
+	</@formGroup>
+	<@formGroup labelKey='#i18n{document.modify_space.labelIcon}' rows=2>
+		<#list icons_list as item>
+			<#assign radioLabelKey><img src="${item.name}" alt="" class="img-fluid" /></#assign>
+			<@radioButton orientation='inline' labelFor='${idPrefix}icon_${item.code}' labelKey=radioLabelKey checked=( space.idIcon?c == item.code ) name='icon' id='${idPrefix}icon_${item.code}' value='${item.code}' />
+		</#list>
+	</@formGroup>
+	<@formGroup labelKey='#i18n{document.modify_space.labelDocumentTypes}' rows=2>
+		<#list document_types_list as item>
+			<@checkBox orientation='switch' labelKey='${item.name}' name='document_type' id='${idPrefix}document_type_${item?index}' value='${item.code}' checked=item.checked />
+		</#list>
+	</@formGroup>
+	<@formGroup labelFor='${idPrefix}workgroup_key' labelKey='#i18n{document.modify_space.labelWorkgroup}' rows=2>
+		<@select name='workgroup_key' id='${idPrefix}workgroup_key' default_value=space.workgroup!'all' items=user_workgroup_list />
+	</@formGroup>
+	<@formGroup helpKey='#i18n{document.modify_space.helpAllowCreation}' rows=2>
+		<@checkBox orientation='switch' labelKey='#i18n{document.modify_space.labelAllowCreation}' name='allow_creation' id='${idPrefix}allow_creation' value='on' checked=space.documentCreationAllowed />
+	</@formGroup>
+</#macro>
+<#if in_modal!false>
+<@tform method='post' action='jsp/admin/plugins/document/DoModifySpace.jsp'>
+	<@modalBody>
+		<@modifySpaceFields />
+	</@modalBody>
+	<@modalFooter>
+		<@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='light' />
+		<@button type='submit' title='#i18n{document.modify_space.buttonModify}' buttonIcon='device-floppy' />
+	</@modalFooter>
+</@tform>
+<#else>
+<@tform method='post' action='jsp/admin/plugins/document/DoModifySpace.jsp' boxed=true>
+	<@modifySpaceFields />
+	<@formGroup rows=2>
+		<@button type='submit' title='#i18n{document.modify_space.buttonModify}' buttonIcon='device-floppy' />
+		<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='light' />
+	</@formGroup>
+</@tform>
+</#if>

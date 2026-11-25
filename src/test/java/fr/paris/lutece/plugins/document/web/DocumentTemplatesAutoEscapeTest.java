@@ -124,6 +124,9 @@ public class DocumentTemplatesAutoEscapeTest
             // attributes and their parameters, the action URL of the spaces browser, the i18n labels of the scripts
             // (#i18n{} is replaced unescaped after rendering)
             Pattern.compile( ".*\\?js_string" ),
+            // the HTML of a rich text or internal link attribute, entered with the editor of the back office: the
+            // document templates write it through documentHtml of macro_document_view.html, the only place that does
+            Pattern.compile( "\\(html!\\)" ),
             // nothing else: the HTML built in Java (attribute forms, category and metadata forms, spaces tree and browser,
             // XSL output of the documents and portlets, publishing lists, rule forms and descriptions) is marked with
             // HtmlMarkup where it is put in the model

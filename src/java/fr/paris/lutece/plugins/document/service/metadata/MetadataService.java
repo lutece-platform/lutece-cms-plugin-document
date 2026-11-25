@@ -33,9 +33,18 @@
  */
 package fr.paris.lutece.plugins.document.service.metadata;
 
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceList;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Iterator;
+import java.util.StringJoiner;
 import java.util.StringTokenizer;
 
 
@@ -50,6 +59,8 @@ public class MetadataService
     private static final String SUFFIX_DESCRIPTION = ".description";
     private static final String SUFFIX_BEAN_NAME = ".beanName";
     private static final String NO_HANDLER_LABEL = "None";
+    private static final String SEPARATOR = " ";
+    private static final ObjectMapper MAPPER = new ObjectMapper( );
 
     ////////////////////////////////////////////////////////////////////////////
     // Metadata handling
@@ -93,5 +104,43 @@ public class MetadataService
     public static String getBeanName( String strHandlerKey )
     {
         return AppPropertiesService.getProperty( PREFIX_HANDLER + strHandlerKey + SUFFIX_BEAN_NAME );
+    }
+
+    /**
+     * Returns the values of metadata, separated by spaces, to index them with the content of the document. The metadata are read as a JSON
+     * object, whatever the handler that built them.
+     * @param strMetadata The metadata, as a JSON object, may be null
+     * @return The values of the metadata, or an empty string if there are none or if they are not a JSON object
+     */
+    public static String getIndexableText( String strMetadata )
+    {
+        if ( StringUtils.isBlank( strMetadata ) )
+        {
+            return StringUtils.EMPTY;
+        }
+
+        try
+        {
+            JsonNode node = MAPPER.readTree( strMetadata );
+            StringJoiner sjValues = new StringJoiner( SEPARATOR );
+
+            for ( Iterator<JsonNode> iterator = node.elements( ); iterator.hasNext( ); )
+            {
+                JsonNode value = iterator.next( );
+
+                if ( value.isValueNode( ) && StringUtils.isNotBlank( value.asText( ) ) )
+                {
+                    sjValues.add( value.asText( ) );
+                }
+            }
+
+            return sjValues.toString( );
+        }
+        catch( JsonProcessingException e )
+        {
+            AppLogService.error( "Invalid document metadata, not indexed : {}", e.getMessage( ), e );
+
+            return StringUtils.EMPTY;
+        }
     }
 }

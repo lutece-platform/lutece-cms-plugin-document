@@ -2,6 +2,7 @@
     <@pageColumn>
 		<@pageHeader title='#i18n{document.create_document_type.titleProperties}' />
 		<@tform method='post' action='jsp/admin/plugins/document/DoCreateDocumentType.jsp' boxed=true>
+				<@input type='hidden' name='token' value='${token}' />
 			<@formGroup labelFor='code' labelKey='#i18n{document.create_document_type.labelCode}' helpKey='#i18n{document.create_document_type.helpCode}' mandatory=true>
 				<@input type='text' name='code' id='code' maxlength=30 />
 			</@formGroup>

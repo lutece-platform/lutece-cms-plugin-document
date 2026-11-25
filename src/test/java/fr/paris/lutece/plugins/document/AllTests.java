@@ -36,11 +36,23 @@ package fr.paris.lutece.plugins.document;
 import fr.paris.lutece.plugins.document.business.DocumentTest;
 import fr.paris.lutece.plugins.document.business.DocumentTypeTest;
 import fr.paris.lutece.plugins.document.business.history.HistoryTest;
+import fr.paris.lutece.plugins.document.business.portlet.DocumentPortletRenderingTest;
 import fr.paris.lutece.plugins.document.business.rules.DocumentRulesTest;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceTest;
 import fr.paris.lutece.plugins.document.modules.metadatadublincore.business.DublinCoreMetadataTest;
+import fr.paris.lutece.plugins.document.service.DocumentResourceAccessServiceTest;
+import fr.paris.lutece.plugins.document.service.LegacyStylesheetServiceTest;
 import fr.paris.lutece.plugins.document.service.docsearch.DocSearchServiceTest;
+import fr.paris.lutece.plugins.document.service.metadata.LegacyMetadataConverterTest;
+import fr.paris.lutece.plugins.document.service.publishing.PortletDocumentSelectionServiceTest;
+import fr.paris.lutece.plugins.document.web.portlet.PortletFormTemplatesTest;
+import fr.paris.lutece.plugins.document.service.view.DocumentTemplatesRenderingTest;
+import fr.paris.lutece.plugins.document.service.view.DocumentTypeTemplatesTest;
+import fr.paris.lutece.plugins.document.service.view.DocumentViewServiceTest;
 import fr.paris.lutece.plugins.document.web.DocumentJspBeanTest;
+import fr.paris.lutece.plugins.document.web.AdminActionsSecurityTokenTest;
+import fr.paris.lutece.plugins.document.web.DocumentServiceJspBeanTest;
+import fr.paris.lutece.plugins.document.web.DocumentTypeTemplatesSaveTest;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
@@ -57,7 +69,19 @@ import org.junit.platform.suite.api.Suite;
     DocumentRulesTest.class,
     DublinCoreMetadataTest.class,
     DocumentJspBeanTest.class,
-    DocSearchServiceTest.class
+    DocSearchServiceTest.class,
+    DocumentViewServiceTest.class,
+    DocumentTemplatesRenderingTest.class,
+    DocumentPortletRenderingTest.class,
+    PortletDocumentSelectionServiceTest.class,
+    PortletFormTemplatesTest.class,
+    DocumentTypeTemplatesTest.class,
+    LegacyMetadataConverterTest.class,
+    LegacyStylesheetServiceTest.class,
+    DocumentServiceJspBeanTest.class,
+    DocumentResourceAccessServiceTest.class,
+    AdminActionsSecurityTokenTest.class,
+    DocumentTypeTemplatesSaveTest.class
 })
 public class AllTests
 {

@@ -37,6 +37,7 @@ import fr.paris.lutece.util.ReferenceList;
 import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This class provides instances management methods (create, find, ...) for DocumentType objects
@@ -157,28 +158,50 @@ public final class DocumentTypeHome
     }
 
     /**
-     * Sets the admin stylesheet
+     * Updates the FreeMarker templates of a document type
      * 
-     * @param baXslAdmin
-     *            The stylesheet
      * @param strCodeType
      *            The code type
+     * @param strAdminTemplate
+     *            The back office template, or null to use the default one
+     * @param strContentTemplate
+     *            The front office template, or null to use the default one
      */
-    public static void setAdminStyleSheet( byte [ ] baXslAdmin, String strCodeType )
+    public static void storeTemplates( String strCodeType, String strAdminTemplate, String strContentTemplate )
     {
-        _dao.setAdminStyleSheet( baXslAdmin, strCodeType );
+        _dao.storeTemplates( strCodeType, strAdminTemplate, strContentTemplate );
     }
 
     /**
-     * Sets the content service stylesheet
+     * Returns the codes of the document types that still have XSL stylesheets of the versions before 7.0.0
      * 
-     * @param baXslContent
-     *            The stylesheet
+     * @return The codes of the document types
+     */
+    public static List<String> findCodesWithLegacyStylesheets( )
+    {
+        return _dao.selectCodesWithLegacyStylesheets( );
+    }
+
+    /**
+     * Returns the XSL stylesheets of a document type, from the versions before 7.0.0
+     * 
+     * @param strCodeType
+     *            The code type
+     * @return The stylesheets, or null if the document type does not exist
+     */
+    public static LegacyStylesheets findLegacyStylesheets( String strCodeType )
+    {
+        return _dao.loadLegacyStylesheets( strCodeType );
+    }
+
+    /**
+     * Deletes the XSL stylesheets of a document type, from the versions before 7.0.0
+     * 
      * @param strCodeType
      *            The code type
      */
-    public static void setContentStyleSheet( byte [ ] baXslContent, String strCodeType )
+    public static void removeLegacyStylesheets( String strCodeType )
     {
-        _dao.setContentStyleSheet( baXslContent, strCodeType );
+        _dao.deleteLegacyStylesheets( strCodeType );
     }
 }

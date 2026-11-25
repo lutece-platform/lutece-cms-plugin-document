@@ -33,11 +33,13 @@
  */
 package fr.paris.lutece.plugins.document.web.portlet;
 
+import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortlet;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
 import fr.paris.lutece.plugins.document.service.category.CategoryService;
 import fr.paris.lutece.plugins.document.service.category.CategoryService.CategoryDisplay;
+import fr.paris.lutece.plugins.document.service.publishing.PortletDocumentSelectionService;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
@@ -56,6 +58,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
@@ -81,9 +86,11 @@ public class DocumentListPortletJspBean extends PortletJspBean
     private static final String PARAMETER_CATEGORY = "categories";
     private static final String COMBO_DOCUMENT_TYPE_LIST = "@combo_document_type@";
     private static final String COMBO_DOCUMENT_CATEGORY_LIST = "@combo_category_document@";
+    private static final String COMBO_DOCUMENT_LIST = "@combo_document@";
     private static final String TEMPLATE_DOCUMENT_TYPE_LIST = "admin/plugins/document/portlet/document_type_list.html";
     private static final String TEMPLATE_CATEGORY_DOCUMENT_LIST = "admin/plugins/document/portlet/category_document_list.html";
     private static final String MESSAGE_ERROR_DOCUMENTS_MUST_BE_UNASSIGNED = "document.message.errorDocumentsMustBeUnassigned";
+    private static final String MESSAGE_ERROR_DOCUMENT_NOT_PUBLISHABLE = "document.message.errorDocumentNotPublishable";
 
     
     @Inject
@@ -94,6 +101,9 @@ public class DocumentListPortletJspBean extends PortletJspBean
     
     @Inject
     private PublishingService _publishingService;
+
+    @Inject
+    private PortletDocumentSelectionService _selectionService;
     
     @Inject
     private Models _model;
@@ -124,6 +134,7 @@ public class DocumentListPortletJspBean extends PortletJspBean
         HtmlTemplate template = getCreateTemplate( strIdPage, strIdPortletType );
         template.substitute( COMBO_DOCUMENT_TYPE_LIST, getDocumentTypesList( StringUtils.EMPTY ) );
         template.substitute( COMBO_DOCUMENT_CATEGORY_LIST, getCategoryList( StringUtils.EMPTY, user ) );
+        template.substitute( COMBO_DOCUMENT_LIST, getDocumentList( 0, user ) );
 
         return template.getHtml(  );
     }
@@ -145,6 +156,7 @@ public class DocumentListPortletJspBean extends PortletJspBean
         // Format the specific modify form (composed of the list of articles and buttons to modify the order of the articles)
         template.substitute( COMBO_DOCUMENT_TYPE_LIST, getDocumentTypesList( strPortletId ) );
         template.substitute( COMBO_DOCUMENT_CATEGORY_LIST, getCategoryList( strPortletId, user ) );
+        template.substitute( COMBO_DOCUMENT_LIST, getDocumentList( nPortletId, user ) );
 
         return template.getHtml(  );
     }
@@ -163,6 +175,14 @@ public class DocumentListPortletJspBean extends PortletJspBean
 
         //gets the identifier of the parent page
         String strDocumentTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
+        int[] arrayIdCategories = setIdCategory( request );
+        List<Document> listSelected = _selectionService.getSelectedDocuments( request, getUser(  ) );
+
+        if ( !_selectionService.areAllPublishable( listSelected, strDocumentTypeCode, arrayIdCategories ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_NOT_PUBLISHABLE,
+                AdminMessage.TYPE_STOP );
+        }
 
         // get portlet common attributes
         String strErrorUrl = setPortletCommonData( request, portlet );
@@ -178,10 +198,12 @@ public class DocumentListPortletJspBean extends PortletJspBean
         portlet.setDocumentTypeCode( strDocumentTypeCode );
 
         //Categories
-        portlet.setIdCategory( setIdCategory( request ) );
+        portlet.setIdCategory( arrayIdCategories );
 
         //Portlet creation
         _documentListPortletHome.create( portlet );
+
+        _selectionService.applySelection( getIds( listSelected ), Collections.emptySet(  ), portlet.getId(  ) );
 
         //Displays the page with the new Portlet
         return getPageUrl( nIdPage );
@@ -203,6 +225,16 @@ public class DocumentListPortletJspBean extends PortletJspBean
         int nPortletId = IntegerUtils.convert( strPortletId );
         DocumentListPortlet portlet = (DocumentListPortlet) _documentListPortletHome.findByPrimaryKey( nPortletId );
         int[] arrayOldIdCategories = portlet.getIdCategory(  );
+        List<Document> listSelected = _selectionService.getSelectedDocuments( request, getUser(  ) );
+
+        if ( !_selectionService.areAllPublishable( listSelected, strDocumentTypeCode, arrayIdCategories ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_NOT_PUBLISHABLE,
+                AdminMessage.TYPE_STOP );
+        }
+
+        List<Integer> listIdSelected = getIds( listSelected );
+        Set<Integer> setIdUnselected = _selectionService.getUnselectedPublishedIds( nPortletId, getUser(  ), listIdSelected );
 
         if ( arrayIdCategories != null )
         {
@@ -214,9 +246,10 @@ public class DocumentListPortletJspBean extends PortletJspBean
             Arrays.sort( arrayOldIdCategories );
         }
 
+        // The selected documents are checked against the new type and categories above, the other ones must be removed first
         if ( ( !Arrays.equals( arrayIdCategories, arrayOldIdCategories ) ||
                 !portlet.getDocumentTypeCode(  ).equals( strDocumentTypeCode ) ) &&
-                ( _publishingService.getAssignedDocumentsByPortletId( nPortletId ).size(  ) != 0 ) )
+                hasOtherAssignedDocuments( nPortletId, listIdSelected, setIdUnselected ) )
         {
             return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENTS_MUST_BE_UNASSIGNED,
                 AdminMessage.TYPE_STOP );
@@ -238,8 +271,61 @@ public class DocumentListPortletJspBean extends PortletJspBean
         // updates the portlet
         portlet.update(  );
 
+        _selectionService.applySelection( listIdSelected, setIdUnselected, nPortletId );
+
         // displays the page withe the potlet updated
         return getPageUrl( portlet.getPageId(  ) );
+    }
+
+    /**
+     * Tells if documents other than the selected ones would remain assigned to the portlet once the selection is applied
+     * @param nPortletId The portlet identifier
+     * @param listIdSelected The identifiers of the documents selected
+     * @param setIdUnselected The identifiers of the documents the selection removes
+     * @return true if other documents would remain assigned
+     */
+    private boolean hasOtherAssignedDocuments( int nPortletId, List<Integer> listIdSelected, Set<Integer> setIdUnselected )
+    {
+        for ( Document document : _publishingService.getAssignedDocumentsByPortletId( nPortletId ) )
+        {
+            if ( !listIdSelected.contains( document.getId(  ) ) && !setIdUnselected.contains( document.getId(  ) ) )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the identifiers of documents
+     * @param listDocuments The documents
+     * @return The identifiers, in the same order
+     */
+    private static List<Integer> getIds( List<Document> listDocuments )
+    {
+        List<Integer> listIds = new ArrayList<>(  );
+
+        for ( Document document : listDocuments )
+        {
+            listIds.add( document.getId(  ) );
+        }
+
+        return listIds;
+    }
+
+    /**
+     * Returns an html template containing the document selector
+     * @param nPortletId The portlet identifier, 0 for a new portlet
+     * @param user The current user
+     * @return The html code
+     */
+    private String getDocumentList( int nPortletId, AdminUser user )
+    {
+        List<Document> listSelected = ( nPortletId > 0 ) ? _selectionService.getShownDocuments( nPortletId, user )
+                                                         : new ArrayList<>(  );
+
+        return _selectionService.getDocumentSelect( listSelected, true, getLocale(  ) );
     }
 
     /**

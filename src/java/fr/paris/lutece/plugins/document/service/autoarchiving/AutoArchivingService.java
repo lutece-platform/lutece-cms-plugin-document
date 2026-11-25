@@ -43,7 +43,6 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -59,24 +58,13 @@ public class AutoArchivingService
 
 	@Inject
 	private DocumentListPortletHome _documentListPortletHome;
+
+	@Inject
+	private PublishingService _publishingService;
+
+	@Inject
+	private DocumentService _documentService;
 	
-	/**
-     * Returns the unique instance of the {@link AutoArchivingService} service.
-     * 
-     * <p>This method is deprecated and is provided for backward compatibility only. 
-     * For new code, use dependency injection with {@code @Inject} to obtain the 
-     * {@link AutoArchivingService} instance instead.</p>
-     * 
-     * @return The unique instance of {@link AutoArchivingService}.
-     * 
-     * @deprecated Use {@code @Inject} to obtain the {@link AutoArchivingService} 
-     * instance. This method will be removed in future versions.
-     */
-    @Deprecated( since = "8.0", forRemoval = true )
-    public static AutoArchivingService getInstance(  )
-    {
-    	return CDI.current( ).select( AutoArchivingService.class ).get( );
-    }
 
     /**
      * Initialize the {@link AutoArchivingService} service
@@ -100,8 +88,7 @@ public class AutoArchivingService
 
         for ( Portlet portlet : PortletHome.findByType( _documentListPortletHome.getPortletTypeId(  ) ) )
         {
-            for ( Document document :  CDI.current( ).select( PublishingService.class ).get( )
-                                                       .getPublishedDocumentsByPortletId( portlet.getId(  ) ) )
+            for ( Document document :  _publishingService.getPublishedDocumentsByPortletId( portlet.getId(  ) ) )
             {
                 if ( document.isOutOfDate(  ) )
                 {
@@ -110,12 +97,11 @@ public class AutoArchivingService
 
                     try
                     {
-                    	CDI.current( ).select( DocumentService.class ).get( ).archiveDocument( document, null, DocumentState.STATE_ARCHIVED );
+                    	_documentService.archiveDocument( document, null, DocumentState.STATE_ARCHIVED );
                     }
                     catch ( DocumentException e )
                     {
-                        AppLogService.error( "[AutoArchivingDaemon] Error when archiving document (id:" +
-                            document.getId(  ) + "). " + e.getMessage(  ) );
+                        AppLogService.error( "[AutoArchivingDaemon] Error when archiving document (id:{}). {}", document.getId(  ), e.getMessage(  ), e );
                     }
                 }
             }

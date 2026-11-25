@@ -14,11 +14,12 @@
 			</@tform>
 		</@pageHeader>
 		<@row>
-			<@columns xl=3>
+			<@columns xl=2>
 				<@box>
 					<@boxHeader title='#i18n{document.modify_document_type.titleProperties}' />
 					<@boxBody>
 						<@tform method='post' action='jsp/admin/plugins/document/DoModifyDocumentType.jsp'>
+							<@input type='hidden' name='token' value='${token}' />
 							<@input type='hidden' id='old_code' name='old_code' value='${document_type.code}' />
 							<@formGroup labelFor='code' labelKey='#i18n{document.modify_document_type.labelCode}' helpKey='#i18n{document.modify_document_type.helpCode}' mandatory=true rows=2>
 								<@input type='text' name='code' id='code' maxlength=30 value='${document_type.code}' />
@@ -40,7 +41,7 @@
 							</@formGroup>
 							<@formGroup rows=2>
 								<@button type='submit' title='#i18n{document.modify_document_type.buttonModify}' buttonIcon='device-floppy' />
-								 <@aButton href='jsp/admin/plugins/document/ManageDocumentTypes.jsp?plugin_name=document' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
+								<@aButton href='jsp/admin/plugins/document/ManageDocumentTypes.jsp?plugin_name=document' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
 							</@formGroup>
 						</@tform>
 					</@boxBody>
@@ -63,8 +64,8 @@
 								<@manageFeatureItemColumn align='end' valign='start'>
 									<@btnGroup>
 										<@aButton href='jsp/admin/plugins/document/ModifyDocumentTypeAttribute.jsp?attribute_id=${attribute.id}' title='${attribute.name}' buttonIcon='edit' hideTitle=['all'] params={"aria-label": "#i18n{document.modify_document_type.buttonModify} ${attribute.name}"} />
-										<@aButton href='jsp/admin/plugins/document/DoAttributeMoveUp.jsp?index=${attribute.attributeOrder}' title='#i18n{document.modify_document_type.buttonMoveUp}' buttonIcon='arrow-up' hideTitle=['all'] params={"aria-label": "#i18n{document.modify_document_type.buttonMoveUp} ${attribute.name}"} />
-										<@aButton href='jsp/admin/plugins/document/DoAttributeMoveDown.jsp?index=${attribute.attributeOrder}' title='#i18n{document.modify_document_type.buttonMoveDown}' buttonIcon='arrow-down' hideTitle=['all'] params={"aria-label": "#i18n{document.modify_document_type.buttonMoveDown} ${attribute.name}"} />
+										<@aButton href='jsp/admin/plugins/document/DoAttributeMoveUp.jsp?index=${attribute.attributeOrder}&token=${token}' title='#i18n{document.modify_document_type.buttonMoveUp}' buttonIcon='arrow-up' hideTitle=['all'] params={"aria-label": "#i18n{document.modify_document_type.buttonMoveUp} ${attribute.name}"} />
+										<@aButton href='jsp/admin/plugins/document/DoAttributeMoveDown.jsp?index=${attribute.attributeOrder}&token=${token}' title='#i18n{document.modify_document_type.buttonMoveDown}' buttonIcon='arrow-down' hideTitle=['all'] params={"aria-label": "#i18n{document.modify_document_type.buttonMoveDown} ${attribute.name}"} />
 										<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteAttribute.jsp?document_type_code=${document_type.code}&attribute_id=${attribute.id}' title='#i18n{document.modify_document_type.buttonDelete}' buttonIcon='trash' color='danger' hideTitle=['all'] params={"aria-label": "#i18n{document.modify_document_type.buttonDelete} ${attribute.name}"} />
 									</@btnGroup>
 								</@manageFeatureItemColumn>
@@ -74,46 +75,69 @@
 					</@boxBody>
 				</@box>
 			</@columns>
-			<@columns xl=3>
+			<@columns xl=4>
 				<@box>
-					<@boxHeader title='#i18n{document.modify_document_type.titleStyleSheets}' />
+					<@boxHeader title='#i18n{document.modify_document_type.titleTemplates}' />
 					<@boxBody>
-						<@tform method='post' action='jsp/admin/plugins/document/DoLoadDocumentTypeStyleSheets.jsp' enctype='multipart/form-data' name='create_stylesheet'>
+						<@alert color='info'>#i18n{document.modify_document_type.helpTemplates}</@alert>
+						<#if legacy_stylesheets??>
+						<@alert color='warning'>
+							<@p>#i18n{document.modify_document_type.helpLegacyStylesheets}</@p>
+							<details class="mb-3">
+								<summary>#i18n{document.modify_document_type.labelShowLegacyStylesheets}</summary>
+								<#if legacy_stylesheets.adminStylesheet??>
+								<@formGroup labelFor='legacy_admin_stylesheet' labelKey='#i18n{document.modify_document_type.labelLegacyAdminStylesheet}' rows=2>
+									<@input type='textarea' name='legacy_admin_stylesheet' id='legacy_admin_stylesheet' rows=12 class='font-monospace' readonly=true><@documentTemplateSource source=legacy_stylesheets.adminStylesheet /></@input>
+								</@formGroup>
+								</#if>
+								<#if legacy_stylesheets.contentStylesheet??>
+								<@formGroup labelFor='legacy_content_stylesheet' labelKey='#i18n{document.modify_document_type.labelLegacyContentStylesheet}' rows=2>
+									<@input type='textarea' name='legacy_content_stylesheet' id='legacy_content_stylesheet' rows=12 class='font-monospace' readonly=true><@documentTemplateSource source=legacy_stylesheets.contentStylesheet /></@input>
+								</@formGroup>
+								</#if>
+							</details>
+							<@aButton href='jsp/admin/plugins/document/DoConfirmDiscardLegacyStylesheets.jsp?document_type_code=${document_type.code}' title='#i18n{document.modify_document_type.buttonDiscardLegacyStylesheets}' buttonIcon='trash' color='warning' />
+						</@alert>
+						</#if>
+						<@tform method='post' action='jsp/admin/plugins/document/DoModifyDocumentTypeTemplates.jsp' name='modify_templates'>
 							<@input type='hidden' name='document_type_code' value='${document_type.code}' />
-							<@input type='hidden' name='mode_id' value='-1' />
-							<@fieldSet legend='#i18n{document.modify_document_type.fieldsetStyleSheets}' >
-							<@formGroup labelFor='stylesheet_admin' labelKey='#i18n{document.modify_document_type.labelStyleSheetAdmin}' rows=2>
-								<@input type='file' id='stylesheet_admin' name='stylesheet_admin' maxlength=100 />
-								<@checkBox labelFor='stylesheet_admin_update' labelKey='#i18n{document.modify_document_type.labelStyleSheetAdminUpdate}' id='stylesheet_admin_update' name='stylesheet_admin_update' value='true' />
-							</@formGroup>
-							<#if document_type.adminXsl?has_content>
-								<@aButton class='outline-primary' href='jsp/admin/plugins/document/ViewStyleSheetFile.jsp?document_type_code=${document_type.code}&stylesheet_type=stylesheet_admin'>
-									<@icon style='download' /> #i18n{document.modify_document_type.labelStyleSheetAdminDownload}
-								</@aButton>
-							<#else>
-								<@tag color='warning'>#i18n{document.modify_document_type.labelStyleSheetAdminNoFile}</@tag>
-							</#if>
-							</@fieldSet>
-							<@fieldSet legend='#i18n{document.modify_document_type.fieldsetContent}' >
-							<@formGroup labelFor='stylesheet_content' labelKey='#i18n{document.modify_document_type.labelStyleSheetContent}' rows=2>
-								<@input type='file' id='stylesheet_content' name='stylesheet_content' maxlength=100 />
-								<@checkBox labelFor='stylesheet_content_update' labelKey='#i18n{document.modify_document_type.labelStyleSheetContentUpdate}' id='stylesheet_content_update' name='stylesheet_content_update' value='true' />
-							</@formGroup>
-							<#if document_type.contentServiceXsl?has_content>
-								<@aButton color='transparent' href='jsp/admin/plugins/document/ViewStyleSheetFile.jsp?document_type_code=${document_type.code}&stylesheet_type=stylesheet_content'>
-									<@icon style='download' /> #i18n{document.modify_document_type.labelStyleSheetContentDownload}
-								</@aButton>
-							<#else>
-								<@tag color='warning'>#i18n{document.modify_document_type.labelStyleSheetContentNoFile}</@tag>
-							</#if>
-							</@fieldSet>
-							<@formGroup rows=2 class='mt-3 d-flex justify-content-center'>
-								<@button type='submit' title='#i18n{document.modify_document_type.buttonLoadStyleSheets}' buttonIcon='upload' />
+							<@input type='hidden' name='token' value='${token}' />
+							<@tabs id='document_type_templates'>
+								<@tabList>
+									<@tabLink href='#tab_admin_template' title='#i18n{document.modify_document_type.labelAdminTemplate}' active=true />
+									<@tabLink href='#tab_content_template' title='#i18n{document.modify_document_type.labelContentTemplate}' />
+								</@tabList>
+								<@tabContent>
+									<@tabPanel id='tab_admin_template' active=true>
+										<@formGroup labelFor='admin_template' labelKey='#i18n{document.modify_document_type.labelAdminTemplate}' hideLabel=['all'] rows=2>
+											<@input type='textarea' name='admin_template' id='admin_template' rows=20 class='font-monospace'><@documentTemplateSource source=document_type.adminTemplate! /></@input>
+											<@button type='button' class='mt-2 js-insert-default-template' color='default' buttonIcon='file-import' title='#i18n{document.modify_document_type.buttonInsertDefaultTemplate}' params='data-source="default_admin_template" data-target="admin_template"' />
+										</@formGroup>
+									</@tabPanel>
+									<@tabPanel id='tab_content_template'>
+										<@formGroup labelFor='content_template' labelKey='#i18n{document.modify_document_type.labelContentTemplate}' helpKey='#i18n{document.modify_document_type.helpContentTemplate}' hideLabel=['all'] rows=2>
+											<@input type='textarea' name='content_template' id='content_template' rows=20 class='font-monospace'><@documentTemplateSource source=document_type.contentTemplate! /></@input>
+											<@button type='button' class='mt-2 js-insert-default-template' color='default' buttonIcon='file-import' title='#i18n{document.modify_document_type.buttonInsertDefaultTemplate}' params='data-source="default_content_template" data-target="content_template"' />
+										</@formGroup>
+									</@tabPanel>
+								</@tabContent>
+							</@tabs>
+							<@formGroup rows=2 class='mt-3'>
+								<@button type='submit' title='#i18n{document.modify_document_type.buttonSaveTemplates}' buttonIcon='device-floppy' />
 							</@formGroup>
 						</@tform>
+						<textarea id='default_admin_template' hidden><@documentTemplateSource source=default_admin_template /></textarea>
+						<textarea id='default_content_template' hidden><@documentTemplateSource source=default_content_template /></textarea>
 					</@boxBody>
 				</@box>
 			</@columns>
 		</@row>
 	</@pageColumn>
 </@pageContainer>
+<script>
+document.querySelectorAll( '.js-insert-default-template' ).forEach( function( button ) {
+	button.addEventListener( 'click', function( ) {
+		document.getElementById( button.dataset.target ).value = document.getElementById( button.dataset.source ).value;
+	} );
+} );
+</script>

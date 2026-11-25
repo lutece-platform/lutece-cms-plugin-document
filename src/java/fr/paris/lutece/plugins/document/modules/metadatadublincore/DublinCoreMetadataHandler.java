@@ -39,7 +39,10 @@ import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -95,10 +98,9 @@ public class DublinCoreMetadataHandler implements MetadataHandler
      * {@inheritDoc}
      */
     @Override
-    public String getModifyForm( HttpServletRequest request, String strXmlData )
+    public String getModifyForm( HttpServletRequest request, String strMetadata )
     {
-        DublinCoreMetadata metadata = new DublinCoreMetadata(  );
-        metadata.load( strXmlData );
+        DublinCoreMetadata metadata = DublinCoreMetadata.fromJson( strMetadata );
 
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_METADATA, metadata );
@@ -113,25 +115,55 @@ public class DublinCoreMetadataHandler implements MetadataHandler
      * {@inheritDoc}
      */
     @Override
-    public String getXmlMetadata( Map<String, String[]> parameters )
+    public String getMetadata( Map<String, String[]> parameters )
     {
         DublinCoreMetadata meta = new DublinCoreMetadata(  );
-        meta.setTitle( parameters.get( PARAMETER_TITLE )[0] );
-        meta.setCreator( parameters.get( PARAMETER_CREATOR )[0] );
-        meta.setSubject( parameters.get( PARAMETER_SUBJECT )[0] );
-        meta.setDescription( parameters.get( PARAMETER_DESCRIPTION )[0] );
-        meta.setPublisher( parameters.get( PARAMETER_PUBLISHER )[0] );
-        meta.setContributor( parameters.get( PARAMETER_CONTRIBUTOR )[0] );
-        meta.setDate( parameters.get( PARAMETER_DATE )[0] );
-        meta.setType( parameters.get( PARAMETER_TYPE )[0] );
-        meta.setFormat( parameters.get( PARAMETER_FORMAT )[0] );
-        meta.setIdentifier( parameters.get( PARAMETER_IDENTIFIER )[0] );
-        meta.setSource( parameters.get( PARAMETER_SOURCE )[0] );
-        meta.setLanguage( parameters.get( PARAMETER_LANGUAGE )[0] );
-        meta.setRelation( parameters.get( PARAMETER_RELATION )[0] );
-        meta.setCoverage( parameters.get( PARAMETER_COVERAGE )[0] );
-        meta.setRights( parameters.get( PARAMETER_RIGTHS )[0] );
+        meta.setTitle( getParameter( parameters, PARAMETER_TITLE ) );
+        meta.setCreator( getParameter( parameters, PARAMETER_CREATOR ) );
+        meta.setSubject( getParameter( parameters, PARAMETER_SUBJECT ) );
+        meta.setDescription( getParameter( parameters, PARAMETER_DESCRIPTION ) );
+        meta.setPublisher( getParameter( parameters, PARAMETER_PUBLISHER ) );
+        meta.setContributor( getParameter( parameters, PARAMETER_CONTRIBUTOR ) );
+        meta.setDate( getParameter( parameters, PARAMETER_DATE ) );
+        meta.setType( getParameter( parameters, PARAMETER_TYPE ) );
+        meta.setFormat( getParameter( parameters, PARAMETER_FORMAT ) );
+        meta.setIdentifier( getParameter( parameters, PARAMETER_IDENTIFIER ) );
+        meta.setSource( getParameter( parameters, PARAMETER_SOURCE ) );
+        meta.setLanguage( getParameter( parameters, PARAMETER_LANGUAGE ) );
+        meta.setRelation( getParameter( parameters, PARAMETER_RELATION ) );
+        meta.setCoverage( getParameter( parameters, PARAMETER_COVERAGE ) );
+        meta.setRights( getParameter( parameters, PARAMETER_RIGTHS ) );
 
-        return meta.getXml(  );
+        return meta.toJson(  );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> getMetaTags( String strMetadata )
+    {
+        if ( StringUtils.isBlank( strMetadata ) )
+        {
+            return new LinkedHashMap<>(  );
+        }
+
+        return DublinCoreMetadata.fromJson( strMetadata ).toMetaTags(  );
+    }
+
+    /**
+     * Returns the first value of a parameter of the form
+     *
+     * @param parameters
+     *            The parameters
+     * @param strName
+     *            The parameter name
+     * @return The value, or an empty string if the parameter is missing
+     */
+    private static String getParameter( Map<String, String[]> parameters, String strName )
+    {
+        String [ ] values = parameters.get( strName );
+
+        return ( ( values != null ) && ( values.length > 0 ) ) ? values [0] : StringUtils.EMPTY;
     }
 }

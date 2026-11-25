@@ -122,6 +122,7 @@ public class DocumentHtmlFragmentsRenderTest extends LuteceTestCase
         Map<String, Object> model = new HashMap<>( );
         model.put( "locale", "fr" );
         model.put( "document_type", "article" );
+        model.put( "token", "token" );
         model.put( "fields", HtmlMarkup.of( FRAGMENT ) );
         model.put( "category", HtmlMarkup.of( FRAGMENT ) );
         model.put( "page_template_list", HtmlMarkup.of( FRAGMENT ) );
@@ -145,6 +146,7 @@ public class DocumentHtmlFragmentsRenderTest extends LuteceTestCase
         Map<String, Object> model = new HashMap<>( );
         model.put( "document", document( ) );
         model.put( "id_state", "" );
+        model.put( "token", "token" );
         model.put( "date_validity_begin", "" );
         model.put( "date_validity_end", "" );
         model.put( "fields", HtmlMarkup.of( FRAGMENT ) );
@@ -210,6 +212,8 @@ public class DocumentHtmlFragmentsRenderTest extends LuteceTestCase
         listDocuments.add( document( ) );
         Map<String, Object> model = new HashMap<>( );
         model.put( "spaces_tree", HtmlMarkup.of( FRAGMENT ) );
+        model.put( "token", "token" );
+        model.put( "space_token", "token" );
         model.put( "space", space );
         model.put( "space_actions_list", new ArrayList<>( ) );
         model.put( "documents_list", listDocuments );
@@ -293,7 +297,8 @@ public class DocumentHtmlFragmentsRenderTest extends LuteceTestCase
     }
 
     /**
-     * The link of the image of an image attribute is a lightbox for an image only, its title written escaped
+     * The current image of an image attribute is shown with its name written escaped, without a lightbox, and the code of
+     * the attribute is a JavaScript string
      */
     @Test
     public void testModifyImageLinkAttributes( )
@@ -309,9 +314,10 @@ public class DocumentHtmlFragmentsRenderTest extends LuteceTestCase
         model.put( "attribute", attribute );
         model.put( "document", document );
         String strHtml = render( "admin/plugins/document/attributes/modify_image.html", model );
-        assertTrue( strHtml, strHtml.contains( "data-title=\"" + TEXT_ESCAPED + "\"" ) );
-        assertTrue( strHtml, strHtml.contains( "data-lightbox=\"image-document\"" ) );
-        assertTrue( strHtml, strHtml.contains( "const attributeCode = 'photo';" ) );
+        assertTrue( strHtml, strHtml.contains( "title=\"" + TEXT_ESCAPED + "\"" ) );
+        assertFalse( strHtml, strHtml.contains( TEXT_UNESCAPED ) );
+        assertFalse( strHtml, strHtml.contains( "data-lightbox" ) );
+        assertTrue( strHtml, strHtml.contains( "const code = 'photo';" ) );
 
         attribute.setValueContentType( "application/pdf" );
         strHtml = render( "admin/plugins/document/attributes/modify_image.html", model );

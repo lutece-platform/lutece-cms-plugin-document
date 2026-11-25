@@ -46,8 +46,10 @@ import fr.paris.lutece.api.user.User;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
 import jakarta.inject.Named;
+import jakarta.servlet.ServletContext;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -70,24 +72,6 @@ public class CategoryService implements ImageResourceProvider
 	public void init( )
 	{
 		ImageResourceManager.registerProvider( this );
-	}
-
-	/**
-     * Returns the unique instance of the {@link CategoryService} service.
-     * 
-     * <p>This method is deprecated and is provided for backward compatibility only. 
-     * For new code, use dependency injection with {@code @Inject} to obtain the 
-     * {@link CategoryService} instance instead.</p>
-     * 
-     * @return The unique instance of {@link CategoryService}.
-     * 
-     * @deprecated Use {@code @Inject} to obtain the {@link CategoryService} 
-     * instance. This method will be removed in future versions.
-     */
-	@Deprecated( since = "8.0", forRemoval = true )
-	public static CategoryService getInstance( )
-	{
-		return CDI.current( ).select( CategoryService.class ).get( );
 	}
 
 	/**
@@ -347,4 +331,15 @@ public class CategoryService implements ImageResourceProvider
 			_bAssigned = bAssigned;
 		}
 	}
+
+    /**
+     * Observes the initialization of the application scope, so that the bean is created at startup and registers its image provider: the
+     * category icons are then served before any other use of the service.
+     *
+     * @param context
+     *            the initialized {@link ServletContext}
+     */
+    public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context )
+    {
+    }
 }

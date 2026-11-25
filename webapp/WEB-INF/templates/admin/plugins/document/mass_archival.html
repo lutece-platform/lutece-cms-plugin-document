@@ -1,73 +1,149 @@
-<@row>
-    <@columns>
-		<@box>
-			<@boxHeader title='#i18n{document.manage_document.mass_archival_labelBtn}' />
-			<@boxBody>
-				<@tform id='massArchivalForm' name='massArchivalForm' method='post' action='jsp/admin/plugins/document/DoSearchMassArchivalDocument.jsp'>
-					<@input type='hidden' name='archival_criteria' id='archival_criteria' value='space' />
-					<@p>#i18n{document.manage_document.mass_archival.archiveInfo}</@p>
-					<@row>
-						<@columns sm=4 md=4>
-							<@box>
-								<@boxBody>
-									<@h level=3>
-										<@link params={"data-toggle": "collapse", "data-criteria": "space", "data-parent": "#accordion"} href='#collapseSpace'>
-											#i18n{document.manage_document.mass_archival.criteriaSpace}
-										</@link>
-									</@h>
-									<hr>
-									<@formGroup id="spacesBrowser" labelKey='Espace'>
-										${spaces_browser}
-									</@formGroup>
-								</@boxBody>
-							</@box>
-						</@columns>
-						<@columns sm=4 md=4>
-							<@box>
-								<@boxBody>
-									<@h level=3>
-										<@link params={"data-toggle": "collapse", "data-criteria": "date", "data-parent": "#accordion"} href='#collapseDate' class='collapsed'>
-											#i18n{document.manage_document.mass_archival.criteriaDate}
-										</@link>
-									</@h>
-									<hr>
-									<@formGroup labelFor='date_min' labelKey='Du'>
+<#include "/admin/plugins/document/spaces/spaces_tree_select.html" />
+<#macro stepTitle number title subtitle><div><h3 class="card-title"><@tag color='info'>#i18n{document.manage_document.mass_archival.step} ${number}</@tag>&nbsp;${title}</h3><div class="card-subtitle mb-0 mt-1">${subtitle}</div></div></#macro>
+<@pageContainer>
+	<@pageColumn>
+		<@pageHeader title='#i18n{document.manage_document.mass_archival_labelBtn}' description='#i18n{document.manage_document.mass_archival.archiveInfo}' />
+		<@tform id='massArchivalForm' name='massArchivalForm' method='post' action='jsp/admin/plugins/document/DoSearchMassArchivalDocument.jsp'>
+			<@div class='container'>
+				<@ul id='archival_stepper' class='steps steps-counter mb-4'>
+					<@li class='step-item active' params='aria-current="step" data-bs-toggle="tooltip" title="#i18n{document.manage_document.mass_archival.titleCriteria}"'>#i18n{document.manage_document.mass_archival.stepCriteria}</@li>
+					<@li class='step-item' params='data-bs-toggle="tooltip" title="#i18n{document.manage_document.mass_archival.titleSelection}"'>#i18n{document.manage_document.mass_archival.stepSelection}</@li>
+					<@li class='step-item' params='data-bs-toggle="tooltip" title="#i18n{document.manage_document.mass_archival.titleArchive}"'>#i18n{document.manage_document.mass_archival.stepArchive}</@li>
+				</@ul>
+				<@row class='g-3'>
+				<@columns xs=12 lg=4 params='data-archival-step'>
+				<#assign headerTitle><@stepTitle number=1 title='#i18n{document.manage_document.mass_archival.titleCriteria}' subtitle='#i18n{document.manage_document.mass_archival.helpCriteria}' /></#assign>
+				<@card class='h-100 archival-step-card' headerTitle=headerTitle headerClass=''>
+					<@fieldSet legend='#i18n{document.manage_document.mass_archival.stepCriteria}' hideLegend=['all']>
+						<@formGroup rows=2>
+							<@radioButton name='archival_criteria' id='archival_criteria_space' value='space' labelKey='#i18n{document.manage_document.mass_archival.criteriaSpace}' checked=( selected_criteria == 'space' ) />
+							<@radioButton name='archival_criteria' id='archival_criteria_date' value='date' labelKey='#i18n{document.manage_document.mass_archival.criteriaDate}' checked=( selected_criteria == 'date' ) />
+							<@radioButton name='archival_criteria' id='archival_criteria_type' value='type' labelKey='#i18n{document.manage_document.mass_archival.criteriaType}' checked=( selected_criteria == 'type' ) />
+						</@formGroup>
+					</@fieldSet>
+				</@card>
+				</@columns>
+				<@columns xs=12 lg=4 params='data-archival-step'>
+				<#assign headerTitle><@stepTitle number=2 title='#i18n{document.manage_document.mass_archival.titleSelection}' subtitle='#i18n{document.manage_document.mass_archival.helpSelection}' /></#assign>
+				<@card class='h-100 archival-step-card' headerTitle=headerTitle headerClass=''>
+					<@div class='archival-panel' params='data-criteria="space"'>
+						<@fieldSet legend='#i18n{document.manage_document.mass_archival.criteriaSpace}'>
+							<#if spaces_tree?has_content>
+							<@spacesTreeSelect id='archival_spaces_tree' nodes=spaces_tree selectedId=browser_selected_space_id!'' label='#i18n{document.manage_document.mass_archival.criteriaSpace}' />
+							<#else>
+							<@empty title='#i18n{portal.util.labelNoItem}' iconName='folder-off' subtitle=' ' />
+							</#if>
+						</@fieldSet>
+					</@div>
+					<@div class='archival-panel' params='data-criteria="date"'>
+						<@fieldSet legend='#i18n{document.manage_document.mass_archival.criteriaDate}'>
+							<@row>
+								<@columns md=6>
+									<@formGroup labelFor='date_min' labelKey='#i18n{document.manage_document.mass_archival.labelDateMin}' rows=2>
 										<@inputGroup>
+											<@inputGroupItem type='text'><@icon style='calendar' /></@inputGroupItem>
 											<@input type='text' name='date_min' id='date_min' value='${date_min!}' />
-											<@inputGroupItem type='text'>au</@inputGroupItem>
+										</@inputGroup>
+									</@formGroup>
+								</@columns>
+								<@columns md=6>
+									<@formGroup labelFor='date_max' labelKey='#i18n{document.manage_document.mass_archival.labelDateMax}' rows=2>
+										<@inputGroup>
+											<@inputGroupItem type='text'><@icon style='calendar' /></@inputGroupItem>
 											<@input type='text' name='date_max' id='date_max' value='${date_max!}' />
 										</@inputGroup>
 									</@formGroup>
-								</@boxBody>
-							</@box>
-						</@columns>
-						<@columns sm=4 md=4>
-							<@box>
-								<@boxBody>
-									<@h level=3>	
-										<@link params={"data-toggle": "collapse", "data-criteria": "type", "data-parent": "#accordion"} href='#collapseType' class='collapsed'>
-											#i18n{document.manage_document.mass_archival.criteriaType}
-										</@link>
-									</@h>
-									<hr>
-									<@formGroup labelFor='document_type_code' labelKey='#i18n{document.manage_documents.labelType}'>
-										<@select name='document_type_code' id='document_type_code'>
-											<#list document_types_list as type>
-												<@option selected=( document_type == type.code) value=type.code label=type.name />
-											</#list>    			    			
-										</@select>
-									</@formGroup>
-								</@boxBody>
-							</@box>
-						</@columns>
-					</@row>
-					<@formGroup>
-						<@button type='submit' title='#i18n{document.manage_document.mass_archival.archiveLbl}' buttonIcon='search' />
-					</@formGroup>
-				</@tform>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
+								</@columns>
+							</@row>
+						</@fieldSet>
+					</@div>
+					<@div class='archival-panel' params='data-criteria="type"'>
+						<@fieldSet legend='#i18n{document.manage_document.mass_archival.criteriaType}'>
+							<#if document_types_list?has_content>
+								<@formGroup labelFor='document_type_code' labelKey='#i18n{document.manage_document.mass_archival.criteriaType}' hideLabel=['all'] rows=2>
+									<@select name='document_type_code' id='document_type_code'>
+										<#list document_types_list as type>
+											<@option selected=( document_type == type.code ) value=type.code label=type.name />
+										</#list>
+									</@select>
+								</@formGroup>
+							<#else>
+								<@empty title='#i18n{portal.util.labelNoItem}' iconName='file-off' subtitle=' ' />
+							</#if>
+						</@fieldSet>
+					</@div>
+				</@card>
+				</@columns>
+				<@columns xs=12 lg=4 params='data-archival-step'>
+				<#assign headerTitle><@stepTitle number=3 title='#i18n{document.manage_document.mass_archival.titleArchive}' subtitle='#i18n{document.manage_document.mass_archival.helpArchiveCard}' /></#assign>
+				<@card class='h-100 archival-step-card' headerTitle=headerTitle headerClass=''>
+					<p class="text-muted small">#i18n{document.manage_document.mass_archival.helpArchive}</p>
+					<p class="fw-bold text-truncate" id="archival_summary"></p>
+					<@button type='submit' id='archival_submit' title='#i18n{document.manage_document.mass_archival.archiveLbl}' buttonIcon='archive' class='w-100' />
+				</@card>
+				</@columns>
+				</@row>
+			</@div>
+		</@tform>
+	</@pageColumn>
+</@pageContainer>
+<#-- The server parses dd/MM/yyyy dates -->
 <@getDate idField='date_min' language=locale format='d/m/Y' showFormat='d/m/Y' />
 <@getDate idField='date_max' language=locale format='d/m/Y' showFormat='d/m/Y' />
+<script>
+document.addEventListener( 'DOMContentLoaded', ( ) => {
+	const form = document.getElementById( 'massArchivalForm' );
+	const items = document.querySelectorAll( '#archival_stepper .step-item' );
+	const columns = document.querySelectorAll( '[data-archival-step]' );
+	const panels = document.querySelectorAll( '.archival-panel' );
+	const summary = document.getElementById( 'archival_summary' );
+	const submit = document.getElementById( 'archival_submit' );
+	const typeSelect = document.getElementById( 'document_type_code' );
+
+	const criteria = ( ) => form.querySelector( 'input[name="archival_criteria"]:checked' )?.value;
+
+	// The text of the current selection, empty while step 2 is not done
+	const selection = ( ) => {
+		switch ( criteria( ) ) {
+			case 'space': {
+				const space = form.querySelector( 'input[name="browser_selected_space_id"]:checked' );
+				return space ? form.querySelector( 'label[for="' + space.id + '"]' ).textContent.trim( ) : '';
+			}
+			case 'date': {
+				const min = document.getElementById( 'date_min' ).value;
+				const max = document.getElementById( 'date_max' ).value;
+				return ( min || max ) ? [ min, max ].map( ( d ) => d || '…' ).join( ' → ' ) : '';
+			}
+			case 'type':
+				return typeSelect && typeSelect.value ? typeSelect.options[ typeSelect.selectedIndex ].text : '';
+			default:
+				return '';
+		}
+	};
+
+	const firstPendingStep = ( ) => !criteria( ) ? 1 : ( selection( ) === '' ? 2 : 3 );
+
+	const setCurrentStep = ( current ) => {
+		items.forEach( ( item, index ) => {
+			const active = index + 1 === current;
+			item.classList.toggle( 'active', active );
+			if ( active ) { item.setAttribute( 'aria-current', 'step' ); } else { item.removeAttribute( 'aria-current' ); }
+			columns[ index ].querySelector( '.archival-step-card' ).classList.toggle( 'border-primary', active );
+		} );
+	};
+
+	const refresh = ( ) => {
+		const current = criteria( );
+		panels.forEach( ( panel ) => panel.classList.toggle( 'd-none', panel.dataset.criteria !== current ) );
+		const text = selection( );
+		summary.textContent = text;
+		submit.disabled = text === '';
+		setCurrentStep( firstPendingStep( ) );
+	};
+
+	columns.forEach( ( column, index ) => column.addEventListener( 'focusin', ( ) => setCurrentStep( index + 1 ) ) );
+	form.addEventListener( 'change', refresh );
+	form.addEventListener( 'input', refresh );
+	refresh( );
+} );
+</script>

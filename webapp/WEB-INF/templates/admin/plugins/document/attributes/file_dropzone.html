@@ -1,0 +1,52 @@
+<#--
+ # Macro: documentFileDropzone
+ # Description: a drop zone around the file input of a file attribute. The file is dropped or chosen by a click, and sent with the form.
+ # Parameters:
+ # - id (string, required): the identifier of the file input
+ # - name (string, required): the name of the file input, the code of the attribute
+ # - accept (string, optional): the accepted file types
+ # - title (string, optional): the message of the zone, 'Drop a file here or click to choose one' by default
+ # - preview (string, optional): the identifier of a card rendered by documentFileNewCard, that shows the chosen file
+ # Snippet:
+ #   <#include "/admin/plugins/document/attributes/file_dropzone.html" />
+ #   <@documentFileDropzone id=attrCode name=attrCode />
+-->
+<#macro documentFileDropzone id name accept='' title='#i18n{document.attributeType.file.dropzoneTitle}' preview=''>
+<link rel="stylesheet" href="themes/shared/plugins/document/css/documentDropzone.css?v=${documentAssetsVersion!}" />
+<div class="dropzone document-dropzone"<#if preview?has_content> data-preview="${preview}"</#if>>
+	<#if accept?has_content>
+	<@input type='file' name=name id=id class='visually-hidden' params='accept="${accept}"' />
+	<#else>
+	<@input type='file' name=name id=id class='visually-hidden' />
+	</#if>
+	<label for="${id}" class="dz-message">
+		<@icon style='cloud-upload' class='document-dropzone-icon' />
+		<span class="dropzone-msg-title">${title}</span>
+		<span class="dropzone-msg-desc">#i18n{document.attributeType.file.dropzoneHelp}</span>
+		<span class="document-dropzone-file" aria-live="polite"></span>
+	</label>
+	<@button type='button' class='document-dropzone-clear' size='sm' color='light' buttonIcon='x' title='#i18n{document.attributeType.file.dropzoneClear}' hideTitle=['all'] />
+</div>
+<script src="themes/shared/plugins/document/js/documentDropzone.js?v=${documentAssetsVersion!}"></script>
+</#macro>
+<#--
+ # Macro: documentFileNewCard
+ # Description: the card that shows the file chosen in a drop zone (documentFileDropzone preview=id), hidden until a file is chosen:
+ # a thumbnail for an image, the first page for a PDF, the icon of its type otherwise, with its name, type and size.
+ # Parameters:
+ # - id (string, required): the identifier of the card
+ # - iconFile (string, optional): the path to the default file icon
+ # - iconPdf (string, optional): the path to the PDF icon
+ # - iconDocx (string, optional): the path to the DOCX icon
+ # - iconDoc (string, optional): the path to the DOC icon
+-->
+<#macro documentFileNewCard id>
+<div id="${id}" class="card mb-0 d-none document-file-new" data-icon-file="themes/shared/plugins/document/images/filetypes/file.svg" data-icon-pdf="themes/shared/plugins/document/images/filetypes/file-type-pdf.svg" data-icon-docx="themes/shared/plugins/document/images/filetypes/file-type-doc.svg" data-icon-doc="themes/shared/plugins/document/images/filetypes/file-type-doc.svg">
+	<div class="d-flex align-items-center justify-content-center bg-light rounded-top overflow-hidden document-file-new-media" style="height:10rem;width:14rem"></div>
+	<div class="card-body p-2" style="width:14rem">
+		<div class="small fw-bold text-primary">#i18n{document.attributeType.file.labelNew}</div>
+		<div class="small text-truncate document-file-new-name"></div>
+		<div class="small text-muted document-file-new-meta"></div>
+	</div>
+</div>
+</#macro>

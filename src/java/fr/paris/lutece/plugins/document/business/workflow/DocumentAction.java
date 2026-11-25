@@ -52,6 +52,7 @@ public class DocumentAction implements Localizable, RBACAction
     public static final int ACTION_REFUSE_CHANGE = 11;
     public static final int ACTION_ARCHIVE = 8;
     public static final int ACTION_UNARCHIVE = 13;
+    public static final int ACTION_MOVE = 16;
 
     // Variables declarations
     private int _nIdAction;

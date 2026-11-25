@@ -80,6 +80,97 @@
                     Le système de priorité CDI sélectionne automatiquement le parser disponible avec la priorité la plus élevée.
                 </p>
             </subsection>
+            <subsection name="Modèles">
+                <p>
+                    Depuis la version 7.0.0 le plugin n'utilise plus ni XML ni XSL : les documents sont affichés avec des modèles FreeMarker.
+                </p>
+                <ul>
+                    <li>
+                        <strong>Types de document</strong> : chaque type de document a un modèle du back office (prévisualisation du contenu de
+                        travail) et un modèle du front office (contenu validé), modifiés dans la page du type de document. Un modèle vide signifie que
+                        le modèle par défaut du plugin est utilisé (<code>admin/plugins/document/document_admin_default.html</code>,
+                        <code>skin/plugins/document/document_content_default.html</code>). Un modèle est vérifié avec un document d'exemple avant
+                        d'être enregistré, et un modèle en erreur est remplacé par le modèle par défaut à l'affichage du document.
+                    </li>
+                    <li>
+                        <strong>Modèle de données</strong> : <code>document</code> (<code>title</code>, <code>summary</code>, <code>categories</code>,
+                        <code>attributes</code> par code d'attribut), <code>document_type</code>, et au front office <code>publication_date</code>
+                        (peut être nul), <code>site_locale</code> et <code>request_parameters</code>. Un attribut fichier est un objet avec
+                        <code>url</code>, <code>fileName</code>, <code>contentType</code> et <code>image</code>. Un attribut sans valeur est absent :
+                        testez-le avec <code>??</code>.
+                    </li>
+                    <li>
+                        <strong>Macros</strong> (<code>util/document/macro_document_view.html</code>, quel que soit le réglage d'échappement du site) :
+                        <code>@documentValue</code> (texte échappé), <code>@documentHtml</code> (texte riche tel quel), <code>@documentFile</code>,
+                        <code>@documentFileIcon</code> et <code>@documentAttribute</code> (affichage selon le type de l'attribut).
+                    </li>
+                    <li>
+                        <strong>Rubriques</strong> : les rubriques document et liste de documents utilisent les modèles de rubrique du core
+                        (fonctionnalité Gestion des modèles de rubrique). Les modèles livrés dans <code>skin/plugins/document/portlet/</code>
+                        remplacent les anciens styles XSL ; un site ajoute ses propres modèles dans la fonctionnalité du core.
+                    </li>
+                    <li>
+                        <strong>Métadonnées</strong> : les métadonnées des documents sont stockées sous forme d'objet JSON. Le gestionnaire Dublin Core
+                        les affiche en balises meta <code>DC.*</code> avec le modèle <code>skin/plugins/document/document_include_meta.html</code>.
+                    </li>
+                </ul>
+            </subsection>
+            <subsection name="Mise à jour vers la version 7.0.0">
+                <p>
+                    La version 7.0.0 ne dépend plus du plugin-xmltransformer. Les scripts de mise à jour migrent les données ; les anciennes
+                    colonnes sont supprimées lors d'un démarrage ultérieur, quand leur contenu n'est plus nécessaire.
+                </p>
+                <ul>
+                    <li>
+                        <strong>Types de document</strong> : les types de document initiaux dont les feuilles de style XSL n'ont jamais été modifiées
+                        reçoivent automatiquement les nouveaux modèles. Les types de document ayant des feuilles de style XSL spécifiques sont signalés
+                        dans la page des types de document (« XSL à réécrire ») : leurs feuilles de style sont affichées dans la page du type de
+                        document, où il faut les réécrire en modèles puis les supprimer. D'ici là, ces types de document utilisent les modèles par
+                        défaut.
+                    </li>
+                    <li>
+                        <strong>Rubriques</strong> : chaque rubrique utilisant un style XSL livré passe au modèle correspondant. Une rubrique utilisant
+                        un style créé par le site utilise le modèle par défaut : choisissez ou créez un autre modèle dans le formulaire de la rubrique.
+                    </li>
+                    <li>
+                        <strong>Métadonnées</strong> : le daemon <code>legacyMetadataMigration</code> convertit les métadonnées XML en JSON, puis ne
+                        fait plus rien. Un document dont les métadonnées ne peuvent pas être converties est tracé et conservé pour le passage suivant.
+                    </li>
+                    <li>
+                        <strong>Contenus</strong> : les documents sont affichés à partir de leurs attributs. Un document publié dont la seule version
+                        validée était son contenu XML doit être validé à nouveau : la requête qui liste ces documents est dans le script de mise à jour
+                        <code>update_db_document-6.0.1-7.0.0.sql</code>.
+                    </li>
+                    <li>
+                        <strong>API</strong> : les méthodes XML du plugin sont supprimées (<code>Document.getXml</code>,
+                        <code>getXmlWorkingContent</code>, <code>getXmlValidatedContent</code>, <code>getXmlMetadata</code>,
+                        <code>AttributeManager.getAttributeXmlValue</code>, <code>MetadataHandler.getXmlMetadata</code>,
+                        <code>DocumentTypeService</code>, <code>DocumentAttributesService</code>, <code>DocumentSpacesService.getXmlSpacesList</code>) :
+                        les modules qui les utilisent doivent être mis à jour. Les méthodes dépréciées <code>getInstance()</code> des services et des
+                        homes de rubriques sont également supprimées : injectez les beans à la place. <code>Rule.init()</code> est supprimée (elle
+                        n'était jamais appelée). <code>DocumentResourceServlet</code> n'est plus un bean CDI : son cache et <code>putInCache</code>
+                        passent dans le bean <code>ResourceServletCache</code> (<code>cacheValidatedResource</code>). La propriété inutilisée
+                        <code>document.regularExpressionPerPage</code> est supprimée : le formulaire d'attribut liste toutes ses expressions
+                        régulières.
+                    </li>
+                    <li>
+                        <strong>Fichiers</strong> : <code>servlet/plugins/document/resource</code> contrôle désormais l'accès aux fichiers. Les fichiers
+                        de travail (paramètre <code>working_content</code>) ne sont envoyés qu'aux administrateurs autorisés à voir le document ; les
+                        fichiers validés ne sont envoyés aux autres utilisateurs que si le document est valide et publié dans une rubrique publiée dont
+                        ils peuvent voir la page. Les fichiers des documents non publiés, liés depuis un autre document par exemple, ne sont plus
+                        publics. La page inutilisée <code>jsp/site/plugins/document/DocumentResource.jsp</code> est supprimée.
+                    </li>
+                    <li>
+                        <strong>Jetons de sécurité du back office</strong> : les actions du back office qui modifient des données (documents, types de
+                        document, publication, catégories, règles, espaces) exigent désormais un jeton de sécurité contre les attaques CSRF, et
+                        refusent la requête avec un message « accès refusé » sinon. Un site qui surcharge les templates d'administration du plugin doit
+                        ajouter le jeton dans ses copies : <code>&lt;@input type='hidden' name='token' value='${token}' /&gt;</code> dans les
+                        formulaires, et <code>&amp;token=${token}</code> dans les liens vers les actions (actions du workflow des documents, déplacement
+                        des attributs d'un type de document). La création et la modification des rubriques, qui utilisent le formulaire de rubrique du
+                        core, ne sont pas concernées.
+                    </li>
+                </ul>
+            </subsection>
         </section>
     </body>
 </document>

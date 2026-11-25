@@ -1,0 +1,21 @@
+<@cTpl>
+<@cSection class='portlet portlet-document-list portlet-document-list-actor ${device_class!}' id='portlet_${portlet_id?c}'>
+<#if portlet_name??>
+	<@cTitle level=2 class='portlet-header'>${portlet_name}</@cTitle>
+</#if>
+	<@cBlock class='portlet-content'>
+	<#if documents?has_content>
+		<@chList class="list-unstyled mb-0">
+		<#list documents as doc>
+			<@chItem class="d-flex align-items-center justify-content-between border-bottom py-2">
+				<@cLink href='${site_path}?document_id=${doc.id?c}&portlet_id=${portlet_id?c}' label='' target='_top'><@documentValue value=doc.attributes.firstname! /> <@documentValue value=doc.attributes.lastname! /></@cLink>
+				<#if doc.attributes.photo??>
+				<@documentFile file=doc.attributes.photo class='rounded-circle object-fit-cover' params='width="40" height="40"' />
+				</#if>
+			</@chItem>
+		</#list>
+		</@chList>
+	</#if>
+	</@cBlock>
+</@cSection>
+</@cTpl>

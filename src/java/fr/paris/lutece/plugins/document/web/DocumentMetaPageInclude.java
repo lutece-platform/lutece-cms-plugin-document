@@ -35,35 +35,35 @@ package fr.paris.lutece.plugins.document.web;
 
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
+import fr.paris.lutece.plugins.document.business.DocumentType;
+import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
+import fr.paris.lutece.plugins.document.service.metadata.MetadataHandler;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.content.PageData;
-import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.includes.PageInclude;
 import fr.paris.lutece.portal.service.template.HtmlMarkup;
-import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.FileInputStream;
-
+import java.util.HashMap;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
-
 /**
- * Document Meta PageInclude
+ * Document Meta PageInclude: the meta tags of the metadata of the document displayed in the page
  */
 public class DocumentMetaPageInclude implements PageInclude
 {
+    /** Template of the meta tags */
+    public static final String TEMPLATE_META = "skin/plugins/document/document_include_meta.html";
+
+    /** Model key of the meta tags, as a map of the contents by meta name */
+    public static final String MARK_META_TAGS = "meta_tags";
+
     private static final String MARK_DOCUMENT_META = "document_meta";
     private static final String PARAMETER_DOCUMENT_ID = "document_id";
-    private static final String PATH_XSL = "/WEB-INF/plugins/document/xsl/";
-    private static final String FILE_XSL = "document_include_meta.xsl";
-    private static final String STYLE_PREFIX_ID = PATH_XSL + FILE_XSL;
 
     /**
      * Substitue specific Freemarker markers in the page template.
@@ -72,45 +72,51 @@ public class DocumentMetaPageInclude implements PageInclude
      * @param nMode The current mode
      * @param request The HTTP request
      */
+    @Override
     public void fillTemplate( Map<String, Object> rootModel, PageData data, int nMode, HttpServletRequest request )
     {
-        String strMeta = StringUtils.EMPTY;
-
         if ( request != null )
         {
             String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
-
-            if ( IntegerUtils.isNumeric( strDocumentId ) )
-            {
-                Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
-
-                if ( document != null )
-                {
-                    String strMetadata = document.getXmlMetadata(  );
-
-                    if ( StringUtils.isNotBlank( strMetadata ) )
-                    {
-                        Source xslSource = loadXsl(  );
-                        XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
-                        strMeta = xmlTransformerService.transformBySourceWithXslCache( strMetadata, xslSource,
-                                STYLE_PREFIX_ID, null, null );
-                    }
-                }
-            }
+            String strMeta = IntegerUtils.isNumeric( strDocumentId ) ? getMetaTags( IntegerUtils.convert( strDocumentId ), request ) : StringUtils.EMPTY;
 
             rootModel.put( MARK_DOCUMENT_META, HtmlMarkup.of( strMeta ) );
         }
     }
 
     /**
-     * Load the XSL stylesheet used to convert document metadata into meta tags
-     * @return The source stream
+     * Renders the meta tags of the metadata of a document, with the metadata handler of its document type
+     * @param nDocumentId The document identifier
+     * @param request The HTTP request
+     * @return The HTML meta tags, or an empty string if the document has no metadata
      */
-    private Source loadXsl(  )
+    private String getMetaTags( int nDocumentId, HttpServletRequest request )
     {
-        FileInputStream fis = AppPathService.getResourceAsStream( PATH_XSL, FILE_XSL );
-        Source sourceXsl = new StreamSource( fis );
+        Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-        return sourceXsl;
+        if ( ( document == null ) || StringUtils.isBlank( document.getMetadata(  ) ) )
+        {
+            return StringUtils.EMPTY;
+        }
+
+        DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
+        MetadataHandler handler = ( type != null ) ? type.metadataHandler(  ) : null;
+
+        if ( handler == null )
+        {
+            return StringUtils.EMPTY;
+        }
+
+        Map<String, String> mapMetaTags = handler.getMetaTags( document.getMetadata(  ) );
+
+        if ( mapMetaTags.isEmpty(  ) )
+        {
+            return StringUtils.EMPTY;
+        }
+
+        Map<String, Object> model = new HashMap<>(  );
+        model.put( MARK_META_TAGS, mapMetaTags );
+
+        return AppTemplateService.getTemplate( TEMPLATE_META, request.getLocale(  ), model ).getHtml(  );
     }
 }

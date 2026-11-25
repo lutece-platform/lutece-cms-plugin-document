@@ -45,11 +45,12 @@ import fr.paris.lutece.portal.service.search.IndexationService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -81,6 +82,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -103,9 +105,15 @@ public class DocSearchService
     public static final String PATTERN_DATE_IN_DATABASE = "dd/MM/yyyy";
     private static final String PROPERTY_ANALYSER_CLASS_NAME = "document.docsearch.lucene.analyser.className";
     private static final int MAX_RESPONSES = 1000000;
-    private static String _strIndex;
-    
     private static Analyzer _analyzer;
+
+    @Inject
+    @ConfigProperty( name = PATH_INDEX )
+    private Optional<String> _strIndexPath;
+
+    @Inject
+    @ConfigProperty( name = PROPERTY_ANALYSER_CLASS_NAME )
+    private Optional<String> _strAnalyserClassName;
     
     private static IndexSearcher _searcher;
     
@@ -116,50 +124,30 @@ public class DocSearchService
     @Inject
     private DocumentSpacesService _documentSpacesService;
 
-    /** Creates a new instance of DocumentSearchService */
-    public DocSearchService(  )
+    /**
+     * Reads the index path and creates the analyser from the configuration
+     */
+    @PostConstruct
+    void init( )
     {
-        // Read configuration properties
-        _strIndex = AppPropertiesService.getProperty( PATH_INDEX );
-
-        if ( ( _strIndex == null ) || ( _strIndex.equals( StringUtils.EMPTY ) ) )
+        if ( _strIndexPath.isEmpty( ) )
         {
             throw new AppException( "Lucene index path not found in document.properties", null );
         }
 
-        String strAnalyserClassName = AppPropertiesService.getProperty( PROPERTY_ANALYSER_CLASS_NAME );
-
-        if ( ( strAnalyserClassName == null ) || ( strAnalyserClassName.equals( StringUtils.EMPTY ) ) )
+        if ( _strAnalyserClassName.isEmpty( ) )
         {
             throw new AppException( "Analyser class name not found in lucene.properties", null );
         }
 
         try
         {
-            _analyzer = (Analyzer) Class.forName( strAnalyserClassName ).getDeclaredConstructor( ).newInstance(  );
+            _analyzer = (Analyzer) Class.forName( _strAnalyserClassName.get( ) ).getDeclaredConstructor( ).newInstance(  );
         }
         catch ( Exception e )
         {
             throw new AppException( "Failed to load Lucene Analyzer class", e );
         }
-    }
-
-    /**
-     * Returns the unique instance of the {@link DocSearchService} service.
-     * 
-     * <p>This method is deprecated and is provided for backward compatibility only. 
-     * For new code, use dependency injection with {@code @Inject} to obtain the 
-     * {@link DocSearchService} instance instead.</p>
-     * 
-     * @return The unique instance of {@link DocSearchService}.
-     * 
-     * @deprecated Use {@code @Inject} to obtain the {@link DocSearchService} 
-     * instance. This method will be removed in future versions.
-     */
-    @Deprecated( since = "6.0", forRemoval = true )
-    public static DocSearchService getInstance(  )
-    {
-        return CDI.current( ).select( DocSearchService.class ).get( );
     }
 
     /**
@@ -178,7 +166,7 @@ public class DocSearchService
         {
             sbLogs.append( "\r\nIndexing all contents ...\r\n" );
 
-            Directory dir = NIOFSDirectory.open( Paths.get( _strIndex ) );
+            Directory dir = NIOFSDirectory.open( Paths.get( _strIndexPath.get( ) ) );
 
             if ( !DirectoryReader.indexExists( dir ) )
             { //init index
@@ -352,7 +340,7 @@ public class DocSearchService
             sbLogs.append( "\n with message: " );
             sbLogs.append( e.getMessage(  ) );
             sbLogs.append( "\r\n" );
-            AppLogService.error( "Indexing error : " + e.getMessage(  ), e );
+            AppLogService.error( "Indexing error : {}", e.getMessage(  ), e );
         }
         finally
         {
@@ -383,7 +371,7 @@ public class DocSearchService
     {
         ArrayList<DocSearchItem> listResults = new ArrayList<DocSearchItem>(  );
 
-        try( Directory directory = NIOFSDirectory.open( Paths.get( _strIndex ) ) ; IndexReader ir = DirectoryReader.open( directory ) ; )
+        try( Directory directory = NIOFSDirectory.open( Paths.get( _strIndexPath.get( ) ) ) ; IndexReader ir = DirectoryReader.open( directory ) ; )
         {
             _searcher = new IndexSearcher( ir );
 
@@ -445,7 +433,7 @@ public class DocSearchService
     {
         ArrayList<DocSearchItem> listResults = new ArrayList<DocSearchItem>(  );
 
-        try( Directory directory = NIOFSDirectory.open( Paths.get( _strIndex ) ) ; IndexReader ir = DirectoryReader.open( directory ) ; )
+        try( Directory directory = NIOFSDirectory.open( Paths.get( _strIndexPath.get( ) ) ) ; IndexReader ir = DirectoryReader.open( directory ) ; )
         {
             _searcher = new IndexSearcher( ir );
 

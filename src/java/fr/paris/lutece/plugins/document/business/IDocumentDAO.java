@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.document.business;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for DocumentDAO
@@ -115,11 +116,20 @@ public interface IDocumentDAO
     Collection<Integer> selectAllPrimaryKeys( );
 
     /**
+     * Gets the ids of the documents whose validated content has a text value containing a fragment
+     *
+     * @param strFragment
+     *            The fragment searched in the text values
+     * @param nExcludedDocumentId
+     *            The id of a document to leave out
+     * @return The ids of the documents
+     */
+    Collection<Integer> selectIdsByValidatedTextValue( String strFragment, int nExcludedDocumentId );
+
+    /**
      * Gets all documents
      *
      * @return the document list
-     */
-    List<Document> selectAll( );
 
     /**
      * Load the list of documents
@@ -216,4 +226,54 @@ public interface IDocumentDAO
      * @return the instance of the Document
      */
     Document loadLastPublishedDocument( );
+
+    /**
+     * Load a page of the documents of a type that have a validated version, the last created first. The documents are loaded without their attributes
+     * nor their categories, with their space name.
+     *
+     * @param strCodeDocumentType
+     *            The document type code
+     * @param strTitleFragment
+     *            A fragment the working or the validated title contains, ignoring case, or an empty string for any title
+     * @param listSpaceIds
+     *            The spaces the documents belong to
+     * @param nOffset
+     *            The number of documents skipped
+     * @param nLimit
+     *            The maximum number of documents loaded
+     * @return The list of the documents
+     */
+    List<Document> selectWithValidatedVersion( String strCodeDocumentType, String strTitleFragment, Collection<Integer> listSpaceIds, int nOffset,
+            int nLimit );
+
+    /**
+     * Count the documents of a type that have a validated version
+     *
+     * @param strCodeDocumentType
+     *            The document type code
+     * @param strTitleFragment
+     *            A fragment the working or the validated title contains, ignoring case, or an empty string for any title
+     * @param listSpaceIds
+     *            The spaces the documents belong to
+     * @return The number of documents
+     * @see #selectWithValidatedVersion(String, String, Collection, int, int)
+     */
+    int countWithValidatedVersion( String strCodeDocumentType, String strTitleFragment, Collection<Integer> listSpaceIds );
+
+    /**
+     * Load the metadata of the documents still stored in the legacy XML column, before the migration to JSON
+     *
+     * @return The legacy XML metadata by document identifier
+     */
+    Map<Integer, String> selectLegacyMetadata( );
+
+    /**
+     * Store the metadata migrated from the legacy XML column, and clear the legacy column
+     *
+     * @param nDocumentId
+     *            The document identifier
+     * @param strMetadata
+     *            The metadata, as a JSON object
+     */
+    void storeMigratedMetadata( int nDocumentId, String strMetadata );
 }

@@ -35,7 +35,9 @@ package fr.paris.lutece.plugins.document.service.spaces;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -54,34 +56,22 @@ public class DocumentSpacesServiceTest extends LuteceTestCase
 
     /**
      * The spaces tree skips a space removed between the read of its id and its load
+     *
+     * @throws Exception
+     *             if the node can not be built
      */
     @Test
-    public void testFindSpacesSkipsRemovedSpace( ) throws Exception
+    public void testSpaceNodeSkipsRemovedSpace( ) throws Exception
     {
         DocumentSpacesService service = new DocumentSpacesService( );
-        StringBuffer sbXML = new StringBuffer( );
+        Map<Integer, SpaceNode> mapBuiltNodes = new HashMap<>( );
 
-        invoke( service, "findSpaces", new Class<?>[] { StringBuffer.class, int.class, AdminUser.class },
-                sbXML, MISSING_SPACE_ID, new AdminUser( ) );
+        Object node = invoke( service, "getSpaceNode", new Class<?>[] { int.class, AdminUser.class, Map.class },
+                MISSING_SPACE_ID, new AdminUser( ), mapBuiltNodes );
 
-        assertEquals( "", sbXML.toString( ) );
-    }
-
-    /**
-     * The spaces tree filtered by document type skips a removed space
-     */
-    @Test
-    public void testFindSpacesByCodeTypeSkipsRemovedSpace( ) throws Exception
-    {
-        DocumentSpacesService service = new DocumentSpacesService( );
-        StringBuffer sbXML = new StringBuffer( );
-
-        Object bValid = invoke( service, "findSpacesByCodeType",
-                new Class<?>[] { StringBuffer.class, int.class, AdminUser.class, String.class },
-                sbXML, MISSING_SPACE_ID, new AdminUser( ), "article" );
-
-        assertEquals( Boolean.FALSE, bValid );
-        assertEquals( "", sbXML.toString( ) );
+        assertNull( node );
+        assertTrue( mapBuiltNodes.containsKey( MISSING_SPACE_ID ) );
+        assertNull( mapBuiltNodes.get( MISSING_SPACE_ID ) );
     }
 
     /**

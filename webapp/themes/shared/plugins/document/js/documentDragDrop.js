@@ -19,6 +19,9 @@ const DocumentDragDrop = (function() {
         dropInvalidClass: 'drop-invalid',
         moveDocumentUrl: 'jsp/admin/plugins/document/DoMoveDocument.jsp',
         moveSpaceUrl: 'jsp/admin/plugins/document/DoMoveSpace.jsp',
+        // Security tokens required by the move actions, set by the page
+        moveDocumentToken: '',
+        moveSpaceToken: '',
         // Messages
         messages: {
             confirmMoveDocument: 'Voulez-vous déplacer le document "{title}" vers l\'espace "{space}" ?',
@@ -293,6 +296,9 @@ const DocumentDragDrop = (function() {
             return;
         }
 
+        // The tree nodes are nested: without this, the parent nodes handle the event too and the root space ends up being dragged
+        event.stopPropagation();
+
         draggedElement = event.currentTarget;
         dragType = 'space';
         
@@ -300,7 +306,8 @@ const DocumentDragDrop = (function() {
         draggedSpaceId = getSpaceIdFromNode(draggedElement);
         draggedSpaceName = getSpaceNameFromNode(draggedElement);
 
-        if (!draggedSpaceId) {
+        // The root space cannot be moved
+        if (!draggedSpaceId || draggedSpaceId === '0') {
             event.preventDefault();
             return;
         }
@@ -369,6 +376,8 @@ const DocumentDragDrop = (function() {
      */
     function handleDragEnter(event) {
         event.preventDefault();
+        // Only the innermost tree node is the drop target
+        event.stopPropagation();
         
         const target = event.currentTarget;
         
@@ -513,7 +522,7 @@ const DocumentDragDrop = (function() {
         const draggedSpaceElement = findSpaceNodeById(dragData.id);
         
         // Cannot move space to one of its children
-        if (draggedSpaceElement && isChildOf(draggedSpaceElement, targetNode)) {
+        if (draggedSpaceElement && isChildOf(targetNode, draggedSpaceElement)) {
             showToast(config.messages.cannotMoveToChild, 'warning');
             return;
         }
@@ -621,7 +630,7 @@ const DocumentDragDrop = (function() {
      */
     function moveDocument(documentId, targetSpaceId, targetNode) {
         // Build the URL
-        const url = `${config.moveDocumentUrl}?id_document=${documentId}&browser_selected_space_id=${targetSpaceId}`;
+        const url = `${config.moveDocumentUrl}?id_document=${documentId}&browser_selected_space_id=${targetSpaceId}&token=${encodeURIComponent(config.moveDocumentToken)}`;
 
         // Show loading state
         targetNode.classList.add('drop-valid');
@@ -638,7 +647,7 @@ const DocumentDragDrop = (function() {
      */
     function moveSpace(spaceId, targetSpaceId, targetNode) {
         // Build the URL
-        const url = `${config.moveSpaceUrl}?id_space=${spaceId}&browser_selected_space_id=${targetSpaceId}`;
+        const url = `${config.moveSpaceUrl}?id_space=${spaceId}&browser_selected_space_id=${targetSpaceId}&token=${encodeURIComponent(config.moveSpaceToken)}`;
 
         // Show loading state
         targetNode.classList.add('drop-valid');

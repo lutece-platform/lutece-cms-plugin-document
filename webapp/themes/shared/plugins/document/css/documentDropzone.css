@@ -1,0 +1,13 @@
+/* Drop zone of the file attributes of the document forms (attributes/file_dropzone.html) */
+.document-dropzone { position: relative; border: 1px dashed var( --tblr-border-color-dark, var( --tblr-border-color ) ); border-radius: var( --tblr-border-radius ); background: var( --tblr-bg-surface ); color: var( --tblr-secondary ); text-align: center; transition: border-color .2s, background-color .2s; }
+.document-dropzone .dz-message { display: flex; flex-direction: column; align-items: center; gap: .25rem; margin: 0; padding: 2rem 1rem; cursor: pointer; }
+.document-dropzone .document-dropzone-icon { font-size: 2rem; color: var( --tblr-primary ); }
+.document-dropzone .dropzone-msg-title { font-weight: var( --tblr-font-weight-medium, 500 ); color: var( --tblr-body-color ); }
+.document-dropzone .dropzone-msg-desc { font-size: .875em; }
+.document-dropzone .document-dropzone-file { display: none; font-weight: var( --tblr-font-weight-bold, 600 ); color: var( --tblr-primary ); word-break: break-all; }
+.document-dropzone .document-dropzone-clear { display: none; position: absolute; top: .5rem; inset-inline-end: .5rem; }
+.document-dropzone.has-file { border-style: solid; border-color: var( --tblr-primary ); }
+.document-dropzone.has-file .document-dropzone-file, .document-dropzone.has-file .document-dropzone-clear { display: block; }
+.document-dropzone.has-file .dropzone-msg-desc { display: none; }
+.document-dropzone:has( input:focus-visible ) { border-color: var( --tblr-primary ); outline: 2px solid var( --tblr-primary ); outline-offset: 2px; }
+.document-dropzone.hover { border-style: solid; border-color: var( --tblr-primary ); background: rgba( var( --tblr-primary-rgb ), .05 ); }

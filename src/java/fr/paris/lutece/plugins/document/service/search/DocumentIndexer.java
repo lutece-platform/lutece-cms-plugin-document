@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.service.search;
 
+import fr.paris.lutece.plugins.document.service.metadata.MetadataService;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
@@ -381,24 +382,19 @@ public class DocumentIndexer implements SearchIndexer
 							}
 							
 							// Debuging log
-							if( AppLogService.isDebugEnabled( ) )
-							{
-								AppLogService.debug( "Failed to parse binary attribute for document ID: " + 
-									document.getId( ) + ", attribute: " + attribute.getName( ), e );
-							}
+							AppLogService.debug( "Failed to parse binary attribute for document ID: {}, attribute: {}", document.getId( ), attribute.getName( ), e );
 						}
 					}
 					catch( Exception e )
 					{
-						AppLogService.error( "Error reading the stream for document ID: " + 
-							document.getId( ), e );
+						AppLogService.error( "Error reading the stream for document ID: {}", document.getId( ), e );
 					}
 				}
 			}
 		}
 		// Index Metadata
 		sbContentToIndex.append( " " );
-		sbContentToIndex.append( StringUtils.defaultString( document.getXmlMetadata( ) ) );
+		sbContentToIndex.append( MetadataService.getIndexableText( document.getMetadata( ) ) );
 
 		return sbContentToIndex.toString( );
 	}

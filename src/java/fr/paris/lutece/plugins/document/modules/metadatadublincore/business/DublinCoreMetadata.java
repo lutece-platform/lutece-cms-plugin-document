@@ -33,25 +33,30 @@
  */
 package fr.paris.lutece.plugins.document.modules.metadatadublincore.business;
 
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.util.xml.XmlUtil;
 
-import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.binder.DigesterLoader;
-import org.apache.commons.digester3.xmlrules.FromXmlRulesModule;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.xml.sax.SAXException;
+import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
  * This class represents the business object DublinCoreMetadata
  */
+@JsonInclude( JsonInclude.Include.NON_NULL )
+@JsonPropertyOrder( {
+        "title", "creator", "subject", "description", "publisher", "contributor", "date", "type", "format", "identifier", "source", "language",
+        "relation", "coverage", "rights"
+} )
 public class DublinCoreMetadata
 {
     private static final String PROPERTY_DEFAULT_TITLE = "document-metadatadublincore.default.title";
@@ -69,7 +74,22 @@ public class DublinCoreMetadata
     private static final String PROPERTY_DEFAULT_RELATION = "document-metadatadublincore.default.relation";
     private static final String PROPERTY_DEFAULT_COVERAGE = "document-metadatadublincore.default.coverage";
     private static final String PROPERTY_DEFAULT_RIGTHS = "document-metadatadublincore.default.rigths";
-    private static final String FILE_RULES = "/fr/paris/lutece/plugins/document/modules/metadatadublincore/business/dublincore-digester-rules.xml";
+    private static final String META_TITLE = "DC.Title";
+    private static final String META_CREATOR = "DC.Creator";
+    private static final String META_SUBJECT = "DC.Subject";
+    private static final String META_DESCRIPTION = "DC.Description";
+    private static final String META_PUBLISHER = "DC.Publisher";
+    private static final String META_CONTRIBUTOR = "DC.Contributor";
+    private static final String META_DATE = "DC.Date";
+    private static final String META_TYPE = "DC.Type";
+    private static final String META_FORMAT = "DC.Format";
+    private static final String META_IDENTIFIER = "DC.Identifier";
+    private static final String META_SOURCE = "DC.Source";
+    private static final String META_LANGUAGE = "DC.Language";
+    private static final String META_RELATION = "DC.Relation";
+    private static final String META_COVERAGE = "DC.Coverage";
+    private static final String META_RIGHTS = "DC.Rights";
+    private static final ObjectMapper MAPPER = new ObjectMapper( ).configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false );
 
     // Variables declarations
     private String _strTitle;
@@ -381,139 +401,90 @@ public class DublinCoreMetadata
     }
 
     /**
-     * Get the XML of the current dublin core metadata
-     * @return The XML representing this dublin core metadata
+     * Returns the metadata as a JSON object
+     *
+     * @return The JSON object
      */
-    public String getXml(  )
+    public String toJson(  )
     {
-        StringBuffer sbXml = new StringBuffer(  );
-        XmlUtil.beginElement( sbXml, "metadata" );
-
-        if ( ( _strTitle != null ) && ( !_strTitle.equals( "" ) ) )
+        try
         {
-            XmlUtil.addElement( sbXml, "title", _strTitle );
+            return MAPPER.writeValueAsString( this );
         }
-
-        if ( ( _strCreator != null ) && ( !_strCreator.equals( "" ) ) )
+        catch( JsonProcessingException e )
         {
-            XmlUtil.addElement( sbXml, "creator", _strCreator );
+            throw new AppException( "Unable to write the Dublin Core metadata", e );
         }
-
-        if ( ( _strSubject != null ) && ( !_strSubject.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "subject", _strSubject );
-        }
-
-        if ( ( _strDescription != null ) && ( !_strDescription.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "description", _strDescription );
-        }
-
-        if ( ( _strPublisher != null ) && ( !_strPublisher.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "publisher", _strPublisher );
-        }
-
-        if ( ( _strContributor != null ) && ( !_strContributor.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "contributor", _strContributor );
-        }
-
-        if ( ( _strDate != null ) && ( !_strDate.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "date", _strDate );
-        }
-
-        if ( ( _strType != null ) && ( !_strType.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "type", _strType );
-        }
-
-        if ( ( _strFormat != null ) && ( !_strFormat.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "format", _strFormat );
-        }
-
-        if ( ( _strIdentifier != null ) && ( !_strIdentifier.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "identifier", _strIdentifier );
-        }
-
-        if ( ( _strSource != null ) && ( !_strSource.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "source", _strSource );
-        }
-
-        if ( ( _strLanguage != null ) && ( !_strLanguage.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "language", _strLanguage );
-        }
-
-        if ( ( _strRelation != null ) && ( !_strRelation.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "relation", _strRelation );
-        }
-
-        if ( ( _strContributor != null ) && ( !_strContributor.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "coverage", _strCoverage );
-        }
-
-        if ( ( _strRights != null ) && ( !_strRights.equals( "" ) ) )
-        {
-            XmlUtil.addElement( sbXml, "rights", _strRights );
-        }
-
-        XmlUtil.endElement( sbXml, "metadata" );
-
-        return sbXml.toString(  );
     }
 
     /**
-     * Load dublin core metadata from an XML stream
-     * @param strXmlData The XML content to get the attributes from
+     * Builds metadata from a JSON object. The properties missing from the JSON object keep their default values.
+     *
+     * @param strMetadata
+     *            The JSON object, may be null
+     * @return The metadata
      */
-    public void load( String strXmlData )
+    public static DublinCoreMetadata fromJson( String strMetadata )
     {
-    	 if (strXmlData == null || strXmlData.isEmpty()) {
-    	        return;
-    	    }
+        DublinCoreMetadata metadata = new DublinCoreMetadata(  );
 
-    	    URL rules = getClass().getResource(FILE_RULES);
-    	    if (rules == null) {
-    	        AppLogService.error("Cannot find Digester rules file: " + FILE_RULES);
-    	        return;
-    	    }
-    	    
-    	    try
-    	    {
-	    	    DigesterLoader loader = DigesterLoader.newLoader(new FromXmlRulesModule() {
-	    	        @Override
-	    	        protected void loadRules() {
-	    	            loadXMLRules(rules);
-	    	        }
-	    	    });
-    	    
-	    	    try
-	    	    {
-		    	    Digester digester = loader.newDigester();
-		    	    digester.push(this);
-		
-		    	    try (StringReader sr = new StringReader(strXmlData)) {
-		    	        digester.parse(sr);
-		    	    } 
-		    	    catch (IOException | SAXException e) {
-		    	        AppLogService.error("Error parsing DublinCore XML: " + e.getMessage(), e);
-		    	    }
-		    	    }
-	    	    catch( Exception e )
-	    	    {
-	    	    	AppLogService.error("Error Digester DublinCore XML: " + e.getMessage(), e);
-	    	    }
-    	    }
-    	    catch( Exception e )
-    	    {
-    	    	AppLogService.error("Error laoding DublinCore XML: " + e.getMessage(), e);
-    	    }
+        if ( StringUtils.isNotBlank( strMetadata ) )
+        {
+            try
+            {
+                MAPPER.readerForUpdating( metadata ).readValue( strMetadata );
+            }
+            catch( JsonProcessingException e )
+            {
+                AppLogService.error( "Invalid Dublin Core metadata, the default values are used : {}", e.getMessage(  ), e );
+            }
+        }
+
+        return metadata;
+    }
+
+    /**
+     * Returns the Dublin Core meta tags of the metadata, in the order of the Dublin Core elements
+     *
+     * @return The contents of the meta tags by meta name, without the empty values
+     */
+    public Map<String, String> toMetaTags(  )
+    {
+        Map<String, String> mapMetaTags = new LinkedHashMap<>(  );
+        addMetaTag( mapMetaTags, META_TITLE, _strTitle );
+        addMetaTag( mapMetaTags, META_CREATOR, _strCreator );
+        addMetaTag( mapMetaTags, META_SUBJECT, _strSubject );
+        addMetaTag( mapMetaTags, META_DESCRIPTION, _strDescription );
+        addMetaTag( mapMetaTags, META_PUBLISHER, _strPublisher );
+        addMetaTag( mapMetaTags, META_CONTRIBUTOR, _strContributor );
+        addMetaTag( mapMetaTags, META_DATE, _strDate );
+        addMetaTag( mapMetaTags, META_TYPE, _strType );
+        addMetaTag( mapMetaTags, META_FORMAT, _strFormat );
+        addMetaTag( mapMetaTags, META_IDENTIFIER, _strIdentifier );
+        addMetaTag( mapMetaTags, META_SOURCE, _strSource );
+        addMetaTag( mapMetaTags, META_LANGUAGE, _strLanguage );
+        addMetaTag( mapMetaTags, META_RELATION, _strRelation );
+        addMetaTag( mapMetaTags, META_COVERAGE, _strCoverage );
+        addMetaTag( mapMetaTags, META_RIGHTS, _strRights );
+
+        return mapMetaTags;
+    }
+
+    /**
+     * Adds a meta tag if its value is not empty
+     *
+     * @param mapMetaTags
+     *            The meta tags
+     * @param strName
+     *            The meta name
+     * @param strValue
+     *            The value
+     */
+    private static void addMetaTag( Map<String, String> mapMetaTags, String strName, String strValue )
+    {
+        if ( StringUtils.isNotBlank( strValue ) )
+        {
+            mapMetaTags.put( strName, strValue );
+        }
     }
 }

@@ -47,7 +47,6 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.web.xpages.XPageApplication;
 import fr.paris.lutece.util.ReferenceList;
@@ -61,6 +60,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -72,9 +72,9 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 @RequestScoped
 @Named( "document.xpage.advanced_search" )
-@Controller( xpageName = "advanced_search" , pageTitleI18nKey = "document.advanced_search.title" , pagePathI18nKey = "document.advanced_search.title" )
 public class AdvancedSearch implements XPageApplication
 {
+	private static final String MESSAGE_ALL_TYPES = "document.advanced_search.list.allTypes";
 	private static final String TEMPLATE_ADVANCED_SEARCH = "skin/plugins/document/advanced_search.html";
 	private static final String MARK_LOCALE = "locale";
 	private static final String MARK_URL = "url";
@@ -207,7 +207,7 @@ public class AdvancedSearch implements XPageApplication
 			model.put( MARK_SELECTED_TYPE, "-1" );
 		}
 
-		model.put( MARK_TYPE_LIST, getRefListDocumentType( ) );
+		model.put( MARK_TYPE_LIST, getRefListDocumentType( request.getLocale( ) ) );
 		model.put( MARK_LOCALE, request.getLocale( ) );
 
 		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADVANCED_SEARCH, request.getLocale( ), model );
@@ -245,14 +245,16 @@ public class AdvancedSearch implements XPageApplication
 	/**
 	 * The document referencelist
 	 * 
+	 * @param locale
+	 *            The locale of the label of the choice of every type
 	 * @return The document referencelist
 	 */
-	public static ReferenceList getRefListDocumentType( )
+	public static ReferenceList getRefListDocumentType( Locale locale )
 	{
 		Collection < DocumentType > listDocumentType = DocumentTypeHome.findAll( );
 		ReferenceList reflistDocumentType = new ReferenceList( );
 
-		reflistDocumentType.addItem( - 1, " " );
+		reflistDocumentType.addItem( - 1, I18nService.getLocalizedString( MESSAGE_ALL_TYPES, locale ) );
 
 		for( DocumentType documentType : listDocumentType )
 		{

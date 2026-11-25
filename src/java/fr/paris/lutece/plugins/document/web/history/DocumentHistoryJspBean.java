@@ -48,7 +48,6 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 import java.util.Collection;
 
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.servlet.http.HttpServletRequest;
 
 
@@ -75,6 +74,9 @@ public class DocumentHistoryJspBean extends PluginAdminPageJspBean
 
     @Inject
     private Models _model;
+
+    @Inject
+    private DocumentService _documentService;
     
     /**
      * Get the history page
@@ -91,8 +93,7 @@ public class DocumentHistoryJspBean extends PluginAdminPageJspBean
         Collection<HistoryEvent> listEvents = null;
 
         if ( ( document != null ) &&
-        		 CDI.current( ).select( DocumentService.class ).get( )
-                                   .isAuthorizedAdminDocument( document.getSpaceId(  ),
+        		 _documentService.isAuthorizedAdminDocument( document.getSpaceId(  ),
                     document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_VIEW_HISTORY, getUser(  ) ) )
         {
             listEvents = HistoryEventHome.findByDocument( nDocumentId, getLocale(  ) );

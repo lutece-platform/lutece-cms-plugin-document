@@ -35,21 +35,33 @@ package fr.paris.lutece.plugins.document.business.portlet;
 
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
-import fr.paris.lutece.portal.business.portlet.Portlet;
-import fr.paris.lutece.util.xml.XmlUtil;
+import fr.paris.lutece.plugins.document.service.view.DocumentView;
+import fr.paris.lutece.plugins.document.service.view.DocumentViewService;
+import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
+import fr.paris.lutece.portal.service.portal.PortalService;
+import fr.paris.lutece.portal.service.util.AppPathService;
+
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
- * This class represents business objects ArticlesList Portlet
+ * This class represents business objects Document List Portlet. The content is rendered with the FreeMarker template chosen for the portlet
+ * among the templates registered for the portlet type in the core (Section Template Management feature).
  */
-public class DocumentListPortlet extends Portlet
+public class DocumentListPortlet extends PortletHtmlContent
 {
     public static final String RESOURCE_ID = "DOCUMENT_LIST_PORTLET";
 
-    /////////////////////////////////////////////////////////////////////////////////
-    // Xml Tags
-    private static final String TAG_DOCUMENT_LIST_PORTLET = "document-list-portlet";
+    /** Template used when no template is chosen for the portlet */
+    public static final String TEMPLATE_PORTLET_DEFAULT = "skin/plugins/document/portlet/document_list_portlet.html";
+
+    private static final String MARK_DOCUMENTS = "documents";
+    private static final String MARK_SITE_PATH = "site_path";
+    private static final String MARK_IS_EXTEND_INSTALLED = "is_extend_installed";
 
     /////////////////////////////////////////////////////////////////////////////////
     // Constants
@@ -68,44 +80,39 @@ public class DocumentListPortlet extends Portlet
     }
 
     /**
-     * Returns the Xml code of the Document List portlet without XML heading
-     *
-     * @param request
-     *            The HTTP Servlet request
-     * @return the Xml code of the Document List portlet content
+     * {@inheritDoc}
      */
-    public String getXml( HttpServletRequest request )
+    @Override
+    public String getHtmlContent( HttpServletRequest request )
     {
-        StringBuffer strXml = new StringBuffer( );
-        XmlUtil.beginElement( strXml, TAG_DOCUMENT_LIST_PORTLET );
+        Map<String, Object> model = createPortletModel( );
+        model.put( MARK_DOCUMENTS, getDocuments( ) );
+        model.put( MARK_SITE_PATH, AppPathService.getPortalUrl( ) );
+        model.put( MARK_IS_EXTEND_INSTALLED, PortalService.isExtendActivated( ) );
 
-        PublishingService publishingService = CDI.current( ).select( PublishingService.class ).get( );
-        
-        for ( Document document : publishingService.getPublishedDocumentsByPortletId( getId( ) ) )
-        {
-            if ( document.isValid( ) ) // to have only the valid documents
-            {
-                strXml.append( document.getXml( request, getId( ) ) );
-            }
-        }
-
-        XmlUtil.endElement( strXml, TAG_DOCUMENT_LIST_PORTLET );
-
-        String str = addPortletTags( strXml );
-
-        return str;
+        return renderTemplate( request, TEMPLATE_PORTLET_DEFAULT, model );
     }
 
     /**
-     * Returns the Xml code of the Articles List portlet with XML heading
+     * Returns the validated views of the valid documents published in the portlet, in the publication order
      *
-     * @param request
-     *            The HTTP Servlet Request
-     * @return the Xml code of the Articles List portlet
+     * @return The document views
      */
-    public String getXmlDocument( HttpServletRequest request )
+    private List<DocumentView> getDocuments( )
     {
-        return XmlUtil.getXmlHeader( ) + getXml( request );
+        PublishingService publishingService = CDI.current( ).select( PublishingService.class ).get( );
+        DocumentViewService documentViewService = CDI.current( ).select( DocumentViewService.class ).get( );
+        List<DocumentView> listDocuments = new ArrayList<>( );
+
+        for ( Document document : publishingService.getPublishedDocumentsByPortletId( getId( ) ) )
+        {
+            if ( document.isValid( ) )
+            {
+                listDocuments.add( documentViewService.buildValidatedView( document ) );
+            }
+        }
+
+        return listDocuments;
     }
 
     /**

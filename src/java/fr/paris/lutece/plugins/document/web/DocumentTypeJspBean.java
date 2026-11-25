@@ -33,48 +33,41 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
-import fr.paris.lutece.plugins.document.business.DocumentResource;
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
+import fr.paris.lutece.plugins.document.business.LegacyStylesheets;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeHome;
 import fr.paris.lutece.plugins.document.business.attributes.AttributeTypeParameter;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttributeHome;
 import fr.paris.lutece.plugins.document.service.AttributeManager;
 import fr.paris.lutece.plugins.document.service.AttributeService;
+import fr.paris.lutece.plugins.document.service.LegacyStylesheetService;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataService;
+import fr.paris.lutece.plugins.document.service.view.DocumentTemplateService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
 import fr.paris.lutece.portal.service.cache.CacheService;
 import fr.paris.lutece.portal.service.cache.CacheableService;
-import fr.paris.lutece.util.xml.XmlTransformer;
-import fr.paris.lutece.portal.service.fileupload.FileUploadService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.regularexpression.RegularExpressionService;
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.template.HtmlMarkup;
-import fr.paris.lutece.portal.service.upload.MultipartItem;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.constants.Messages;
-import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.IPager;
-import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.portal.web.util.Pager;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
-import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang3.StringUtils;
 
-import org.xml.sax.InputSource;
-
-import java.io.ByteArrayInputStream;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,9 +79,6 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 /**
  * JSP Bean for document type management
@@ -113,7 +103,6 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	private static final String PROPERTY_NO_THUMBNAIL_ATTRIBUTE = "document.documentType.noThumbnailAttribute";
 	private static final String PROPERTY_CODE_ATTRIBUTE_BAD_FORMAT_CREATE = "document.add_document_type_attribute.codeAttribute.badFormat";
 	private static final String PROPERTY_CODE_ATTRIBUTE_BAD_FORMAT_MODIFY = "document.modify_document_type_attribute.codeAttribute.badFormat";
-	private static final String PROPERTY_REGULAR_EXPRESSION_PER_PAGE = "document.regularExpressionPerPage";
 	private static final String MESSAGE_DOCUMENT_ALREADY_EXIST = "document.message.documentType.errorAlreadyExist";
 	private static final String MARK_DOCUMENT_TYPES_LIST = "document_types_list";
 	private static final String MARK_THUMBNAIL_ATTRIBUTES_LIST = "thumbnail_attributes_list";
@@ -127,9 +116,6 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	private static final String MARK_METADATA_HANDLERS_LIST = "metadata_handlers_list";
 	private static final String MARK_REGULAR_EXPRESSION_TO_ADD_LIST = "regular_expression_to_add_list";
 	private static final String MARK_REGULAR_EXPRESSION_ADDED_LIST = "regular_expression_added_list";
-	private static final String MARK_PAGINATOR = "paginator";
-	private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
-	private static final String MARK_NB_REGULAR_EXPRESSION = "nb_regular_expression";
 	private static final String PARAMETER_DOCUMENT_TYPE_CODE = "document_type_code";
 	private static final String PARAMETER_NAME = "name";
 	private static final String PARAMETER_OLD_CODE = "old_code";
@@ -143,11 +129,8 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	private static final String PARAMETER_ATTRIBUTE_ID = "attribute_id";
 	private static final String PARAMETER_INDEX = "index";
 	private static final String PARAMETER_METADATA = "metadata";
-	private static final String PARAMETER_STYLESHEET_TYPE = "stylesheet_type";
-	private static final String PARAMETER_STYLESHEET_ADMIN = "stylesheet_admin";
-	private static final String PARAMETER_STYLESHEET_CONTENT = "stylesheet_content";
-	private static final String PARAMETER_UPDATE_STYLESHEET_ADMIN = "stylesheet_admin_update";
-	private static final String PARAMETER_UPDATE_STYLESHEET_CONTENT = "stylesheet_content_update";
+	private static final String PARAMETER_ADMIN_TEMPLATE = "admin_template";
+	private static final String PARAMETER_CONTENT_TEMPLATE = "content_template";
 	private static final String PARAMETER_EXPRESSION_ID = "expression_id";
 	private static final String PARAMETER_APPLY = "apply";
 	private static final String PARAMETER_CANCEL = "cancel";
@@ -160,20 +143,21 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	private static final String JSP_DELETE_ATTRIBUTE = "jsp/admin/plugins/document/DoDeleteAttribute.jsp";
 	private static final String JSP_MODIFY_DOCUMENT_TYPE_ATTRIBUTE = "ModifyDocumentTypeAttribute.jsp";
 	private static final String JSP_ADD_DOCUMENT_TYPE_ATTRIBUTE = "AddDocumentTypeAttribute.jsp";
-	private static final String MESSAGE_STYLESHEET_NOT_VALID = "portal.style.message.stylesheetNotValid";
+	private static final String SECURITY_TOKEN_ACTION = "jsp/admin/plugins/document/ManageDocumentTypes.jsp";
+	private static final String JSP_DO_DISCARD_LEGACY_STYLESHEETS = "jsp/admin/plugins/document/DoDiscardLegacyStylesheets.jsp";
+	private static final String MESSAGE_CONFIRM_DISCARD_LEGACY_STYLESHEETS = "document.message.confirmDiscardLegacyStylesheets";
+	private static final String MARK_LEGACY_STYLESHEETS = "legacy_stylesheets";
+	private static final String MARK_LEGACY_STYLESHEETS_TYPES = "legacy_stylesheets_types";
+	private static final String MESSAGE_ADMIN_TEMPLATE_NOT_VALID = "document.message.adminTemplateNotValid";
+	private static final String MESSAGE_CONTENT_TEMPLATE_NOT_VALID = "document.message.contentTemplateNotValid";
+	private static final String MARK_DEFAULT_ADMIN_TEMPLATE = "default_admin_template";
+	private static final String MARK_DEFAULT_CONTENT_TEMPLATE = "default_content_template";
 	private static final String CHECK_ON = "on";
-	private static final String STYLESHEET_CONTENT_TYPE = "text/plain";
-	private static final String SEPARATOR = "_";
-	private static final String FILE_EXTENSION = ".xsl";
-	private static final Object UPDATE_VALUE = "true";
 	// The caches of the rendered documents: document pages, portlets and portal pages
 	private static final String [ ] CACHES_RENDERED_DOCUMENTS = { "Document Content Service", "PortletCacheService", "PageCacheService" };
 	private static final String PATTERN_CODE = "[a-zA-Z0-9_\\-]+";
 	private static final int NO_THUMBNAIL_ATTRIBUTE = 0;
 	private String _strDocumentTypeCode;
-	private int _nItemsPerPage;
-	private int _nDefaultItemsPerPage;
-	private String _strCurrentPageIndex;
 	private DocumentAttribute _attribute;
 
 	@Inject
@@ -185,6 +169,12 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	 
 	@Inject
 	private Models _model;
+
+	@Inject
+	private DocumentTemplateService _documentTemplateService;
+
+	@Inject
+	private LegacyStylesheetService _legacyStylesheetService;
 
 	@Inject
 	@Pager( listBookmark = MARK_DOCUMENT_TYPES_LIST )
@@ -199,6 +189,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	public String getManageDocumentTypes( HttpServletRequest request )
 	{
 		addPaginatorToModel( request, DocumentTypeHome.findAll( ), _model );
+		_model.put( MARK_LEGACY_STYLESHEETS_TYPES, _legacyStylesheetService.getDocumentTypesWithLegacyStylesheets( ) );
 
 		// _model.put( MARK_DOCUMENT_TYPES_LIST, DocumentTypeHome.findAll( ) );
 
@@ -237,6 +228,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 
 		_model.put( MARK_METADATA_HANDLERS_LIST, MetadataService.getMetadataHandlersList( ) );
 
+		_model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
 		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_DOCUMENT_TYPE, getLocale( ), _model );
 
 		return getAdminPage( template.getHtml( ) );
@@ -250,6 +242,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	 */
 	public String doCreateDocumentType( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		String strName = request.getParameter( PARAMETER_NAME );
 		String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
 		String strCode = request.getParameter( PARAMETER_CODE );
@@ -316,6 +313,16 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 		_model.put( MARK_THUMBNAIL_ATTRIBUTES_LIST, getThumbnailAttributesList( documentType ) );
 		_model.put( MARK_METADATA_HANDLERS_LIST, MetadataService.getMetadataHandlersList( ) );
 		_model.put( MARK_ATTRIBUTE_TYPES_LIST, listAttributeTypes );
+		_model.put( MARK_DEFAULT_ADMIN_TEMPLATE, _documentTemplateService.getDefaultTemplateSource( true ) );
+		_model.put( MARK_DEFAULT_CONTENT_TEMPLATE, _documentTemplateService.getDefaultTemplateSource( false ) );
+		_model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
+
+		LegacyStylesheets legacyStylesheets = _legacyStylesheetService.getLegacyStylesheets( strDocumentTypeCode );
+
+		if( legacyStylesheets != null )
+		{
+			_model.put( MARK_LEGACY_STYLESHEETS, legacyStylesheets );
+		}
 
 		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_DOCUMENT_TYPE, getLocale( ), _model );
 
@@ -330,6 +337,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	 */
 	public String doModifyDocumentType( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		String strOldCode = request.getParameter( PARAMETER_OLD_CODE );
 		String strCode = request.getParameter( PARAMETER_CODE );
 		String strName = request.getParameter( PARAMETER_NAME );
@@ -399,6 +411,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 		ReferenceList listAttributeTypes = AttributeTypeHome.getAttributeTypesList( getLocale( ) );
 		_model.put( MARK_ATTRIBUTE_TYPE_NAME, listAttributeTypes.toMap( ).get( strAttributeTypeCode ) );
 
+		_model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
 		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADD_ATTRIBUTE, getLocale( ), _model );
 
 		return getAdminPage( template.getHtml( ) );
@@ -412,6 +425,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	 */
 	public String doAddAttribute( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		_attribute = new DocumentAttribute( );
 
 		boolean bIsValid = validateCodeAttribute( request );
@@ -466,6 +484,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	 */
 	public String doModifyAttribute( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		if( request.getParameter( PARAMETER_CANCEL ) != null )
 		{
 			UrlItem url = new UrlItem( JSP_MODIFY_DOCUMENT_TYPE );
@@ -637,9 +660,6 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 
 		AttributeManager manager = _attributeService.getManager( attribute.getCodeAttributeType( ) );
 
-		UrlItem url = new UrlItem( request.getRequestURI( ) );
-		url.addParameter( PARAMETER_ATTRIBUTE_ID, nAttributeId );
-
 		ReferenceList refListRegularExpressionToAdd = new ReferenceList( );
 		List < RegularExpression > listRegularExpressionAdded = new ArrayList < RegularExpression >( );
 
@@ -664,16 +684,6 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 			}
 		}
 
-		// Paginator
-		_strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
-		_nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_REGULAR_EXPRESSION_PER_PAGE, 10 );
-		_nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage,
-				_nDefaultItemsPerPage );
-
-		LocalizedPaginator < RegularExpression > paginator = new LocalizedPaginator < RegularExpression >(
-				listRegularExpressionAdded,
-				_nItemsPerPage, url.getUrl( ), Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
-
 		_model.put( MARK_DOCUMENT_TYPE_CODE, _strDocumentTypeCode );
 		_model.put( MARK_ATTRIBUTE_TYPE_CODE, attribute.getCodeAttributeType( ) );
 
@@ -696,11 +706,9 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 
 		// Regular expressions
 		_model.put( MARK_REGULAR_EXPRESSION_TO_ADD_LIST, refListRegularExpressionToAdd );
-		_model.put( MARK_PAGINATOR, paginator );
-		_model.put( MARK_REGULAR_EXPRESSION_ADDED_LIST, paginator.getPageItems( ) );
-		_model.put( MARK_NB_ITEMS_PER_PAGE, "" + _nItemsPerPage );
-		_model.put( MARK_NB_REGULAR_EXPRESSION, paginator.getItemsCount( ) );
+		_model.put( MARK_REGULAR_EXPRESSION_ADDED_LIST, listRegularExpressionAdded );
 
+		_model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
 		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_ATTRIBUTE, getLocale( ), _model );
 
 		return getAdminPage( template.getHtml( ) );
@@ -715,7 +723,8 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	public String doConfirmDelete( HttpServletRequest request )
 	{
 		String strCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
-		String strDeleteUrl = JSP_DELETE_DOCUMENT_TYPE + "?" + PARAMETER_DOCUMENT_TYPE_CODE + "=" + strCode;
+		String strDeleteUrl = JSP_DELETE_DOCUMENT_TYPE + "?" + PARAMETER_DOCUMENT_TYPE_CODE + "=" + strCode + "&" + SecurityTokenService.PARAMETER_TOKEN + "="
+				+ getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION );
 		String strUrl = AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_DELETE_TYPE,null,null, strDeleteUrl,null,
 				AdminMessage.TYPE_CONFIRMATION,null,JSP_MANAGE_DOCUMENT_TYPE );
 
@@ -737,6 +746,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	 */
 	public String doDeleteDocumentType( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		String strCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
 
 		if( strCode != null )
@@ -769,7 +783,8 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	{
 		String strCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
 		String strId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
-		String strDeleteUrl = JSP_DELETE_ATTRIBUTE + "?" + PARAMETER_ATTRIBUTE_ID + "=" + strId;
+		String strDeleteUrl = JSP_DELETE_ATTRIBUTE + "?" + PARAMETER_ATTRIBUTE_ID + "=" + strId + "&" + SecurityTokenService.PARAMETER_TOKEN + "="
+				+ getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION );
 		String strUrl = AdminMessageService.getMessageUrl( request, PROPERTY_CONFIRM_DELETE_ATTRIBUTE,null,null, strDeleteUrl,null,
 				AdminMessage.TYPE_CONFIRMATION,null, JSP_URL_MODIFY_DOCUMENT_TYPE + "?" + PARAMETER_DOCUMENT_TYPE_CODE + "=" + strCode );
 		
@@ -784,6 +799,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	 */
 	public String doDeleteAttribute( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		String strId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
 		int nId = IntegerUtils.convert( strId );
 		DocumentAttributeHome.remove( nId );
@@ -799,6 +819,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	 */
 	public String doAttributeMoveUp( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		String strIndex = request.getParameter( PARAMETER_INDEX );
 		int nIndex = IntegerUtils.convert( strIndex );
 
@@ -822,6 +847,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	 */
 	public String doAttributeMoveDown( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		String strIndex = request.getParameter( PARAMETER_INDEX );
 		int nIndex = IntegerUtils.convert( strIndex );
 		DocumentType documentType = DocumentTypeHome.findByPrimaryKey( _strDocumentTypeCode );
@@ -838,23 +868,102 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	}
 
 	/**
-	 * Save the uploaded Sytlesheets
+	 * Saves the FreeMarker templates of the document type. A blank template means that the default template is used. The templates are executed
+	 * on the site: their modification is protected by a security token, and the caches of the rendered documents are reset.
 	 * 
 	 * @param request The {@link HttpServletRequest}
-	 * @return the home url
+	 * @return The URL to go after performing the action
 	 */
-	public String doLoadStyleSheets( HttpServletRequest request )
+	public String doModifyTemplates( HttpServletRequest request )
 	{
-		MultipartHttpServletRequest multipartRequest = ( MultipartHttpServletRequest ) request;
-		String strErrorUrl = getStyleSheets( multipartRequest );
-
-		if( strErrorUrl != null )
+		if( ! getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
 		{
-			return strErrorUrl;
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
 		}
 
-		// Displays the list of the stylesheet files
-		return getHomeUrl( request );
+		String strCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
+		DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strCode );
+
+		if( documentType == null )
+		{
+			return getHomeUrl( request );
+		}
+
+		String strAdminTemplate = StringUtils.trimToNull( request.getParameter( PARAMETER_ADMIN_TEMPLATE ) );
+		String strContentTemplate = StringUtils.trimToNull( request.getParameter( PARAMETER_CONTENT_TEMPLATE ) );
+
+		String strError = _documentTemplateService.validateTemplate( documentType, strAdminTemplate, true, getLocale( ) );
+
+		if( strError != null )
+		{
+			return AdminMessageService.getMessageUrl( request, MESSAGE_ADMIN_TEMPLATE_NOT_VALID, new Object [ ] { strError },
+					AdminMessage.TYPE_STOP );
+		}
+
+		strError = _documentTemplateService.validateTemplate( documentType, strContentTemplate, false, getLocale( ) );
+
+		if( strError != null )
+		{
+			return AdminMessageService.getMessageUrl( request, MESSAGE_CONTENT_TEMPLATE_NOT_VALID, new Object [ ] { strError },
+					AdminMessage.TYPE_STOP );
+		}
+
+		DocumentTypeHome.storeTemplates( strCode, strAdminTemplate, strContentTemplate );
+
+		// clear the caches holding the documents rendered with these templates, not every cache of the webapp
+		for( String strCacheName : CACHES_RENDERED_DOCUMENTS )
+		{
+			CacheableService<?, ?> cache = CacheService.getCache( strCacheName );
+			if( cache != null )
+			{
+				cache.resetCache( );
+			}
+		}
+
+		UrlItem url = new UrlItem( JSP_MODIFY_DOCUMENT_TYPE );
+		url.addParameter( PARAMETER_DOCUMENT_TYPE_CODE, strCode );
+
+		return url.getUrl( );
+	}
+
+	/**
+	 * Asks the confirmation of discarding the XSL stylesheets of the versions before 7.0.0 of a document type
+	 * 
+	 * @param request The {@link HttpServletRequest}
+	 * @return The URL of the confirmation message
+	 */
+	public String doConfirmDiscardLegacyStylesheets( HttpServletRequest request )
+	{
+		String strCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
+
+		UrlItem url = new UrlItem( JSP_DO_DISCARD_LEGACY_STYLESHEETS );
+		url.addParameter( PARAMETER_DOCUMENT_TYPE_CODE, strCode );
+		url.addParameter( SecurityTokenService.PARAMETER_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
+
+		return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DISCARD_LEGACY_STYLESHEETS, new Object [ ] { strCode }, url.getUrl( ),
+				AdminMessage.TYPE_CONFIRMATION );
+	}
+
+	/**
+	 * Discards the XSL stylesheets of the versions before 7.0.0 of a document type, once rewritten as FreeMarker templates
+	 * 
+	 * @param request The {@link HttpServletRequest}
+	 * @return The URL to go after performing the action
+	 */
+	public String doDiscardLegacyStylesheets( HttpServletRequest request )
+	{
+		if( ! getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
+		String strCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
+		_legacyStylesheetService.discardLegacyStylesheets( strCode );
+
+		UrlItem url = new UrlItem( JSP_MODIFY_DOCUMENT_TYPE );
+		url.addParameter( PARAMETER_DOCUMENT_TYPE_CODE, strCode );
+
+		return url.getUrl( );
 	}
 
 	private ReferenceList getThumbnailAttributesList( DocumentType documentType )
@@ -878,141 +987,6 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	}
 
 	/**
-	 * Reads stylesheet's data
-	 * 
-	 * @param multipartRequest The request
-	 * @return An error message URL or null if no error
-	 */
-	private String getStyleSheets( MultipartHttpServletRequest multipartRequest )
-	{
-		String strErrorUrl = null;
-
-		String strCode = multipartRequest.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
-		String strUpdateStylesheetAdmin = multipartRequest.getParameter( PARAMETER_UPDATE_STYLESHEET_ADMIN );
-		String strUpdateStylesheetContent = multipartRequest.getParameter( PARAMETER_UPDATE_STYLESHEET_CONTENT );
-
-		// Gets XSL for the back office if defined
-		MultipartItem fileXslAdmin = multipartRequest.getFile( PARAMETER_STYLESHEET_ADMIN );
-		String strFilename = FileUploadService.getFileNameOnly( fileXslAdmin );
-
-		if( ( strUpdateStylesheetAdmin != null ) && strUpdateStylesheetAdmin.equals( UPDATE_VALUE ) &&
-				( strFilename != null ) && ( ! strFilename.equals( "" ) ) )
-		{
-			byte [ ] baXslAdmin = fileXslAdmin.get( );
-
-			// Check the XML validity of the XSL stylesheet
-			if( isValid( baXslAdmin ) != null )
-			{
-				Object [ ] args =
-				{ isValid( baXslAdmin ) };
-
-				return AdminMessageService.getMessageUrl( multipartRequest, MESSAGE_STYLESHEET_NOT_VALID, args,
-						AdminMessage.TYPE_STOP );
-			}
-
-			DocumentTypeHome.setAdminStyleSheet( baXslAdmin, strCode );
-		}
-
-		// Gets XSL for the back office if defined
-		MultipartItem fileXslContent = multipartRequest.getFile( PARAMETER_STYLESHEET_CONTENT );
-		strFilename = FileUploadService.getFileNameOnly( fileXslContent );
-
-		if( ( strUpdateStylesheetContent != null ) && strUpdateStylesheetContent.equals( UPDATE_VALUE ) &&
-				( strFilename != null ) && ( ! strFilename.equals( "" ) ) )
-		{
-			byte [ ] baXslContent = fileXslContent.get( );
-
-			// Check the XML validity of the XSL stylesheet
-			if( isValid( baXslContent ) != null )
-			{
-				Object [ ] args =
-				{ isValid( baXslContent ) };
-
-				return AdminMessageService.getMessageUrl( multipartRequest, MESSAGE_STYLESHEET_NOT_VALID, args,
-						AdminMessage.TYPE_STOP );
-			}
-
-			DocumentTypeHome.setContentStyleSheet( baXslContent, strCode );
-		}
-
-		// clear the caches holding the documents rendered with these stylesheets, not every cache of the webapp
-		XmlTransformer.cleanTransformerList( );
-		for( String strCacheName : CACHES_RENDERED_DOCUMENTS )
-		{
-			CacheableService<?, ?> cache = CacheService.getCache( strCacheName );
-			if( cache != null )
-			{
-				cache.resetCache( );
-			}
-		}
-
-		return strErrorUrl;
-	}
-
-	/**
-	 * Get the XSL specified in parameters
-	 * 
-	 * @param request The {@link HttpServletRequest}
-	 * @return A {@link DocumentResource} (name, content and contentType)
-	 */
-	public DocumentResource getStyleSheetFile( HttpServletRequest request )
-	{
-		String strDocumentTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
-		String strStylesheetType = request.getParameter( PARAMETER_STYLESHEET_TYPE );
-		DocumentResource documentResource = new DocumentResource( );
-		documentResource.setContentType( STYLESHEET_CONTENT_TYPE );
-		documentResource.setName( strDocumentTypeCode + SEPARATOR + strStylesheetType + FILE_EXTENSION );
-
-		if( strDocumentTypeCode != null )
-		{
-			_strDocumentTypeCode = strDocumentTypeCode;
-		}
-		else
-		{
-			strDocumentTypeCode = _strDocumentTypeCode;
-		}
-
-		DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strDocumentTypeCode );
-
-		if( strStylesheetType.equals( PARAMETER_STYLESHEET_ADMIN ) )
-		{
-			documentResource.setContent( documentType.getAdminXsl( ) );
-		}
-
-		if( strStylesheetType.equals( PARAMETER_STYLESHEET_CONTENT ) )
-		{
-			documentResource.setContent( documentType.getContentServiceXsl( ) );
-		}
-
-		return documentResource;
-	}
-
-	/**
-	 * Use parsing for validate the modify xsl file
-	 *
-	 * @param baXslSource The XSL source
-	 * @return the message exception when the validation is false
-	 */
-	private String isValid( byte [ ] baXslSource )
-	{
-		String strError = null;
-		SAXParserFactory factory = SAXParserFactory.newInstance( );
-		try
-		{
-			factory.setFeature( "http://apache.org/xml/features/disallow-doctype-decl", true );
-			SAXParser analyzer = factory.newSAXParser( );
-			InputSource is = new InputSource( new ByteArrayInputStream( baXslSource ) );
-			analyzer.getXMLReader( ).parse( is );
-		}
-		catch( Exception e )
-		{
-			strError = e.getMessage( );
-		}
-
-		return strError;
-	}
-
-	/**
 	 * Inserts a regular expression in the attribute
 	 *
 	 * @param request The HTTP request
@@ -1020,6 +994,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	 */
 	public String doInsertRegularExpression( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		// Gets the document attribute identifier
 		String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
 		int nAttributeId = IntegerUtils.convert( strAttributeId );
@@ -1065,6 +1044,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	 */
 	public String doDeleteRegularExpression( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		// Gets the document attribute identifier
 		String strAttributeId = request.getParameter( PARAMETER_ATTRIBUTE_ID );
 		int nAttributeId = IntegerUtils.convert( strAttributeId );

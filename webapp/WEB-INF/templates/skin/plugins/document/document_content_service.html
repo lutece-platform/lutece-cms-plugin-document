@@ -1,41 +1,44 @@
 <#--
 Available objects :
-- String 				document 			The HTML code for the document (Xsl transformation result)
+- String 				document 			The HTML code for the document (rendered with the front office template of the document type)
 - String 				portlet				The HTML code for documents list portlet containing the document
 - String 				categories			The HTML code for category list portlet linked with the document
 - String 				document_comments	The HTML code for the comments area
 - String 				document_id			The document id
 - String 				portlet_id			The portlet id
-- DocumentPublication 	publication 		The publication object. 
+- DocumentPublication 	publication 		The publication object.
 How to display the date publication : ${publication.datePublishing?date} or ${publication.datePublishing?datetime}
 -->
-<#if isExtendInstalled?? && isExtendInstalled>
+<@cTpl>
+<#assign isExtendEnabled = isExtendInstalled?? && isExtendInstalled>
+<#if isExtendEnabled>
 	@ExtenderParameter[${document_id},document,opengraph]@
 </#if>
-<div class="row">
-    <div id="content" class="col-xs-12 col-sm-9 col-md-9">
-    	<#if portlet?has_content >
-       		${portlet}
-        </#if>
-        <#if isExtendInstalled?? && isExtendInstalled>
-	        <div class="pull-right">
-	            <div class="btn-group">
-	            	@Extender[${document_id},document,actionbar]@
-				</div>
-	        </div>
-        </#if>
-        ${document}
-    </div>
-</div>
-<#if isExtendInstalled?? && isExtendInstalled>
-<div class="clearfix">
-	<div class="col-xs-12 col-sm-3 col-md-3 pull-right">
+<@cRow>
+	<@cCol cols='12 col-sm-9' id='content'>
+		<#if portlet?has_content>
+			${portlet}
+		</#if>
+		<#if isExtendEnabled>
+		<@cBlock class='float-end'>
+			<@cBlock class='btn-group'>
+				@Extender[${document_id},document,actionbar]@
+			</@cBlock>
+		</@cBlock>
+		</#if>
+		${document}
+	</@cCol>
+</@cRow>
+<#if isExtendEnabled>
+<@cRow>
+	<@cCol cols='12 col-sm-3' class='ms-auto'>
 		@Extender[${document_id},document,opengraph,{footer:false, header:false}]@
-        @Extender[${document_id},document,hit,{show:true}]@
-        @Extender[${document_id},document,rating,{show:"all"}]@
-    </div>
-</div>
+		@Extender[${document_id},document,hit,{show:true}]@
+		@Extender[${document_id},document,rating,{show:"all"}]@
+	</@cCol>
+</@cRow>
 @Extender[${document_id},document,comment]@
 @Extender[${document_id},document,feedback]@
 @Extender[${document_id},document,opengraph,{footer:true}]@
 </#if>
+</@cTpl>

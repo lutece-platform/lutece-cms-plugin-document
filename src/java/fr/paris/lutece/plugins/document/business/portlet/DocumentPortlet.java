@@ -34,25 +34,38 @@
 package fr.paris.lutece.plugins.document.business.portlet;
 
 import fr.paris.lutece.plugins.document.business.Document;
+import fr.paris.lutece.plugins.document.business.DocumentType;
+import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
-import fr.paris.lutece.portal.business.portlet.Portlet;
-import fr.paris.lutece.util.xml.XmlUtil;
+import fr.paris.lutece.plugins.document.service.view.DocumentTemplateService;
+import fr.paris.lutece.plugins.document.service.view.DocumentView;
+import fr.paris.lutece.plugins.document.service.view.DocumentViewService;
+import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
+import fr.paris.lutece.portal.service.portal.PortalService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Map;
 
 /**
  *
  * DocumentPortlet
  *
  */
-public class DocumentPortlet extends Portlet
+public class DocumentPortlet extends PortletHtmlContent
 {
     public static final String RESOURCE_ID = "DOCUMENT_PORTLET";
 
-    /////////////////////////////////////////////////////////////////////////////////
-    // Xml Tags
-    private static final String TAG_DOCUMENT_PORTLET = "document-portlet";
+    /** Template used when no template is chosen for the portlet */
+    public static final String TEMPLATE_PORTLET_DEFAULT = "skin/plugins/document/portlet/document_portlet.html";
+
+    private static final String MARK_DOCUMENT = "document";
+    private static final String MARK_DOCUMENT_TYPE = "document_type";
+    private static final String MARK_DOCUMENT_CONTENT = "document_content";
+    private static final String MARK_SITE_PATH = "site_path";
+    private static final String MARK_IS_EXTEND_INSTALLED = "is_extend_installed";
 
     /////////////////////////////////////////////////////////////////////////////////
     // Constants
@@ -71,44 +84,30 @@ public class DocumentPortlet extends Portlet
     }
 
     /**
-     * Returns the Xml code of the DocumentPortlet without XML heading
-     *
-     * @param request
-     *            The HTTP Servlet request
-     * @return the Xml code of the DocumentPortlvet content
+     * {@inheritDoc}
      */
     @Override
-    public String getXml( HttpServletRequest request )
+    public String getHtmlContent( HttpServletRequest request )
     {
-        StringBuffer strXml = new StringBuffer( );
-        XmlUtil.beginElement( strXml, TAG_DOCUMENT_PORTLET );
+        Map<String, Object> model = createPortletModel( );
+        model.put( MARK_SITE_PATH, AppPathService.getPortalUrl( ) );
+        model.put( MARK_IS_EXTEND_INSTALLED, PortalService.isExtendActivated( ) );
 
         PublishingService publishingService = CDI.current( ).select( PublishingService.class ).get( );
         Document document = publishingService.getFirstValidPublishedDocument( getId( ) );
 
         if ( document != null )
         {
-            strXml.append( document.getXml( request, getId( ) ) );
+            DocumentView view = CDI.current( ).select( DocumentViewService.class ).get( ).buildValidatedView( document );
+            DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType( ) );
+            DocumentTemplateService documentTemplateService = CDI.current( ).select( DocumentTemplateService.class ).get( );
+
+            model.put( MARK_DOCUMENT, view );
+            model.put( MARK_DOCUMENT_TYPE, type );
+            model.put( MARK_DOCUMENT_CONTENT, documentTemplateService.renderContent( type, view, null, getLocale( request ) ) );
         }
 
-        XmlUtil.endElement( strXml, TAG_DOCUMENT_PORTLET );
-
-        String str = addPortletTags( strXml );
-
-        return str;
-    }
-
-    /**
-     * Returns the Xml code of the ADocumentPortlet with XML heading
-     *
-     * @param request
-     *            The HTTP Servlet Request
-     * @return the Xml code of the DocumentPortlet
-     */
-    @Override
-    public String getXmlDocument( HttpServletRequest request )
-    {
-        return XmlUtil.getXmlHeader( ) + getXml( request );
+        return renderTemplate( request, TEMPLATE_PORTLET_DEFAULT, model );
     }
 
     /**

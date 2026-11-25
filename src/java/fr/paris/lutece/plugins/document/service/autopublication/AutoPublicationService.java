@@ -47,7 +47,6 @@ import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -73,23 +72,6 @@ public class AutoPublicationService
 	@Inject
 	private DocumentPortletHome _documentPortletHome;
 	
-	/**
-     * Returns the unique instance of the {@link AutoPublicationService} service.
-     * 
-     * <p>This method is deprecated and is provided for backward compatibility only. 
-     * For new code, use dependency injection with {@code @Inject} to obtain the 
-     * {@link AutoPublicationService} instance instead.</p>
-     * 
-     * @return The unique instance of {@link AutoPublicationService}.
-     * 
-     * @deprecated Use {@code @Inject} to obtain the {@link AutoPublicationService} 
-     * instance. This method will be removed in future versions.
-     */
-    @Deprecated( since = "8.0", forRemoval = true )
-	public static AutoPublicationService getInstance(  )
-    {
-    	return CDI.current( ).select( AutoPublicationService.class ).get( );
-    }
 
     /**
      * Initialize the {@link DocumentAutoPublication} service

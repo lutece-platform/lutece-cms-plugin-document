@@ -38,7 +38,9 @@ import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
-import fr.paris.lutece.portal.service.html.XmlTransformerService;
+import fr.paris.lutece.plugins.document.service.view.DocumentTemplateService;
+import fr.paris.lutece.plugins.document.service.view.DocumentView;
+import fr.paris.lutece.plugins.document.service.view.DocumentViewService;
 import fr.paris.lutece.portal.service.portal.ThemesService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.template.HtmlMarkup;
@@ -61,10 +63,6 @@ import jakarta.servlet.http.HttpServletRequest;
 @Named
 public class DocumentContentJspBean implements java.io.Serializable
 {
-    //////////////////////////////////////////////////////////////////////////////
-    // Constants
-    private static final String XSL_UNIQUE_PREFIX = "document-";
-
     // Parameters
     private static final String PARAMETER_DOCUMENT_ID = "document_id";
 
@@ -79,6 +77,12 @@ public class DocumentContentJspBean implements java.io.Serializable
 
     @Inject
     private Models _model;
+
+    @Inject
+    private DocumentViewService _documentViewService;
+
+    @Inject
+    private DocumentTemplateService _documentTemplateService;
     
     /////////////////////////////////////////////////////////////////////////////
     // page management of printing document
@@ -101,17 +105,15 @@ public class DocumentContentJspBean implements java.io.Serializable
 
         DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
 
-        XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
+        DocumentHome.loadAttributesWithoutBinaries( document, true );
 
-        String strPreview = xmlTransformerService.transformBySourceWithXslCache( document.getXmlValidatedContent(  ),
-                type.getContentServiceXslSource(  ), XSL_UNIQUE_PREFIX + type.getContentServiceStyleSheetId(  ), null,
-                null );
-
+        DocumentView view = _documentViewService.buildView( document, true );
+        String strPreview = _documentTemplateService.renderContent( type, view, null, request.getLocale(  ) );
 
         _model.put( MARK_BASE_URL, AppPathService.getBaseUrl( request ) );
         _model.put( MARK_PREVIEW, HtmlMarkup.of( strPreview ) );
         _model.put( MARK_PORTAL_DOMAIN, request.getServerName(  ) );
-        _model.put( MARK_THEME, ThemesService.getGlobalThemeObject(  ) );
+        _model.put( MARK_THEME, ThemesService.getGlobalThemeObject( ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PAGE_PRINT_DOCUMENT, request.getLocale(  ),
                 _model );
