@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.document.web.category;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.plugins.document.business.category.Category;
 
 import fr.paris.lutece.plugins.document.business.category.CategoryHome;
@@ -88,6 +89,7 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
 
 	// JSP
 	private static final String JSP_URL_REMOVE_CATEGORY = "jsp/admin/plugins/document/DoRemoveCategory.jsp";
+	private static final String SECURITY_TOKEN_ACTION = "jsp/admin/plugins/document/ManageCategory.jsp";
 	private static final String JSP_URL_MANAGE_CATEGORY = "jsp/admin/plugins/document/ManageCategory.jsp";
 
 	// Markers
@@ -195,6 +197,7 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
 			_model.put( MARK_WORKGROUP_SELECTED, refListWorkGroups.get( 0 ).getCode( ) );
 		}
 
+		_model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
 		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_CATEGORY, getLocale( ), _model );
 
 		return getAdminPage( template.getHtml( ) );
@@ -208,6 +211,11 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
 	 */
 	public String doCreateCategory( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		Category category = new Category( );
 		String strCategoryName = request.getParameter( PARAMETER_CATEGORY_NAME ).trim( );
 		String strCategoryDescription = request.getParameter( PARAMETER_CATEGORY_DESCRIPTION ).trim( );
@@ -270,6 +278,7 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
 		_model.put( MARK_CATEGORY_DISPLAY, categoryDisplay );
 		_model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
 
+		_model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
 		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_CATEGORY, getLocale( ), _model );
 
 		return getAdminPage( template.getHtml( ) );
@@ -283,6 +292,11 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
 	 */
 	public String doModifyCategory( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		Category category = null;
 		String strCategoryName = request.getParameter( PARAMETER_CATEGORY_NAME ).trim( );
 		String strCategoryDescription = request.getParameter( PARAMETER_CATEGORY_DESCRIPTION ).trim( );
@@ -353,6 +367,7 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
 		}
 
 		UrlItem url = new UrlItem( JSP_URL_REMOVE_CATEGORY );
+		url.addParameter( SecurityTokenService.PARAMETER_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
 		url.addParameter( PARAMETER_CATEGORY_ID, Integer.toString( nIdCategory ) );
 
 		return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_CATEGORY,null,null, url.getUrl( ),null,
@@ -367,6 +382,11 @@ public class CategoryJspBean extends AdminFeaturesPageJspBean
 	 */
 	public String doRemoveCategory( HttpServletRequest request )
 	{
+		if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+		{
+			return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+		}
+
 		int nIdCategory = checkCategoryId( request );
 
 		if( nIdCategory == ERROR_ID_CATEGORY )

@@ -1,0 +1,36 @@
+<@cTpl>
+<@cSection class='portlet portlet-document-list portlet-document-list-download portlet-document-list-pdf ${device_class!}' id='portlet_${portlet_id?c}'>
+<#if portlet_name??>
+	<@cTitle level=2 class='portlet-header'>${portlet_name}</@cTitle>
+</#if>
+	<@cBlock class='portlet-content'>
+	<#if documents?has_content>
+		<@chList class="list-unstyled mb-0">
+		<#list documents as doc>
+			<@chItem class="mb-2">
+				<#if doc.files?has_content>
+				<#assign file = doc.files[0] />
+				<@cLink href=file.url label='' class='fw-bold' target='_blank'>
+					<#assign imgSrc><@documentFileIcon file=file /></#assign>
+					<@img src=imgSrc alt='' params='width="32" height="32"' class='me-2' />
+					<@documentValue value=doc.title />
+				</@cLink>
+				<#else>
+					<@cText type='span' class='fw-bold'><@documentValue value=doc.title /></@cText>
+				</#if>
+				<#if doc.summary?has_content>
+					<@cText class='mb-0'><@documentValue value=doc.summary /></@cText>
+				</#if>
+				<#if is_extend_installed>
+				<@cBlock class='small text-body-secondary'>
+					@Extender[${doc.id?c},document,rating,{show:"all"}]@
+					@Extender[${doc.id?c},document,hit,{show:true}]@
+				</@cBlock>
+				</#if>
+			</@chItem>
+		</#list>
+		</@chList>
+	</#if>
+	</@cBlock>
+</@cSection>
+</@cTpl>

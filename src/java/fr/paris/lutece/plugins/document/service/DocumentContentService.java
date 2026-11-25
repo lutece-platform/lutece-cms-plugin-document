@@ -40,6 +40,9 @@ import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentListPortletHome;
 import fr.paris.lutece.plugins.document.business.publication.DocumentPublication;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
+import fr.paris.lutece.plugins.document.service.view.DocumentTemplateService;
+import fr.paris.lutece.plugins.document.service.view.DocumentView;
+import fr.paris.lutece.plugins.document.service.view.DocumentViewService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.page.PageHome;
@@ -48,13 +51,11 @@ import fr.paris.lutece.portal.business.portlet.AliasPortletHome;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
-import fr.paris.lutece.portal.business.style.ModeHome;
 import fr.paris.lutece.portal.service.cache.ICacheKeyService;
 import fr.paris.lutece.portal.service.cache.Lutece107Cache;
 import fr.paris.lutece.portal.service.cache.LuteceCacheManager;
 import fr.paris.lutece.portal.service.content.ContentService;
 import fr.paris.lutece.portal.service.content.PageData;
-import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.page.PortletCacheService;
 import fr.paris.lutece.portal.service.portal.PortalService;
@@ -64,19 +65,16 @@ import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.PortalJspBean;
 import fr.paris.lutece.portal.web.constants.Parameters;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
-import fr.paris.lutece.util.xml.XmlUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.portal.web.l10n.LocaleService;
-import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +85,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
 import javax.cache.event.CacheEntryEvent;
@@ -101,8 +98,6 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 
 import javax.cache.configuration.Factory;
 
@@ -116,22 +111,15 @@ public class DocumentContentService extends ContentService
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     // Constants
     private static final String CONTENT_SERVICE_NAME = "Document Content Service";
-    private static final String SLASH = "/";
     private static final int MODE_ADMIN = 1;
-    private static final String CONSTANT_DEFAULT_PORTLET_DOCUMENT_LIST_XSL = "WEB-INF/xsl/normal/portlet_document_list.xsl";
-    private static final String DOCUMENT_STYLE_PREFIX_ID = "document-";
     private static final String LOCALE_EN = "en";
     private static final String LOCALE_FR = "fr";
     private static final String KEY_GENERATION_PREFIX = "G";
 
     // XML tags
-    private static final String XML_TAG_CONTENT = "content";
-    private static final String XML_TAG_SITE_LOCALE = "site_locale";
 
     // Parameters
     private static final String PARAMETER_DOCUMENT_ID = "document_id";
-    private static final String PARAMETER_SITE_PATH = "site-path";
-    private static final String PARAMETER_PUBLICATION_DATE = "publication-date";
     private static final String PARAMETER_SITE_LOCALE = "site_locale";
 
     // Markers
@@ -144,7 +132,6 @@ public class DocumentContentService extends ContentService
     private static final String MARK_PORTLET_ID_LIST = "portlet_id_list";
     private static final String MARK_DOCUMENT_CATEGORIES_LIST = "document_categories_list";
     private static final String MARK_URL_LOGIN = "url_login";
-    private static final String MARKER_TARGET = "target";
     private static final String MARK_IS_EXTEND_INSTALLED = "isExtendInstalled";
 
     // Templates
@@ -152,9 +139,7 @@ public class DocumentContentService extends ContentService
     private static final String TEMPLATE_DOCUMENT_CATEGORIES = "/skin/plugins/document/document_categories.html";
 
     //Properties
-    private static final String PROPERTY_DEFAULT_PORTLET_DOCUMENT_LIST_XSL = "document.contentService.defaultPortletDocumentListXSL";
     private static final String PROPERTY_CACHE_ENABLED = "document.cache.enabled";
-    private static final String TARGET_TOP = "target=_top";
     private static final String PROPERTY_RESOURCE_TYPE = "document";
 
     //Portlet cache
@@ -165,6 +150,10 @@ public class DocumentContentService extends ContentService
     private boolean _bInit;
        
     private PublishingService _publishingService;
+
+    private DocumentViewService _documentViewService;
+
+    private DocumentTemplateService _documentTemplateService;
     
     private PortletCacheService _cachePortlets;
     
@@ -179,6 +168,10 @@ public class DocumentContentService extends ContentService
     {
     	
     	_publishingService = CDI.current( ).select( PublishingService.class ).get( );
+
+    	_documentViewService = CDI.current( ).select( DocumentViewService.class ).get( );
+
+    	_documentTemplateService = CDI.current( ).select( DocumentTemplateService.class ).get( );
     	
     	_cachePortlets =  CDI.current( ).select( PortletCacheService.class ).get( );
     	
@@ -369,7 +362,7 @@ public class DocumentContentService extends ContentService
         int nPortletId;
         int nDocumentId;
         boolean bPortletExist = false;
-        Map<String, String> mapXslParams = new HashMap<String, String>(  );
+        Map<String, Object> mapDocumentModel = new HashMap<String, Object>(  );
 
         try
         {
@@ -411,8 +404,8 @@ public class DocumentContentService extends ContentService
                 bPortletExist = true;
             }
 
-            // The publication informations are available in Xsl (only publication date) and in template (full DocumentPublication object)
-            mapXslParams.put( PARAMETER_PUBLICATION_DATE,
+            // The publication informations are available in the document template (publication date) and in the page template (full DocumentPublication object)
+            mapDocumentModel.put( DocumentTemplateService.MARK_PUBLICATION_DATE,
                 DateUtil.getDateString( documentPublication.getDatePublishing(  ), request.getLocale(  ) ) );
             model.put( MARK_PUBLICATION, documentPublication );
         }
@@ -461,25 +454,22 @@ public class DocumentContentService extends ContentService
 
             // Get request paramaters and store them in a hashtable
             Enumeration<?> enumParam = request.getParameterNames(  );
-            Hashtable<String, String> htParamRequest = new Hashtable<String, String>(  );
+            Map<String, String> mapParamRequest = new HashMap<String, String>(  );
             String paramName = "";
 
             while ( enumParam.hasMoreElements(  ) )
             {
                 paramName = (String) enumParam.nextElement(  );
-                htParamRequest.put( paramName, request.getParameter( paramName ) );
+                mapParamRequest.put( paramName, request.getParameter( paramName ) );
             }
 
-            XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
-            StringBuffer strXml = new StringBuffer(  );
-            XmlUtil.beginElement( strXml, XML_TAG_CONTENT );
-            XmlUtil.addElement( strXml, XML_TAG_SITE_LOCALE, strSiteLocale );
-            strXml.append( document.getXmlValidatedContent(  ) );
-            XmlUtil.endElement( strXml, XML_TAG_CONTENT );
+            mapDocumentModel.put( DocumentTemplateService.MARK_SITE_LOCALE, strSiteLocale );
+            mapDocumentModel.put( DocumentTemplateService.MARK_REQUEST_PARAMETERS, mapParamRequest );
 
-            String strDocument = xmlTransformerService.transformBySourceWithXslCache( strXml.toString(  ),
-                    type.getContentServiceXslSource(  ), DOCUMENT_STYLE_PREFIX_ID + type.getStyleSheetId( nMode ),
-                    htParamRequest, null );
+            DocumentHome.loadAttributesWithoutBinaries( document, true );
+
+            DocumentView view = _documentViewService.buildView( document, true );
+            String strDocument = _documentTemplateService.renderContent( type, view, mapDocumentModel, request.getLocale(  ) );
 
             model.put( MARK_DOCUMENT, HtmlMarkup.of( strDocument ) );
             
@@ -585,28 +575,10 @@ public class DocumentContentService extends ContentService
 
             Portlet portlet = PortletHome.findByPrimaryKey( nPortletId );
 
-            // Selection of the XSL stylesheet
-            // byte[] baXslSource = portlet.getXslSource( nMode );
-
-            //FIXME Temporary solution (see LUTECE-824)
-            String strFilePath = AppPropertiesService.getProperty( PROPERTY_DEFAULT_PORTLET_DOCUMENT_LIST_XSL,
-                    CONSTANT_DEFAULT_PORTLET_DOCUMENT_LIST_XSL );
-
-            if ( strFilePath == null )
+            if ( ( portlet == null ) || portlet.isContentGeneratedByXmlAndXsl( ) )
             {
                 return StringUtils.EMPTY;
             }
-
-            if ( !strFilePath.startsWith( SLASH ) )
-            {
-                strFilePath = SLASH + strFilePath;
-            }
-
-            String strFileName = strFilePath.substring( strFilePath.lastIndexOf( SLASH ) + 1 );
-            strFilePath = strFilePath.substring( 0, strFilePath.lastIndexOf( SLASH ) + 1 );
-
-            FileInputStream fis = AppPathService.getResourceAsStream( strFilePath, strFileName );
-            Source xslSource = new StreamSource( fis );
 
             // Get request paramaters and store them in a hashtable
             Enumeration<?> enumParam = request.getParameterNames(  );
@@ -617,19 +589,6 @@ public class DocumentContentService extends ContentService
             {
                 paramName = (String) enumParam.nextElement(  );
                 htParamRequest.put( paramName, request.getParameter( paramName ) );
-            }
-
-            Properties outputProperties = ModeHome.getOuputXslProperties( nMode );
-
-            // Add a path param for choose url to use in admin or normal mode
-            if ( nMode != MODE_ADMIN )
-            {
-                htParamRequest.put( PARAMETER_SITE_PATH, AppPathService.getPortalUrl(  ) );
-            }
-            else
-            {
-                htParamRequest.put( PARAMETER_SITE_PATH, AppPathService.getAdminPortalUrl(  ) );
-                htParamRequest.put( MARKER_TARGET, TARGET_TOP );
             }
 
             if ( _cachePortlets !=null && _cachePortlets.isCacheEnable(  ) )
@@ -669,13 +628,7 @@ public class DocumentContentService extends ContentService
                             // blocked on synchronized
                             if ( strPortlet == null )
                             {
-                                String strXml = portlet.getXmlDocument( request );
-
-                                XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
-                                String strXslUniquePrefix = DOCUMENT_STYLE_PREFIX_ID + strFilePath + strFileName;
-
-                                strPortlet = xmlTransformerService.transformBySourceWithXslCache( strXml, xslSource,
-                                        strXslUniquePrefix, htParamRequest, outputProperties );
+                                strPortlet = portlet.getHtmlContent( request );
 
                                 _cachePortlets.put( strKey, strPortlet );
                             }
@@ -686,13 +639,7 @@ public class DocumentContentService extends ContentService
                 }
             }
 
-            String strXml = portlet.getXmlDocument( request );
-
-            XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
-            String strXslUniquePrefix = DOCUMENT_STYLE_PREFIX_ID + strFilePath + strFileName;
-
-            return xmlTransformerService.transformBySourceWithXslCache( strXml, xslSource, strXslUniquePrefix,
-                htParamRequest, outputProperties );
+            return portlet.getHtmlContent( request );
         }
         catch ( NumberFormatException e )
         {

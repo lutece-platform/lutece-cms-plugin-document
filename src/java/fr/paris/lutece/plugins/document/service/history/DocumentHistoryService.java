@@ -64,26 +64,6 @@ public class DocumentHistoryService
 	{
 	}
 
-	/**
-	 * Returns the unique instance of the {@link DocumentHistoryService} service.
-	 * 
-	 * <p>
-	 * This method is deprecated and is provided for backward compatibility only.
-	 * For new code, use dependency injection with {@code @Inject} to obtain the
-	 * {@link DocumentHistoryService} instance instead.
-	 * </p>
-	 * 
-	 * @return The unique instance of {@link DocumentHistoryService}.
-	 * 
-	 * @deprecated Use {@code @Inject} to obtain the {@link DocumentHistoryService}
-	 *             instance. This method will be removed in future versions.
-	 */
-	@Deprecated( since = "8.0", forRemoval = true )
-	public static DocumentHistoryService getInstance( )
-	{
-		return CDI.current( ).select( DocumentHistoryService.class ).get( );
-	}
-
     /**
      * Observe document events via CDI
      * @param event The document event

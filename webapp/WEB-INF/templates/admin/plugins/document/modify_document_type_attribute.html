@@ -7,6 +7,7 @@
 					<@boxHeader title='#i18n{document.modify_document_type_attribute.titleAddAttribute} ${document_type_code}' />
 					<@boxBody>
 						<@tform method='post' action='jsp/admin/plugins/document/DoModifyDocumentTypeAttribute.jsp'>
+				<@input type='hidden' name='token' value='${token}' />
 							<@input type='hidden' name='attribute_id' value='${attribute.id}' />
 							<@input type='hidden' name='attribute_type_code' value='${attribute_type_code}' />
 							<@formGroup labelFor='name' labelKey='#i18n{document.modify_document_type_attribute.labelName}' helpKey='#i18n{document.modify_document_type_attribute.helpName}' mandatory=true rows=2>
@@ -38,6 +39,7 @@
 			   <@box>
 					<@boxHeader title='#i18n{document.modify_document_type_attribute.manageRegularExpression.title}'>
 						<@tform method='post' action='jsp/admin/plugins/document/DoInsertRegularExpression.jsp'>
+				<@input type='hidden' name='token' value='${token}' />
 							<@input type='hidden' name='attribute_id' value='${attribute.id}' />
 							<@formGroup formStyle='inline' labelFor='expression_id' labelKey='#i18n{document.modify_document_type_attribute.manageRegularExpression.labelInsert}'>
 								<@inputGroup>
@@ -67,6 +69,7 @@
 									<@td>${regular_expression.validExemple}</@td>
 									<@td>
 										<@tform type='inline' method='post' action='jsp/admin/plugins/document/DoDeleteRegularExpression.jsp'>
+				<@input type='hidden' name='token' value='${token}' />
 											<@input type='hidden' name='attribute_id' value='${attribute.id}' />
 											<@input type='hidden' name='expression_id' value='${regular_expression.idExpression}' />
 											<@button type='submit' title='#i18n{document.modify_document_type_attribute.manageRegularExpression.titleDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all'] />

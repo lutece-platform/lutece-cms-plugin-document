@@ -1,3 +1,12 @@
-<@formGroup formStyle='inline' labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' mandatory=attribute.required1>
-	<@input type='file' name='${attribute.code}' id='${attribute.code}' /> 
+<#include "/admin/plugins/document/attributes/file_dropzone.html" />
+<#assign attrCode = attribute.code />
+<@formGroup labelFor=attrCode labelKey=attribute.name helpKey=attribute.description! mandatory=attribute.required rows=2>
+	<@row class='g-3'>
+		<@columns md=6>
+			<@documentFileDropzone id=attrCode name=attrCode preview='${attrCode}_new' />
+		</@columns>
+		<@columns md=6>
+			<@documentFileNewCard id='${attrCode}_new' />
+		</@columns>
+	</@row>
 </@formGroup>

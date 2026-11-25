@@ -49,6 +49,7 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.web.cdi.mvc.Models;
@@ -66,7 +67,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
@@ -112,7 +116,8 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
     // Marker
     private static final String MARK_DOCUMENTS_LIST = "documents_list";
     private static final String MARK_PORTLETS_LIST = "portlets_list";
-    private static final String MARK_PAGES_LIST = "pages_list";
+    private static final String MARK_PAGES_TREE = "pages_tree";
+    private static final String MARK_SELECTED_PAGE_ID = "selected_page_id";
     private static final String MARK_PORTLET_ID = "portlet_id";
     private static final String MARK_INPUT = "input";
     private static final String MARK_TYPE_FILTER = "type_filter";
@@ -168,14 +173,15 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
     }
 
     /**
-    * Entry point of the insert service
-    *
-    * @param request The Http Request
-    * @return The html form.
+     * Entry point of the insert service. The core creates the selection bean of an insert service by reflection, without CDI injection: the page
+     * is rendered by the CDI managed bean of the request.
+     *
+     * @param request The Http Request
+     * @return The html form.
      */
     public String getInsertServiceSelectorUI( HttpServletRequest request )
     {
-        return getSelectPage( request );
+        return CDI.current( ).select( DocumentServiceJspBean.class ).get( ).getSelectPage( request );
     }
 
     /**
@@ -188,20 +194,12 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
     {
         init( request );
 
-        int nPageId = 0;
-        Collection<Page> listPages;
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
-
-        if ( ( strPageId != null ) && strPageId.matches( REGEX_ID ) )
-        {
-            nPageId = IntegerUtils.convert( strPageId );
-        }
-
-        listPages = PageHome.getChildPages( nPageId );
 
         getDefaultModel(  );
 
-        _model.put( MARK_PAGES_LIST, listPages );
+        _model.put( MARK_PAGES_TREE, getPagesTree(  ) );
+        _model.put( MARK_SELECTED_PAGE_ID, ( ( strPageId != null ) && strPageId.matches( REGEX_ID ) ) ? strPageId : EMPTY_STRING );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_PAGE, _user.getLocale(  ), _model );
 
@@ -228,6 +226,48 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
         }
 
         return getSelectPage( request );
+    }
+
+    /**
+     * Builds the tree of the pages of the site, from its root page
+     *
+     * @return The root node of the tree in a list, empty if the root page does not exist
+     */
+    private List<PageNode> getPagesTree(  )
+    {
+        List<PageNode> listRoots = new ArrayList<>(  );
+        Page rootPage = PageHome.findByPrimaryKey( PortalService.getRootPageId(  ) );
+
+        if ( rootPage != null )
+        {
+            Set<Integer> setVisited = new HashSet<>(  );
+            setVisited.add( rootPage.getId(  ) );
+
+            PageNode root = new PageNode( rootPage );
+            addChildNodes( root, setVisited );
+            listRoots.add( root );
+        }
+
+        return listRoots;
+    }
+
+    /**
+     * Adds the child pages of a node, recursively
+     *
+     * @param node The node
+     * @param setVisited The identifiers of the pages already in the tree, which protects against a cycle in the parent pages
+     */
+    private void addChildNodes( PageNode node, Set<Integer> setVisited )
+    {
+        for ( Page page : PageHome.getChildPagesMinimalData( node.getId(  ) ) )
+        {
+            if ( setVisited.add( page.getId(  ) ) )
+            {
+                PageNode child = new PageNode( page );
+                addChildNodes( child, setVisited );
+                node.getChildren(  ).add( child );
+            }
+        }
     }
 
     /**
@@ -470,5 +510,68 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
     {
         _model.put( MARK_INPUT, _input );
         _model.put( MARK_TYPE_FILTER, getTypeFilter(  ) );
+    }
+
+    /**
+     * A node of the tree of the pages displayed by the page selector
+     */
+    public static final class PageNode
+    {
+        private final int _nId;
+        private final String _strName;
+        private final String _strDescription;
+        private final List<PageNode> _listChildren = new ArrayList<>(  );
+
+        /**
+         * Constructor
+         *
+         * @param page The page
+         */
+        PageNode( Page page )
+        {
+            _nId = page.getId(  );
+            _strName = page.getName(  );
+            _strDescription = page.getDescription(  );
+        }
+
+        /**
+         * Returns the page identifier
+         *
+         * @return The page identifier
+         */
+        public int getId(  )
+        {
+            return _nId;
+        }
+
+        /**
+         * Returns the page name
+         *
+         * @return The page name
+         */
+        public String getName(  )
+        {
+            return _strName;
+        }
+
+        /**
+         * Returns the page description
+         *
+         * @return The page description
+         */
+        public String getDescription(  )
+        {
+            return _strDescription;
+        }
+
+        /**
+         * Returns the child pages
+         *
+         * @return The child nodes
+         */
+        public List<PageNode> getChildren(  )
+        {
+            return _listChildren;
+        }
     }
 }

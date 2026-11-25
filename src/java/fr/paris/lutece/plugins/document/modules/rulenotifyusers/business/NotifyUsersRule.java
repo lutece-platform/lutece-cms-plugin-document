@@ -51,12 +51,11 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.service.util.BeanUtils;
-import fr.paris.lutece.portal.service.util.RemovalListenerService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -65,6 +64,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -126,28 +126,20 @@ public class NotifyUsersRule extends AbstractRule implements Serializable
             PARAMETER_SPACE_SOURCE_ID, PARAMETER_MAILINGLIST_ID, PARAMETER_STATE_ID, PARAMETER_MESSAGE_TEMPLATE_KEY,
         };
     
-    private NotifyUsersMailingListRemovalListener _listenerMailingList;
-    
   	@Inject
 	private DocumentSpacesService _documentSpacesService;
-  	
-  	@Inject
-  	@Named( BeanUtils.BEAN_MAILINGLIST_REMOVAL_SERVICE )
-  	private RemovalListenerService _removalListenerService;
+
+    @Inject
+    @ConfigProperty( name = PROPERTY_PROD_BASE_URL )
+    private Optional<String> _strProdBaseUrl;
+
+    @Inject
+    @ConfigProperty( name = PROPERTY_MESSAGE_TEMPLATES_ENTRIES )
+    private Optional<String> _strMessageTemplatesEntries;
   	
     private static final String PROPERTY_PROD_BASE_URL = "lutece.prod.url";
 
     
-    /**
-     * Initialize the rule
-     */
-    @Override
-    public void init(  )
-    {
-	    _listenerMailingList = new NotifyUsersMailingListRemovalListener(  );
-	    _removalListenerService.registerListener( _listenerMailingList );
-    }
-
     /**
      * Gets the Rule name key
      * 
@@ -188,7 +180,7 @@ public class NotifyUsersRule extends AbstractRule implements Serializable
                         model.put( MARK_USER, event.getUser(  ) );
                         model.put( MARK_DOCUMENT, event.getDocument(  ) );
                         model.put( MARK_URL_PREVIEW, url.getUrl(  ) );
-                        model.put( MARK_BASE_URL, AppPropertiesService.getProperty( PROPERTY_PROD_BASE_URL ) );
+                        model.put( MARK_BASE_URL, _strProdBaseUrl.orElse( StringUtils.EMPTY ) );
 
                         String strMessageTemplate = getMessageTemplate( getAttribute( PARAMETER_MESSAGE_TEMPLATE_KEY ) );
                         String strSubject = getMessageSubject( getAttribute( PARAMETER_MESSAGE_TEMPLATE_KEY ),
@@ -404,7 +396,7 @@ public class NotifyUsersRule extends AbstractRule implements Serializable
     {
         ReferenceList listTemplates = new ReferenceList(  );
 
-        String strEntries = AppPropertiesService.getProperty( PROPERTY_MESSAGE_TEMPLATES_ENTRIES );
+        String strEntries = _strMessageTemplatesEntries.orElse( StringUtils.EMPTY );
 
         // extracts each item (separated by a comma) from the list
         StringTokenizer strTokens = new StringTokenizer( strEntries, "," );

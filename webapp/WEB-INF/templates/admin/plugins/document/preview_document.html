@@ -5,7 +5,7 @@
 		<@button type='button' class='btn-action' title='#i18n{document.manage_documents.labelActions}' hideTitle=['all'] buttonIcon='dots-vertical fs-2 ms-3' dropdownMenu=true>
 		<#list document.actions?sort_by("idAction") as action>
 			<#if action.url?has_content>
-				<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}' class='dropdown-item'><@icon style='${action.iconUrl}' title=action.description />${action.name}</@link>
+				<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}&token=${token}' class='dropdown-item'><@icon style='${action.iconUrl}' title=action.description />${action.name}</@link>
 			</#if>
 		</#list>
 		</@button>

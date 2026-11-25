@@ -4,6 +4,7 @@
     <@manageFeatureItemColumn auto=true>
         <#if permission_publish?exists>
         <@tform method='post' name='publishDocument' action='jsp/admin/plugins/document/DoPublishingDocument.jsp'>
+				<@input type='hidden' name='token' value='${token}' />
             <@input type='hidden' name='id_document' value='${document_published.id}' />
             <@input type='hidden' name='id_portlet' value='${portlet_id}' />
             <@button type='submit' title='#i18n{document.manage_document_publishing.buttonPublish}' buttonIcon='mailbox'  hideTitle=['all'] color='outline-success' size='sm' params={"aria-label": "#i18n{document.manage_document_publishing.buttonPublish} ${document_published.title}"} />
@@ -11,6 +12,7 @@
         </#if>
         <#if permission_assign?exists>
         <@tform method='post' class='ms-1' name='unassignDocument' action='jsp/admin/plugins/document/DoUnAssignedDocument.jsp'>
+				<@input type='hidden' name='token' value='${token}' />
             <@input type='hidden' name='id_document' value='${document_published.id}' />
             <@input type='hidden' name='id_portlet' value='${portlet_id}' />
             <@input type='hidden' name='status' value='${status_unpublished}' />	                                            

@@ -2,7 +2,7 @@
     <!-- Plugin Informations -->
     <name>document</name>
     <class>fr.paris.lutece.plugins.document.service.DocumentPlugin</class>
-    <version>6.1.0-SNAPSHOT</version>
+    <version>7.0.0-SNAPSHOT</version>
     <documentation/>
     <installation/>
     <changes/>
@@ -10,7 +10,7 @@
     <description>document.plugin.description</description>
     <provider>document.plugin.provider</provider>
     <provider-url>http://lutece.paris.fr</provider-url>
-    <icon-url>images/admin/skin/plugins/document/document.png</icon-url>
+    <icon-url>themes/shared/plugins/document/images/admin/document.svg</icon-url>
     <copyright>Copyright 2001-2025 Ville de Paris</copyright>
     <core-version-dependency>
         <min-core-version>8.0.0</min-core-version>
@@ -41,9 +41,7 @@
             <feature-group>
                 CONTENT
 			</feature-group>
-            <feature-icon-url>
-                images/admin/skin/plugins/document/manage_document_types.png
-			</feature-icon-url>
+            <icon-url>ti ti-file-info</icon-url>
         </admin-feature>
         <admin-feature>
             <feature-id>DOCUMENT_MANAGEMENT</feature-id>
@@ -60,9 +58,7 @@
             <feature-group>
                 CONTENT
 			</feature-group>
-            <feature-icon-url>
-                images/admin/skin/plugins/document/manage_documents.png
-			</feature-icon-url>
+            <icon-url>ti ti-files</icon-url>
         </admin-feature>
         <admin-feature>
             <feature-id>DOCUMENT_RULES_MANAGEMENT</feature-id>
@@ -79,9 +75,8 @@
             <feature-group>
                 CONTENT
 			</feature-group>
-            <feature-icon-url>
-                images/admin/skin/plugins/document/manage_rules.png
-			</feature-icon-url>
+            <icon-url>ti ti-reorder</icon-url>
+             
         </admin-feature>
         <admin-feature>
             <feature-id>DOCUMENT_CATEGORY_MANAGEMENT</feature-id>
@@ -98,9 +93,7 @@
             <feature-group>
                 CONTENT
 			</feature-group>
-            <feature-icon-url>
-                images/admin/skin/plugins/document/manage_category.png
-			</feature-icon-url>
+            <icon-url>ti ti-bookmarks</icon-url>
         </admin-feature>
     </admin-features>
 
@@ -261,6 +254,18 @@
                 fr.paris.lutece.plugins.document.service.autoarchiving.AutoArchivingDaemon
 			</daemon-class>
         </daemon>
+        <daemon>
+            <daemon-id>legacyMetadataMigration</daemon-id>
+            <daemon-name>
+                document.daemon.legacyMetadataMigration.name
+			</daemon-name>
+            <daemon-description>
+                document.daemon.legacyMetadataMigration.description
+			</daemon-description>
+            <daemon-class>
+                fr.paris.lutece.plugins.document.service.metadata.LegacyMetadataMigrationDaemon
+			</daemon-class>
+        </daemon>
     </daemons>
 
     <!-- Insert Services -->
@@ -289,9 +294,16 @@
             <dashboard-feature-right>DOCUMENT_MANAGEMENT</dashboard-feature-right>
         </dashboard-component>
     </dashboard-components>
+    <admindashboard-components>
+        <admindashboard-component>
+            <dashboard-component-name>documentAdminDashboardComponent</dashboard-component-name>
+            <dashboard-component-class>fr.paris.lutece.plugins.document.web.admindashboard.DocumentAdminDashboardComponent</dashboard-component-class>
+        </admindashboard-component>
+    </admindashboard-components>
     
     <freemarker-macro-files>
         <freemarker-macro-file>*/util/document/macro_document.html</freemarker-macro-file>
+        <freemarker-macro-file>*/util/document/macro_document_view.html</freemarker-macro-file>
     </freemarker-macro-files>
 
     <servlets>

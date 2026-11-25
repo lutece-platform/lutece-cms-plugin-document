@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
+import fr.paris.lutece.plugins.document.web.spaces.DocumentSpaceJspBean;
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentFilter;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
@@ -45,6 +47,7 @@ import fr.paris.lutece.plugins.document.business.IndexerAction;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
 import fr.paris.lutece.plugins.document.business.spaces.SpaceAction;
+import fr.paris.lutece.plugins.document.service.spaces.SpaceResourceIdService;
 import fr.paris.lutece.plugins.document.business.spaces.SpaceActionHome;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentAction;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentActionHome;
@@ -52,6 +55,7 @@ import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.plugins.document.business.workflow.DocumentStateHome;
 import fr.paris.lutece.plugins.document.service.DocumentException;
 import fr.paris.lutece.plugins.document.service.DocumentMassActionResourceService;
+import fr.paris.lutece.plugins.document.service.DocumentParameterService;
 import fr.paris.lutece.plugins.document.service.DocumentService;
 import fr.paris.lutece.plugins.document.service.DocumentTypeResourceIdService;
 import fr.paris.lutece.plugins.document.service.category.CategoryService;
@@ -69,7 +73,9 @@ import fr.paris.lutece.portal.business.right.RightHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.PasswordResetException;
-import fr.paris.lutece.portal.service.html.XmlTransformerService;
+import fr.paris.lutece.plugins.document.service.view.DocumentTemplateService;
+import fr.paris.lutece.plugins.document.service.view.DocumentView;
+import fr.paris.lutece.plugins.document.service.view.DocumentViewService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -90,7 +96,6 @@ import fr.paris.lutece.portal.web.resource.ExtendableResourcePluginActionManager
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.util.UniqueIDGenerator;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
@@ -121,7 +126,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 
-import javax.xml.transform.Source;
 
 
 /**
@@ -132,17 +136,19 @@ import javax.xml.transform.Source;
 public class DocumentJspBean extends PluginAdminPageJspBean
 {
     public static final String RIGHT_DOCUMENT_MANAGEMENT = "DOCUMENT_MANAGEMENT";
+    /** Action of the security tokens of the document management actions, also used by the document dashboard */
+    public static final String SECURITY_TOKEN_ACTION = "jsp/admin/plugins/document/ManageDocuments.jsp";
     public static final String PARAMETER_SPACE_ID_FILTER = "id_space_filter";
     private static final long serialVersionUID = 3884593136805763150L;
-    private static final String SPACE_TREE_XSL_UNIQUE_PREFIX = UniqueIDGenerator.getNewId(  ) + "SpacesTree";
-    private static final String DOCUMENT_STYLE_PREFIX_ID = UniqueIDGenerator.getNewId(  ) + "document-";
 
     // Templates
     private static final String TEMPLATE_MANAGE_DOCUMENTS = "admin/plugins/document/manage_documents.html";
+    private static final String TEMPLATE_SPACES_TREE = "admin/plugins/document/spaces/spaces_tree.html";
     private static final String TEMPLATE_CREATE_DOCUMENT = "admin/plugins/document/create_document.html";
     private static final String TEMPLATE_MODIFY_DOCUMENT = "admin/plugins/document/modify_document.html";
     private static final String TEMPLATE_PREVIEW_DOCUMENT = "admin/plugins/document/preview_document.html";
     private static final String TEMPLATE_MOVE_DOCUMENT = "admin/plugins/document/move_document.html";
+    private static final String TEMPLATE_MOVE_DOCUMENT_FORM = "admin/plugins/document/move_document_form.html";
     private static final String TEMPLATE_DOCUMENT_PAGE_TEMPLATE_ROW = "admin/plugins/document/page_template_list_row.html";
     private static final String TEMPLATE_FORM_CATEGORY = "admin/plugins/document/category/list_category.html";
     private static final String TEMPLATE_MASS_ARCHIVAL = "admin/plugins/document/mass_archival.html";
@@ -156,6 +162,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MARK_DOCUMENT_TYPES_FILTER_LIST = "document_types_filter_list";
     private static final String MARK_STATES_FILTER_LIST = "states_filter_list";
     private static final String MARK_SPACES_TREE = "spaces_tree";
+    private static final String MARK_SPACES_TREE_NODES = "spaces_tree_nodes";
     private static final String MARK_CURRENT_SPACE_ID = "current_space_id";
     private static final String MARK_SPACE_ACTIONS_LIST = "space_actions_list";
     private static final String MARK_SPACE = "space";
@@ -177,7 +184,6 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MARK_CATEGORY = "category";
     private static final String MARK_CATEGORY_LIST = "category_list";
     private static final String MARK_METADATA = "metadata_form";
-    private static final String MARK_SUBMIT_BUTTON_DISABLED = "submit_button_disabled";
     private static final String MARK_DATE_VALIDITY_BEGIN = "date_validity_begin";
     private static final String MARK_DATE_VALIDITY_END = "date_validity_end";
     private static final String MARK_MAILINGLISTS_LIST = "mailinglists_list";
@@ -185,10 +191,21 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MARK_DOCUMENT_PAGE_TEMPLATE = "document_page_template";
     private static final String MARK_INDEX_ROW = "index_row";
     private static final String MARK_DOCUMENT_PAGE_TEMPLATE_CHECKED = "checked";
-    private static final String MARK_SPACES_BROWSER = "spaces_browser";
     private static final String MARK_SELECTED_CRITERIA = "selected_criteria";
+    private static final String MARK_BROWSER_SELECTED_SPACE_ID = "browser_selected_space_id";
     private static final String MARK_IS_FILES2DOCS_PLUGIN_ACTIVE = "is_files2docs_plugin_active";
     private static final String MARK_IS_PARSER_PLUGIN_ACTIVE = "is_parser_plugin_active";
+    private static final String MARK_SPACE_TOKEN = "space_token";
+    private static final String MARK_CREATE_SPACE_FORM = "create_space_form";
+    private static final String MARK_MODIFY_SPACE_FORM = "modify_space_form";
+    private static final String PREFIX_CREATE_SPACE = "create_space_";
+    private static final String PREFIX_MODIFY_SPACE = "modify_space_";
+    private static final String MARK_MOVE_SPACE_FORM = "move_space_form";
+    private static final String PREFIX_MOVE_SPACE = "move_space_";
+    private static final String MARK_MOVE_DOCUMENT_FORM = "move_document_form";
+    private static final String PREFIX_MOVE_DOCUMENT = "move_document_";
+    private static final String MARK_IN_MODAL = "in_modal";
+    private static final String MARK_ID_PREFIX = "id_prefix";
 
     // Parameters
     private static final String PARAMETER_DOCUMENT_TYPE_CODE = "document_type_code";
@@ -213,7 +230,6 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String PROPERTY_PREVIEW_DOCUMENT_PAGE_TITLE = "document.preview_document.pageTitle";
     private static final String PROPERTY_MOVE_DOCUMENT_PAGE_TITLE = "document.move_document.pageTitle";
     private static final String PROPERTY_RESOURCE_TYPE = "document";
-    private static final String PROPERTY_WORKFLOW_AUTOVALIDATION = "document.workflow.auto_validation";
 
     // Jsp
     private static final String JSP_DELETE_DOCUMENT = "DoDeleteDocument.jsp";
@@ -241,6 +257,10 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MESSAGE_CONFIRM_DELETE_SELECTION = "document.message.confirmDeleteSelection";
     private static final String MESSAGE_CONFIRM_ARCHIVE_SELECTION = "document.message.selectionPublished";
     private static final String MESSAGE_ERROR_DOCUMENT_SELECTED_IS_PUBLISHED = "document.message.errorDocumentSelectedIsPublished";
+    private static final String MESSAGE_SELECTION_EMPTY = "document.message.selectionEmpty";
+    private static final String MESSAGE_SELECTION_NONE_PROCESSED = "document.message.selectionNoneProcessed";
+    private static final String MESSAGE_SELECTION_PARTIALLY_PROCESSED = "document.message.selectionPartiallyProcessed";
+    private static final String PROPERTY_SELECTION_ACTION_PREFIX = "document.manage_document.";
 
     //constants
     private static final String CONSTANT_REMOVE = "remove";
@@ -252,7 +272,6 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String CONSTANT_AND = "&";
     private static final String CONSTANT_AND_HTML = "%26";
     private static final String PATH_JSP = "jsp/admin/plugins/document/";
-    private static final String XSL_PARAMETER_CURRENT_SPACE = "current-space-id";
     private static final String FILTER_ALL = "-1";
     private static final String PAGE_INDEX_FIRST = "1";
     private static final String CONSTANT_DATE_FORMAT = "dd/MM/yyyy";    
@@ -284,6 +303,16 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     
 	@Inject
 	private Models _model;
+
+    @Inject
+    private DocumentViewService _documentViewService;
+
+    @Inject
+    private DocumentTemplateService _documentTemplateService;
+
+    @Inject
+    private DocumentParameterService _documentParameterService;
+
 	
 	
     /**
@@ -328,14 +357,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         Collection<Integer> listDocumentIds = DocumentHome.findPrimaryKeysByFilter( filter, getLocale(  ) );
 
         // Spaces
-        String strXmlSpaces = _documentSpacesService.getXmlSpacesList( user );
-        Source sourceXsl = _documentSpacesService.getTreeXsl(  );
-        Map<String, String> htXslParameters = new HashMap<String, String>(  );
-        htXslParameters.put( XSL_PARAMETER_CURRENT_SPACE, _strCurrentSpaceId );
+        Map<String, Object> modelSpacesTree = new HashMap<>(  );
+        modelSpacesTree.put( MARK_SPACES_TREE_NODES, _documentSpacesService.getSpacesTree( user ) );
+        modelSpacesTree.put( MARK_CURRENT_SPACE_ID, _strCurrentSpaceId );
 
-        XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
-        String strSpacesTree = xmlTransformerService.transformBySourceWithXslCache( strXmlSpaces, sourceXsl,
-                SPACE_TREE_XSL_UNIQUE_PREFIX, htXslParameters, null );
+        String strSpacesTree = AppTemplateService.getTemplate( TEMPLATE_SPACES_TREE, getLocale(  ), modelSpacesTree ).getHtml(  );
 
         List<SpaceAction> listSpaceActions = SpaceActionHome.getActionsList( getLocale(  ) );
         int nCurrentSpaceId = IntegerUtils.convert( _strCurrentSpaceId );
@@ -428,6 +454,39 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         _model.put( MARK_IS_FILES2DOCS_PLUGIN_ACTIVE , PluginService.isPluginEnable( CONSTANT_FILES2DOC_PLUGIN_NAME )  );
         _model.put( MARK_IS_PARSER_PLUGIN_ACTIVE , PluginService.isPluginEnable( CONSTANT_PARSER_PLUGIN_NAME )  );
 
+        _model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
+        // Token of the spaces actions, used to move a space by drag and drop in the spaces tree
+        _model.put( MARK_SPACE_TOKEN, getSecurityTokenService( ).getToken( request, DocumentSpaceJspBean.SECURITY_TOKEN_ACTION ) );
+
+        // Forms of the create, modify and move space actions, opened in a modal
+        for ( SpaceAction action : listSpaceActions )
+        {
+            if ( SpaceResourceIdService.PERMISSION_CREATE.equals( action.getPermission(  ) ) )
+            {
+                _model.put( MARK_CREATE_SPACE_FORM, HtmlMarkup.of( _documentSpacesService.getCreateSpaceForm( nCurrentSpaceId, user, getLocale(  ),
+                        getSecurityTokenService( ).getToken( request, DocumentSpaceJspBean.SECURITY_TOKEN_ACTION ), true, PREFIX_CREATE_SPACE ) ) );
+            }
+            else if ( SpaceResourceIdService.PERMISSION_MODIFY.equals( action.getPermission(  ) ) )
+            {
+                _model.put( MARK_MODIFY_SPACE_FORM, HtmlMarkup.of( _documentSpacesService.getModifySpaceForm( nCurrentSpaceId, user, getLocale(  ),
+                        getSecurityTokenService( ).getToken( request, DocumentSpaceJspBean.SECURITY_TOKEN_ACTION ), true, PREFIX_MODIFY_SPACE ) ) );
+            }
+            else if ( SpaceResourceIdService.PERMISSION_MOVE.equals( action.getPermission(  ) ) )
+            {
+                _model.put( MARK_MOVE_SPACE_FORM, HtmlMarkup.of( _documentSpacesService.getMoveSpaceForm( nCurrentSpaceId, user, getLocale(  ),
+                        getSecurityTokenService( ).getToken( request, DocumentSpaceJspBean.SECURITY_TOKEN_ACTION ), true, PREFIX_MOVE_SPACE ) ) );
+            }
+        }
+        // Form of the move document action, opened in a modal: rendered once when a document of the list can be moved
+        boolean bMoveAllowed = listDocuments.stream(  ).anyMatch( doc -> ( doc.getActions(  ) != null ) &&
+                    ( (List<?>) doc.getActions(  ) ).stream(  ).anyMatch( action -> ( action instanceof DocumentAction ) &&
+                    ( ( (DocumentAction) action ).getIdAction(  ) == DocumentAction.ACTION_MOVE ) ) );
+
+        if ( bMoveAllowed )
+        {
+            _model.put( MARK_MOVE_DOCUMENT_FORM, HtmlMarkup.of( getMoveDocumentForm( request, null, true ) ) );
+        }
+
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANAGE_DOCUMENTS, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
@@ -499,6 +558,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         ReferenceList listMailingLists = AdminMailingListService.getMailingLists( getUser(  ) );
         _model.put( MARK_MAILINGLISTS_LIST, listMailingLists );
 
+        _model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_DOCUMENT, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
@@ -562,7 +622,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     {
         MetadataHandler hMetadata = getMetadataHandler( document.getCodeDocumentType(  ) );
 
-        return ( hMetadata != null ) ? hMetadata.getModifyForm( request, document.getXmlMetadata(  ) ) : StringUtils.EMPTY;
+        return ( hMetadata != null ) ? hMetadata.getModifyForm( request, document.getMetadata(  ) ) : StringUtils.EMPTY;
     }
 
     /**
@@ -584,6 +644,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doCreateDocument( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         saveReferer( request );
 
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
@@ -626,7 +691,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         //Here we simulate clicking on the validation buttons. This could should do the same
         //as having request to doStateChange for submitting and doValidateDocument for validating
-        if ( AppPropertiesService.getPropertyBoolean( PROPERTY_WORKFLOW_AUTOVALIDATION, false ) )
+        if ( _documentParameterService.isWorkflowAutoValidation(  ) )
         {
             String strDocumentId = Integer.toString( document.getId(  ) );
 
@@ -725,6 +790,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             _model.put( entry.getKey( ), entry.getValue( ) );
         }
 
+        _model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MODIFY_DOCUMENT, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
@@ -737,6 +803,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doModifyDocument( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         saveReferer( request );
 
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
@@ -787,7 +858,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         //Here we simulate clicking on the validation buttons. This could should do the same
         //as having request to doStateChange for changesubmitting and doValidateDocument for revalidating
-        if ( AppPropertiesService.getPropertyBoolean( PROPERTY_WORKFLOW_AUTOVALIDATION, false ) )
+        if ( _documentParameterService.isWorkflowAutoValidation(  ) )
         {
             try
             {
@@ -833,6 +904,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         Object[] messageArgs = { document.getTitle(  ) };
         UrlItem url = new UrlItem( PATH_JSP + JSP_DELETE_DOCUMENT );
+        url.addParameter( SecurityTokenService.PARAMETER_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
         url.addParameter( PARAMETER_DOCUMENT_ID, nDocumentId );
 
         return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE, messageArgs,null, url.getUrl(  ),null,
@@ -846,6 +918,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doDeleteDocument( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         saveReferer( request );
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
@@ -882,6 +959,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doChangeState( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         saveReferer( request );
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
@@ -934,6 +1016,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doValidateDocument( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         saveReferer( request );
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
@@ -1035,6 +1122,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         }
 
         UrlItem url = new UrlItem( JSP_ARCHIVE_DOCUMENT );
+        url.addParameter( SecurityTokenService.PARAMETER_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
         url.addParameter( PARAMETER_DOCUMENT_ID, nDocumentId );
         url.addParameter( PARAMETER_ACTION_ID, nActionId );
 
@@ -1057,6 +1145,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doRemoveSelection( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         int nDocumentId;
 
         for ( String strIdDocument : _multiSelectionValues )
@@ -1105,6 +1198,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doArchiveSelection( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         int nDocumentId;
 
         for ( String strIdDocument : _multiSelectionValues )
@@ -1145,9 +1243,19 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doActionSelectionDocument( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         String strAction = request.getParameter( PARAMETER_SELECTION );
         String[] strIdDocuments = (String[]) request.getParameterMap(  ).get( PARAMETER_DOCUMENT_SELECTION );
         _multiSelectionValues = strIdDocuments;
+
+        if ( ArrayUtils.isEmpty( strIdDocuments ) || StringUtils.isBlank( strAction ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_SELECTION_EMPTY, getHomeUrl( request ), AdminMessage.TYPE_STOP );
+        }
 
         int nbDocumentsAffected = 0;
 
@@ -1156,6 +1264,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             if ( strAction.equals( CONSTANT_REMOVE ) )
             {
                 UrlItem url = new UrlItem( JSP_DO_REMOVE_SELECTION );
+                url.addParameter( SecurityTokenService.PARAMETER_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
 
                 return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_DELETE_SELECTION,null, null, url.getUrl(  ),null,
                     AdminMessage.TYPE_CONFIRMATION, null, JSP_MANAGE_DOCUMENTS );
@@ -1163,6 +1272,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             else if ( strAction.equals( CONSTANT_ARCHIVE ) )
             {
                 UrlItem url = new UrlItem( JSP_DO_ARCHIVE_SELECTION );
+                url.addParameter( SecurityTokenService.PARAMETER_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
 
                 for ( String strIdDocument : _multiSelectionValues )
                 {
@@ -1193,6 +1303,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
                                 isAuthorized( DocumentAction.ACTION_ARCHIVE, document ) )
                         {
                             _documentService.archiveDocument( document, getUser(  ), DocumentState.STATE_ARCHIVED );
+                            nbDocumentsAffected++;
                         }
                     }
                     catch ( DocumentException e )
@@ -1255,6 +1366,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
                                     {
                                         _documentService.changeDocumentState( document, getUser(  ),
                                             DocumentState.STATE_REJECTED );
+                                        nbDocumentsAffected++;
                                     }
                                 }
                                 else if ( stateId == DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL )
@@ -1265,10 +1377,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
                                     {
                                         _documentService.changeDocumentState( document, getUser(  ),
                                             DocumentState.STATE_IN_CHANGE );
+                                        nbDocumentsAffected++;
                                     }
                                 }
-
-                                nbDocumentsAffected++;
                             }
                             catch ( DocumentException e )
                             {
@@ -1314,9 +1425,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
                                     {
                                         _documentService.changeDocumentState( document, getUser(  ),
                                             DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL );
+                                        nbDocumentsAffected++;
                                     }
-
-                                    nbDocumentsAffected++;
                                 }
                             }
                             catch ( DocumentException e )
@@ -1329,7 +1439,39 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             }
         }
 
-        return getHomeUrl( request );
+        return getSelectionResultUrl( request, strAction, strIdDocuments.length, nbDocumentsAffected );
+    }
+
+    /**
+     * Builds the URL to go to after an action on a selection of documents: back to the list when every selected
+     * document has been processed, otherwise a message telling how many documents the action could not be applied to
+     * @param request The Http request
+     * @param strAction The action applied to the selection
+     * @param nbDocumentsSelected The number of selected documents
+     * @param nbDocumentsAffected The number of documents the action has been applied to
+     * @return The URL to redirect to
+     */
+    private String getSelectionResultUrl( HttpServletRequest request, String strAction, int nbDocumentsSelected, int nbDocumentsAffected )
+    {
+        if ( nbDocumentsAffected >= nbDocumentsSelected )
+        {
+            return getHomeUrl( request );
+        }
+
+        String strActionLabel = I18nService.getLocalizedString( PROPERTY_SELECTION_ACTION_PREFIX + strAction, getLocale(  ) );
+
+        if ( nbDocumentsAffected == 0 )
+        {
+            Object[] messageArgs = { strActionLabel, nbDocumentsSelected };
+
+            return AdminMessageService.getMessageUrl( request, MESSAGE_SELECTION_NONE_PROCESSED, messageArgs, getHomeUrl( request ),
+                AdminMessage.TYPE_STOP );
+        }
+
+        Object[] messageArgs = { strActionLabel, nbDocumentsAffected, nbDocumentsSelected };
+
+        return AdminMessageService.getMessageUrl( request, MESSAGE_SELECTION_PARTIALLY_PROCESSED, messageArgs, getHomeUrl( request ),
+            AdminMessage.TYPE_WARNING );
     }
 
     /**
@@ -1339,6 +1481,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doArchiveDocument( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         saveReferer( request );
 
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
@@ -1446,9 +1593,10 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         DocumentType type = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType(  ) );
 
-        XmlTransformerService xmlTransformerService = new XmlTransformerService(  );
-        String strPreview = xmlTransformerService.transformBySourceWithXslCache( document.getXmlWorkingContent(  ),
-                type.getAdminXslSource(  ), DOCUMENT_STYLE_PREFIX_ID + type.getAdminStyleSheetId(  ), null, null );
+        DocumentHome.loadAttributesWithoutBinaries( document, false );
+
+        DocumentView view = _documentViewService.buildView( document, false );
+        String strPreview = _documentTemplateService.renderAdmin( type, view, getLocale(  ) );
 
        
         _model.put( MARK_DOCUMENT, document );
@@ -1464,6 +1612,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             _model.put( entry.getKey( ), entry.getValue( ) );
         }
         
+        _model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PREVIEW_DOCUMENT, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
@@ -1489,23 +1638,30 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             return getManageDocuments( request );
         }
 
-        String strSpaceId = request.getParameter( DocumentSpacesService.PARAMETER_BROWSER_SELECTED_SPACE_ID );
-        boolean bSubmitButtonDisabled = Boolean.TRUE;
-
-        if ( ( strSpaceId != null ) && !strSpaceId.equals( StringUtils.EMPTY ) )
-        {
-            bSubmitButtonDisabled = Boolean.FALSE;
-        }
-
-        // Spaces browser
-        _model.put( MARK_SPACES_BROWSER,
-        		HtmlMarkup.of( _documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), true, true ) ) );
-        _model.put( MARK_DOCUMENT, document );
-        _model.put( MARK_SUBMIT_BUTTON_DISABLED, bSubmitButtonDisabled );
+        _model.put( MARK_MOVE_DOCUMENT_FORM, HtmlMarkup.of( getMoveDocumentForm( request, document, false ) ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MOVE_DOCUMENT, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
+    }
+
+    /**
+     * Gets the form to move a document to another space
+     * @param request The HTTP request
+     * @param document The document to move, or null for the form of the modal, which receives the document when it opens
+     * @param bModal true if the form is displayed in a modal dialog
+     * @return The form
+     */
+    private String getMoveDocumentForm( HttpServletRequest request, Document document, boolean bModal )
+    {
+        Map<String, Object> model = new HashMap<>(  );
+        model.put( MARK_SPACES_TREE, _documentSpacesService.getSpacesTreeRoots( getUser(  ) ) );
+        model.put( MARK_DOCUMENT, document );
+        model.put( MARK_IN_MODAL, bModal );
+        model.put( MARK_ID_PREFIX, bModal ? PREFIX_MOVE_DOCUMENT : StringUtils.EMPTY );
+        model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
+
+        return AppTemplateService.getTemplate( TEMPLATE_MOVE_DOCUMENT_FORM, getLocale(  ), model ).getHtml(  );
     }
 
     /**
@@ -1515,6 +1671,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
      */
     public String doMoveDocument( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         saveReferer( request );
 
         boolean bTypeAllowed = Boolean.FALSE;
@@ -1585,8 +1746,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
         _model.put( MARK_SELECTED_CRITERIA, Objects.toString( strCriteria, "date" ) );
         _model.put( MARK_LOCALE, getLocale(  ).getLanguage(  ) );
-        _model.put( MARK_SPACES_BROWSER,
-        		HtmlMarkup.of( _documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), false, true ) ) );
+        _model.put( MARK_SPACES_TREE, _documentSpacesService.getSpacesTreeRoots( getUser(  ) ) );
+        _model.put( MARK_BROWSER_SELECTED_SPACE_ID,
+                StringUtils.defaultString( request.getParameter( DocumentSpacesService.PARAMETER_BROWSER_SELECTED_SPACE_ID ) ) );
         _model.put( MARK_DOCUMENT_TYPES_LIST, DocumentTypeHome.findAll(  ) );
         _model.put( MARK_DOCUMENT_TYPE, StringUtils.defaultString( strTypeCode ) );
         _model.put( MARK_DATE_MIN, StringUtils.defaultString( strDateMin ) );
@@ -1696,7 +1858,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         request.getSession(  ).setAttribute( "to_archive", toArchive );
 
         return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_MASS_ARCHIVE,
-            new String[] { toArchive.size(  ) + "" }, JSP_DO_MASS_ARCHIVAL, AdminMessage.TYPE_CONFIRMATION );
+            new String[] { toArchive.size(  ) + "" }, JSP_DO_MASS_ARCHIVAL + "?" + SecurityTokenService.PARAMETER_TOKEN + "=" +
+            getSecurityTokenService(  ).getToken( request, SECURITY_TOKEN_ACTION ), AdminMessage.TYPE_CONFIRMATION );
     }
 
     /**
@@ -1737,6 +1900,11 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     public String doMassArchivalDocument( HttpServletRequest request )
         throws DocumentException
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return getManageDocuments( request );
+        }
+
         List<Document> documents = (List<Document>) request.getSession(  ).getAttribute( "to_archive" );
         request.getSession(  ).removeAttribute( "to_archive" );
 

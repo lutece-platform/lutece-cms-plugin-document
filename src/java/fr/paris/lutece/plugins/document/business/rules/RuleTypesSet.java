@@ -68,15 +68,6 @@ public class RuleTypesSet implements IRuleTypesSet
 	private Instance < NotifyUsersRule > notifyUsersRuleInstance;
 
 	/**
-	 * Init
-	 * 
-	 */
-	public void init( )
-	{
-
-	}
-
-	/**
 	 * Create a new instance of a rule of a given type
 	 * 
 	 * @param strRuleTypeKey

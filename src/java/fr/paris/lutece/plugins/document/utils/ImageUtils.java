@@ -41,7 +41,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import java.util.Iterator;
+
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 
 /**
@@ -49,9 +53,6 @@ import javax.imageio.ImageIO;
  */
 public final class ImageUtils
 {
-    /** Parameter JPG */
-    private static final String PARAMETER_JPG = "jpg";
-
     /**
      * Private constructor
      */
@@ -60,22 +61,50 @@ public final class ImageUtils
     }
 
     /**
-     * Resize an image
-     * @param byteArray the original byte arrau
+     * Resize an image to a given width, keeping its proportions and its format: a PNG stays a PNG (with its transparency), a JPEG stays a JPEG,
+     * so the content type stored with the image remains right
+     * @param byteArray the original image
      * @param width the new width
-     * @return the resize byte array
-     * @throws IOException occurs during treatment
+     * @return the resized image, in the format of the original image
+     * @throws IOException if the image cannot be read, or cannot be written back in its format
      */
     public static byte[] resizeImage( byte[] byteArray, int width )
         throws IOException
     {
-        // Crop image if needed
-        ByteArrayInputStream in = new ByteArrayInputStream( byteArray );
+        String strFormat;
+        BufferedImage image;
+
+        try ( ImageInputStream in = ImageIO.createImageInputStream( new ByteArrayInputStream( byteArray ) ) )
+        {
+            Iterator<ImageReader> readers = ( in == null ) ? null : ImageIO.getImageReaders( in );
+
+            if ( ( readers == null ) || !readers.hasNext(  ) )
+            {
+                throw new IOException( "Unsupported image format" );
+            }
+
+            ImageReader reader = readers.next(  );
+
+            try
+            {
+                reader.setInput( in );
+                strFormat = reader.getFormatName(  );
+                image = reader.read( 0 );
+            }
+            finally
+            {
+                reader.dispose(  );
+            }
+        }
+
+        BufferedImage resizedImage = Scalr.resize( image, Scalr.Mode.FIT_TO_WIDTH, width );
         ByteArrayOutputStream out = new ByteArrayOutputStream(  );
-        BufferedImage image = ImageIO.read( in );
-        BufferedImage resizedImage;
-        resizedImage = Scalr.resize( image, Scalr.Mode.FIT_TO_WIDTH, width );
-        ImageIO.write( resizedImage, PARAMETER_JPG, out );
+
+        // ImageIO.write returns false, and writes nothing, when no writer accepts the image (a JPEG writer refuses an image with transparency)
+        if ( !ImageIO.write( resizedImage, strFormat, out ) || ( out.size(  ) == 0 ) )
+        {
+            throw new IOException( "The resized image cannot be written in the " + strFormat + " format" );
+        }
 
         return out.toByteArray(  );
     }

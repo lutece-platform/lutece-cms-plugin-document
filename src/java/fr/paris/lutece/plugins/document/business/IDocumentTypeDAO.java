@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.document.business;
 import fr.paris.lutece.util.ReferenceList;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Interface for DocumentType DAO
@@ -113,22 +114,38 @@ public interface IDocumentTypeDAO
     void store( DocumentType documentType );
 
     /**
-     * Sets the admin stylesheet
+     * Updates the FreeMarker templates of a document type
      * 
-     * @param baXslAdmin
-     *            The stylesheet
      * @param strCodeType
      *            The code type
+     * @param strAdminTemplate
+     *            The back office template, or null to use the default one
+     * @param strContentTemplate
+     *            The front office template, or null to use the default one
      */
-    void setAdminStyleSheet( byte [ ] baXslAdmin, String strCodeType );
+    void storeTemplates( String strCodeType, String strAdminTemplate, String strContentTemplate );
 
     /**
-     * Sets the content service stylesheet
+     * Selects the codes of the document types that still have XSL stylesheets of the versions before 7.0.0
      * 
-     * @param baXslContent
-     *            The stylesheet
+     * @return The codes of the document types
+     */
+    List<String> selectCodesWithLegacyStylesheets( );
+
+    /**
+     * Loads the XSL stylesheets of a document type, from the versions before 7.0.0
+     * 
+     * @param strCodeType
+     *            The code type
+     * @return The stylesheets, or null if the document type does not exist
+     */
+    LegacyStylesheets loadLegacyStylesheets( String strCodeType );
+
+    /**
+     * Deletes the XSL stylesheets of a document type, from the versions before 7.0.0
+     * 
      * @param strCodeType
      *            The code type
      */
-    void setContentStyleSheet( byte [ ] baXslContent, String strCodeType );
+    void deleteLegacyStylesheets( String strCodeType );
 }

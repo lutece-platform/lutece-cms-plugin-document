@@ -51,7 +51,7 @@ import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
 import fr.paris.lutece.plugins.document.utils.ImageUtils;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
-import fr.paris.lutece.plugins.document.web.DocumentResourceServlet;
+import fr.paris.lutece.plugins.document.web.ResourceServletCache;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.content.ContentService;
@@ -67,13 +67,12 @@ import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.string.StringUtil;
-import fr.paris.lutece.util.xml.XmlUtil;
 import fr.paris.lutece.api.user.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.ServletContext;
@@ -82,7 +81,6 @@ import org.apache.commons.collections.CollectionUtils;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -94,7 +92,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 /**
  * This Service manages document actions (create, move, delete, validate ...)
@@ -129,17 +126,6 @@ public class DocumentService
 	private static final String MESSAGE_ATTRIBUTE_RESIZE_ERROR = "document.message.resizeError";
 	private static final String MESSAGE_EXTENSION_ERROR = "document.message.extensionError";
 	private static final String MESSAGE_FILE_SIZE_ERROR = "document.message.fileSizeError";
-	private static final String TAG_DOCUMENT_ID = "document-id";
-	private static final String TAG_DOCUMENT_TITLE = "document-title";
-	private static final String TAG_DOCUMENT_SUMMARY = "document-summary";
-	private static final String TAG_DOCUMENT_DATE_BEGIN = "document-date-begin";
-	private static final String TAG_DOCUMENT_DATE_END = "document-date-end";
-	private static final String TAG_DOCUMENT_SKIP_PORTLET = "document-skip-portlet";
-	private static final String TAG_DOCUMENT_SKIP_CATEGORIES = "document-skip-categories";
-	private static final String TAG_DOCUMENT_CATEGORIES = "document-categories";
-	private static final String TAG_DOCUMENT_CATEGORY = "category";
-	private static final String TAG_CDATA_BEGIN = "<![CDATA[";
-	private static final String TAG_CDATA_END = "]]>";
 	
     private static final String CONTENT_SERVICE_NAME = "Document Content Service";
 	
@@ -155,88 +141,11 @@ public class DocumentService
 	@Inject
 	private DocumentSpacesService _documentSpacesService;
 
-    /**
-     * Returns the unique instance of the {@link DocumentService} service.
-     * 
-     * <p>This method is deprecated and is provided for backward compatibility only. 
-     * For new code, use dependency injection with {@code @Inject} to obtain the 
-     * {@link DocumentService} instance instead.</p>
-     * 
-     * @return The unique instance of {@link DocumentService}.
-     * 
-     * @deprecated Use {@code @Inject} to obtain the {@link DocumentService} 
-     * instance. This method will be removed in future versions.
-     */
-	@Deprecated( since = "8.0", forRemoval = true )
-	public static DocumentService getInstance( )
-	{
-		return CDI.current( ).select( DocumentService.class ).get( );
-	}
+	@Inject
+	private Instance<IDocumentActionsService> _documentActionsServices;
 
-	/**
-	 * Build an XML document that contains document's data.
-	 *
-	 * @param document The document
-	 * @return An XML fragment containing document's data
-	 */
-	String buildXmlContent( Document document )
-	{
-		StringBuffer sbXml = new StringBuffer( );
-		XmlUtil.beginElement( sbXml, document.getCodeDocumentType( ) );
-
-		XmlUtil.addElement( sbXml, TAG_DOCUMENT_ID, document.getId( ) );
-		XmlUtil.addElement( sbXml, TAG_DOCUMENT_TITLE, TAG_CDATA_BEGIN + document.getTitle( ) + TAG_CDATA_END );
-		XmlUtil.addElement( sbXml, TAG_DOCUMENT_SUMMARY, TAG_CDATA_BEGIN + document.getSummary( ) + TAG_CDATA_END );
-		XmlUtil.addElement( sbXml, TAG_DOCUMENT_DATE_BEGIN,
-				DateUtil.getDateString( document.getDateValidityBegin( ), I18nService.getDefaultLocale( ) ) );
-		XmlUtil.addElement( sbXml, TAG_DOCUMENT_DATE_END,
-				DateUtil.getDateString( document.getDateValidityEnd( ), I18nService.getDefaultLocale( ) ) );
-		XmlUtil.addElement( sbXml, TAG_DOCUMENT_SKIP_PORTLET,
-				BooleanUtils.toStringTrueFalse( document.isSkipPortlet( ) ) );
-		XmlUtil.addElement( sbXml, TAG_DOCUMENT_SKIP_CATEGORIES,
-				BooleanUtils.toStringTrueFalse( document.isSkipCategories( ) ) );
-		XmlUtil.addElement( sbXml, TAG_DOCUMENT_CATEGORIES, buildXmlCategories( document ) );
-
-		DocumentType documentType = DocumentTypeHome.findByPrimaryKey( document.getCodeDocumentType( ) );
-
-		for( DocumentAttribute attribute : documentType.getAttributes( ) )
-		{
-			DocumentAttribute attributeDocument = getDocumentAttribute( document, attribute.getId( ) );
-
-			if( attributeDocument != null )
-			{
-				AttributeManager manager = _attributeService.getManager( attributeDocument.getCodeAttributeType( ) );
-				XmlUtil.addElement( sbXml, document.getCodeDocumentType( ) + "-" + attribute.getCode( ),
-						manager.getAttributeXmlValue( document, attributeDocument ) );
-			}
-		}
-
-		XmlUtil.endElement( sbXml, document.getCodeDocumentType( ) );
-
-		return sbXml.toString( );
-	}
-
-	/**
-	 * Build XML content for the categories
-	 * 
-	 * @param document The document
-	 * @return An XML fragment containing document's categories
-	 */
-	private String buildXmlCategories( Document document )
-	{
-		StringBuffer strListCategories = new StringBuffer( );
-
-		if( ( document != null ) && ( document.getCategories( ) != null ) && ! document.getCategories( ).isEmpty( ) )
-		{
-			for( Category category : document.getCategories( ) )
-			{
-				XmlUtil.addElement( strListCategories, TAG_DOCUMENT_CATEGORY,
-						TAG_CDATA_BEGIN + category.getName( ) + TAG_CDATA_END );
-			}
-		}
-
-		return strListCategories.toString( );
-	}
+	@Inject
+	private ResourceServletCache _resourceServletCache;
 
 	/**
 	 * Change the state of the document
@@ -267,8 +176,6 @@ public class DocumentService
 	{
 		document.setDateCreation( new Timestamp( new java.util.Date( ).getTime( ) ) );
 		document.setDateModification( new Timestamp( new java.util.Date( ).getTime( ) ) );
-		document.setXmlWorkingContent( buildXmlContent( document ) );
-
 		DocumentHome.create( document );
 
 		notify( document.getId( ), user, DocumentEvent.DOCUMENT_CREATED );
@@ -285,7 +192,6 @@ public class DocumentService
 			throws DocumentException
 	{
 		document.setDateModification( new Timestamp( new java.util.Date( ).getTime( ) ) );
-		document.setXmlWorkingContent( buildXmlContent( document ) );
 		DocumentHome.update( document, true );
 
 		notify( document.getId( ), user, DocumentEvent.DOCUMENT_CONTENT_MODIFIED );
@@ -303,8 +209,8 @@ public class DocumentService
 			throws DocumentException
 	{
 		document.setStateId( nStateId );
-		// Copy the working content into the validated content
-		document.setXmlValidatedContent( document.getXmlWorkingContent( ) );
+		document.setValidatedTitle( document.getTitle( ) );
+		document.setValidatedSummary( document.getSummary( ) );
 		DocumentHome.update( document, false );
 		DocumentHome.validateAttributes( document.getId( ) );
 
@@ -312,7 +218,7 @@ public class DocumentService
 
 		for( DocumentAttribute attribute : listAttributes )
 		{
-			DocumentResourceServlet.putInCache( document.getId( ), attribute.getId( ) );
+			_resourceServletCache.cacheValidatedResource( document.getId( ), attribute.getId( ) );
 		}
 
 		DocumentContentService dc = null;
@@ -428,13 +334,7 @@ public class DocumentService
 		listActions = ( List < DocumentAction > ) RBACService.getAuthorizedActionsCollection( listActions, documentType,
 				( User ) user );
 
-		// Get all beans from the global ApplicationContext
-		List < IDocumentActionsService > listActionServices = CDI.current( ).select( IDocumentActionsService.class )
-				.stream( )
-				.collect( Collectors.toList( ) );
-
-		// Process all services
-		for( IDocumentActionsService actionService : listActionServices )
+		for( IDocumentActionsService actionService : _documentActionsServices )
 		{
 			listActions.addAll( actionService.getActions( document, locale, user ) );
 		}
@@ -700,7 +600,7 @@ public class DocumentService
 
 		if( hMetadata != null )
 		{
-			document.setXmlMetadata( hMetadata.getXmlMetadata( mRequest.getParameterMap( ) ) );
+			document.setMetadata( hMetadata.getMetadata( mRequest.getParameterMap( ) ) );
 		}
 
 		document.setAttributes( listAttributes );
@@ -973,7 +873,7 @@ public class DocumentService
 		}
 		catch( NumberFormatException e )
 		{
-			AppLogService.error( "Unable to parse max_allowed_packet value: " + strValue, e );
+			AppLogService.error( "Unable to parse max_allowed_packet value: {}", strValue, e );
 			return 16 * 1024 * 1024; // Default 16MB
 		}
 	}

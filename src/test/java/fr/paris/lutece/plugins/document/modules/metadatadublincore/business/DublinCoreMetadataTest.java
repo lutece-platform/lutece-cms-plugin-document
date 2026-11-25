@@ -31,27 +31,30 @@
  *
  * License 1.0
  */
-/*
- * DublinCoreMetadataTest.java
- * JUnit based test
- *
- * Created on 28 septembre 2006, 11:12
- */
 package fr.paris.lutece.plugins.document.modules.metadatadublincore.business;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
+
+import fr.paris.lutece.plugins.document.modules.metadatadublincore.DublinCoreMetadataHandler;
 import fr.paris.lutece.test.LuteceTestCase;
 
-
 /**
- * DublinCore Metadata Test
+ * Tests the Dublin Core metadata stored as JSON
  */
 public class DublinCoreMetadataTest extends LuteceTestCase
 {
     private static final String TITLE = "title";
     private static final String CREATOR = "creator";
     private static final String SUBJECT = "subject";
-    private static final String DESCRIPTION = "description";
+    private static final String DESCRIPTION = "description \"quoted\" <b>";
     private static final String PUBLISHER = "publisher";
     private static final String CONTRIBUTOR = "contributor";
     private static final String DATE = "date";
@@ -62,17 +65,127 @@ public class DublinCoreMetadataTest extends LuteceTestCase
     private static final String LANGUAGE = "language";
     private static final String RELATION = "relation";
     private static final String COVERAGE = "coverage";
-    private static final String RIGTHS = "rigths";
+    private static final String RIGHTS = "rights";
 
     /**
-     * Test of load method, of class fr.paris.lutece.plugins.document.modules.metadatadublincore.business.DublinCoreMetadata.
+     * The metadata written as JSON are read back unchanged
      */
     @Test
-    public void testLoad(  )
+    public void testJsonRoundTrip( )
     {
-        System.out.println( "load" );
+        DublinCoreMetadata instance = buildMetadata( );
 
-        DublinCoreMetadata instance = new DublinCoreMetadata(  );
+        DublinCoreMetadata instance2 = DublinCoreMetadata.fromJson( instance.toJson( ) );
+
+        assertEquals( instance.getTitle( ), instance2.getTitle( ) );
+        assertEquals( instance.getCreator( ), instance2.getCreator( ) );
+        assertEquals( instance.getSubject( ), instance2.getSubject( ) );
+        assertEquals( instance.getDescription( ), instance2.getDescription( ) );
+        assertEquals( instance.getPublisher( ), instance2.getPublisher( ) );
+        assertEquals( instance.getContributor( ), instance2.getContributor( ) );
+        assertEquals( instance.getDate( ), instance2.getDate( ) );
+        assertEquals( instance.getType( ), instance2.getType( ) );
+        assertEquals( instance.getFormat( ), instance2.getFormat( ) );
+        assertEquals( instance.getIdentifier( ), instance2.getIdentifier( ) );
+        assertEquals( instance.getSource( ), instance2.getSource( ) );
+        assertEquals( instance.getLanguage( ), instance2.getLanguage( ) );
+        assertEquals( instance.getRelation( ), instance2.getRelation( ) );
+        assertEquals( instance.getCoverage( ), instance2.getCoverage( ) );
+        assertEquals( instance.getRights( ), instance2.getRights( ) );
+    }
+
+    /**
+     * The JSON object uses the Dublin Core element names, in the Dublin Core order
+     */
+    @Test
+    public void testJsonFormat( )
+    {
+        String strJson = buildMetadata( ).toJson( );
+
+        assertTrue( strJson.startsWith( "{\"title\":\"title\",\"creator\":\"creator\"" ), strJson );
+        assertTrue( strJson.endsWith( "\"rights\":\"rights\"}" ), strJson );
+    }
+
+    /**
+     * A value emptied by the user stays empty: it is not replaced by the default value
+     */
+    @Test
+    public void testEmptiedValueIsKept( )
+    {
+        DublinCoreMetadata instance = new DublinCoreMetadata( );
+        instance.setCreator( "" );
+
+        assertEquals( "", DublinCoreMetadata.fromJson( instance.toJson( ) ).getCreator( ) );
+    }
+
+    /**
+     * The properties missing from the JSON object keep their default values, the unknown properties are ignored
+     */
+    @Test
+    public void testMissingAndUnknownProperties( )
+    {
+        DublinCoreMetadata defaults = new DublinCoreMetadata( );
+
+        DublinCoreMetadata instance = DublinCoreMetadata.fromJson( "{\"title\":\"A title\",\"unknown\":\"value\"}" );
+
+        assertEquals( "A title", instance.getTitle( ) );
+        assertEquals( defaults.getCreator( ), instance.getCreator( ) );
+    }
+
+    /**
+     * Invalid JSON gives the default values
+     */
+    @Test
+    public void testInvalidJson( )
+    {
+        assertEquals( new DublinCoreMetadata( ).getCreator( ), DublinCoreMetadata.fromJson( "<metadata/>" ).getCreator( ) );
+    }
+
+    /**
+     * The meta tags follow the Dublin Core order and skip the empty values
+     */
+    @Test
+    public void testMetaTags( )
+    {
+        DublinCoreMetadata instance = buildMetadata( );
+        instance.setContributor( "" );
+
+        Map<String, String> mapMetaTags = instance.toMetaTags( );
+
+        assertEquals( "DC.Title", mapMetaTags.keySet( ).iterator( ).next( ) );
+        assertEquals( DESCRIPTION, mapMetaTags.get( "DC.Description" ) );
+        assertFalse( mapMetaTags.containsKey( "DC.Contributor" ) );
+        assertEquals( 14, mapMetaTags.size( ) );
+    }
+
+    /**
+     * The handler builds the JSON metadata from the form, and gives no meta tag for a document without metadata
+     */
+    @Test
+    public void testHandler( )
+    {
+        DublinCoreMetadataHandler handler = new DublinCoreMetadataHandler( );
+        Map<String, String [ ]> parameters = new HashMap<>( );
+        parameters.put( "dc_title", new String [ ] {
+                TITLE
+        } );
+
+        String strJson = handler.getMetadata( parameters );
+
+        assertEquals( TITLE, DublinCoreMetadata.fromJson( strJson ).getTitle( ) );
+        assertEquals( "", DublinCoreMetadata.fromJson( strJson ).getCreator( ) );
+        assertEquals( List.of( "DC.Title" ), List.copyOf( handler.getMetaTags( strJson ).keySet( ) ) );
+        assertTrue( handler.getMetaTags( null ).isEmpty( ) );
+    }
+
+    /**
+     * Builds metadata with a value for every element
+     *
+     * @return The metadata
+     */
+    private DublinCoreMetadata buildMetadata( )
+    {
+        DublinCoreMetadata instance = new DublinCoreMetadata( );
         instance.setTitle( TITLE );
         instance.setCreator( CREATOR );
         instance.setSubject( SUBJECT );
@@ -87,27 +200,8 @@ public class DublinCoreMetadataTest extends LuteceTestCase
         instance.setLanguage( LANGUAGE );
         instance.setRelation( RELATION );
         instance.setCoverage( COVERAGE );
-        instance.setRights( RIGTHS );
+        instance.setRights( RIGHTS );
 
-        String strXML = instance.getXml(  );
-
-        DublinCoreMetadata instance2 = new DublinCoreMetadata(  );
-        instance2.load( strXML );
-
-        assertEquals( instance.getTitle(  ), instance2.getTitle(  ) );
-        assertEquals( instance.getCreator(  ), instance2.getCreator(  ) );
-        assertEquals( instance.getSubject(  ), instance2.getSubject(  ) );
-        assertEquals( instance.getDescription(  ), instance2.getDescription(  ) );
-        assertEquals( instance.getPublisher(  ), instance2.getPublisher(  ) );
-        assertEquals( instance.getContributor(  ), instance2.getContributor(  ) );
-        assertEquals( instance.getDate(  ), instance2.getDate(  ) );
-        assertEquals( instance.getType(  ), instance2.getType(  ) );
-        assertEquals( instance.getFormat(  ), instance2.getFormat(  ) );
-        assertEquals( instance.getIdentifier(  ), instance2.getIdentifier(  ) );
-        assertEquals( instance.getSource(  ), instance2.getSource(  ) );
-        assertEquals( instance.getLanguage(  ), instance2.getLanguage(  ) );
-        assertEquals( instance.getRelation(  ), instance2.getRelation(  ) );
-        assertEquals( instance.getCoverage(  ), instance2.getCoverage(  ) );
-        assertEquals( instance.getRights(  ), instance2.getRights(  ) );
+        return instance;
     }
 }

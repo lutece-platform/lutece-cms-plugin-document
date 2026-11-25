@@ -33,11 +33,13 @@
  */
 package fr.paris.lutece.plugins.document.web.portlet;
 
+import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentPortlet;
 import fr.paris.lutece.plugins.document.business.portlet.DocumentPortletHome;
 import fr.paris.lutece.plugins.document.service.category.CategoryService;
 import fr.paris.lutece.plugins.document.service.category.CategoryService.CategoryDisplay;
+import fr.paris.lutece.plugins.document.service.publishing.PortletDocumentSelectionService;
 import fr.paris.lutece.plugins.document.service.publishing.PublishingService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
@@ -56,6 +58,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
@@ -84,6 +87,10 @@ public class DocumentPortletJspBean extends PortletJspBean
     private static final String MARK_CODE_TYPE_DOCUMENT = "code_type_document";
     private static final String PARAMETER_DOCUMENT_TYPE_CODE = "document_type_code";
     private static final String PARAMETER_CATEGORY = "categories";
+    private static final String COMBO_DOCUMENT_LIST = "@combo_document@";
+    private static final String PARAMETER_SEARCH_QUERY = "q";
+    private static final String PARAMETER_SEARCH_PAGE = "page";
+    private static final String MESSAGE_ERROR_DOCUMENT_NOT_PUBLISHABLE = "document.message.errorDocumentNotPublishable";
     private static final String COMBO_DOCUMENT_TYPE_LIST = "@combo_document_type@";
     private static final String COMBO_DOCUMENT_CATEGORY_LIST = "@combo_category_document@";
     private static final String TEMPLATE_DOCUMENT_TYPE_LIST = "admin/plugins/document/portlet/document_type_list.html";
@@ -98,6 +105,9 @@ public class DocumentPortletJspBean extends PortletJspBean
     
     @Inject
     private CategoryService _categoryService;
+
+    @Inject
+    private PortletDocumentSelectionService _selectionService;
     
     @Inject
     Models _model;
@@ -127,6 +137,7 @@ public class DocumentPortletJspBean extends PortletJspBean
         HtmlTemplate template = getCreateTemplate( strIdPage, strIdPortletType );
         template.substitute( COMBO_DOCUMENT_TYPE_LIST, getDocumentTypesList( "" ) );
         template.substitute( COMBO_DOCUMENT_CATEGORY_LIST, getCategoryList( "", user ) );
+        template.substitute( COMBO_DOCUMENT_LIST, getDocumentList( 0, user ) );
 
         return template.getHtml(  );
     }
@@ -148,6 +159,7 @@ public class DocumentPortletJspBean extends PortletJspBean
         // Format the specific modify form (composed of the article)
         template.substitute( COMBO_DOCUMENT_TYPE_LIST, getDocumentTypesList( strPortletId ) );
         template.substitute( COMBO_DOCUMENT_CATEGORY_LIST, getCategoryList( strPortletId, user ) );
+        template.substitute( COMBO_DOCUMENT_LIST, getDocumentList( nPortletId, user ) );
 
         return template.getHtml(  );
     }
@@ -166,6 +178,14 @@ public class DocumentPortletJspBean extends PortletJspBean
 
         //gets the identifier of the parent page
         String strDocumentTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
+        int[] arrayIdCategories = setIdCategory( request );
+        Document document = getSelectedDocument( request );
+
+        if ( ( document != null ) && !_selectionService.isPublishable( document, strDocumentTypeCode, arrayIdCategories ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_NOT_PUBLISHABLE,
+                AdminMessage.TYPE_STOP );
+        }
 
         // get portlet common attributes
         String strErrorUrl = setPortletCommonData( request, portlet );
@@ -181,10 +201,15 @@ public class DocumentPortletJspBean extends PortletJspBean
         portlet.setDocumentTypeCode( strDocumentTypeCode );
 
         //Categories
-        portlet.setIdCategory( setIdCategory( request ) );
+        portlet.setIdCategory( arrayIdCategories );
 
         //Portlet creation
         _documentPortletHome.create( portlet );
+
+        if ( document != null )
+        {
+            _selectionService.showOnly( document.getId(  ), portlet.getId(  ) );
+        }
 
         //Displays the page with the new Portlet
         return getPageUrl( nIdPage );
@@ -205,6 +230,13 @@ public class DocumentPortletJspBean extends PortletJspBean
         DocumentPortlet portlet = (DocumentPortlet) _documentPortletHome.findByPrimaryKey( nPortletId );
         int[] arrayIdCategories = setIdCategory( request );
         int[] arrayOldIdCategories = portlet.getIdCategory(  );
+        Document document = getSelectedDocument( request );
+
+        if ( ( document != null ) && !_selectionService.isPublishable( document, strDocumentTypeCode, arrayIdCategories ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_NOT_PUBLISHABLE,
+                AdminMessage.TYPE_STOP );
+        }
 
         if ( arrayIdCategories != null )
         {
@@ -216,7 +248,8 @@ public class DocumentPortletJspBean extends PortletJspBean
             Arrays.sort( arrayOldIdCategories );
         }
 
-        if ( ( !Arrays.equals( arrayIdCategories, arrayOldIdCategories ) ||
+        // A selected document replaces the assigned ones, it is checked against the new type and categories above
+        if ( ( document == null ) && ( !Arrays.equals( arrayIdCategories, arrayOldIdCategories ) ||
                 !portlet.getDocumentTypeCode(  ).equals( strDocumentTypeCode ) ) &&
                 ( _publishingService.getAssignedDocumentsByPortletId( nPortletId ).size(  ) != 0 ) )
         {
@@ -240,8 +273,25 @@ public class DocumentPortletJspBean extends PortletJspBean
         // updates the portlet
         portlet.update(  );
 
+        if ( document != null )
+        {
+            _selectionService.showOnly( document.getId(  ), nPortletId );
+        }
+
         // displays the page withe the potlet updated
         return getPageUrl( portlet.getPageId(  ) );
+    }
+
+    /**
+     * Returns the document selected in the portlet form
+     * @param request The http servlet request
+     * @return The document, or null if none is selected or the user may not see it
+     */
+    private Document getSelectedDocument( HttpServletRequest request )
+    {
+        List<Document> listDocuments = _selectionService.getSelectedDocuments( request, getUser(  ) );
+
+        return listDocuments.isEmpty(  ) ? null : listDocuments.get( 0 );
     }
 
     /**
@@ -267,6 +317,46 @@ public class DocumentPortletJspBean extends PortletJspBean
         }
 
         return new int[0];
+    }
+
+    /**
+     * Returns an html template containing the document selector
+     * @param nPortletId The portlet identifier, 0 for a new portlet
+     * @param user The current user
+     * @return The html code
+     */
+    private String getDocumentList( int nPortletId, AdminUser user )
+    {
+        List<Document> listSelected = new ArrayList<>(  );
+
+        if ( nPortletId > 0 )
+        {
+            Document documentShown = _publishingService.getFirstValidPublishedDocument( nPortletId );
+
+            if ( ( documentShown != null ) &&
+                    _selectionService.getShownDocuments( nPortletId, user ).stream(  )
+                                         .anyMatch( d -> d.getId(  ) == documentShown.getId(  ) ) )
+            {
+                listSelected.add( documentShown );
+            }
+        }
+
+        return _selectionService.getDocumentSelect( listSelected, false, getLocale(  ) );
+    }
+
+    /**
+     * Returns a page of the documents that can be chosen in the forms of the document portlets and the document list portlets
+     * @param request The http request, with the document type of the portlet, an optional title fragment and the page number
+     * @return The page of documents, as JSON
+     */
+    public String getSearchDocuments( HttpServletRequest request )
+    {
+        String strPage = request.getParameter( PARAMETER_SEARCH_PAGE );
+        int nPage = IntegerUtils.isNumeric( strPage ) ? IntegerUtils.convert( strPage ) : 1;
+
+        return _selectionService.toSearchJson( _selectionService.searchDocuments( getUser(  ),
+                request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE ), request.getParameter( PARAMETER_SEARCH_QUERY ), nPage ),
+            getLocale(  ) );
     }
 
     /**

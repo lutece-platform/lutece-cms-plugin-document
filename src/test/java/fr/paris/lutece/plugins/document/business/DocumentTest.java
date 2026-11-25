@@ -58,10 +58,6 @@ public class DocumentTest extends LuteceTestCase
     private final static int SpaceId2 = 2;
     private final static int StateId1 = 1;
     private final static int StateId2 = 2;
-    private final static String XMLWORKINGCONTENT1 = "XmlWorkingContent1";
-    private final static String XMLWORKINGCONTENT2 = "XmlWorkingContent2";
-    private final static String XMLVALIDATEDCONTENT1 = "XmlValidatedContent1";
-    private final static String XMLVALIDATEDCONTENT2 = "XmlValidatedContent2";
     private final static String SUMMARY1 = "Summary1";
     private final static String SUMMARY2 = "Summary2";
     private final static String COMMENT1 = "Comment1";
@@ -74,8 +70,8 @@ public class DocumentTest extends LuteceTestCase
     private final static boolean SKIPPORTLET2 = false;
     private final static boolean SKIPCATEGORIES1 = false;
     private final static boolean SKIPCATEGORIES2 = true;
-    private final static String XMLMETADATA1 = "XmlMetadata1";
-    private final static String XMLMETADATA2 = "XmlMetadata2";
+    private final static String METADATA1 = "{\"title\":\"Metadata1\"}";
+    private final static String METADATA2 = "{\"title\":\"Metadata2\"}";
     private final static int CreatorId1 = 1;
     private final static int CreatorId2 = 2;
 
@@ -90,16 +86,16 @@ public class DocumentTest extends LuteceTestCase
         document.setTitle( TITLE1 );
         document.setSpaceId( SpaceId1 );
         document.setStateId( StateId1 );
-        document.setXmlWorkingContent( XMLWORKINGCONTENT1 );
-        document.setXmlValidatedContent( XMLVALIDATEDCONTENT1 );
         document.setSummary( SUMMARY1 );
         document.setComment( COMMENT1 );
         document.setDateValidityBegin( DATEVALIDITYBEGIN1 );
         document.setDateValidityEnd( DATEVALIDITYEND1 );
         document.setSkipPortlet( SKIPPORTLET1 );
         document.setSkipCategories( SKIPCATEGORIES1 );
-        document.setXmlMetadata( XMLMETADATA1 );
+        document.setMetadata( METADATA1 );
         document.setCreatorId( CreatorId1 );
+        document.setValidatedTitle( TITLE1 );
+        document.setValidatedSummary( SUMMARY1 );
 
         ArrayList<DocumentAttribute> listAttributes = new ArrayList<DocumentAttribute>(  );
         document.setAttributes( listAttributes );
@@ -115,8 +111,6 @@ public class DocumentTest extends LuteceTestCase
         assertEquals( documentStored.getTitle(  ), document.getTitle(  ) );
         assertEquals( documentStored.getSpaceId(  ), document.getSpaceId(  ) );
         assertEquals( documentStored.getStateId(  ), document.getStateId(  ) );
-        assertEquals( documentStored.getXmlWorkingContent(  ), document.getXmlWorkingContent(  ) );
-        assertEquals( documentStored.getXmlValidatedContent(  ), document.getXmlValidatedContent(  ) );
         assertEquals( documentStored.getSummary(  ), document.getSummary(  ) );
         assertEquals( documentStored.getComment(  ), document.getComment(  ) );
         assertTrue( ( documentStored.getDateValidityBegin(  ).getTime(  ) -
@@ -124,8 +118,10 @@ public class DocumentTest extends LuteceTestCase
         assertTrue( ( documentStored.getDateValidityEnd(  ).getTime(  ) - document.getDateValidityEnd(  ).getTime(  ) ) < 10 );
         assertEquals( documentStored.isSkipPortlet(  ), document.isSkipPortlet(  ) );
         assertEquals( documentStored.isSkipCategories(  ), document.isSkipCategories(  ) );
-        assertEquals( documentStored.getXmlMetadata(  ), document.getXmlMetadata(  ) );
+        assertEquals( documentStored.getMetadata(  ), document.getMetadata(  ) );
         assertEquals( documentStored.getCreatorId(  ), document.getCreatorId(  ) );
+        assertEquals( documentStored.getValidatedTitle(  ), document.getValidatedTitle(  ) );
+        assertEquals( documentStored.getValidatedSummary(  ), document.getValidatedSummary(  ) );
 
         // Update test
         document.setDateCreation( DATECREATION2 );
@@ -133,16 +129,16 @@ public class DocumentTest extends LuteceTestCase
         document.setTitle( TITLE2 );
         document.setSpaceId( SpaceId2 );
         document.setStateId( StateId2 );
-        document.setXmlWorkingContent( XMLWORKINGCONTENT2 );
-        document.setXmlValidatedContent( XMLVALIDATEDCONTENT2 );
         document.setSummary( SUMMARY2 );
         document.setComment( COMMENT2 );
         document.setDateValidityBegin( DATEVALIDITYBEGIN2 );
         document.setDateValidityEnd( DATEVALIDITYEND2 );
         document.setSkipPortlet( SKIPPORTLET2 );
         document.setSkipCategories( SKIPCATEGORIES2 );
-        document.setXmlMetadata( XMLMETADATA2 );
+        document.setMetadata( METADATA2 );
         document.setCreatorId( CreatorId2 );
+        document.setValidatedTitle( TITLE2 );
+        document.setValidatedSummary( SUMMARY2 );
         DocumentHome.update( document, false );
         documentStored = DocumentHome.findByPrimaryKey( document.getId(  ) );
         assertEquals( documentStored.getId(  ), document.getId(  ) );
@@ -153,8 +149,6 @@ public class DocumentTest extends LuteceTestCase
         assertEquals( documentStored.getTitle(  ), document.getTitle(  ) );
         assertEquals( documentStored.getSpaceId(  ), document.getSpaceId(  ) );
         assertEquals( documentStored.getStateId(  ), document.getStateId(  ) );
-        assertEquals( documentStored.getXmlWorkingContent(  ), document.getXmlWorkingContent(  ) );
-        assertEquals( documentStored.getXmlValidatedContent(  ), document.getXmlValidatedContent(  ) );
         assertEquals( documentStored.getSummary(  ), document.getSummary(  ) );
         assertEquals( documentStored.getComment(  ), document.getComment(  ) );
         assertTrue( ( documentStored.getDateValidityBegin(  ).getTime(  ) -
@@ -162,8 +156,10 @@ public class DocumentTest extends LuteceTestCase
         assertTrue( ( documentStored.getDateValidityEnd(  ).getTime(  ) - document.getDateValidityEnd(  ).getTime(  ) ) < 10 );
         assertEquals( documentStored.isSkipPortlet(  ), document.isSkipPortlet(  ) );
         assertEquals( documentStored.isSkipCategories(  ), document.isSkipCategories(  ) );
-        assertEquals( documentStored.getXmlMetadata(  ), document.getXmlMetadata(  ) );
+        assertEquals( documentStored.getMetadata(  ), document.getMetadata(  ) );
         assertEquals( documentStored.getCreatorId(  ), document.getCreatorId(  ) );
+        assertEquals( documentStored.getValidatedTitle(  ), document.getValidatedTitle(  ) );
+        assertEquals( documentStored.getValidatedSummary(  ), document.getValidatedSummary(  ) );
 
         // List test
         DocumentHome.findAllPrimaryKeys(  );

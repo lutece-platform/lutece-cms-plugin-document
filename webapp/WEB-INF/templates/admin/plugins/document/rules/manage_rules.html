@@ -11,6 +11,7 @@
 			</@tform>
 		</@pageHeader>
 		<@manageFeature>
+		<#if rules_list?has_content>
 			<#list rules_list as rule >
 				<@manageFeatureItem>
 					<@manageFeatureItemColumn>${rules_descriptions[rule.id?c]!}</@manageFeatureItemColumn>
@@ -19,6 +20,11 @@
 					</@manageFeatureItemColumn>
 				</@manageFeatureItem>
 			</#list>
+		<#else>
+			<@box>
+				<@empty title='#i18n{document.manage_rules.noRules}' />
+			</@box>
+		</#if>
 		</@manageFeature>
 	</@pageColumn>
 </@pageContainer>

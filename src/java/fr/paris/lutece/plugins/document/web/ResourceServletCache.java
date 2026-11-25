@@ -33,72 +33,139 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
+import fr.paris.lutece.plugins.document.business.Document;
+import fr.paris.lutece.plugins.document.business.DocumentHome;
+import fr.paris.lutece.plugins.document.business.DocumentResource;
+import fr.paris.lutece.plugins.document.service.DocumentEvent;
 import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
 
-import javax.cache.Cache;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.servlet.ServletContext;
 
 /**
- * ResourceServletCache
+ * Cache of the validated files served by the {@link DocumentResourceServlet}. The files of a document are removed from the cache on each event
+ * of this document.
  */
-public class ResourceServletCache extends AbstractCacheableService < String, ResourceValueObject >
+@ApplicationScoped
+public class ResourceServletCache extends AbstractCacheableService<String, ResourceValueObject>
 {
-	private static final String NAME = "Document ResourceServlet Cache";
+    private static final String NAME = "Document ResourceServlet Cache";
+    private static final String KEY_DOC_BEGIN = "[doc:";
+    private static final String KEY_ATTR_BEGIN = "[attr:";
+    private static final String KEY_ITEM_CLOSE = "]";
 
-	/**
-	 * Default constructor
-	 */
-	public ResourceServletCache( )
-	{
-		initCache( getName( ) );
-	}
+    /**
+     * Creates the cache
+     */
+    @PostConstruct
+    void init( )
+    {
+        initCache( getName( ) );
+    }
 
-	/**
-	 * Gets the cache name
-	 * 
-	 * @return The cache name
-	 */
-	public final String getName( )
-	{
-		return NAME;
-	}
+    /**
+     * Gets the cache name
+     *
+     * @return The cache name
+     */
+    @Override
+    public String getName( )
+    {
+        return NAME;
+    }
 
-	/**
-	 * Get from the cache
-	 * 
-	 * @param strKey The key
-	 * @return The object or null if not found
-	 */
-	public ResourceValueObject get( String strKey )
-	{
-		return ( ResourceValueObject ) super.get( strKey );
-	}
+    /**
+     * Returns the cache key of a file
+     *
+     * @param nDocumentId
+     *            The document identifier
+     * @param nAttributeId
+     *            The attribute identifier
+     * @return The cache key
+     */
+    public static String getCacheKey( int nDocumentId, int nAttributeId )
+    {
+        return KEY_DOC_BEGIN + nDocumentId + KEY_ITEM_CLOSE + KEY_ATTR_BEGIN + nAttributeId + KEY_ITEM_CLOSE;
+    }
 
-	/**
-	 * Put an object into the cache
-	 * 
-	 * @param strKey   The key
-	 * @param resource The value
-	 */
-	public void put( String strKey, ResourceValueObject resource )
-	{
-		super.put( strKey, resource );
-	}
+    /**
+     * Puts a file of the validated content in the cache, with the modification date of its document. Nothing is done when the cache is
+     * disabled.
+     *
+     * @param resource
+     *            The file
+     * @param nDocumentId
+     *            The document identifier
+     * @param nAttributeId
+     *            The attribute identifier
+     */
+    public void putValidatedResource( ResourceValueObject resource, int nDocumentId, int nAttributeId )
+    {
+        if ( !isCacheEnable( ) )
+        {
+            return;
+        }
 
-	/**
-	 * Remove keys from a key pattern
-	 * 
-	 * @param strKeyPattern The key pattern
-	 */
-	void removeFromKeyPattern( String strKeyPattern )
-	{
-		Cache < String, ResourceValueObject > cache = getCache( );
+        Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
 
-		for( String strKey : getKeys( ) )
-		{
-			if( strKey.contains( strKeyPattern ) )
-			{
-				cache.remove( strKey );
-			}
-		}
-	}
+        if ( document != null && document.getDateModification( ) != null )
+        {
+            resource.setLastModified( document.getDateModification( ).getTime( ) );
+        }
+
+        put( getCacheKey( nDocumentId, nAttributeId ), resource );
+    }
+
+    /**
+     * Loads a file of the validated content and puts it in the cache. Nothing is done when the cache is disabled or the file does not exist.
+     *
+     * @param nDocumentId
+     *            The document identifier
+     * @param nAttributeId
+     *            The attribute identifier
+     */
+    public void cacheValidatedResource( int nDocumentId, int nAttributeId )
+    {
+        if ( isCacheEnable( ) )
+        {
+            DocumentResource resource = DocumentHome.getValidatedResource( nDocumentId, nAttributeId );
+
+            if ( resource != null )
+            {
+                putValidatedResource( new ResourceValueObject( resource ), nDocumentId, nAttributeId );
+            }
+        }
+    }
+
+    /**
+     * Removes the files of a document from the cache when the document changes
+     *
+     * @param event
+     *            The document event
+     */
+    public void onDocumentEvent( @Observes DocumentEvent event )
+    {
+        String strKeyPattern = KEY_DOC_BEGIN + event.getDocument( ).getId( ) + KEY_ITEM_CLOSE;
+
+        for ( String strKey : getKeys( ) )
+        {
+            if ( strKey.contains( strKeyPattern ) )
+            {
+                remove( strKey );
+            }
+        }
+    }
+
+    /**
+     * Creates the cache at the application startup, so that it is listed in the cache management page
+     *
+     * @param context
+     *            The servlet context
+     */
+    public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context )
+    {
+    }
 }

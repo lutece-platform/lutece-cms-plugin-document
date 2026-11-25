@@ -37,24 +37,13 @@ import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataHandler;
 import fr.paris.lutece.plugins.document.service.metadata.MetadataService;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
-import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.util.UniqueIDGenerator;
-import fr.paris.lutece.util.html.HtmlTemplate;
 import jakarta.enterprise.inject.literal.NamedLiteral;
 import jakarta.enterprise.inject.spi.CDI;
 
-import java.io.ByteArrayInputStream;
-import java.io.StringReader;
 import java.io.Serializable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 
 /**
  * This class represents the business object DocumentType
@@ -65,26 +54,14 @@ public class DocumentType implements RBACResource, Serializable
     private static final long serialVersionUID = 1L;
     
     public static final String RESOURCE_TYPE = "DOCUMENT_TYPE";
-    private static final String TEMPLATE_ADMIN_DEFAULT_XSL = "/admin/plugins/document/document_admin_default_xsl.html";
-    private static final String TEMPLATE_CONTENT_SERVICE_DEFAULT_XSL = "/skin/plugins/document/document_content_service_default_xsl.html";
-    private static final String MARK_DOCUMENT_TYPE = "document_type";
-    private static final int MODE_ADMIN = 1;
-
-    // Style prefix Id
-    private static final String STYLE_PREFIX_ID = UniqueIDGenerator.getNewId( ) + "document-";
-    private static final String STYLE_PREFIX_DEFAULT = UniqueIDGenerator.getNewId( ) + "default-";
-    private static final String STYLE_PREFIX_CONTENT_SERVICE = STYLE_PREFIX_ID + "content-";
-    private static final String STYLE_PREFIX_ADMIN_SERVICE = STYLE_PREFIX_ID + "admin-";
-    private static final String STYLE_PREFIX_DEFAULT_CONTENT_SERVICE = STYLE_PREFIX_CONTENT_SERVICE + STYLE_PREFIX_DEFAULT;
-    private static final String STYLE_PREFIX_DEFAULT_ADMIN_SERVICE = STYLE_PREFIX_ADMIN_SERVICE + STYLE_PREFIX_DEFAULT;
 
     // Variables declarations
     private String _strCode;
     private String _strOldCode;
     private String _strName;
     private String _strDescription;
-    private byte [ ] _baAdminXsl;
-    private byte [ ] _baContentServiceXsl;
+    private String _strAdminTemplate;
+    private String _strContentTemplate;
     private ArrayList<DocumentAttribute> _listAttributes = new ArrayList<DocumentAttribute>( );
     private int _nThumbnailAttributeId;
     private String _strDefaultThumbnailUrl;
@@ -175,45 +152,45 @@ public class DocumentType implements RBACResource, Serializable
     }
 
     /**
-     * Returns the Xsl for the Administration module
+     * Returns the FreeMarker template used to preview the document in the back office
      *
-     * @return The Xsl
+     * @return The template, or null to use the default template
      */
-    public byte [ ] getAdminXsl( )
+    public String getAdminTemplate( )
     {
-        return _baAdminXsl;
+        return _strAdminTemplate;
     }
 
     /**
-     * Sets the Xsl for the Administration module
+     * Sets the FreeMarker template used to preview the document in the back office
      *
-     * @param baXsl
-     *            The Xsl
+     * @param strAdminTemplate
+     *            The template, or null to use the default template
      */
-    public void setAdminXsl( byte [ ] baXsl )
+    public void setAdminTemplate( String strAdminTemplate )
     {
-        _baAdminXsl = baXsl;
+        _strAdminTemplate = strAdminTemplate;
     }
 
     /**
-     * Returns the Xsl for the Document ContentService
+     * Returns the FreeMarker template used to display the document in the front office
      *
-     * @return The Xsl
+     * @return The template, or null to use the default template
      */
-    public byte [ ] getContentServiceXsl( )
+    public String getContentTemplate( )
     {
-        return _baContentServiceXsl;
+        return _strContentTemplate;
     }
 
     /**
-     * Sets the Xsl for the Document ContentService
+     * Sets the FreeMarker template used to display the document in the front office
      *
-     * @param baXsl
-     *            The Xsl
+     * @param strContentTemplate
+     *            The template, or null to use the default template
      */
-    public void setContentServiceXsl( byte [ ] baXsl )
+    public void setContentTemplate( String strContentTemplate )
     {
-        _baContentServiceXsl = baXsl;
+        _strContentTemplate = strContentTemplate;
     }
 
     /**
@@ -297,145 +274,6 @@ public class DocumentType implements RBACResource, Serializable
     public String getResourceId( )
     {
         return getCode( );
-    }
-
-    /**
-     * Returns a default XSL stylesheet to display the document into the backoffice
-     * 
-     * @return An XSL stylesheet as a String
-     */
-    private String getAdminDefaultXsl( )
-    {
-        Map<String, Object> model = new HashMap<String, Object>( );
-        model.put( MARK_DOCUMENT_TYPE, this );
-
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADMIN_DEFAULT_XSL, Locale.getDefault( ), model );
-
-        return template.getHtml( );
-    }
-
-    /**
-     * Returns a default XSL stylesheet to display the document into the frontoffice
-     * 
-     * @return An XSL stylesheet as a String
-     */
-    private String getContentServiceDefaultXsl( )
-    {
-        Map<String, Object> model = new HashMap<String, Object>( );
-        model.put( MARK_DOCUMENT_TYPE, this );
-
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CONTENT_SERVICE_DEFAULT_XSL, Locale.getDefault( ), model );
-
-        return template.getHtml( );
-    }
-
-    /**
-     * Return the admin xsl source : if the admin xsl is null, a default one is generated and returned
-     * 
-     * @return the xsl stylesheet as a source
-     */
-    public Source getAdminXslSource( )
-    {
-        Source xslSource;
-
-        if ( getAdminXsl( ) != null )
-        {
-            xslSource = new StreamSource( new ByteArrayInputStream( getAdminXsl( ) ) );
-        }
-        else
-        {
-            StringReader xslStringReader = new StringReader( getAdminDefaultXsl( ) );
-            xslSource = new StreamSource( xslStringReader );
-        }
-
-        return xslSource;
-    }
-
-    /**
-     * Return the xsl source to display the document into the frontoffice : if the admin xsl is null, a default one is generated and returned.
-     * 
-     * @return the xsl stylesheet as a source
-     */
-    public Source getContentServiceXslSource( )
-    {
-        Source xslSource;
-
-        if ( ( getContentServiceXsl( ) != null ) && ( getContentServiceXsl( ).length > 0 ) )
-        {
-            xslSource = new StreamSource( new ByteArrayInputStream( getContentServiceXsl( ) ) );
-        }
-        else
-        {
-            StringReader xslStringReader = new StringReader( getContentServiceDefaultXsl( ) );
-            xslSource = new StreamSource( xslStringReader );
-        }
-
-        return xslSource;
-    }
-
-    /**
-     * Return the StyleSheet unique Id
-     * 
-     * @param nMode
-     *            The current mode.
-     * @return the StyleSheet unique Id
-     */
-    public String getStyleSheetId( int nMode )
-    {
-        String strResult = null;
-
-        if ( nMode == MODE_ADMIN )
-        {
-            strResult = this.getAdminStyleSheetId( );
-        }
-        else
-        {
-            strResult = this.getContentServiceStyleSheetId( );
-        }
-
-        return strResult;
-    }
-
-    /**
-     * Return the content service StyleSheet unique Id
-     * 
-     * @return The id
-     */
-    public String getContentServiceStyleSheetId( )
-    {
-        String strStyleSheetId;
-
-        if ( ( getContentServiceXsl( ) != null ) && ( getContentServiceXsl( ).length > 0 ) )
-        {
-            strStyleSheetId = STYLE_PREFIX_CONTENT_SERVICE + this.getResourceId( );
-        }
-        else
-        {
-            strStyleSheetId = STYLE_PREFIX_DEFAULT_CONTENT_SERVICE;
-        }
-
-        return strStyleSheetId;
-    }
-
-    /**
-     * Return the admin StyleSheet unique Id
-     * 
-     * @return The id
-     */
-    public String getAdminStyleSheetId( )
-    {
-        String strStyleSheetId;
-
-        if ( ( getAdminXsl( ) != null ) && ( getAdminXsl( ).length > 0 ) )
-        {
-            strStyleSheetId = STYLE_PREFIX_ADMIN_SERVICE + this.getResourceId( );
-        }
-        else
-        {
-            strStyleSheetId = STYLE_PREFIX_DEFAULT_ADMIN_SERVICE;
-        }
-
-        return strStyleSheetId;
     }
 
     /**

@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.document.web.publishing;
 
+import fr.paris.lutece.portal.web.constants.Messages;
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
@@ -174,6 +176,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     private static final String JSP_DOCUMENTS_ASSIGN = "ManageDocumentPublishing.jsp";
     private static final String JSP_DOCUMENTS_PUBLISHING = "ManagePublishing.jsp";
     private static final String JSP_DELETE_AUTO_PUBLICATION = "jsp/admin/plugins/document/DoDeleteAutoPublication.jsp";
+    private static final String SECURITY_TOKEN_ACTION = "jsp/admin/plugins/document/ManageDocumentPublishing.jsp";
     private static final String JSP_CHANGE_MODE_PUBLICATION = "jsp/admin/plugins/document/DoChangeModePublication.jsp";
     private static final String MESSAGE_AUTO_PUBLICATION_ALREADY_EXISTS = "document.message.autoPublication.alreadyExists";
     private static final String MESSAGE_AUTO_PUBLICATION_NOT_FOUND = "document.message.autoPublication.notFound";
@@ -335,6 +338,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             return null;
         }
 
+        _model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DOCUMENT_PUBLISHING, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
@@ -502,6 +506,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     public String doAssignedDocument( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         // Recovery of parameters processing
         int nDocumentId = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ID ) );
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
@@ -571,6 +580,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     public String doUnAssignedDocument( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         // Recovery of parameters processing
         int nDocumentId = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ID ) );
         int nPortletId = IntegerUtils.convert( request.getParameter( PARAMETER_PORTLET_ID ) );
@@ -659,6 +673,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = IntegerUtils.convert( strPortletId );
         UrlItem url = new UrlItem( JSP_CHANGE_MODE_PUBLICATION );
+        url.addParameter( SecurityTokenService.PARAMETER_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
         url.addParameter( PARAMETER_PORTLET_ID, strPortletId );
         url.addParameter( PARAMETER_MODE_PUBLICATION, strModePublication );
         url.addParameter( PARAMETER_OLD_MODE_PUBLICATION, strOldModePublication );
@@ -707,6 +722,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     public String doChangeModePublication( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         String strModePublication = request.getParameter( PARAMETER_MODE_PUBLICATION );
         String strOldModePublication = request.getParameter( PARAMETER_OLD_MODE_PUBLICATION );
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
@@ -763,6 +783,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     public String doPublishingDocument( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         // Recovery of parameters processing
         int nDocumentId = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ID ) );
         int nPortletId = IntegerUtils.convert( request.getParameter( PARAMETER_PORTLET_ID ) );
@@ -782,6 +807,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     public String doUnPublishingDocument( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         // Recovery of parameters processing
         int nDocumentId = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ID ) );
         int nPortletId = IntegerUtils.convert( request.getParameter( PARAMETER_PORTLET_ID ) );
@@ -800,6 +830,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     public String doModifyDocumentOrder( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         int nDocumentId = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ID ) );
         int nPortletId = IntegerUtils.convert( request.getParameter( PARAMETER_PORTLET_ID ) );
         int nNewOrder = IntegerUtils.convert( request.getParameter( PARAMETER_DOCUMENT_ORDER ) );
@@ -853,6 +888,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         _model.put( MARK_SPACES_BROWSER,
             HtmlMarkup.of( _documentSpacesService.getSpacesBrowser( request, getUser(  ), getLocale(  ), true, true ) ) );
 
+        _model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_AUTO_PUBLICATION, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
@@ -867,6 +903,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     public String doCreateAutoPublication( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         String strSpaceId = request.getParameter( DocumentSpacesService.PARAMETER_BROWSER_SELECTED_SPACE_ID );
         int nPortletId = IntegerUtils.convert( strPortletId );
@@ -911,6 +952,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         }
 
         UrlItem url = new UrlItem( JSP_DELETE_AUTO_PUBLICATION );
+        url.addParameter( SecurityTokenService.PARAMETER_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
         url.addParameter( PARAMETER_PORTLET_ID, nPortletId );
         url.addParameter( PARAMETER_MODE_PUBLICATION, MODE_PUBLICATION_AUTO_PUBLICATION );
         url.addParameter( PARAMETER_SPACE_ID, nSpaceId );
@@ -928,6 +970,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     public String doDeleteAutoPublication( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         String strSpaceId = request.getParameter( PARAMETER_SPACE_ID );
         int nPortletId = IntegerUtils.convert( strPortletId );
@@ -1122,6 +1169,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
      */
     private String getStandardPublication( HttpServletRequest request, Models model, int nPortletId )
     {
+        _model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
         StringBuffer strPublishedDocumentsRow = new StringBuffer(  );
 
         // Scan of the list

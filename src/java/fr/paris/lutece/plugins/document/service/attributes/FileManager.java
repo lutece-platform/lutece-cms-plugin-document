@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.document.service.attributes;
 
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
-import fr.paris.lutece.util.xml.XmlUtil;
+import fr.paris.lutece.plugins.document.service.view.FileAttributeValue;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,11 +45,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class FileManager extends DefaultManager
 {
-    private static final String TAG_FILE_RESOURCE = "file-resource";
-    private static final String TAG_DOCUMENT_ID = "resource-document-id";
-    private static final String TAG_ATTRIBUTE_ID = "resource-attribute-id";
-    private static final String TAG_CONTENT_TYPE = "resource-content-type";
-    private static final String TAG_FILE_SIZE = "file-size";
     private static final String TEMPLATE_CREATE_ATTRIBUTE = "admin/plugins/document/attributes/create_file.html";
     private static final String TEMPLATE_MODIFY_ATTRIBUTE = "admin/plugins/document/attributes/modify_file.html";
     private static final String TEMPLATE_CREATE_PARAMETERS_ATTRIBUTE = "admin/plugins/document/attributes/create_parameters_file.html";
@@ -92,29 +87,17 @@ public class FileManager extends DefaultManager
     }
 
     /**
-     * Get the XML data corresponding to the attribute to build the document XML
-     * content
-     * @param document The document
-     * @param attribute The attribute
-     * @return The XML value of the attribute
+     * {@inheritDoc} The binary value is not loaded when rendering: a file is identified by its content type.
      */
-    public String getAttributeXmlValue( Document document, DocumentAttribute attribute )
+    @Override
+    public Object getAttributeValue( Document document, DocumentAttribute attribute, boolean bValidated )
     {
-        StringBuffer sbXml = new StringBuffer(  );
-
-        if ( ( attribute.getBinaryValue(  ) != null ) && ( attribute.getBinaryValue(  ).length != 0 ) )
+        if ( !attribute.isBinary(  ) || StringUtils.isBlank( attribute.getValueContentType(  ) ) )
         {
-            XmlUtil.beginElement( sbXml, TAG_FILE_RESOURCE );
-            XmlUtil.addElement( sbXml, TAG_DOCUMENT_ID, document.getId(  ) );
-            XmlUtil.addElement( sbXml, TAG_ATTRIBUTE_ID, attribute.getId(  ) );
-            XmlUtil.addElement( sbXml, TAG_CONTENT_TYPE, attribute.getValueContentType(  ) );
-            XmlUtil.endElement( sbXml, TAG_FILE_RESOURCE );
-
-            XmlUtil.addElement( sbXml, TAG_FILE_SIZE, attribute.getBinaryValue(  ).length );
-
-            return sbXml.toString(  );
+            return null;
         }
 
-        return StringUtils.EMPTY;
+        return new FileAttributeValue( document.getId(  ), attribute.getId(  ), attribute.getTextValue(  ),
+            attribute.getValueContentType(  ), bValidated );
     }
 }

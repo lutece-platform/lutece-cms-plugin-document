@@ -1,0 +1,4 @@
+/* Document create and modify forms: the properties column (#documentPropertiesTabs) can be hidden to give the full width to the document */
+.document-form-layout.document-properties-hidden > .document-properties-column { display: none; }
+.document-form-layout.document-properties-hidden > .document-main-column { flex: 0 0 100%; max-width: 100%; }
+.document-form-layout:not( .document-properties-hidden ) .document-properties-show { display: none; }

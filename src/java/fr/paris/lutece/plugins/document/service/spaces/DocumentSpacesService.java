@@ -34,32 +34,28 @@
 package fr.paris.lutece.plugins.document.service.spaces;
 
 import fr.paris.lutece.api.user.User;
-import fr.paris.lutece.plugins.document.business.DocumentType;
 import fr.paris.lutece.plugins.document.business.DocumentTypeHome;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpace;
 import fr.paris.lutece.plugins.document.business.spaces.DocumentSpaceHome;
-import fr.paris.lutece.plugins.document.service.DocumentTypeResourceIdService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
-import fr.paris.lutece.plugins.resource.loader.ResourceNotFoundException;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
-import fr.paris.lutece.util.xml.XmlUtil;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
-
-import java.io.FileInputStream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Initialized;
@@ -68,10 +64,6 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Named;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
 
 /**
  * Document Spaces management Service.
@@ -82,14 +74,23 @@ public class DocumentSpacesService
 {
 	public static final String PARAMETER_BROWSER_SELECTED_SPACE_ID = "browser_selected_space_id";
 	private static final String REGEX_ID = "^[\\d]+$";
-	private static final String TAG_SPACES = "spaces";
-	private static final String TAG_SPACE = "space";
-	private static final String TAG_SPACE_ID = "space-id";
-	private static final String TAG_SPACE_IS_VALID = "space-is-valid";
-	private static final String TAG_SPACE_NAME = "name";
-	private static final String TAG_SPACE_DESCRIPTION = "description";
-	private static final String TAG_SPACE_CHILDS = "child-spaces";
-	private static final String TAG_SPACE_ICON_URL = "space-icon-url";
+
+	// space forms
+	private static final String TEMPLATE_CREATE_SPACE_FORM = "/admin/plugins/document/spaces/create_space_form.html";
+	private static final String TEMPLATE_MODIFY_SPACE_FORM = "/admin/plugins/document/spaces/modify_space_form.html";
+	private static final String TEMPLATE_MOVE_SPACE_FORM = "/admin/plugins/document/spaces/move_space_form.html";
+	private static final String MARK_SPACES_TREE = "spaces_tree";
+	private static final String MARK_PARENT_SPACE = "parent_space";
+	private static final String MARK_VIEW_TYPE = "view_type";
+	private static final String MARK_VIEW_TYPES_LIST = "view_types_list";
+	private static final String MARK_ICONS_LIST = "icons_list";
+	private static final String MARK_DOCUMENT_TYPES_LIST = "document_types_list";
+	private static final String MARK_USER_WORKGROUP_LIST = "user_workgroup_list";
+	private static final String MARK_WORKGROUP_SELECTED = "selected_workgroup";
+	private static final String MARK_TOKEN = "token";
+	private static final String MARK_MODAL = "in_modal";
+	private static final String MARK_ID_PREFIX = "id_prefix";
+	private static final String DEFAULT_VIEW_TYPE = "1";
 
 	// browser
 	private static final String TEMPLATE_BROWSE_SPACES = "/admin/plugins/document/spaces/browse_spaces.html";
@@ -101,11 +102,6 @@ public class DocumentSpacesService
 	private static final String MARK_URLS_LIST = "has_childs";
 	private static final String MARK_SELECTED_SPACE = "selected_space";
 	private static final String MARK_GO_UP = "go_up";
-	private static final String PATH_XSL = "/WEB-INF/plugins/document/xsl/";
-	private static final String FILE_TREE_XSL = "document_spaces_tree.xsl";
-
-	// CONSTANTS
-	private static final String CONSTANT_TRUE = "true";
 
 	/** Creates a new instance of DocumentSpacesService */
 	public DocumentSpacesService( )
@@ -113,67 +109,194 @@ public class DocumentSpacesService
 	}
 
 	/**
-	 * Returns the unique instance of the {@link DocumentSpacesService} service.
-	 * 
-	 * <p>
-	 * This method is deprecated and is provided for backward compatibility only.
-	 * For new code, use dependency injection with {@code @Inject} to obtain the
-	 * {@link DocumentSpacesService} instance instead.
-	 * </p>
-	 * 
-	 * @return The unique instance of {@link DocumentSpacesService}.
-	 * 
-	 * @deprecated Use {@code @Inject} to obtain the {@link DocumentSpacesService}
-	 *             instance. This method will be removed in future versions.
-	 */
-	@Deprecated( since = "8.0", forRemoval = true )
-	public static DocumentSpacesService getInstance( )
-	{
-		return CDI.current( ).select( DocumentSpacesService.class ).get( );
-	}
-
-	/**
-	 * Gets allowed Spaces for a given user as an XML document
+	 * Gets the tree of the spaces a given user is allowed to see
 	 * 
 	 * @param user The current user
-	 * @return An XML document containing allowed spaces
+	 * @return The root nodes of the tree
 	 */
-	public String getXmlSpacesList( AdminUser user )
+	public List < SpaceNode > getSpacesTree( AdminUser user )
 	{
-		StringBuffer sbXML = new StringBuffer( );
-		XmlUtil.beginElement( sbXML, TAG_SPACES );
+		List < SpaceNode > listNodes = new ArrayList<>( );
+		Map < Integer, SpaceNode > mapBuiltNodes = new HashMap<>( );
 
 		for( DocumentSpace space : getUserSpaces( user ) )
 		{
-			findSpaces( sbXML, space.getId( ), user );
+			SpaceNode node = getSpaceNode( space.getId( ), user, mapBuiltNodes );
+
+			if( node != null )
+			{
+				listNodes.add( node );
+			}
 		}
 
-		XmlUtil.endElement( sbXML, TAG_SPACES );
-
-		return sbXML.toString( );
+		return listNodes;
 	}
 
 	/**
-	 * Gets allowed Spaces for a given user and a type of document as an XML
-	 * document
+	 * Gets the tree of the spaces a given user is allowed to see, each space being displayed once: {@link #getSpacesTree( AdminUser )} adds every
+	 * authorized space as a root with its subtree, so a space that already appears in the subtree of another root is removed from the roots
 	 * 
-	 * @param user        The current user
-	 * @param strCodeType The code for the document type
-	 * @return An XML document containing allowed spaces
+	 * @param user The current user
+	 * @return The root nodes of the tree
 	 */
-	public String getXmlSpacesList( AdminUser user, String strCodeType )
+	public List < SpaceNode > getSpacesTreeRoots( AdminUser user )
 	{
-		StringBuffer sbXML = new StringBuffer( );
-		XmlUtil.beginElement( sbXML, TAG_SPACES );
+		List < SpaceNode > listNodes = getSpacesTree( user );
+		Set < Integer > setDescendantIds = new HashSet<>( );
 
-		for( DocumentSpace space : getUserSpaces( user ) )
+		for( SpaceNode node : listNodes )
 		{
-			findSpacesByCodeType( sbXML, space.getId( ), user, strCodeType );
+			addDescendantIds( node, setDescendantIds );
 		}
 
-		XmlUtil.endElement( sbXML, TAG_SPACES );
+		List < SpaceNode > listRoots = new ArrayList<>( );
 
-		return sbXML.toString( );
+		for( SpaceNode node : listNodes )
+		{
+			if( ! setDescendantIds.contains( node.getId( ) ) )
+			{
+				listRoots.add( node );
+			}
+		}
+
+		return listRoots;
+	}
+
+	/**
+	 * Adds recursively the identifiers of the descendants of a node
+	 * 
+	 * @param node   The node
+	 * @param setIds The set of identifiers to fill
+	 */
+	private static void addDescendantIds( SpaceNode node, Set < Integer > setIds )
+	{
+		for( SpaceNode child : node.getChildren( ) )
+		{
+			setIds.add( child.getId( ) );
+			addDescendantIds( child, setIds );
+		}
+	}
+
+	/**
+	 * Gets the HTML form to create a child space
+	 * 
+	 * @param nIdParentSpace The identifier of the parent space
+	 * @param user           The current user
+	 * @param locale         The locale
+	 * @param strToken       The security token of the spaces actions
+	 * @param bModal         true if the form is displayed in a modal dialog
+	 * @param strIdPrefix    The prefix of the identifiers of the fields, to keep them unique in the page
+	 * @return The form, or an empty string if the user is not allowed to create a space in the parent space
+	 */
+	public String getCreateSpaceForm( int nIdParentSpace, AdminUser user, Locale locale, String strToken, boolean bModal,
+			String strIdPrefix )
+	{
+		String strIdParentSpace = Integer.toString( nIdParentSpace );
+		DocumentSpace spaceParent = DocumentSpaceHome.findByPrimaryKey( nIdParentSpace );
+
+		if( ( spaceParent == null ) ||
+				! RBACService.isAuthorized( DocumentSpace.RESOURCE_TYPE, strIdParentSpace, SpaceResourceIdService.PERMISSION_CREATE, ( User ) user ) ||
+				! isAuthorizedViewByWorkgroup( nIdParentSpace, user ) )
+		{
+			return StringUtils.EMPTY;
+		}
+
+		ReferenceList refListWorkGroups = AdminWorkgroupService.getUserWorkgroups( user, locale );
+		Map < String, Object > model = getSpaceFormModel( refListWorkGroups, locale, strToken, bModal, strIdPrefix );
+		model.put( MARK_DOCUMENT_TYPES_LIST, DocumentTypeHome.getDocumentTypesList( ) );
+		model.put( MARK_PARENT_SPACE, spaceParent );
+
+		// LUTECE-890 : the first workgroup will be selected by default
+		if( ! refListWorkGroups.isEmpty( ) )
+		{
+			model.put( MARK_WORKGROUP_SELECTED, refListWorkGroups.get( 0 ).getCode( ) );
+		}
+
+		return AppTemplateService.getTemplate( TEMPLATE_CREATE_SPACE_FORM, locale, model ).getHtml( );
+	}
+
+	/**
+	 * Gets the HTML form to modify a space
+	 * 
+	 * @param nIdSpace    The identifier of the space
+	 * @param user        The current user
+	 * @param locale      The locale
+	 * @param strToken    The security token of the spaces actions
+	 * @param bModal      true if the form is displayed in a modal dialog
+	 * @param strIdPrefix The prefix of the identifiers of the fields, to keep them unique in the page
+	 * @return The form, or an empty string if the user is not allowed to modify the space
+	 */
+	public String getModifySpaceForm( int nIdSpace, AdminUser user, Locale locale, String strToken, boolean bModal, String strIdPrefix )
+	{
+		String strIdSpace = Integer.toString( nIdSpace );
+		DocumentSpace space = DocumentSpaceHome.findByPrimaryKey( nIdSpace );
+
+		if( ( space == null ) ||
+				! RBACService.isAuthorized( DocumentSpace.RESOURCE_TYPE, strIdSpace, SpaceResourceIdService.PERMISSION_MODIFY, ( User ) user ) ||
+				! isAuthorizedViewByWorkgroup( nIdSpace, user ) )
+		{
+			return StringUtils.EMPTY;
+		}
+
+		ReferenceList listDocumentTypes = DocumentTypeHome.getDocumentTypesList( );
+		listDocumentTypes.checkItems( space.getAllowedDocumentTypes( ) );
+
+		Map < String, Object > model = getSpaceFormModel( AdminWorkgroupService.getUserWorkgroups( user, locale ), locale, strToken, bModal,
+				strIdPrefix );
+		model.put( MARK_DOCUMENT_TYPES_LIST, listDocumentTypes );
+		model.put( MARK_SPACE, space );
+
+		return AppTemplateService.getTemplate( TEMPLATE_MODIFY_SPACE_FORM, locale, model ).getHtml( );
+	}
+
+	/**
+	 * Gets the HTML form to move a space under another space
+	 * 
+	 * @param nIdSpace    The identifier of the space to move
+	 * @param user        The current user
+	 * @param locale      The locale
+	 * @param strToken    The security token of the spaces actions
+	 * @param bModal      true if the form is displayed in a modal dialog
+	 * @param strIdPrefix The prefix of the identifiers of the form, to keep them unique in the page
+	 * @return The form, or an empty string if the user is not allowed to move the space
+	 */
+	public String getMoveSpaceForm( int nIdSpace, AdminUser user, Locale locale, String strToken, boolean bModal, String strIdPrefix )
+	{
+		DocumentSpace space = DocumentSpaceHome.findByPrimaryKey( nIdSpace );
+
+		if( ( space == null ) ||
+				! RBACService.isAuthorized( DocumentSpace.RESOURCE_TYPE, Integer.toString( nIdSpace ), SpaceResourceIdService.PERMISSION_MOVE, ( User ) user ) ||
+				! isAuthorizedViewByWorkgroup( nIdSpace, user ) )
+		{
+			return StringUtils.EMPTY;
+		}
+
+		Map < String, Object > model = new HashMap<>( );
+		model.put( MARK_SPACE, space );
+		model.put( MARK_SPACES_TREE, getSpacesTreeRoots( user ) );
+		model.put( MARK_TOKEN, strToken );
+		model.put( MARK_MODAL, bModal );
+		model.put( MARK_ID_PREFIX, StringUtils.defaultString( strIdPrefix ) );
+
+		return AppTemplateService.getTemplate( TEMPLATE_MOVE_SPACE_FORM, locale, model ).getHtml( );
+	}
+
+	/**
+	 * Gets the model shared by the space forms
+	 */
+	private static Map < String, Object > getSpaceFormModel( ReferenceList refListWorkGroups, Locale locale, String strToken, boolean bModal,
+			String strIdPrefix )
+	{
+		Map < String, Object > model = new HashMap<>( );
+		model.put( MARK_VIEW_TYPE, DEFAULT_VIEW_TYPE );
+		model.put( MARK_VIEW_TYPES_LIST, DocumentSpaceHome.getViewTypeList( locale ) );
+		model.put( MARK_ICONS_LIST, DocumentSpaceHome.getIconsList( ) );
+		model.put( MARK_USER_WORKGROUP_LIST, refListWorkGroups );
+		model.put( MARK_TOKEN, strToken );
+		model.put( MARK_MODAL, bModal );
+		model.put( MARK_ID_PREFIX, StringUtils.defaultString( strIdPrefix ) );
+
+		return model;
 	}
 
 	/**
@@ -203,155 +326,46 @@ public class DocumentSpacesService
 	}
 
 	/**
-	 * Gets the XSL to display user spaces tree
-	 * 
-	 * @return The XSL to display user spaces tree
-	 * @throws ResourceNotFoundException 
-	 */
-	public Source getTreeXsl( )
-	{
-		FileInputStream fis = AppPathService.getResourceAsStream( PATH_XSL, FILE_TREE_XSL );
-		Source xslSource = new StreamSource( fis );
-
-		return xslSource;
-	}
-
-	/**
-	 * Build recursively the XML document containing the arborescence of spaces
+	 * Gets the node of a space with the nodes of its children, if the user is allowed to see the space. Every authorized space is the root of its
+	 * own subtree in {@link #getSpacesTree( AdminUser )}: a node already built, as the descendant of another space, is reused instead of being
+	 * loaded again, so that each space is read once from the database
 	 *
-	 * @param sbXML    The buffer in which adding the current space of the
-	 *                 arborescence
-	 * @param nSpaceId The current space of the recursive course
-	 * @param user     AdminUser
+	 * @param nSpaceId      The current space of the recursive course
+	 * @param user          AdminUser
+	 * @param mapBuiltNodes The nodes already built, by space identifier, null for a space the user is not allowed to see
+	 * @return The node of the space, or null if the user is not allowed to see the space
 	 */
-	private void findSpaces( StringBuffer sbXML, int nSpaceId, AdminUser user )
+	private SpaceNode getSpaceNode( int nSpaceId, AdminUser user, Map < Integer, SpaceNode > mapBuiltNodes )
 	{
+		if( mapBuiltNodes.containsKey( nSpaceId ) )
+		{
+			return mapBuiltNodes.get( nSpaceId );
+		}
+
 		DocumentSpace space = DocumentSpaceHome.findByPrimaryKey( nSpaceId );
+		SpaceNode node = null;
 
 		// the space may have been removed since its id was read
 		if( ( space != null ) && AdminWorkgroupService.isAuthorized( space, ( User ) user ) )
 		{
-			XmlUtil.beginElement( sbXML, TAG_SPACE );
-			XmlUtil.addElement( sbXML, TAG_SPACE_ID, space.getId( ) );
-			XmlUtil.addElement( sbXML, TAG_SPACE_NAME, StringEscapeUtils.escapeXml10( space.getName( ) ) );
-			XmlUtil.addElement( sbXML, TAG_SPACE_DESCRIPTION, space.getDescription( ) );
-			XmlUtil.addElement( sbXML, TAG_SPACE_ICON_URL, space.getIconUrl( ) );
+			node = new SpaceNode( space.getId( ), space.getName( ), space.getDescription( ), space.getIconUrl( ) );
+			node.getAllowedDocumentTypes( ).addAll( Arrays.asList( space.getAllowedDocumentTypes( ) ) );
+			node.setDocumentCreationAllowed( space.isDocumentCreationAllowed( ) );
 
-			List < DocumentSpace > listChilds = DocumentSpaceHome.findChilds( nSpaceId );
-
-			if( listChilds.size( ) > 0 )
+			for( DocumentSpace child : DocumentSpaceHome.findChilds( nSpaceId ) )
 			{
-				XmlUtil.beginElement( sbXML, TAG_SPACE_CHILDS );
+				SpaceNode childNode = getSpaceNode( child.getId( ), user, mapBuiltNodes );
 
-				for( DocumentSpace child : listChilds )
+				if( childNode != null )
 				{
-					findSpaces( sbXML, child.getId( ), user );
-				}
-
-				XmlUtil.endElement( sbXML, TAG_SPACE_CHILDS );
-			}
-
-			XmlUtil.endElement( sbXML, TAG_SPACE );
-		}
-	}
-
-	/**
-	 * Build recursively the XML document containing the arborescence of spaces
-	 *
-	 * @param sbXML       The buffer in which adding the current space of the
-	 *                    arborescence
-	 * @param nSpaceId    The current space of the recursive course
-	 * @param user        AdminUser
-	 * @param strCodeType The code type
-	 * @return True if the space is valid, false otherwise
-	 */
-	private boolean findSpacesByCodeType( StringBuffer sbXML, int nSpaceId, AdminUser user, String strCodeType )
-	{
-		DocumentSpace space = DocumentSpaceHome.findByPrimaryKey( nSpaceId );
-		DocumentType documentType = DocumentTypeHome.findByPrimaryKey( strCodeType );
-		boolean bValidSpace = false;
-		boolean bChildValidity = false;
-
-		// the space may have been removed since its id was read
-		if( ( space != null ) && AdminWorkgroupService.isAuthorized( space, ( User ) user ) )
-		{
-			Collection < DocumentSpace > listChilds = DocumentSpaceHome.findChilds( nSpaceId );
-
-			boolean bContainCodeType = false;
-
-			for( String strCodeTypeDocument : space.getAllowedDocumentTypes( ) )
-			{
-				if( strCodeTypeDocument.equals( strCodeType ) )
-				{
-					bContainCodeType = true;
-				}
-			}
-
-			if( listChilds.size( ) > 0 )
-			{
-				StringBuffer sbChildrenXML = new StringBuffer( );
-
-				for( DocumentSpace child : listChilds )
-				{
-					bChildValidity = findSpacesByCodeType( sbChildrenXML, child.getId( ), user, strCodeType );
-
-					if( bChildValidity )
-					{
-						// if only one child is valid the current space must be displayed
-						bValidSpace = true;
-					}
-				}
-
-				if( bValidSpace )
-				{
-					// the space has children which are valid or have valid children
-					XmlUtil.beginElement( sbXML, TAG_SPACE );
-					XmlUtil.addElement( sbXML, TAG_SPACE_ID, space.getId( ) );
-
-					if( bContainCodeType && space.isDocumentCreationAllowed( ) &&
-							( RBACService.isAuthorized( documentType, DocumentTypeResourceIdService.PERMISSION_CREATE,
-									( User ) user ) ) )
-					{
-						// the user can create the selected type of document into the space
-						XmlUtil.addElement( sbXML, TAG_SPACE_IS_VALID, CONSTANT_TRUE );
-					}
-
-					XmlUtil.addElement( sbXML, TAG_SPACE_NAME, space.getName( ) );
-					XmlUtil.addElement( sbXML, TAG_SPACE_DESCRIPTION, space.getDescription( ) );
-					XmlUtil.addElement( sbXML, TAG_SPACE_ICON_URL, space.getIconUrl( ) );
-					XmlUtil.beginElement( sbXML, TAG_SPACE_CHILDS );
-					sbXML.append( sbChildrenXML );
-					XmlUtil.endElement( sbXML, TAG_SPACE_CHILDS );
-					XmlUtil.endElement( sbXML, TAG_SPACE );
-				}
-			}
-
-			// the space has no children
-			else
-			{
-				if( ( bContainCodeType ) &&
-						RBACService.isAuthorized( documentType, DocumentTypeResourceIdService.PERMISSION_CREATE,
-								( User ) user ) )
-				{
-					// the space can contain the type of document
-					XmlUtil.beginElement( sbXML, TAG_SPACE );
-					XmlUtil.addElement( sbXML, TAG_SPACE_ID, space.getId( ) );
-					XmlUtil.addElement( sbXML, TAG_SPACE_IS_VALID, CONSTANT_TRUE );
-					XmlUtil.addElement( sbXML, TAG_SPACE_NAME, space.getName( ) );
-					XmlUtil.addElement( sbXML, TAG_SPACE_DESCRIPTION, space.getDescription( ) );
-					XmlUtil.addElement( sbXML, TAG_SPACE_ICON_URL, space.getIconUrl( ) );
-					XmlUtil.endElement( sbXML, TAG_SPACE );
-					bValidSpace = true;
-				}
-				else
-				{
-					// the space can not contain the type of document or the user is not authorized
-					bValidSpace = false;
+					node.getChildren( ).add( childNode );
 				}
 			}
 		}
 
-		return bValidSpace;
+		mapBuiltNodes.put( nSpaceId, node );
+
+		return node;
 	}
 
 	/**

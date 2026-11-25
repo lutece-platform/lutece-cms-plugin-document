@@ -95,14 +95,6 @@ public class MoveSpaceRule extends AbstractRule implements Serializable
     private DocumentSpacesService _documentSpacesService;
 
     /**
-     * Initialize the rule
-     */
-    @Override
-    public void init(  )
-    {
-    }
-
-    /**
      * Gets the Rule name key
      * @return The Rule name key
      */

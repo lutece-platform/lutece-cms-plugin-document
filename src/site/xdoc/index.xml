@@ -95,6 +95,94 @@
                     The CDI priority system automatically selects the available parser with the highest priority.
                 </p>
             </subsection>
+            <subsection name="Templates">
+                <p>
+                    Since version 7.0.0 the plugin uses no XML nor XSL: the documents are displayed with FreeMarker templates.
+                </p>
+                <ul>
+                    <li>
+                        <strong>Document types</strong>: each document type has a back office template (preview of the working content) and a
+                        front office template (validated content), edited in the document type page. An empty template means that the default
+                        template of the plugin is used (<code>admin/plugins/document/document_admin_default.html</code>,
+                        <code>skin/plugins/document/document_content_default.html</code>). A template is checked with a sample document before
+                        being saved, and a template that fails is replaced by the default template when the document is displayed.
+                    </li>
+                    <li>
+                        <strong>Template model</strong>: <code>document</code> (<code>title</code>, <code>summary</code>, <code>categories</code>,
+                        <code>attributes</code> by attribute code), <code>document_type</code>, and in the front office <code>publication_date</code>
+                        (may be null), <code>site_locale</code> and <code>request_parameters</code>. A file attribute is an object with
+                        <code>url</code>, <code>fileName</code>, <code>contentType</code> and <code>image</code>. An attribute without value is absent:
+                        test it with <code>??</code>.
+                    </li>
+                    <li>
+                        <strong>Macros</strong> (<code>util/document/macro_document_view.html</code>, whatever the auto-escaping setting of the site):
+                        <code>@documentValue</code> (escaped text), <code>@documentHtml</code> (rich text as is), <code>@documentFile</code>,
+                        <code>@documentFileIcon</code> and <code>@documentAttribute</code> (display according to the attribute type).
+                    </li>
+                    <li>
+                        <strong>Portlets</strong>: the document and document list portlets use the section templates of the core
+                        (Section Template Management feature). The templates shipped in <code>skin/plugins/document/portlet/</code> replace the
+                        former XSL styles; a site adds its own templates in the core feature.
+                    </li>
+                    <li>
+                        <strong>Metadata</strong>: the metadata of the documents are stored as a JSON object. The Dublin Core handler renders them as
+                        <code>DC.*</code> meta tags with the template <code>skin/plugins/document/document_include_meta.html</code>.
+                    </li>
+                </ul>
+            </subsection>
+            <subsection name="Upgrading to 7.0.0">
+                <p>
+                    Version 7.0.0 no longer depends on plugin-xmltransformer. The upgrade scripts migrate the data; the legacy columns are dropped
+                    at a later start, once their content is no longer needed.
+                </p>
+                <ul>
+                    <li>
+                        <strong>Document types</strong>: the initial document types whose XSL stylesheets were never modified receive the new templates
+                        automatically. The document types with specific XSL stylesheets are listed in the document types page ("XSL to rewrite"):
+                        their stylesheets are shown in the document type page, where they must be rewritten as templates and then discarded. Until
+                        then, these document types use the default templates.
+                    </li>
+                    <li>
+                        <strong>Portlets</strong>: each portlet using a shipped XSL style is moved to the matching template. A portlet using a style
+                        created by the site uses the default template: choose or create another template in the portlet form.
+                    </li>
+                    <li>
+                        <strong>Metadata</strong>: the <code>legacyMetadataMigration</code> daemon converts the XML metadata into JSON, then does
+                        nothing. A document whose metadata can not be converted is logged and kept for the next run.
+                    </li>
+                    <li>
+                        <strong>Contents</strong>: the documents are displayed from their attributes. A published document whose only validated
+                        version was its XML content must be validated again: the query listing such documents is in the upgrade script
+                        <code>update_db_document-6.0.1-7.0.0.sql</code>.
+                    </li>
+                    <li>
+                        <strong>API</strong>: the XML methods of the plugin are removed (<code>Document.getXml</code>, <code>getXmlWorkingContent</code>,
+                        <code>getXmlValidatedContent</code>, <code>getXmlMetadata</code>, <code>AttributeManager.getAttributeXmlValue</code>,
+                        <code>MetadataHandler.getXmlMetadata</code>, <code>DocumentTypeService</code>, <code>DocumentAttributesService</code>,
+                        <code>DocumentSpacesService.getXmlSpacesList</code>): the modules using them must be updated. The deprecated
+                        <code>getInstance()</code> methods of the services and of the portlet homes are removed as well: inject the beans instead.
+                        <code>Rule.init()</code> is removed (it was never called). <code>DocumentResourceServlet</code> is no longer a CDI bean:
+                        its cache and <code>putInCache</code> move to the <code>ResourceServletCache</code> bean
+                        (<code>cacheValidatedResource</code>). The unused property <code>document.regularExpressionPerPage</code> is removed: the
+                        attribute form lists all its regular expressions.
+                    </li>
+                    <li>
+                        <strong>Files</strong>: <code>servlet/plugins/document/resource</code> now checks the access to the files. The working files
+                        (<code>working_content</code> parameter) are sent only to the administrators allowed to view the document; the validated files
+                        are sent to the other users only if the document is valid and published in a published portlet whose page they are allowed to
+                        see. The files of documents that are not published, linked from another document for instance, are no longer public. The
+                        unused page <code>jsp/site/plugins/document/DocumentResource.jsp</code> is removed.
+                    </li>
+                    <li>
+                        <strong>Back office security tokens</strong>: the back office actions that modify data (documents, document types,
+                        publishing, categories, rules, spaces) now require a security token against CSRF attacks, and refuse the request with an
+                        "access denied" message otherwise. A site that overrides the admin templates of the plugin must add the token to its copies:
+                        <code>&lt;@input type='hidden' name='token' value='${token}' /&gt;</code> in the forms, and <code>&amp;token=${token}</code> in
+                        the links to the actions (workflow actions of the documents, moving the attributes of a document type). The creation and
+                        modification of the portlets, which use the portlet form of the core, are not concerned.
+                    </li>
+                </ul>
+            </subsection>
         </section>
     </body>
 </document>

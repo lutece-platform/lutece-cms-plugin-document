@@ -84,17 +84,4 @@ public class InternalLinkManager extends DefaultManager
     {
         return null;
     }
-
-    /**
-     * Get the XML data corresponding to the attribute to build the document XML content
-     * @param document The document
-     * @param attribute  The attribute
-     * @return The XML value of the attribute
-     */
-    @Override
-    public String getAttributeXmlValue( Document document, DocumentAttribute attribute )
-    {
-        // Return cdata Value
-        return "<![CDATA[" + attribute.getTextValue(  ) + "]]>";
-    }
 }

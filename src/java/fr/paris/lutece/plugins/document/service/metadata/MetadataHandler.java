@@ -39,7 +39,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
- * MetadataHandler
+ * Handler of the metadata of a document type. The metadata of a document are stored as a JSON object whose properties are defined by the
+ * handler.
  */
 public interface MetadataHandler
 {
@@ -51,15 +52,24 @@ public interface MetadataHandler
     String getCreateForm( HttpServletRequest request );
 
     /**
+     * Get the modify form
      * @param request The request
-     * @param strXmlData
+     * @param strMetadata The current metadata of the document, as a JSON object, may be null
      * @return The HTML form
      */
-    String getModifyForm( HttpServletRequest request, String strXmlData );
+    String getModifyForm( HttpServletRequest request, String strMetadata );
 
     /**
+     * Build the metadata from the parameters of the form
      * @param parameters The parameters
-     * @return The XML metadata
+     * @return The metadata, as a JSON object
      */
-    String getXmlMetadata( Map<String, String[]> parameters );
+    String getMetadata( Map<String, String[]> parameters );
+
+    /**
+     * Get the HTML meta tags of the metadata, displayed in the header of the page of the document
+     * @param strMetadata The metadata of the document, as a JSON object, may be null
+     * @return The contents of the meta tags by meta name, in display order, without the empty values
+     */
+    Map<String, String> getMetaTags( String strMetadata );
 }

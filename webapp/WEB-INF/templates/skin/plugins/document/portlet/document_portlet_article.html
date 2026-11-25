@@ -1,0 +1,18 @@
+<@cTpl>
+<@cSection class='portlet portlet-document portlet-document-article ${device_class!}' id='portlet_${portlet_id?c}'>
+<#if portlet_name??>
+	<@cTitle level=2 class='portlet-header'>${portlet_name}</@cTitle>
+</#if>
+	<@cBlock class='portlet-content'>
+	<#if document??>
+		<@cText><strong><@documentValue value=document.title /></strong></@cText>
+		<#if document.attributes.attachment??>
+		<@cText><@documentFile file=document.attributes.attachment class='img-fluid' /></@cText>
+		</#if>
+		<#if document.attributes.body??>
+		<@cBlock><@documentHtml html=document.attributes.body /></@cBlock>
+		</#if>
+	</#if>
+	</@cBlock>
+</@cSection>
+</@cTpl>

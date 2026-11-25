@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.web.rules;
 
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.plugins.document.business.rules.Rule;
 import fr.paris.lutece.plugins.document.business.rules.RuleHome;
 import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
@@ -79,6 +80,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
      */
     private static final long serialVersionUID = -1195569288911640639L;
     private static final String JSP_DO_DELETE_RULE = "jsp/admin/plugins/document/DoDeleteRule.jsp";
+    private static final String SECURITY_TOKEN_ACTION = "jsp/admin/plugins/document/ManageRules.jsp";
     private static final String JSP_SELECT_SPACE = "jsp/admin/plugins/document/SelectSpace.jsp";
     private static final String JSP_CREATE_RULE_SESSION = "jsp/admin/plugins/document/CreateRuleSession.jsp";
     private static final String JSP_MANAGE_RULES = "jsp/admin/plugins/document/ManageRules.jsp";
@@ -281,6 +283,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
         _model.put( MARK_CREATE_FORM, HtmlMarkup.of( rule.getCreateForm( getUser(  ), getLocale(  ) ) ) );
         _model.put( MARK_RULE_TYPE_ID, strRuleTypeId );
 
+        _model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_RULE, getLocale(  ), _model );
 
         return getAdminPage( template.getHtml(  ) );
@@ -293,6 +296,11 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
      */
     public String doCreateRule( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         if ( request.getParameter( PARAMETER_CANCEL ) == null )
         {
             String strRuleTypeId = request.getParameter( PARAMETER_RULE_TYPE_ID );
@@ -357,6 +365,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
         }
 
         UrlItem url = new UrlItem( JSP_DO_DELETE_RULE );
+        url.addParameter( SecurityTokenService.PARAMETER_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
         url.addParameter( PARAMETER_RULE_ID, strRuleId );
         rule.setLocale( getLocale(  ) );
 
@@ -373,6 +382,11 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
      */
     public String doDeleteRule( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, SECURITY_TOKEN_ACTION ) )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.USER_ACCESS_DENIED, AdminMessage.TYPE_STOP );
+        }
+
         String strRuleId = request.getParameter( PARAMETER_RULE_ID );
         RuleHome.remove( IntegerUtils.convert( strRuleId ) );
 

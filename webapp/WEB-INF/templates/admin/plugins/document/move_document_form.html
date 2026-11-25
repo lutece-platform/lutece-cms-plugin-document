@@ -1,0 +1,79 @@
+<#--
+ # Form to move a document to another space. Rendered on the move document page for one document, and once in a modal
+ # of the documents management page (in_modal=true, no document): the button that opens the modal carries the document
+ # in data-document-id, data-document-title, data-document-type and data-space-id.
+ # The current space of the document and the spaces that do not accept its type cannot be selected.
+-->
+<#include "/admin/plugins/document/spaces/spaces_tree_select.html" />
+<#assign idPrefix = id_prefix!'' />
+<#macro moveDocumentFields>
+	<@input type='hidden' name='token' value='${token}' />
+	<@input type='hidden' name='id_document' id='${idPrefix}move_document_id' value='${(document.id?c)!}' />
+	<p class="lead text-truncate mb-3" id="${idPrefix}move_document_title"><#if document??><@documentValue value=document.title! /></#if></p>
+	<@fieldSet legend='#i18n{document.move_document.labelMove}'>
+		<#if spaces_tree?has_content>
+			<@spacesTreeSelect id='${idPrefix}move_document_tree' nodes=spaces_tree label='#i18n{document.move_document.labelMove}' />
+			<p class="text-muted small mt-2 mb-0">#i18n{document.move_document.helpDisabledSpaces}</p>
+		<#else>
+			<@empty title='#i18n{portal.util.labelNoItem}' subtitle=' ' iconName='folder-off' />
+		</#if>
+	</@fieldSet>
+</#macro>
+<#assign formParams><#if document??>data-document-type="${document.codeDocumentType}" data-space-id="${document.spaceId?c}"</#if></#assign>
+<#assign cancelUrl = 'jsp/admin/plugins/document/ManageDocuments.jsp' + document???then( '?id_space_filter=' + (document.spaceId?c)!'', '' ) />
+<#if in_modal!false>
+<@tform id='${idPrefix}move_document_form' method='post' action='jsp/admin/plugins/document/DoMoveDocument.jsp' params=formParams>
+	<@modalBody>
+		<@moveDocumentFields />
+	</@modalBody>
+	<@modalFooter>
+		<@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='light' />
+		<@button type='submit' id='${idPrefix}move_document_submit' title='#i18n{document.move_document.buttonMove}' buttonIcon='folder-symlink' disabled=true />
+	</@modalFooter>
+</@tform>
+<#else>
+<@tform id='${idPrefix}move_document_form' method='post' action='jsp/admin/plugins/document/DoMoveDocument.jsp' boxed=true params=formParams>
+	<@moveDocumentFields />
+	<@formGroup rows=2>
+		<@button type='submit' id='${idPrefix}move_document_submit' title='#i18n{document.move_document.buttonMove}' buttonIcon='folder-symlink' disabled=true />
+		<@aButton href=cancelUrl title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='light' />
+	</@formGroup>
+</@tform>
+</#if>
+<script>
+document.addEventListener( 'DOMContentLoaded', ( ) => {
+	const prefix = '${idPrefix?js_string?no_esc}';
+	const form = document.getElementById( prefix + 'move_document_form' );
+	const submit = document.getElementById( prefix + 'move_document_submit' );
+	const radios = form.querySelectorAll( 'input[name="browser_selected_space_id"]' );
+
+	// Prepares the tree for a document: its current space and the spaces that do not accept its type are disabled
+	const setDocument = ( id, title, type, spaceId ) => {
+		document.getElementById( prefix + 'move_document_id' ).value = id;
+		document.getElementById( prefix + 'move_document_title' ).textContent = title;
+		radios.forEach( ( radio ) => {
+			const types = radio.dataset.documentTypes ? radio.dataset.documentTypes.split( ',' ) : [ ];
+			const disabled = radio.value === spaceId || !types.includes( type );
+			radio.checked = false;
+			radio.disabled = disabled;
+			form.querySelector( 'label[for="' + radio.id + '"]' ).classList.toggle( 'text-muted', disabled );
+		} );
+		submit.disabled = true;
+	};
+
+	form.addEventListener( 'change', ( ) => {
+		submit.disabled = form.querySelector( 'input[name="browser_selected_space_id"]:checked' ) === null;
+	} );
+
+	const modal = form.closest( '.modal' );
+	if ( modal ) {
+		modal.addEventListener( 'show.bs.modal', ( event ) => {
+			const data = event.relatedTarget.dataset;
+			setDocument( data.documentId, data.documentTitle, data.documentType, data.spaceId );
+		} );
+	} else {
+		setDocument( document.getElementById( prefix + 'move_document_id' ).value, document.getElementById( prefix + 'move_document_title' ).textContent.trim( ),
+			form.dataset.documentType, form.dataset.spaceId );
+	}
+} );
+</script>

@@ -36,8 +36,7 @@ package fr.paris.lutece.plugins.document.web;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.DocumentResource;
-import fr.paris.lutece.plugins.document.service.DocumentEvent;
-import fr.paris.lutece.plugins.document.service.DocumentException;
+import fr.paris.lutece.plugins.document.service.DocumentResourceAccessService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.service.resource.ExtendableResourceActionHit;
@@ -47,12 +46,7 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.Initialized;
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.servlet.ServletContext;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -61,8 +55,6 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * Servlet serving document file resources
  */
-@ApplicationScoped
-@Named("document.documentResourceServlet")
 public class DocumentResourceServlet extends HttpServlet
 {
     private static final long serialVersionUID = -7512201287826936428L;
@@ -73,13 +65,10 @@ public class DocumentResourceServlet extends HttpServlet
     private static final String DEFAULT_EXPIRES_DELAY = "180000";
     private static final String PROPERTY_RESOURCE_TYPE = "document";
     private static final String PROPERTY_EXPIRES_DELAY = "document.resourceServlet.cacheControl.expires";
-    private static final String KEY_DOC_BEGIN = "[doc:";
-    private static final String KEY_ATTR_BEGIN = "[attr:";
-    private static final String KEY_ITEM_CLOSE = "]";
     private static final String STRING_DELAY_IN_SECOND = AppPropertiesService.getProperty( PROPERTY_EXPIRES_DELAY,
             DEFAULT_EXPIRES_DELAY );
     private static final Long LONG_DELAY_IN_MILLISECOND = Long.parseLong( STRING_DELAY_IN_SECOND ) * 1000;
-    private static final ResourceServletCache _cache = new ResourceServletCache(  );
+    private final transient ResourceServletCache _cache = CDI.current( ).select( ResourceServletCache.class ).get( );
     
     /**
      * Processes request HTTP <code>GET if-modified-since</code> methods
@@ -97,11 +86,9 @@ public class DocumentResourceServlet extends HttpServlet
         {
             int nDocumentId = IntegerUtils.convert( strDocumentId );
             int nAttributeId = IntegerUtils.convert( strAttributeId );
-            String strKey = getCacheKey( nDocumentId, nAttributeId );
+            ResourceValueObject resource = _cache.get( ResourceServletCache.getCacheKey( nDocumentId, nAttributeId ) );
 
-            ResourceValueObject resource = _cache.get( strKey );
-
-            if ( _cache!=null && _cache.isCacheEnable(  ) && ( _cache.get( strKey ) != null ) )
+            if ( resource != null )
             {
                 return resource.getLastModified(  );
             }
@@ -126,27 +113,8 @@ public class DocumentResourceServlet extends HttpServlet
     }
 
     /**
-     * Put the file in cache
-     * @param nDocumentId The document id
-     * @param nAttributeId The attribut id
-     */
-    public static void putInCache( int nDocumentId, int nAttributeId )
-    {
-        if (  _cache==null || !_cache.isCacheEnable(  ) )
-        {
-            return;
-        }
-
-        DocumentResource resource = DocumentHome.getValidatedResource( nDocumentId, nAttributeId );
-        ResourceValueObject res = new ResourceValueObject( resource );
-        Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
-        long lLastModified = document.getDateModification(  ).getTime(  );
-        res.setLastModified( lLastModified );
-        _cache.put( getCacheKey( nDocumentId, nAttributeId ), res );
-    }
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods. The file is sent only if the request is allowed to
+     * download it (see {@link DocumentResourceAccessService}), otherwise a forbidden error is sent; a missing file gives a not found error.
      * @param request servlet request
      * @param response servlet response
      * @throws IOException the io exception
@@ -162,36 +130,35 @@ public class DocumentResourceServlet extends HttpServlet
         int nAttributeId = IntegerUtils.convert( strAttributeId );
         Boolean bWorkingContent = ( request.getParameter( PARAMETER_WORKING_CONTENT ) != null );
 
-        String strCacheKey = getCacheKey( nDocumentId, nAttributeId );
-        ResourceValueObject res;
-
-        if ( !bWorkingContent &&  _cache!=null && _cache.isCacheEnable(  ) && ( _cache.get( strCacheKey ) != null ) )
+        if ( !CDI.current( ).select( DocumentResourceAccessService.class ).get( ).isAuthorized( request, nDocumentId, bWorkingContent ) )
         {
-            res = _cache.get( strCacheKey );
+            response.sendError( HttpServletResponse.SC_FORBIDDEN );
+
+            return;
         }
-        else
+
+        ResourceValueObject res = bWorkingContent ? null : _cache.get( ResourceServletCache.getCacheKey( nDocumentId, nAttributeId ) );
+
+        if ( res == null )
         {
             DocumentResource resource = getResource( nDocumentId, nAttributeId, bWorkingContent );
 
             if ( resource == null )
             {
-                response.setStatus( HttpServletResponse.SC_NOT_FOUND );
+                response.sendError( HttpServletResponse.SC_NOT_FOUND );
 
                 return;
             }
 
             res = new ResourceValueObject( resource );
 
-            if (  _cache!=null && _cache.isCacheEnable(  ) && !bWorkingContent )
+            if ( !bWorkingContent )
             {
-                Document document = DocumentHome.loadLastModifiedAttributes( nDocumentId );
-                long lLastModified = document.getDateModification(  ).getTime(  );
-                res.setLastModified( lLastModified );
-                _cache.put( strCacheKey, res );
+                _cache.putValidatedResource( res, nDocumentId, nAttributeId );
             }
         }
 
-        ExtendableResourceActionHit.getInstance(  )
+        CDI.current( ).select( ExtendableResourceActionHit.class ).get( )
         .notifyActionOnResource( strDocumentId, Document.PROPERTY_RESOURCE_TYPE,
         ExtendableResourceActionHit.ACTION_DOWNLOAD );
 
@@ -274,21 +241,6 @@ public class DocumentResourceServlet extends HttpServlet
     }
 
     /**
-     * Caclculate the cache key
-     * @param nDocumentId The document id
-     * @param nAttributeId The attribute id
-     * @return The key
-     */
-    private static String getCacheKey( int nDocumentId, int nAttributeId )
-    {
-        StringBuilder sbKey = new StringBuilder(  );
-        sbKey.append( KEY_DOC_BEGIN ).append( nDocumentId ).append( KEY_ITEM_CLOSE ).append( KEY_ATTR_BEGIN )
-             .append( nAttributeId ).append( KEY_ITEM_CLOSE );
-
-        return sbKey.toString(  );
-    }
-
-    /**
      * Get the document resource
      * @param nDocumentId The document id
      * @param nAttributeId The attribute id
@@ -334,38 +286,4 @@ public class DocumentResourceServlet extends HttpServlet
         strContentType.equals( "image/png" ) || strContentType.equals( "application/x-shockwave-flash" ) );
     }
 
-    /**
-     * Observe document events via CDI
-     * @param event The document event
-     * @throws DocumentException if error occurs
-     */
-    public void onDocumentEvent(@Observes DocumentEvent event) throws DocumentException
-    {
-        processDocumentEvent(event);
-    }
-    
-    /**
-     * {@inheritDoc }
-     */
-    public void processDocumentEvent( DocumentEvent event )
-        throws DocumentException
-    {
-        String strKeyPattern = KEY_DOC_BEGIN + event.getDocument(  ).getId(  ) + KEY_ITEM_CLOSE;
-        _cache.removeFromKeyPattern( strKeyPattern );
-    }
-    
-	/**
-     * This method observes the initialization of the {@link ApplicationScoped} context.
-     * It ensures that this CDI beans are instantiated at the application startup.
-     *
-     * <p>This method is triggered automatically by CDI when the {@link ApplicationScoped} context is initialized,
-     * which typically occurs during the startup of the application server.</p>
-     *
-     * @param context the {@link ServletContext} that is initialized. This parameter is observed
-     *                and injected automatically by CDI when the {@link ApplicationScoped} context is initialized.
-     */
-    public void initializedService(@Observes @Initialized(ApplicationScoped.class) ServletContext context) 
-    {
-        // This method is intentionally left empty to trigger CDI bean instantiation
-    }
 }

@@ -54,7 +54,6 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
     private static final String SQL_QUERY_SELECT_BY_PORTLET_ID = "SELECT id_space FROM document_auto_publication WHERE id_portlet = ? ";
     private static final String SQL_QUERY_SELECT_BY_SPACE_ID = "SELECT id_portlet FROM document_auto_publication WHERE id_space = ? ";
 
-    // private static final String SQL_QUERY_UPDATE = "UPDATE document_auto_publication SET WHERE id_portlet = ? AND id_space = ? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM document_auto_publication WHERE id_portlet= ? AND id_space= ? ";
     private static final String SQL_QUERY_DELETE_ALL_SPACES = "DELETE FROM document_auto_publication WHERE id_portlet= ? ";
 
@@ -220,7 +219,7 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
     }
 
     /**
-     * Update the record in the table
+     * Update the record in the table. The table only holds its primary key (portlet and space): there is nothing to update.
      *
      * @param documentAutoPublication
      *            The DocumentAutoPublication to update
@@ -228,13 +227,5 @@ public class DocumentAutoPublicationDAO implements IDocumentAutoPublicationDAO
     @Override
     public void store( DocumentAutoPublication documentAutoPublication )
     {
-        // DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        //
-        // daoUtil.setInt( 1, documentAutoPublication.getIdPortlet( ) );
-        // daoUtil.setInt( 2, documentAutoPublication.getIdSpace( ) );
-        //
-        // daoUtil.executeUpdate( );
-        //
-        // daoUtil.free( );
     }
 }

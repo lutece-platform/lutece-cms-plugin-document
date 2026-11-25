@@ -51,10 +51,8 @@ public class DocumentTypeTest extends LuteceTestCase
     private final static int THUMBNAILATTRIBUTEID2 = 2;
     private final static String DEFAULTTHUMBNAILURL1 = "DefaultThumbnailUrl1";
     private final static String DEFAULTTHUMBNAILURL2 = "DefaultThumbnailUrl2";
-    private final static String ADMINXSL1 = "AdminXsl1";
-    private final static String ADMINXSL2 = "AdminXsl2";
-    private final static String CONTENTSERVICEXSL1 = "ContentServiceXsl1";
-    private final static String CONTENTSERVICEXSL2 = "ContentServiceXsl2";
+    private final static String ADMINTEMPLATE = "<p>${document.title}</p>";
+    private final static String CONTENTTEMPLATE = "<h1>${document.title}</h1>";
     private final static String METADATAHANDLER1 = "MetadataHandler1";
     private final static String METADATAHANDLER2 = "MetadataHandler2";
 
@@ -70,8 +68,6 @@ public class DocumentTypeTest extends LuteceTestCase
         documentType.setDescription( DESCRIPTION1 );
         documentType.setThumbnailAttributeId( THUMBNAILATTRIBUTEID1 );
         documentType.setDefaultThumbnailUrl( DEFAULTTHUMBNAILURL1 );
-        documentType.setAdminXsl( ADMINXSL1.getBytes(  ) );
-        documentType.setContentServiceXsl( CONTENTSERVICEXSL1.getBytes(  ) );
         documentType.setMetadataHandler( METADATAHANDLER1 );
 
         // Create test
@@ -83,9 +79,16 @@ public class DocumentTypeTest extends LuteceTestCase
         assertEquals( documentTypeStored.getDescription(  ), documentType.getDescription(  ) );
         assertEquals( documentTypeStored.getThumbnailAttributeId(  ), documentType.getThumbnailAttributeId(  ) );
         assertEquals( documentTypeStored.getDefaultThumbnailUrl(  ), documentType.getDefaultThumbnailUrl(  ) );
-        //        assertEquals( documentTypeStored.getAdminXsl() , documentType.getAdminXsl() );
-        //        assertEquals( documentTypeStored.getContentServiceXsl() , documentType.getContentServiceXsl() );
         assertEquals( documentTypeStored.getMetadataHandler(  ), documentType.getMetadataHandler(  ) );
+        // No template: the default templates are used
+        assertNull( documentTypeStored.getAdminTemplate(  ) );
+        assertNull( documentTypeStored.getContentTemplate(  ) );
+
+        // Templates test
+        DocumentTypeHome.storeTemplates( documentType.getCode(  ), ADMINTEMPLATE, CONTENTTEMPLATE );
+        documentTypeStored = DocumentTypeHome.findByPrimaryKey( documentType.getCode(  ) );
+        assertEquals( ADMINTEMPLATE, documentTypeStored.getAdminTemplate(  ) );
+        assertEquals( CONTENTTEMPLATE, documentTypeStored.getContentTemplate(  ) );
 
         // Update test
         documentType.setOldCode( documentType.getCode( ) );
@@ -93,8 +96,6 @@ public class DocumentTypeTest extends LuteceTestCase
         documentType.setDescription( DESCRIPTION2 );
         documentType.setThumbnailAttributeId( THUMBNAILATTRIBUTEID2 );
         documentType.setDefaultThumbnailUrl( DEFAULTTHUMBNAILURL2 );
-        documentType.setAdminXsl( ADMINXSL2.getBytes(  ) );
-        documentType.setContentServiceXsl( CONTENTSERVICEXSL2.getBytes(  ) );
         documentType.setMetadataHandler( METADATAHANDLER2 );
         DocumentTypeHome.update( documentType );
         documentTypeStored = DocumentTypeHome.findByPrimaryKey( documentType.getCode(  ) );
@@ -102,8 +103,9 @@ public class DocumentTypeTest extends LuteceTestCase
         assertEquals( documentTypeStored.getDescription(  ), documentType.getDescription(  ) );
         assertEquals( documentTypeStored.getThumbnailAttributeId(  ), documentType.getThumbnailAttributeId(  ) );
         assertEquals( documentTypeStored.getDefaultThumbnailUrl(  ), documentType.getDefaultThumbnailUrl(  ) );
-        //        assertEquals( documentTypeStored.getAdminXsl() , documentType.getAdminXsl() );
-        //        assertEquals( documentTypeStored.getContentServiceXsl() , documentType.getContentServiceXsl() );
+        // The update of the properties keeps the templates
+        assertEquals( ADMINTEMPLATE, documentTypeStored.getAdminTemplate(  ) );
+        assertEquals( CONTENTTEMPLATE, documentTypeStored.getContentTemplate(  ) );
         assertEquals( documentTypeStored.getMetadataHandler(  ), documentType.getMetadataHandler(  ) );
 
         // List test

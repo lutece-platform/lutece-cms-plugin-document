@@ -1,70 +1,112 @@
-<@div class="insert-service" >
-	<@row>
-		<@columns>
-			<ol class="breadcrumb">
-			  <li><@link href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input?url}&selected_text='><@icon style='home' /></@link></li>
-			  <li><@link href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input?url}&selected_text=' params={"data-lutece-action": "back"}> Page </@link></li>
-			  <li><@link href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input?url}&selected_text=' params={"data-lutece-action": "back"}> Rubrique </@link></li>
-			  <li>#i18n{document.selector.document.documentChoiceTitle}</li>
-			</ol>
-			<#if documents_list?size = 0>
-				<@alert color='danger'>#i18n{document.selector.document.noDocument}</@alert>
-				<@p>
-					<@aButton href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelBack}' buttonIcon='times' color='default' />
-				</@p>
-			<#else>
-				<@tform method='post' name='fsubmit' action='jsp/admin/plugins/document/DoInsertDocumentLink.jsp'>
-					<@input type='hidden' name='input' value='${input}' />
-					<@input type='hidden' name='portlet_id' value='${portlet_id}' />
-					<@input type='hidden' name='subcategory' value='${type_filter}' />
-					<@row>
-						<@columns sm=4>
-							<@fieldSet legend='#i18n{document.selector.document.insertListTitle}'>
-								<@formGroup labelFor='name' labelKey='#i18n{document.selector.document.linkName}'>
-									<@input type='text' name='name' id='name' value='' maxlength=50 />
-								</@formGroup>
-								<@formGroup labelFor='alt' labelKey='#i18n{document.selector.document.captionTitle}'>
-									<@input type='text' name='alt' id='alt' value='' maxlength=50 />
-								</@formGroup>
-								<@formGroup labelFor='target' labelKey='#i18n{document.selector.document.captionTarget}'>
-									<@select name='target' id='target'>
-										<@option value='_self' label='#i18n{document.selector.document.target.self}' />
-										<@option value="_blank" label='#i18n{document.selector.document.target.blank}' />
-										<@option value="_parent" label='#i18n{document.selector.document.target.parent}' />
-										<@option value="_top" label='#i18n{document.selector.document.target.top}' />
-									</@select>
-								</@formGroup>
-							</@fieldSet>
-						</@columns>
-						<@columns sm=8>	
-							<@formGroup>
-								<@table>
-									<@tr>
-										<@th><span class="visually-hidden">#i18n{portal.util.labelSelect}</span></@th>
-										<@th>#i18n{document.selector.document.colTitle}</@th>
-										<@th>#i18n{document.selector.document.colSummary}</@th>
-									</@tr>
-									<#list documents_list as document>
-									<@tr>
-										<@td>
-											<@radioButton id='document_id_${document.id}' name='document_id' value=document.id><span class="visually-hidden">${document.title!}</span></@radioButton>
-										</@td>
-										<@td>${document.title!}</@td>
-										<@td>${document.summary!}</@td>
-									</@tr>
-									</#list>
-								</@table>
-							</@formGroup>
-						</@columns>
-					</@row>
-					<@formGroup>
-						<@aButton href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelBack}' buttonIcon='chevron-left' />
-						<@button type='submit' title='#i18n{portal.util.labelValidate}' buttonIcon='check' />
-					</@formGroup>
-				</@tform>
-			</#if>
-		</@columns>
-	</@row>
-</@div>
+<#--
+ # Last step of the insert service: the choice of a published document of the portlet and the options of the link (name, caption, target), with a preview
+ # of the link. A click selects a document, Valider or a double click inserts the link (DoInsertDocumentLink.jsp).
+ # Styles: insert_service.css, behaviours: lutece-insert.js of the core (InsertServiceHeader.jsp).
+-->
+<div class="lutece-insert insert-service">
+	<nav class="lutece-insert-crumbs" aria-label="#i18n{document.selector.steps}">
+		<a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&amp;selected_text="><i class="ti ti-home" aria-hidden="true"></i><span class="visually-hidden">#i18n{portal.insert.page_insertservice.labelInsert}</span></a>
+		<i class="ti ti-chevron-right" aria-hidden="true"></i>
+		<a href="jsp/admin/plugins/document/SelectPage.jsp?input=${.data_model.input?url}&amp;subcategory=${type_filter?url}">#i18n{document.selector.page.label}</a>
+		<i class="ti ti-chevron-right" aria-hidden="true"></i>
+		<a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&amp;selected_text=" data-lutece-action="back">#i18n{document.selector.portlet.label}</a>
+		<i class="ti ti-chevron-right" aria-hidden="true"></i>
+		<span aria-current="page">#i18n{document.selector.document.label}</span>
+	</nav>
+	<div class="lutece-insert-head">
+		<span class="lutece-insert-badge lutece-insert-tint-2" aria-hidden="true"><i class="ti ti-file-text"></i></span>
+		<h2>#i18n{document.selector.document.documentChoiceTitle}</h2>
+		<span class="lutece-insert-label">#i18n{document.selector.document.step}</span>
+	</div>
+	<#if documents_list?size = 0>
+		<@empty title='#i18n{document.selector.document.noDocument}' iconName='file-off' subtitle=' ' />
+		<div class="lutece-insert-footer">
+			<span></span>
+			<div class="lutece-insert-actions"><@aButton href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelBack}' buttonIcon='chevron-left' color='light' /></div>
+		</div>
+	<#else>
+		<@tform method='post' name='fsubmit' id='document_link_form' action='jsp/admin/plugins/document/DoInsertDocumentLink.jsp' class='lutece-insert-main' params='data-lutece-insert-select'>
+			<@input type='hidden' name='input' value='${.data_model.input}' />
+			<@input type='hidden' name='portlet_id' value='${portlet_id}' />
+			<@input type='hidden' name='subcategory' value='${type_filter}' />
+			<@input type='hidden' name='document_id' value='' />
+			<div class="lutece-insert-form">
+				<div class="lutece-insert-fields">
+					<div class="lutece-insert-tools">
+						<label class="lutece-insert-search" for="document_documents_search"><i class="ti ti-search" aria-hidden="true"></i><span class="visually-hidden">#i18n{document.selector.document.search}</span><input type="search" id="document_documents_search" placeholder="#i18n{document.selector.document.search}" autocomplete="off" data-lutece-insert-search data-target="#document_documents" data-count="#document_documents_count" data-nomatch="#document_documents_nomatch"></label>
+						<span class="lutece-insert-count" id="document_documents_count" aria-live="polite" data-text-one="#i18n{document.selector.count.one}" data-text-many="#i18n{document.selector.count.many}"></span>
+					</div>
+					<ul class="lutece-insert-items" id="document_documents" data-view="list">
+					<#list documents_list as document>
+						<li data-search="${( document.title! )?lower_case} ${( document.summary! )?lower_case}">
+							<button type="button" class="lutece-insert-item" aria-pressed="false" data-lutece-insert-item data-label="${document.title!}" data-fields='{"document_id":"${document.id?c}"}'>
+								<span class="lutece-insert-thumb lutece-insert-tint-2" aria-hidden="true"><i class="ti ti-file-text"></i></span>
+								<span class="lutece-insert-text">
+									<span class="lutece-insert-title">${document.title!}</span>
+									<#if document.summary?has_content && document.summary != document.title!><span class="lutece-insert-summary">${document.summary}</span></#if>
+									<#if document.dateModification??><span class="lutece-insert-date">${document.dateModification?string( 'dd/MM/yyyy' )}</span></#if>
+								</span>
+							</button>
+						</li>
+					</#list>
+					</ul>
+					<p class="lutece-insert-nomatch" id="document_documents_nomatch" hidden>#i18n{document.selector.noMatch}</p>
+				</div>
+				<aside class="lutece-insert-preview" aria-labelledby="document_link_options">
+					<h3 class="h5 m-0" id="document_link_options">#i18n{document.selector.document.insertListTitle}</h3>
+					<div>
+						<label class="form-label" for="name">#i18n{document.selector.document.linkName}</label>
+						<input type="text" class="form-control" name="name" id="name" value="" maxlength="50">
+					</div>
+					<div>
+						<label class="form-label" for="alt">#i18n{document.selector.document.captionTitle}</label>
+						<input type="text" class="form-control" name="alt" id="alt" value="" maxlength="50">
+					</div>
+					<div>
+						<label class="form-label" for="target">#i18n{document.selector.document.captionTarget}</label>
+						<select class="form-select" name="target" id="target">
+							<option value="_self">#i18n{document.selector.document.target.self}</option>
+							<option value="_blank">#i18n{document.selector.document.target.blank}</option>
+							<option value="_parent">#i18n{document.selector.document.target.parent}</option>
+							<option value="_top">#i18n{document.selector.document.target.top}</option>
+						</select>
+					</div>
+					<div class="lutece-insert-link-preview">
+						<span class="lutece-insert-label">#i18n{document.selector.document.preview}</span>
+						<p class="m-0"><span id="document_link_preview" class="link-primary text-decoration-underline" data-text-none="#i18n{document.selector.document.noSelection}">#i18n{document.selector.document.noSelection}</span></p>
+					</div>
+				</aside>
+			</div>
+			<div class="lutece-insert-footer">
+				<span class="lutece-insert-selection" aria-live="polite" data-lutece-insert-selection data-text-none="#i18n{document.selector.document.noSelection}" data-text-selected="#i18n{document.selector.document.selected}">#i18n{document.selector.document.noSelection}</span>
+				<div class="lutece-insert-actions">
+					<@aButton href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelBack}' buttonIcon='chevron-left' color='light' />
+					<@button type='submit' title='#i18n{portal.util.labelValidate}' buttonIcon='check' disabled=true params='data-lutece-insert-submit' />
+				</div>
+			</div>
+		</@tform>
+	</#if>
+</div>
+<script>
+<#-- The preview of the link: its name, else the title of the selected document, as the insertion does (doInsertUrl) -->
+( ( form ) => {
+	if ( !form ) {
+		return;
+	}
+	const preview = document.getElementById( 'document_link_preview' );
+	const name = document.getElementById( 'name' );
+	const alt = document.getElementById( 'alt' );
+	const update = ( ) => {
+		const selected = form.querySelector( '[data-lutece-insert-item][aria-pressed="true"]' );
+		const text = name.value.trim( ) || ( selected ? selected.dataset.label : '' );
+		preview.textContent = text || preview.dataset.textNone;
+		preview.title = alt.value;
+	};
+	<#-- the selection is set by lutece-insert.js on the same click: read it once that handler has run -->
+	form.addEventListener( 'click', ( ) => window.setTimeout( update, 0 ) );
+	name.addEventListener( 'input', update );
+	alt.addEventListener( 'input', update );
+} )( document.getElementById( 'document_link_form' ) );
+</script>
 <#-- the insert service pages do not load the admin scripts: data-lutece-action="back" needs lutece-actions.js -->
 <script src="themes/admin/shared/js/util/lutece-actions.js"></script>

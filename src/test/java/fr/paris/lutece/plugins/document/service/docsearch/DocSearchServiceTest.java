@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.document.service.docsearch;
 
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import fr.paris.lutece.test.LuteceTestCase;
 
@@ -46,6 +47,9 @@ import java.util.List;
  */
 public class DocSearchServiceTest extends LuteceTestCase
 {
+    @Inject
+    private DocSearchService _docSearchService;
+
     /*
 	public DocSearchServiceTest( String testName )
     {
@@ -62,7 +66,7 @@ public class DocSearchServiceTest extends LuteceTestCase
         System.out.println( "processIndexing" );
 
         boolean bCreate = true;
-        String result = DocSearchService.getInstance(  ).processIndexing( bCreate );
+        String result = _docSearchService.processIndexing( bCreate );
     }
 
     /**
@@ -78,7 +82,7 @@ public class DocSearchServiceTest extends LuteceTestCase
         user.setRoles( AdminUserHome.getRolesListForUser( user.getUserId(  ) ) );
 
         String strQuery = "lutece";
-        List<DocSearchItem> listResults = DocSearchService.getInstance(  ).getSearchResults( strQuery, nStartIndex, user );
+        List<DocSearchItem> listResults = _docSearchService.getSearchResults( strQuery, nStartIndex, user );
 
         for ( DocSearchItem result : listResults )
         {
@@ -86,7 +90,7 @@ public class DocSearchServiceTest extends LuteceTestCase
         }
 
         strQuery = "lutece +space:s14";
-        listResults = DocSearchService.getInstance(  ).getSearchResults( strQuery, nStartIndex, user );
+        listResults = _docSearchService.getSearchResults( strQuery, nStartIndex, user );
 
         for ( DocSearchItem result : listResults )
         {

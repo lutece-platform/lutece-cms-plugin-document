@@ -1,38 +1,78 @@
-<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' helpKey='${attribute.description}' checked=attribute.required>
-	<@inputGroup>
-		<@input type='file' name='${attribute.code}' id='${attribute.code}' />
-		<@inputGroupItem>
-			<@checkBox labelKey='#i18n{document.attributeType.image.resize}' name='${attribute.code}_croppable' id='crop' />
-		</@inputGroupItem>
-	</@inputGroup>
-</@formGroup>
-<@formGroup labelFor='${attribute.code}_width' labelKey='#i18n{document.attributeType.image.width}' id='crop_group'>
-	<@inputGroup>
-		<@input type='number' name='${attribute.code}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' id='${attribute.code}_width' />
-		<@inputGroupItem>px</@inputGroupItem>
-	</@inputGroup>
+<#include "/admin/plugins/document/attributes/file_dropzone.html" />
+<#assign attrCode = attribute.code />
+<@formGroup labelFor=attrCode labelKey=attribute.name helpKey=attribute.description! mandatory=attribute.required rows=2>
+	<@row class='g-3'>
+		<@columns md=6>
+			<@documentFileDropzone id=attrCode name=attrCode accept='image/*' title='#i18n{document.attributeType.image.dropzoneTitle}' />
+			<@div class='d-flex flex-wrap gap-3 mt-2'>
+				<@checkBox orientation='switch' wrapperClass='mb-0' labelKey='#i18n{document.attributeType.image.resize}' name='${attrCode}_croppable' id='${attrCode}_crop' value='1' />
+			</@div>
+			<@div id='${attrCode}_crop_group' class='mt-2 d-none'>
+				<@inputGroup params='style="max-width:16rem"'>
+					<@inputGroupItem type='text'><@icon style='arrows-horizontal' /></@inputGroupItem>
+					<@input type='number' name='${attrCode}_width' id='${attrCode}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' params='min="1" aria-label="#i18n{document.attributeType.image.width}"' disabled=true />
+					<@inputGroupItem type='text'>px</@inputGroupItem>
+				</@inputGroup>
+			</@div>
+		</@columns>
+		<@columns md=6>
+			<@div id='${attrCode}_preview' class='d-flex flex-wrap gap-3'>
+				<@div id='${attrCode}_new' class='card mb-0 d-none'>
+					<@div class='d-flex align-items-center justify-content-center bg-light rounded-top' params='style="height:10rem;width:14rem"'>
+						<@img id='${attrCode}_new_img' alt='' class='mw-100 mh-100' params='style="object-fit:contain"' />
+					</@div>
+					<@div class='card-body p-2' params='style="width:14rem"'>
+						<@div class='small fw-bold text-primary'>#i18n{document.attributeType.image.labelNew}</@div>
+						<@div class='small text-truncate' id='${attrCode}_new_name'></@div>
+						<@div class='small text-muted' id='${attrCode}_new_size'></@div>
+					</@div>
+				</@div>
+			</@div>
+		</@columns>
+	</@row>
 </@formGroup>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var cropGroup = document.getElementById('crop_group');
-    var cropCheckbox = document.getElementById('crop');
-    var attributeCodeWidth = document.getElementById('${attribute.code?js_string?no_esc}_width');
+document.addEventListener( 'DOMContentLoaded', () => {
+	const code = '${attrCode?js_string?no_esc}';
+	const fileInput = document.getElementById( code );
+	const cropCheckbox = document.getElementById( code + '_crop' );
+	const cropGroup = document.getElementById( code + '_crop_group' );
+	const widthInput = document.getElementById( code + '_width' );
+	const newCard = document.getElementById( code + '_new' );
+	const newImg = document.getElementById( code + '_new_img' );
+	const newSize = document.getElementById( code + '_new_size' );
+	let objectUrl = null;
 
-    cropGroup.style.display = 'none';
-    attributeCodeWidth.disabled = true;
-    attributeCodeWidth.classList.add('disabled');
+	const clearNew = ( ) => {
+		if ( objectUrl ) { URL.revokeObjectURL( objectUrl ); objectUrl = null; }
+		newImg.removeAttribute( 'src' );
+		newCard.classList.add( 'd-none' );
+	};
 
-    cropCheckbox.addEventListener('click', function() {
-        cropGroup.style.display = (cropCheckbox.checked) ? 'block' : 'none';
+	fileInput.addEventListener( 'change', ( ) => {
+		clearNew( );
+		const file = fileInput.files[0];
+		if ( !file ) {
+			return;
+		}
+		document.getElementById( code + '_new_name' ).textContent = file.name;
+		newSize.textContent = file.type || '';
+		if ( file.type.startsWith( 'image/' ) ) {
+			objectUrl = URL.createObjectURL( file );
+			newImg.addEventListener( 'load', ( ) => {
+				newSize.textContent = ( file.type ? file.type + ' · ' : '' ) + newImg.naturalWidth + ' × ' + newImg.naturalHeight + ' px';
+			}, { once: true } );
+			newImg.src = objectUrl;
+			newImg.alt = file.name;
+		}
+		newCard.classList.remove( 'd-none' );
+	} );
 
-        if (cropCheckbox.checked) {
-            attributeCodeWidth.disabled = false;
-            attributeCodeWidth.classList.toggle('disabled');
-        } else {
-            attributeCodeWidth.value = '';
-            attributeCodeWidth.disabled = true;
-            attributeCodeWidth.classList.toggle('disabled');
-        }
-    });
-});
+	cropCheckbox.addEventListener( 'change', ( ) => {
+		cropGroup.classList.toggle( 'd-none', !cropCheckbox.checked );
+		widthInput.disabled = !cropCheckbox.checked;
+		widthInput.required = cropCheckbox.checked;
+		if ( cropCheckbox.checked ) { widthInput.focus( ); } else { widthInput.value = ''; }
+	} );
+} );
 </script>

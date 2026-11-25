@@ -1,0 +1,29 @@
+<#--
+ # Tree of the document spaces, displayed with the luteceTree.js module (themes/shared/modules/luteceTree.js):
+ # a space with children is a node that opens and closes, a space without children is an item.
+ # The module opens the nodes leading to the selected space; it never selects the root space (node-0), which is opened here when it is current.
+-->
+<#macro spacesTreeLink node>
+<a href="jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${node.id?c}"><#if node.id?c == current_space_id!''><strong><@documentValue value=node.name! /></strong><#else><@documentValue value=node.name! /></#if></a>
+</#macro>
+<#macro spacesTreeNodes nodes>
+<#list nodes as node>
+	<#if node.children?has_content>
+	<li class="lutece-tree-node<#if node.id == 0 && node.id?c == current_space_id!''> lutece-tree-node-open</#if>" id="node-${node.id?c}" data-tree-icon="">
+		<#if node.iconUrl?has_content><img src="<@documentValue value=node.iconUrl />" class="me-2" alt=""></#if><@spacesTreeLink node=node />
+		<ul>
+			<@spacesTreeNodes nodes=node.children />
+		</ul>
+	</li>
+	<#else>
+	<li class="lutece-tree-item" id="node-${node.id?c}" data-tree-icon="<@documentValue value=node.iconUrl! />">
+		<@spacesTreeLink node=node />
+	</li>
+	</#if>
+</#list>
+</#macro>
+<div id="lutece-tree" class="lutece-tree">
+	<ul>
+		<@spacesTreeNodes nodes=spaces_tree_nodes />
+	</ul>
+</div>

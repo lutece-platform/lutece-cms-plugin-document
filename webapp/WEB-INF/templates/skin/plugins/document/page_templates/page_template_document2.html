@@ -1,6 +1,6 @@
 <#--
 Available objects :
- - String 				document 			The HTML code for the document (Xsl transformation result)
+ - String 				document 			The HTML code for the document (rendered with the front office template of the document type)
  - String 				portlet				The HTML code for documents list portlet containing the document
  - String 				categories			The HTML code for category list portlet linked with the document
  - String 				document_comments	The HTML code for the comments area
@@ -9,28 +9,32 @@ Available objects :
  - DocumentPublication 	publication 		The publication object. 
  											How to display the date publication : ${publication.datePublishing?date} or ${publication.datePublishing?datetime}
 -->
-<#if isExtendInstalled?? && isExtendInstalled>
+<@cTpl>
+<#assign isExtendEnabled = isExtendInstalled?? && isExtendInstalled>
+<#if isExtendEnabled>
 	@ExtenderParameter[${document_id},document,opengraph]@
 </#if>
-<div class="row">
-	<div id="content" class="col-xs-12 col-sm-9 col-md-9">
+<@cContainer>
+<@cRow>
+	<@cCol cols='12 col-sm-9' id='content'>
 		${document}
-	</div>
-	<div id="sidebar" class="col-xs-12 col-sm-3 col-md-3">
-		<#if isExtendInstalled?? && isExtendInstalled>
+	</@cCol>
+	<@cCol cols='12 col-sm-3' id='sidebar'>
+		<#if isExtendEnabled>
 			@Extender[${document_id},document,actionbar]@
 			@Extender[${document_id},document,hit,{show:true}]@
 			@Extender[${document_id},document,rating,{show:"all"}]@
 			@Extender[${document_id},document,opengraph,{footer:false, header:false}]@
 		</#if>
-		<#if portlet?has_content >
+		<#if portlet?has_content>
 			${portlet}
 		</#if>
-	</div>
-</div>
-<div class="clearfix">&nbsp;</div>
-<#if isExtendInstalled?? && isExtendInstalled>
+	</@cCol>
+</@cRow>
+</@cContainer>
+<#if isExtendEnabled>
 	@Extender[${document_id},document,comment]@
 	@Extender[${document_id},document,feedback]@
 	@Extender[${document_id},document,opengraph,{footer:true}]@
 </#if>
+</@cTpl>

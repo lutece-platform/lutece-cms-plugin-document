@@ -1,0 +1,46 @@
+<#--
+ # Form to move a space under another space. Rendered on the move space page, and in a modal of the documents management page (in_modal=true).
+ # id_prefix keeps the identifiers unique when several space forms are in the same page.
+-->
+<#include "/admin/plugins/document/spaces/spaces_tree_select.html" />
+<#assign idPrefix = id_prefix!'' />
+<#macro moveSpaceFields>
+	<@input type='hidden' name='token' value='${token}' />
+	<@input type='hidden' name='id_space' value='${space.id}' />
+	<@fieldSet legend='#i18n{document.move_space.labelMove}'>
+		<#if spaces_tree?has_content>
+			<@spacesTreeSelect id='${idPrefix}spaces_tree' nodes=spaces_tree excludedId=space.id label='#i18n{document.move_space.labelMove}' />
+		<#else>
+			<@empty title='#i18n{portal.util.labelNoItem}' subtitle=' ' iconName='folder-off' />
+		</#if>
+	</@fieldSet>
+</#macro>
+<#if in_modal!false>
+<@tform id='${idPrefix}move_space_form' method='post' action='jsp/admin/plugins/document/DoMoveSpace.jsp'>
+	<@modalBody>
+		<@moveSpaceFields />
+	</@modalBody>
+	<@modalFooter>
+		<@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='light' />
+		<@button type='submit' id='${idPrefix}move_space_submit' title='#i18n{document.move_space.buttonMove}' buttonIcon='folder-symlink' disabled=true />
+	</@modalFooter>
+</@tform>
+<#else>
+<@tform id='${idPrefix}move_space_form' method='post' action='jsp/admin/plugins/document/DoMoveSpace.jsp' boxed=true>
+	<@moveSpaceFields />
+	<@formGroup rows=2>
+		<@button type='submit' id='${idPrefix}move_space_submit' title='#i18n{document.move_space.buttonMove}' buttonIcon='folder-symlink' disabled=true />
+		<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='light' />
+	</@formGroup>
+</@tform>
+</#if>
+<script>
+document.addEventListener( 'DOMContentLoaded', ( ) => {
+	const form = document.getElementById( '${idPrefix?js_string?no_esc}move_space_form' );
+	const submit = document.getElementById( '${idPrefix?js_string?no_esc}move_space_submit' );
+	// The destination is mandatory: the button waits for a space to be selected
+	form.addEventListener( 'change', ( ) => {
+		submit.disabled = form.querySelector( 'input[name="browser_selected_space_id"]:checked' ) === null;
+	} );
+} );
+</script>

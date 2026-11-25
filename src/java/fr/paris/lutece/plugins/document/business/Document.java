@@ -35,16 +35,12 @@ package fr.paris.lutece.plugins.document.business;
 
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
 import fr.paris.lutece.plugins.document.business.category.Category;
-import fr.paris.lutece.plugins.document.business.publication.DocumentPublication;
-import fr.paris.lutece.plugins.document.business.publication.DocumentPublicationHome;
-import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
+import fr.paris.lutece.plugins.document.business.workflow.DocumentState;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.i18n.Localizable;
 import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.url.UrlItem;
-import fr.paris.lutece.util.xml.XmlUtil;
 
 import org.apache.commons.lang3.Strings;
 
@@ -52,8 +48,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * A document of the CMS.
@@ -66,13 +60,8 @@ public class Document implements Localizable, IExtendableResource
     private static final String SERVLET_DOCUMENT_PATH = "document";
     private static final String PROPERTY_DEFAULT_THUMBNAIL = "document.thumbnail.default";
     private static final String PROPERTY_RESOURCE_PROVIDER_URL = "document.resource.provider.url";
+    private static final String PARAMETER_THUMBNAIL_VERSION = "&v=";
 
-    /////////////////////////////////////////////////////////////////////////////////
-    // Xml Tags
-    private static final String TAG_DOCUMENT = "document";
-    private static final String TAG_DOCUMENT_ID = "document-id";
-    private static final String TAG_DATE_PUBLICATION = "document-date-publication";
-    private static final String TAG_DOCUMENT_XML_CONTENT = "document-xml-content";
     private static final String MARK_ID = "id";
     private static final String MARK_ID_ATTRIBUTE = "id_attribute";
     private static final String EMPTY_STRING = "";
@@ -92,9 +81,7 @@ public class Document implements Localizable, IExtendableResource
     private java.sql.Timestamp _dateValidityBegin;
     private java.sql.Timestamp _dateValidityEnd;
     private String _strComment;
-    private String _strXmlWorkingContent;
-    private String _strXmlValidatedContent;
-    private String _strXmlMetadata;
+    private String _strMetadata;
     private int _nIdSpace;
     private int _nIdPageTemplateDocument;
     private int _nPublishedStatus;
@@ -107,6 +94,8 @@ public class Document implements Localizable, IExtendableResource
     private List<Category> _listCategories;
     private boolean _bSkipPortlet; // Skips HTML code generation for documents list portlet
     private boolean _bSkipCategories; // Skips HTML code generation for category list portlet
+    private String _strValidatedTitle;
+    private String _strValidatedSummary;
 
     /**
      * Returns the IdDocument
@@ -341,66 +330,24 @@ public class Document implements Localizable, IExtendableResource
     }
 
     /**
-     * Returns the XmlWorkingContent
+     * Returns the metadata of the document, as a JSON object whose properties depend on the metadata handler of the document type
      *
-     * @return The XmlWorkingContent
+     * @return The metadata, or null
      */
-    public String getXmlWorkingContent( )
+    public String getMetadata( )
     {
-        return _strXmlWorkingContent;
+        return _strMetadata;
     }
 
     /**
-     * Sets the XmlWorkingContent
+     * Sets the metadata of the document
      *
-     * @param strXmlWorkingContent
-     *            The XmlWorkingContent
+     * @param strMetadata
+     *            The metadata, as a JSON object
      */
-    public void setXmlWorkingContent( String strXmlWorkingContent )
+    public void setMetadata( String strMetadata )
     {
-        _strXmlWorkingContent = strXmlWorkingContent;
-    }
-
-    /**
-     * Returns the XmlValidatedContent
-     *
-     * @return The XmlValidatedContent
-     */
-    public String getXmlValidatedContent( )
-    {
-        return _strXmlValidatedContent;
-    }
-
-    /**
-     * Sets the XmlValidatedContent
-     *
-     * @param strXmlValidatedContent
-     *            The XmlValidatedContent
-     */
-    public void setXmlValidatedContent( String strXmlValidatedContent )
-    {
-        _strXmlValidatedContent = strXmlValidatedContent;
-    }
-
-    /**
-     * Returns the XmlMetadata
-     *
-     * @return The XmlMetadata
-     */
-    public String getXmlMetadata( )
-    {
-        return _strXmlMetadata;
-    }
-
-    /**
-     * Sets the XmlMetadata
-     *
-     * @param strXmlMetadata
-     *            The XmlMetadata
-     */
-    public void setXmlMetadata( String strXmlMetadata )
-    {
-        _strXmlMetadata = strXmlMetadata;
+        _strMetadata = strMetadata;
     }
 
     /**
@@ -681,6 +628,48 @@ public class Document implements Localizable, IExtendableResource
     }
 
     /**
+     * Returns the title as it was when the document was last validated
+     *
+     * @return The validated title
+     */
+    public String getValidatedTitle( )
+    {
+        return _strValidatedTitle;
+    }
+
+    /**
+     * Sets the title as it was when the document was last validated
+     *
+     * @param strValidatedTitle
+     *            The validated title
+     */
+    public void setValidatedTitle( String strValidatedTitle )
+    {
+        _strValidatedTitle = strValidatedTitle;
+    }
+
+    /**
+     * Returns the summary as it was when the document was last validated
+     *
+     * @return The validated summary
+     */
+    public String getValidatedSummary( )
+    {
+        return _strValidatedSummary;
+    }
+
+    /**
+     * Sets the summary as it was when the document was last validated
+     *
+     * @param strValidatedSummary
+     *            The validated summary
+     */
+    public void setValidatedSummary( String strValidatedSummary )
+    {
+        _strValidatedSummary = strValidatedSummary;
+    }
+
+    /**
      * Returns a Thumbnail url for the document based on a document attribute or on the document type.
      * 
      * @return A Thumbnail url
@@ -695,6 +684,13 @@ public class Document implements Localizable, IExtendableResource
         if ( documentType.getThumbnailAttributeId( ) != 0 )
         {
             strThumbnailUrl = strResourceUrl + getId( );
+
+            // The browser keeps the thumbnail (the servlet sends a long max-age): a version taken from the modification date
+            // changes the URL when the document is modified, so the new image is displayed without a forced reload
+            if ( getDateModification( ) != null )
+            {
+                strThumbnailUrl += PARAMETER_THUMBNAIL_VERSION + getDateModification( ).getTime( );
+            }
         }
         else
             if ( !documentType.getDefaultThumbnailUrl( ).equals( "" ) )
@@ -703,57 +699,6 @@ public class Document implements Localizable, IExtendableResource
             }
 
         return strThumbnailUrl;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // XML Generation
-
-    /**
-     * Returns the xml of this document
-     * 
-     * @param request
-     *            The HTTP Servlet request
-     * @param nIdPortlet
-     *            the id of the portlet where the document is published
-     * @return the link xml
-     */
-    public String getXml( HttpServletRequest request, int nIdPortlet )
-    {
-        StringBuffer strXml = new StringBuffer( );
-
-        XmlUtil.beginElement( strXml, TAG_DOCUMENT );
-
-        XmlUtil.addElement( strXml, TAG_DOCUMENT_ID, Integer.toString( getId( ) ) );
-
-        if ( nIdPortlet != -1 )
-        {
-            DocumentPublication publication = DocumentPublicationHome.findByPrimaryKey( nIdPortlet, getId( ) );
-            String strDate = DateUtil.getDateString( publication.getDatePublishing( ), getLocale( ) );
-            XmlUtil.addElement( strXml, TAG_DATE_PUBLICATION, strDate );
-        }
-
-        XmlUtil.addElement( strXml, TAG_DOCUMENT_XML_CONTENT, getXmlValidatedContent( ) );
-
-        // additionnal info
-        ResourceEnhancer.getXmlAddOn( strXml, PROPERTY_RESOURCE_TYPE, getId( ) );
-
-        XmlUtil.endElement( strXml, TAG_DOCUMENT );
-
-        return strXml.toString( );
-    }
-
-    /**
-     * Returns the xml document of this link
-     *
-     * @param nIdPortlet
-     *            the id of the portlet where the document is published
-     * @param request
-     *            The HTTP servlet request
-     * @return the link xml document
-     */
-    public String getXmlDocument( HttpServletRequest request, int nIdPortlet )
-    {
-        return XmlUtil.getXmlHeader( ) + getXml( request, nIdPortlet );
     }
 
     /**
@@ -777,6 +722,17 @@ public class Document implements Localizable, IExtendableResource
         }
 
         return null;
+    }
+
+    /**
+     * Tells if the document has a validated version: approved, or approved and being changed
+     *
+     * @return true if the document has a validated version
+     */
+    public boolean hasValidatedVersion( )
+    {
+        return ( _nIdState == DocumentState.STATE_VALIDATE ) || ( _nIdState == DocumentState.STATE_IN_CHANGE )
+                || ( _nIdState == DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL );
     }
 
     /**

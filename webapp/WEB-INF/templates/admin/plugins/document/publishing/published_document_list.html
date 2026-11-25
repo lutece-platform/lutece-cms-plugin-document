@@ -5,6 +5,7 @@
 	</@manageFeatureItemColumn>            
 	<@manageFeatureItemColumn auto=true align='around'>
 		<@tform type='inline' method='post' name='modifyOrderDocument' action='jsp/admin/plugins/document/DoModifyDocumentOrder.jsp'>
+				<@input type='hidden' name='token' value='${token}' />
 			<@input type='hidden' name='id_document' value='${document_published.id}' />
 			<@input type='hidden' name='id_portlet' value='${portlet_id}' />
 			<@formGroup formStyle=''>
@@ -15,6 +16,7 @@
 			</@formGroup>
 		</@tform>
 		<@tform method='post' class='ms-1' name='unpublishDocument' action='jsp/admin/plugins/document/DoUnPublishingDocument.jsp'>
+				<@input type='hidden' name='token' value='${token}' />
 			<@input type='hidden' name='id_document' value='${document_published.id}' />
 			<@input type='hidden' name='id_portlet' value='${portlet_id}' />
 			<@button type='submit' title='#i18n{document.published_document_list.buttonUnPublish}' hideTitle=['all'] buttonIcon='mailbox-off' color='outline-warning' size='sm' params={"aria-label": "#i18n{document.published_document_list.buttonUnPublish} ${document_published.title}"} />

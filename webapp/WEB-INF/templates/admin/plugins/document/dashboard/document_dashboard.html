@@ -1,57 +1,44 @@
-<#if last_modified_document??>
-<@adminDashboardWidget title='#i18n{document.dashboard.columnLastModifiedDocument}' id='site_dashboard_document_last_modified' url=url>
-	<@card class='mb-1'>
-		<@row class='align-items-center'>
-			<@columns>						
-				<@p>
-					<#if last_modified_document.publishedStatus=0><@tag color='success' title='#i18n{document.dashboard.PublishedStatus}'><@icon style='check' /><span class="visually-hidden">#i18n{document.dashboard.PublishedStatus}</span></@tag><#else><@tag color='danger' title='#i18n{document.dashboard.UnPublishedStatus}'><@icon style='times' /><span class="visually-hidden">#i18n{document.dashboard.UnPublishedStatus}</span></@tag></#if>
-					<strong>${last_modified_document.id} - ${last_modified_document.title}</strong>
-				</@p>
-				<@p class='mb-0'>${last_modified_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_modified_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_modified_document.dateModification}</@p>
-				<#if last_modified_document.comment!="">
-					<@alert color='danger'>
-						${last_modified_document.comment}
-					</@alert>
-				</#if>
-			</@columns>
-			<@div class='col-auto'>
-				<@button type='button' class='btn-action' title='#i18n{document.dashboard.columnActions}' hideTitle=['all'] buttonIcon='dots-vertical fs-2' dropdownMenu=true>
-					<#list last_modified_document.actions as action>
+<#--
+	A document as a row of a flush list: its publication as a dot, its title, its type, state and date on one line, the preview and
+	the correction as icons (when the workflow offers them), every action of the workflow in the menu
+-->
+<#macro documentDashboardRow document>
+<#local documentStatus><#if document.publishedStatus=0>#i18n{document.dashboard.PublishedStatus}<#else>#i18n{document.dashboard.UnPublishedStatus}</#if></#local>
+<div class="list-group list-group-flush">
+	<div class="list-group-item">
+		<div class="row align-items-center g-2">
+			<div class="col-auto"><span class="status-dot ${(document.publishedStatus=0)?then('status-green', 'status-red')}" title="${documentStatus}"></span><span class="visually-hidden">${documentStatus}</span></div>
+			<div class="col text-truncate">
+				<span class="fw-semibold" title="${document.title}">${document.id} · ${document.title}</span>
+				<div class="text-secondary small text-truncate">${document.type} · ${document.state} · #i18n{document.dashboard.labelDateModification} ${document.dateModification}</div>
+				<#if document.comment?has_content><div class="text-danger small text-wrap mt-1"><i class="ti ti-message-exclamation" aria-hidden="true"></i> ${document.comment}</div></#if>
+			</div>
+			<div class="col-auto btn-actions">
+				<#list document.actions?filter( action -> action.url?exists && ( action.iconUrl! == 'eye' || action.iconUrl! == 'pencil' ) ) as action>
+				<a href="${action.url}id_document=${document.id}&id_action=${action.idAction}&token=${token}" class="btn-action" title="${action.description}"><@icon style=action.iconUrl /><span class="visually-hidden">${action.name!}</span></a>
+				</#list>
+				<div class="dropdown">
+					<a href="#" class="btn-action" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="#i18n{document.dashboard.columnActions}"><i class="ti ti-dots" aria-hidden="true"></i><span class="visually-hidden">#i18n{document.dashboard.columnActions}</span></a>
+					<div class="dropdown-menu dropdown-menu-end">
+						<#list document.actions as action>
 						<#if action.url?exists>
-							<@link href='${action.url}id_document=${last_modified_document.id}&id_action=${action.idAction}' title='${action.description}' class='dropdown-item'>
-								<@icon style=action.iconUrl! /> ${action.name!}
-							</@link>
+						<a href="${action.url}id_document=${document.id}&id_action=${action.idAction}&token=${token}" class="dropdown-item" title="${action.description}"><@icon style=action.iconUrl! class='me-2' /> ${action.name!}</a>
 						</#if>
-					</#list>
-				</@button>
-			</@div>		
-		</@row>
-	</@card>
-	</@adminDashboardWidget>			
+						</#list>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</#macro>
+<#if last_modified_document??>
+<@adminDashboardWidget title='#i18n{document.dashboard.columnLastModifiedDocument}' id='site_dashboard_document_last_modified' url=url boxIcon='file-pencil' iconColor='orange' flush=true>
+<@documentDashboardRow document=last_modified_document />
+</@adminDashboardWidget>
 </#if>
 <#if last_published_document??>
-<@adminDashboardWidget title='#i18n{document.dashboard.columnLastPublishedDocument}' id='site_dashboard_document_last_published' url=url>
-<@card class='mb-1'>
-	<@row class='align-items-center'>
-		<@columns>		
-			<@p>
-				<#if last_published_document.publishedStatus=0><@tag color='success' title='#i18n{document.dashboard.PublishedStatus}'><@icon style='check' /><span class="visually-hidden">#i18n{document.dashboard.PublishedStatus}</span></@tag><#else><@tag color='danger' title='#i18n{document.dashboard.UnPublishedStatus}'><@icon style='times' /><span class="visually-hidden">#i18n{document.dashboard.UnPublishedStatus}</span></@tag></#if>
-				<strong>${last_published_document.id} - ${last_published_document.title}</strong>
-			</@p>
-			<@p class='mb-0'>${last_published_document.type} - <strong>#i18n{document.dashboard.labelState} : </strong>${last_published_document.state} - <strong>#i18n{document.dashboard.labelDateModification} : </strong>${last_published_document.dateModification}</@p>
-		</@columns>
-		<@div class='col-auto'>
-			<@button type='button' class='btn-action' title='#i18n{document.dashboard.columnActions}' hideTitle=['all'] buttonIcon='dots-vertical fs-2' dropdownMenu=true>
-				<#list last_published_document.actions as action>
-					<#if action.url?exists>
-						<@link href='${action.url}id_document=${last_published_document.id}&id_action=${action.idAction}' title='${action.description}' class='dropdown-item' >
-							<@icon style=action.iconUrl! /> ${action.name!}
-						</@link>
-					</#if>
-				</#list>
-			</@button>
-		</@div>
-	</@row>
-</@card>
+<@adminDashboardWidget title='#i18n{document.dashboard.columnLastPublishedDocument}' id='site_dashboard_document_last_published' url=url boxIcon='world' iconColor='green' flush=true>
+<@documentDashboardRow document=last_published_document />
 </@adminDashboardWidget>
 </#if>

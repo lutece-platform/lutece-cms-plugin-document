@@ -1,0 +1,13 @@
+<@adminDashboardPanel title='#i18n{document.adminDashboard.pageTitle}' navTitle='#i18n{document.adminDashboard.navTitle}' icon='file-settings' parentId='technical_settings' childId='documentAdminDashboard'>
+	<@tform method='post' name='document_advanced_parameters' action='jsp/admin/plugins/document/admindashboard/DoModifyAdvancedParameters.jsp' boxed=true>
+		<@input type='hidden' name='token' value='${token}' />
+		<@box title='#i18n{document.advanced_parameters.workflow.title}'>
+			<@formGroup labelFor='workflow_auto_validation' labelKey='#i18n{document.advanced_parameters.workflow.title}' helpKey='#i18n{document.advanced_parameters.workflow.help}' hideLabel=['all'] rows=2>
+				<@checkBox orientation='switch' name='workflow_auto_validation' id='workflow_auto_validation' labelKey='#i18n{document.advanced_parameters.workflow.autoValidation}' checked=workflow_auto_validation />
+			</@formGroup>
+		</@box>
+		<@formGroup rows=2>
+			<@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' color='primary' />
+		</@formGroup>
+	</@tform>
+</@adminDashboardPanel>

@@ -135,13 +135,13 @@ public interface AttributeManager
     String validateValueParameters( List<AttributeTypeParameter> listParameters, Locale locale );
 
     /**
-     * Get the XML data corresponding to the attribute to build the docuemnt XML
-     * content
+     * Get the value of the attribute as exposed to the document templates
      * @param document The document
      * @param attribute The attribute
-     * @return The XML value of the attribute
+     * @param bValidated true if the attribute belongs to the validated content, false for the working content
+     * @return The value of the attribute (a String, or a specific object such as a file), or null if there is no value
      */
-    String getAttributeXmlValue( Document document, DocumentAttribute attribute );
+    Object getAttributeValue( Document document, DocumentAttribute attribute, boolean bValidated );
 
     /**
      * Tells if the attrubute can be used as Thumbnail (image)

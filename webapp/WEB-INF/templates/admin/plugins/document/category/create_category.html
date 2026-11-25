@@ -2,6 +2,7 @@
     <@pageColumn>
 		<@pageHeader title='#i18n{document.create_category.boxTitle}' />
 		<@tform method='post' action='jsp/admin/plugins/document/DoCreateCategory.jsp' enctype='multipart/form-data' boxed=true>
+				<@input type='hidden' name='token' value='${token}' />
 			<@formGroup labelFor='category_name' labelKey='#i18n{document.create_category.labelName}' mandatory=true>
 				<@input type='text' id='category_name' name='category_name' maxlength=100 />
 			</@formGroup>

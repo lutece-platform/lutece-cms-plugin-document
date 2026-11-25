@@ -1,6 +1,15 @@
-<@formGroup labelFor='document_type_code' labelKey='#i18n{document.document_list_portlet_type.labelComboTypeDocument}'>
-	@combo_document_type@
-</@formGroup>
-<@formGroup labelFor='categories' labelKey='#i18n{document.document_list_portlet_type.labelFilterCategory}'>
-	@combo_category_document@
+<@row>
+	<@columns md=6>
+		<@formGroup labelFor='document_type_code' labelKey='#i18n{document.document_list_portlet_type.labelComboTypeDocument}' rows=2>
+			@combo_document_type@
+		</@formGroup>
+	</@columns>
+	<@columns md=6>
+		<@formGroup labelFor='categories' labelId='categories-label' labelKey='#i18n{document.document_list_portlet_type.labelFilterCategory}' helpKey='#i18n{document.document_portlet_type.helpCategories}' rows=2>
+			@combo_category_document@
+		</@formGroup>
+	</@columns>
+</@row>
+<@formGroup labelFor='document-search' labelKey='#i18n{document.document_list_portlet_type.labelDocuments}' helpKey='#i18n{document.document_list_portlet_type.helpDocuments}'>
+	@combo_document@
 </@formGroup>

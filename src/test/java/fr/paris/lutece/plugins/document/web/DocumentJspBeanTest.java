@@ -39,6 +39,8 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import fr.paris.lutece.test.LuteceTestCase;
@@ -56,6 +58,7 @@ import java.util.Map;
 public class DocumentJspBeanTest extends LuteceTestCase
 {
 	private static final String PARAMETER_DOCUMENT_TYPE = "document_type_code";
+	private static final String SPACE_ARTICLES = "2";
     private static final String ATTRIBUTE_ADMIN_USER = "lutece_admin_user";
 
     @Inject
@@ -89,22 +92,30 @@ public class DocumentJspBeanTest extends LuteceTestCase
 
 	/**
 	 * Test of getCreateDocument method, of class
-	 * fr.paris.lutece.plugins.document.web.DocumentJspBean.
+	 * fr.paris.lutece.plugins.document.web.DocumentJspBean: the creation form of an article is displayed in a space allowing articles.
 	 */
+	@Test
 	public void testGetCreateDocument( ) throws AccessDeniedException
 	{
-		System.out.println( "getCreateDocument" );
-		/*
 		MockHttpServletRequest request = new MockHttpServletRequest( );
+
 		AdminUser user = AdminUserHome.findUserByLogin( "admin" );
 		user.setRoles( AdminUserHome.getRolesListForUser( user.getUserId( ) ) );
-		request.registerAdminUserWithRigth( user, DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT );
-		request.setParameter( PARAMETER_DOCUMENT_TYPE, "article" );
+        Map<String, Right> mapRights = new HashMap<>( );
+        Right right = new Right( );
+        right.setId( DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT );
+        mapRights.put( DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT, right );
+        user.setRights( mapRights );
+        user.setLocale( new Locale("fr", "FR", "") );
+        request.getSession( true ).setAttribute( ATTRIBUTE_ADMIN_USER, user );
 
-		DocumentJspBean instance = new DocumentJspBean( );
+        _instance.init( request, DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT );
+		request.addParameter( DocumentJspBean.PARAMETER_SPACE_ID_FILTER, SPACE_ARTICLES );
+        _instance.getManageDocuments( request );
 
-		instance.init( request, DocumentJspBean.RIGHT_DOCUMENT_MANAGEMENT );
-		instance.getCreateDocument( request );
-		*/
+		request.addParameter( PARAMETER_DOCUMENT_TYPE, "article" );
+		String strHtml = _instance.getCreateDocument( request );
+
+		assertTrue( strHtml.contains( "DoCreateDocument.jsp" ), "the creation form should be displayed" );
 	}
 }

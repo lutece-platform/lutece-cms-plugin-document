@@ -33,7 +33,12 @@
  */
 package fr.paris.lutece.plugins.document.service;
 
+import fr.paris.lutece.plugins.document.modules.rulenotifyusers.business.NotifyUsersMailingListRemovalListener;
 import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
+import fr.paris.lutece.portal.service.util.BeanUtils;
+import fr.paris.lutece.portal.service.util.RemovalListenerService;
+import jakarta.enterprise.inject.literal.NamedLiteral;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.io.Serializable;
 
@@ -46,10 +51,12 @@ public class DocumentPlugin extends PluginDefaultImplementation implements Seria
 	private static final long serialVersionUID = - 3298585464051062753L;
 
 	/**
-	 * {@inheritDoc}
+	 * Registers the listener that prevents the removal of a mailing list used by a notification rule
 	 */
 	@Override
 	public void init( )
 	{
+		CDI.current( ).select( RemovalListenerService.class, NamedLiteral.of( BeanUtils.BEAN_MAILINGLIST_REMOVAL_SERVICE ) ).get( )
+				.registerListener( new NotifyUsersMailingListRemovalListener( ) );
 	}
 }

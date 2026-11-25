@@ -1,0 +1,13 @@
+<@cTpl>
+<@cSection class='portlet portlet-document ${device_class!}' id='portlet_${portlet_id?c}'>
+<#if portlet_name??>
+	<@cTitle level=2 class='portlet-header'>${portlet_name}</@cTitle>
+</#if>
+	<@cBlock class='portlet-content'>
+	<#if document_content??>
+		<#-- The document rendered with the front office template of its document type -->
+		<@documentHtml html=document_content />
+	</#if>
+	</@cBlock>
+</@cSection>
+</@cTpl>

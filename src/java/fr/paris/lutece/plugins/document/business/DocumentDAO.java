@@ -46,7 +46,10 @@ import org.apache.commons.lang3.StringUtils;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class provides Data Access methods for Document objects
@@ -56,45 +59,45 @@ public final class DocumentDAO implements IDocumentDAO
 {
     // Documents queries
     private static final String SQL_QUERY_SELECT = " SELECT a.id_document, a.code_document_type, a.title, a.date_creation, "
-            + " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , "
+            + " a.date_modification, a.id_space , b.document_space_name , "
             + " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin,"
-            + " a.date_validity_end , a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document, a.skip_portlet, a.skip_categories FROM document a,"
+            + " a.date_validity_end , a.metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document, a.skip_portlet, a.skip_categories, a.validated_title, a.validated_summary FROM document a,"
             + " document_space b, document_workflow_state c, document_type d WHERE a.id_space = b.id_space AND a.id_state = c.id_state"
             + " AND a.code_document_type = d.code_document_type AND a.id_document = ?  ";
     private static final String SQL_QUERY_SELECT_FROM_SPACE_ID = " SELECT a.id_document, a.title, a.document_summary"
             + " FROM document a WHERE a.id_space = ?  ";
     private static final String SQL_QUERY_INSERT = " INSERT INTO document ( code_document_type, title, date_creation, "
-            + " date_modification, xml_working_content, xml_validated_content, id_space, id_state, document_summary, document_comment, "
-            + " date_validity_begin , date_validity_end , xml_metadata , id_creator, "
-            + " id_mailinglist, id_page_template_document, skip_portlet, skip_categories ) "
+            + " date_modification, id_space, id_state, document_summary, document_comment, "
+            + " date_validity_begin , date_validity_end , metadata , id_creator, "
+            + " id_mailinglist, id_page_template_document, skip_portlet, skip_categories, validated_title, validated_summary ) "
             + " VALUES ( ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = " DELETE FROM document WHERE id_document = ?  ";
-    private static final String SQL_QUERY_UPDATE = " UPDATE document SET code_document_type = ?, title = ?, date_creation = ?, date_modification = ?, xml_working_content = ?, "
-            + " xml_validated_content = ?, id_space = ?, id_state = ? , document_summary = ?, document_comment = ? , date_validity_begin = ? , date_validity_end = ? , "
-            + " xml_metadata = ? , id_creator = ?, id_mailinglist = ?, id_page_template_document = ?, skip_portlet = ?, skip_categories = ? "
-            + " WHERE id_document = ?  ";
+    private static final String SQL_QUERY_UPDATE = " UPDATE document SET code_document_type = ?, title = ?, date_creation = ?, date_modification = ?, "
+            + " id_space = ?, id_state = ? , document_summary = ?, document_comment = ? , date_validity_begin = ? , date_validity_end = ? , "
+            + " metadata = ? , id_creator = ?, id_mailinglist = ?, id_page_template_document = ?, skip_portlet = ?, skip_categories = ?, "
+            + " validated_title = ?, validated_summary = ? WHERE id_document = ?  ";
     private static final String SQL_QUERY_SELECT_PRIMARY_KEY_BY_FILTER = " SELECT DISTINCT a.id_document, a.date_modification FROM document a "
             + " INNER JOIN document_space b ON a.id_space = b.id_space " + " INNER JOIN document_workflow_state c ON a.id_state = c.id_state "
             + " INNER JOIN document_type d ON a.code_document_type = d.code_document_type "
             + " LEFT OUTER JOIN document_category_link f ON a.id_document = f.id_document ";
     private static final String SQL_QUERY_SELECT_BY_FILTER = " SELECT DISTINCT a.id_document, a.code_document_type, a.title, "
-            + " a.date_creation, a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , "
+            + " a.date_creation, a.date_modification, a.id_space , b.document_space_name , "
             + " a.id_state , c.name_key , d.document_type_name ,  a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , "
-            + " a.xml_metadata , a.id_creator, a.id_mailinglist , a.id_page_template_document, a.skip_portlet, a.skip_categories FROM document a "
+            + " a.metadata , a.id_creator, a.id_mailinglist , a.id_page_template_document, a.skip_portlet, a.skip_categories, a.validated_title, a.validated_summary FROM document a "
             + " INNER JOIN document_space b ON a.id_space = b.id_space " + " INNER JOIN document_workflow_state c ON a.id_state = c.id_state "
             + " INNER JOIN document_type d ON a.code_document_type = d.code_document_type "
             + " LEFT OUTER JOIN document_category_link f ON a.id_document = f.id_document ";
     private static final String SQL_QUERY_SELECT_LAST_MODIFIED_DOCUMENT_FROM_USER = " SELECT a.id_document, a.code_document_type, a.title, a.date_creation, "
-            + " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , "
+            + " a.date_modification, a.id_space , b.document_space_name , "
             + " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , "
-            + " a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document, a.skip_portlet, a.skip_categories FROM document a"
+            + " a.metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document, a.skip_portlet, a.skip_categories, a.validated_title, a.validated_summary FROM document a"
             + " INNER JOIN document_space b ON a.id_space = b.id_space" + " INNER JOIN document_workflow_state c ON a.id_state = c.id_state"
             + " INNER JOIN document_type d ON a.code_document_type = d.code_document_type " + " INNER JOIN document_history e ON a.id_document = e.id_document "
             + " WHERE e.event_user = ? ORDER BY e.event_date DESC LIMIT 1 ";
     private static final String SQL_QUERY_SELECT_LAST_PUBLISHED_DOCUMENT = " SELECT a.id_document, a.code_document_type, a.title, a.date_creation, "
-            + " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , "
+            + " a.date_modification, a.id_space , b.document_space_name , "
             + " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , "
-            + " a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document, a.skip_portlet, a.skip_categories FROM document a"
+            + " a.metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document, a.skip_portlet, a.skip_categories, a.validated_title, a.validated_summary FROM document a"
             + " INNER JOIN document_space b ON a.id_space = b.id_space" + " INNER JOIN document_workflow_state c ON a.id_state = c.id_state"
             + " INNER JOIN document_type d ON a.code_document_type = d.code_document_type "
             + " INNER JOIN document_published e ON a.id_document = e.id_document " + " ORDER BY e.date_publishing DESC LIMIT 1 ";
@@ -113,6 +116,19 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_FILTER_ID_OR = " OR ";
     private static final String SQL_FILTER_ID_END = ") ";
     private static final String SQL_ORDER_BY_LAST_MODIFICATION = " ORDER BY a.date_modification DESC ";
+
+    private static final String SQL_QUERY_SELECT_WITH_VALIDATED_VERSION = " SELECT a.id_document, a.code_document_type, a.title, a.validated_title, a.id_space, a.id_state, "
+            + " b.document_space_name, a.date_creation FROM document a INNER JOIN document_space b ON a.id_space = b.id_space ";
+    private static final String SQL_QUERY_COUNT_WITH_VALIDATED_VERSION = " SELECT COUNT(*) FROM document a ";
+    private static final String SQL_FILTER_WITH_VALIDATED_VERSION = " WHERE a.id_state IN ( " + DocumentState.STATE_VALIDATE + ", " + DocumentState.STATE_IN_CHANGE
+            + ", " + DocumentState.STATE_WAITING_FOR_CHANGE_APPROVAL + " ) AND a.code_document_type = ? ";
+    private static final String SQL_FILTER_TITLE_FRAGMENT = " AND ( LOWER( a.title ) LIKE ? OR LOWER( a.validated_title ) LIKE ? ) ";
+    private static final String SQL_FILTER_SPACES_BEGIN = " AND a.id_space IN ( ";
+    private static final String SQL_FILTER_SPACES_END = " ) ";
+    private static final String SQL_ORDER_BY_LAST_CREATED = " ORDER BY a.date_creation DESC, a.id_document DESC LIMIT ";
+    private static final String SQL_OFFSET = " OFFSET ";
+    private static final String SQL_QUERY_SELECT_LEGACY_METADATA = " SELECT id_document, xml_metadata FROM document WHERE xml_metadata IS NOT NULL ";
+    private static final String SQL_QUERY_UPDATE_MIGRATED_METADATA = " UPDATE document SET metadata = ?, xml_metadata = NULL WHERE id_document = ? ";
 
     // Select only primary keys
     private static final String SQL_QUERY_SELECT_PRIMARY_KEYS = " SELECT a.id_document FROM document a ";
@@ -133,6 +149,7 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_VALIDATE_ATTRIBUTES = "UPDATE document_content SET validated = ? WHERE id_document = ?";
 
     // Resources queries
+    private static final String SQL_QUERY_SELECT_BY_VALIDATED_TEXT_VALUE = " SELECT DISTINCT id_document FROM document_content WHERE validated = 1 AND id_document <> ? AND text_value LIKE ? ";
     private static final String SQL_QUERY_SELECT_DOCUMENT_SPECIFIC_RESOURCE = " SELECT binary_value , mime_type , text_value FROM document_content WHERE id_document = ? AND id_document_attr = ? and validated = ?";
     private static final String SQL_QUERY_SELECT_DOCUMENT_RESOURCE = "SELECT a.binary_value , a.mime_type, a.text_value FROM document_content a, document b, document_type c WHERE a.id_document = ? "
             + " AND a.id_document_attr = c.thumbnail_attr_id " + " AND a.id_document = b.id_document " + " AND b.code_document_type = c.code_document_type ";
@@ -143,9 +160,9 @@ public final class DocumentDAO implements IDocumentDAO
     private static final String SQL_QUERY_INSERT_LINK_CATEGORY_DOCUMENT = " INSERT INTO document_category_link ( id_category, id_document ) VALUES ( ?, ? )";
     private static final String SQL_QUERY_LAST_MODIFIED = "SELECT d.code_document_type, d.date_modification FROM document d WHERE d.id_document = ?";
     private static final String SQL_QUERY_SELECT_RELATED_CATEGORY = "SELECT DISTINCT a.id_document, a.code_document_type, a.title, a.date_creation, "
-            + " a.date_modification, a.xml_working_content, a.xml_validated_content, a.id_space , b.document_space_name , "
+            + " a.date_modification, a.id_space , b.document_space_name , "
             + " a.id_state , c.name_key, d.document_type_name , a.document_summary, a.document_comment , a.date_validity_begin , a.date_validity_end , "
-            + " a.xml_metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document, a.skip_portlet, a.skip_categories FROM document a "
+            + " a.metadata , a.id_creator, a.id_mailinglist, a.id_page_template_document, a.skip_portlet, a.skip_categories, a.validated_title, a.validated_summary FROM document a "
             + " INNER JOIN document_space b ON a.id_space = b.id_space " + " INNER JOIN document_workflow_state c ON a.id_state = c.id_state "
             + " INNER JOIN document_type d ON a.code_document_type = d.code_document_type "
             + " LEFT OUTER JOIN document_category_link f ON a.id_document = f.id_document "
@@ -169,20 +186,20 @@ public final class DocumentDAO implements IDocumentDAO
             daoUtil.setString( 2, document.getTitle( ) );
             daoUtil.setTimestamp( 3, document.getDateCreation( ) );
             daoUtil.setTimestamp( 4, document.getDateModification( ) );
-            daoUtil.setString( 5, document.getXmlWorkingContent( ) );
-            daoUtil.setString( 6, document.getXmlValidatedContent( ) );
-            daoUtil.setInt( 7, document.getSpaceId( ) );
-            daoUtil.setInt( 8, document.getStateId( ) );
-            daoUtil.setString( 9, document.getSummary( ) );
-            daoUtil.setString( 10, document.getComment( ) );
-            daoUtil.setTimestamp( 11, document.getDateValidityBegin( ) );
-            daoUtil.setTimestamp( 12, document.getDateValidityEnd( ) );
-            daoUtil.setString( 13, document.getXmlMetadata( ) );
-            daoUtil.setInt( 14, document.getCreatorId( ) );
-            daoUtil.setInt( 15, document.getMailingListId( ) );
-            daoUtil.setInt( 16, document.getPageTemplateDocumentId( ) );
-            daoUtil.setBoolean( 17, document.isSkipPortlet( ) );
-            daoUtil.setBoolean( 18, document.isSkipCategories( ) );
+            daoUtil.setInt( 5, document.getSpaceId( ) );
+            daoUtil.setInt( 6, document.getStateId( ) );
+            daoUtil.setString( 7, document.getSummary( ) );
+            daoUtil.setString( 8, document.getComment( ) );
+            daoUtil.setTimestamp( 9, document.getDateValidityBegin( ) );
+            daoUtil.setTimestamp( 10, document.getDateValidityEnd( ) );
+            daoUtil.setString( 11, document.getMetadata( ) );
+            daoUtil.setInt( 12, document.getCreatorId( ) );
+            daoUtil.setInt( 13, document.getMailingListId( ) );
+            daoUtil.setInt( 14, document.getPageTemplateDocumentId( ) );
+            daoUtil.setBoolean( 15, document.isSkipPortlet( ) );
+            daoUtil.setBoolean( 16, document.isSkipCategories( ) );
+            daoUtil.setString( 17, document.getValidatedTitle( ) );
+            daoUtil.setString( 18, document.getValidatedSummary( ) );
 
             daoUtil.executeUpdate( );
             
@@ -298,23 +315,23 @@ public final class DocumentDAO implements IDocumentDAO
                 document.setTitle( daoUtil.getString( 3 ) );
                 document.setDateCreation( daoUtil.getTimestamp( 4 ) );
                 document.setDateModification( daoUtil.getTimestamp( 5 ) );
-                document.setXmlWorkingContent( daoUtil.getString( 6 ) );
-                document.setXmlValidatedContent( daoUtil.getString( 7 ) );
-                document.setSpaceId( daoUtil.getInt( 8 ) );
-                document.setSpace( daoUtil.getString( 9 ) );
-                document.setStateId( daoUtil.getInt( 10 ) );
-                document.setStateKey( daoUtil.getString( 11 ) );
-                document.setType( daoUtil.getString( 12 ) );
-                document.setSummary( daoUtil.getString( 13 ) );
-                document.setComment( daoUtil.getString( 14 ) );
-                document.setDateValidityBegin( daoUtil.getTimestamp( 15 ) );
-                document.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
-                document.setXmlMetadata( daoUtil.getString( 17 ) );
-                document.setCreatorId( daoUtil.getInt( 18 ) );
-                document.setMailingListId( daoUtil.getInt( 19 ) );
-                document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
-                document.setSkipPortlet( daoUtil.getBoolean( 21 ) );
-                document.setSkipCategories( daoUtil.getBoolean( 22 ) );
+                document.setSpaceId( daoUtil.getInt( 6 ) );
+                document.setSpace( daoUtil.getString( 7 ) );
+                document.setStateId( daoUtil.getInt( 8 ) );
+                document.setStateKey( daoUtil.getString( 9 ) );
+                document.setType( daoUtil.getString( 10 ) );
+                document.setSummary( daoUtil.getString( 11 ) );
+                document.setComment( daoUtil.getString( 12 ) );
+                document.setDateValidityBegin( daoUtil.getTimestamp( 13 ) );
+                document.setDateValidityEnd( daoUtil.getTimestamp( 14 ) );
+                document.setMetadata( daoUtil.getString( 15 ) );
+                document.setCreatorId( daoUtil.getInt( 16 ) );
+                document.setMailingListId( daoUtil.getInt( 17 ) );
+                document.setPageTemplateDocumentId( daoUtil.getInt( 18 ) );
+                document.setSkipPortlet( daoUtil.getBoolean( 19 ) );
+                document.setSkipCategories( daoUtil.getBoolean( 20 ) );
+                document.setValidatedTitle( daoUtil.getString( 21 ) );
+                document.setValidatedSummary( daoUtil.getString( 22 ) );
             }
 
         }
@@ -602,20 +619,20 @@ public final class DocumentDAO implements IDocumentDAO
             daoUtil.setString( 2, document.getTitle( ) );
             daoUtil.setTimestamp( 3, document.getDateCreation( ) );
             daoUtil.setTimestamp( 4, document.getDateModification( ) );
-            daoUtil.setString( 5, document.getXmlWorkingContent( ) );
-            daoUtil.setString( 6, document.getXmlValidatedContent( ) );
-            daoUtil.setInt( 7, document.getSpaceId( ) );
-            daoUtil.setInt( 8, document.getStateId( ) );
-            daoUtil.setString( 9, document.getSummary( ) );
-            daoUtil.setString( 10, document.getComment( ) );
-            daoUtil.setTimestamp( 11, document.getDateValidityBegin( ) );
-            daoUtil.setTimestamp( 12, document.getDateValidityEnd( ) );
-            daoUtil.setString( 13, document.getXmlMetadata( ) );
-            daoUtil.setInt( 14, document.getCreatorId( ) );
-            daoUtil.setInt( 15, document.getMailingListId( ) );
-            daoUtil.setInt( 16, document.getPageTemplateDocumentId( ) );
-            daoUtil.setBoolean( 17, document.isSkipPortlet( ) );
-            daoUtil.setBoolean( 18, document.isSkipCategories( ) );
+            daoUtil.setInt( 5, document.getSpaceId( ) );
+            daoUtil.setInt( 6, document.getStateId( ) );
+            daoUtil.setString( 7, document.getSummary( ) );
+            daoUtil.setString( 8, document.getComment( ) );
+            daoUtil.setTimestamp( 9, document.getDateValidityBegin( ) );
+            daoUtil.setTimestamp( 10, document.getDateValidityEnd( ) );
+            daoUtil.setString( 11, document.getMetadata( ) );
+            daoUtil.setInt( 12, document.getCreatorId( ) );
+            daoUtil.setInt( 13, document.getMailingListId( ) );
+            daoUtil.setInt( 14, document.getPageTemplateDocumentId( ) );
+            daoUtil.setBoolean( 15, document.isSkipPortlet( ) );
+            daoUtil.setBoolean( 16, document.isSkipCategories( ) );
+            daoUtil.setString( 17, document.getValidatedTitle( ) );
+            daoUtil.setString( 18, document.getValidatedSummary( ) );
             daoUtil.setInt( 19, document.getId( ) );
 
             daoUtil.executeUpdate( );
@@ -680,23 +697,23 @@ public final class DocumentDAO implements IDocumentDAO
                 document.setTitle( daoUtil.getString( 3 ) );
                 document.setDateCreation( daoUtil.getTimestamp( 4 ) );
                 document.setDateModification( daoUtil.getTimestamp( 5 ) );
-                document.setXmlWorkingContent( daoUtil.getString( 6 ) );
-                document.setXmlValidatedContent( daoUtil.getString( 7 ) );
-                document.setSpaceId( daoUtil.getInt( 8 ) );
-                document.setSpace( daoUtil.getString( 9 ) );
-                document.setStateId( daoUtil.getInt( 10 ) );
-                document.setStateKey( daoUtil.getString( 11 ) );
-                document.setType( daoUtil.getString( 12 ) );
-                document.setSummary( daoUtil.getString( 13 ) );
-                document.setComment( daoUtil.getString( 14 ) );
-                document.setDateValidityBegin( daoUtil.getTimestamp( 15 ) );
-                document.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
-                document.setXmlMetadata( daoUtil.getString( 17 ) );
-                document.setCreatorId( daoUtil.getInt( 18 ) );
-                document.setMailingListId( daoUtil.getInt( 19 ) );
-                document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
-                document.setSkipPortlet( daoUtil.getBoolean( 21 ) );
-                document.setSkipCategories( daoUtil.getBoolean( 22 ) );
+                document.setSpaceId( daoUtil.getInt( 6 ) );
+                document.setSpace( daoUtil.getString( 7 ) );
+                document.setStateId( daoUtil.getInt( 8 ) );
+                document.setStateKey( daoUtil.getString( 9 ) );
+                document.setType( daoUtil.getString( 10 ) );
+                document.setSummary( daoUtil.getString( 11 ) );
+                document.setComment( daoUtil.getString( 12 ) );
+                document.setDateValidityBegin( daoUtil.getTimestamp( 13 ) );
+                document.setDateValidityEnd( daoUtil.getTimestamp( 14 ) );
+                document.setMetadata( daoUtil.getString( 15 ) );
+                document.setCreatorId( daoUtil.getInt( 16 ) );
+                document.setMailingListId( daoUtil.getInt( 17 ) );
+                document.setPageTemplateDocumentId( daoUtil.getInt( 18 ) );
+                document.setSkipPortlet( daoUtil.getBoolean( 19 ) );
+                document.setSkipCategories( daoUtil.getBoolean( 20 ) );
+                document.setValidatedTitle( daoUtil.getString( 21 ) );
+                document.setValidatedSummary( daoUtil.getString( 22 ) );
 
                 if ( filter.getLoadBinaries( ) )
                 {
@@ -890,23 +907,23 @@ public final class DocumentDAO implements IDocumentDAO
                 returnDocument.setTitle( daoUtil.getString( 3 ) );
                 returnDocument.setDateCreation( daoUtil.getTimestamp( 4 ) );
                 returnDocument.setDateModification( daoUtil.getTimestamp( 5 ) );
-                returnDocument.setXmlWorkingContent( daoUtil.getString( 6 ) );
-                returnDocument.setXmlValidatedContent( daoUtil.getString( 7 ) );
-                returnDocument.setSpaceId( daoUtil.getInt( 8 ) );
-                returnDocument.setSpace( daoUtil.getString( 9 ) );
-                returnDocument.setStateId( daoUtil.getInt( 10 ) );
-                returnDocument.setStateKey( daoUtil.getString( 11 ) );
-                returnDocument.setType( daoUtil.getString( 12 ) );
-                returnDocument.setSummary( daoUtil.getString( 13 ) );
-                returnDocument.setComment( daoUtil.getString( 14 ) );
-                returnDocument.setDateValidityBegin( daoUtil.getTimestamp( 15 ) );
-                returnDocument.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
-                returnDocument.setXmlMetadata( daoUtil.getString( 17 ) );
-                returnDocument.setCreatorId( daoUtil.getInt( 18 ) );
-                returnDocument.setMailingListId( daoUtil.getInt( 19 ) );
-                returnDocument.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
-                returnDocument.setSkipPortlet( daoUtil.getBoolean( 21 ) );
-                returnDocument.setSkipCategories( daoUtil.getBoolean( 22 ) );
+                returnDocument.setSpaceId( daoUtil.getInt( 6 ) );
+                returnDocument.setSpace( daoUtil.getString( 7 ) );
+                returnDocument.setStateId( daoUtil.getInt( 8 ) );
+                returnDocument.setStateKey( daoUtil.getString( 9 ) );
+                returnDocument.setType( daoUtil.getString( 10 ) );
+                returnDocument.setSummary( daoUtil.getString( 11 ) );
+                returnDocument.setComment( daoUtil.getString( 12 ) );
+                returnDocument.setDateValidityBegin( daoUtil.getTimestamp( 13 ) );
+                returnDocument.setDateValidityEnd( daoUtil.getTimestamp( 14 ) );
+                returnDocument.setMetadata( daoUtil.getString( 15 ) );
+                returnDocument.setCreatorId( daoUtil.getInt( 16 ) );
+                returnDocument.setMailingListId( daoUtil.getInt( 17 ) );
+                returnDocument.setPageTemplateDocumentId( daoUtil.getInt( 18 ) );
+                returnDocument.setSkipPortlet( daoUtil.getBoolean( 19 ) );
+                returnDocument.setSkipCategories( daoUtil.getBoolean( 20 ) );
+                returnDocument.setValidatedTitle( daoUtil.getString( 21 ) );
+                returnDocument.setValidatedSummary( daoUtil.getString( 22 ) );
 
                 listDocument.add( returnDocument );
 
@@ -1004,52 +1021,25 @@ public final class DocumentDAO implements IDocumentDAO
     }
 
     /**
-     * Gets all documents
-     * 
-     * @return the document list
-     * @deprecated
+     * {@inheritDoc}
      */
     @Override
-    public List<Document> selectAll( )
+    public Collection<Integer> selectIdsByValidatedTextValue( String strFragment, int nExcludedDocumentId )
     {
-        List<Document> listDocuments = new ArrayList<>( );
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_FILTER ) )
+        Collection<Integer> listDocumentIds = new ArrayList<>( );
+
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_VALIDATED_TEXT_VALUE ) )
         {
+            daoUtil.setInt( 1, nExcludedDocumentId );
+            daoUtil.setString( 2, "%" + strFragment + "%" );
             daoUtil.executeQuery( );
 
             while ( daoUtil.next( ) )
             {
-                Document document = new Document( );
-                document.setId( daoUtil.getInt( 1 ) );
-                document.setCodeDocumentType( daoUtil.getString( 2 ) );
-                document.setTitle( daoUtil.getString( 3 ) );
-                document.setDateCreation( daoUtil.getTimestamp( 4 ) );
-                document.setDateModification( daoUtil.getTimestamp( 5 ) );
-                document.setXmlWorkingContent( daoUtil.getString( 6 ) );
-                document.setXmlValidatedContent( daoUtil.getString( 7 ) );
-                document.setSpaceId( daoUtil.getInt( 8 ) );
-                document.setSpace( daoUtil.getString( 9 ) );
-                document.setStateId( daoUtil.getInt( 10 ) );
-                document.setStateKey( daoUtil.getString( 11 ) );
-                document.setType( daoUtil.getString( 12 ) );
-                document.setSummary( daoUtil.getString( 13 ) );
-                document.setComment( daoUtil.getString( 14 ) );
-                document.setDateValidityBegin( daoUtil.getTimestamp( 15 ) );
-                document.setDateValidityEnd( daoUtil.getTimestamp( 16 ) );
-                document.setXmlMetadata( daoUtil.getString( 17 ) );
-                document.setCreatorId( daoUtil.getInt( 18 ) );
-                document.setMailingListId( daoUtil.getInt( 19 ) );
-                document.setPageTemplateDocumentId( daoUtil.getInt( 20 ) );
-                document.setSkipPortlet( daoUtil.getBoolean( 21 ) );
-                document.setSkipCategories( daoUtil.getBoolean( 22 ) );
-
-                loadAttributes( document );
-                document.setCategories( selectCategories( document.getId( ) ) );
-                listDocuments.add( document );
+                listDocumentIds.add( daoUtil.getInt( 1 ) );
             }
         }
-
-        return listDocuments;
+        return listDocumentIds;
     }
 
     /**
@@ -1204,8 +1194,6 @@ public final class DocumentDAO implements IDocumentDAO
                 document.setTitle( daoUtil.getString( nIndex++ ) );
                 document.setDateCreation( daoUtil.getTimestamp( nIndex++ ) );
                 document.setDateModification( daoUtil.getTimestamp( nIndex++ ) );
-                document.setXmlWorkingContent( daoUtil.getString( nIndex++ ) );
-                document.setXmlValidatedContent( daoUtil.getString( nIndex++ ) );
                 document.setSpaceId( daoUtil.getInt( nIndex++ ) );
                 document.setSpace( daoUtil.getString( nIndex++ ) );
                 document.setStateId( daoUtil.getInt( nIndex++ ) );
@@ -1215,12 +1203,14 @@ public final class DocumentDAO implements IDocumentDAO
                 document.setComment( daoUtil.getString( nIndex++ ) );
                 document.setDateValidityBegin( daoUtil.getTimestamp( nIndex++ ) );
                 document.setDateValidityEnd( daoUtil.getTimestamp( nIndex++ ) );
-                document.setXmlMetadata( daoUtil.getString( nIndex++ ) );
+                document.setMetadata( daoUtil.getString( nIndex++ ) );
                 document.setCreatorId( daoUtil.getInt( nIndex++ ) );
                 document.setMailingListId( daoUtil.getInt( nIndex++ ) );
                 document.setPageTemplateDocumentId( daoUtil.getInt( nIndex++ ) );
                 document.setSkipPortlet( daoUtil.getBoolean( nIndex++ ) );
                 document.setSkipCategories( daoUtil.getBoolean( nIndex++ ) );
+                document.setValidatedTitle( daoUtil.getString( nIndex++ ) );
+                document.setValidatedSummary( daoUtil.getString( nIndex++ ) );
             }
         }
         return document;
@@ -1248,8 +1238,6 @@ public final class DocumentDAO implements IDocumentDAO
                 document.setTitle( daoUtil.getString( nIndex++ ) );
                 document.setDateCreation( daoUtil.getTimestamp( nIndex++ ) );
                 document.setDateModification( daoUtil.getTimestamp( nIndex++ ) );
-                document.setXmlWorkingContent( daoUtil.getString( nIndex++ ) );
-                document.setXmlValidatedContent( daoUtil.getString( nIndex++ ) );
                 document.setSpaceId( daoUtil.getInt( nIndex++ ) );
                 document.setSpace( daoUtil.getString( nIndex++ ) );
                 document.setStateId( daoUtil.getInt( nIndex++ ) );
@@ -1259,14 +1247,167 @@ public final class DocumentDAO implements IDocumentDAO
                 document.setComment( daoUtil.getString( nIndex++ ) );
                 document.setDateValidityBegin( daoUtil.getTimestamp( nIndex++ ) );
                 document.setDateValidityEnd( daoUtil.getTimestamp( nIndex++ ) );
-                document.setXmlMetadata( daoUtil.getString( nIndex++ ) );
+                document.setMetadata( daoUtil.getString( nIndex++ ) );
                 document.setCreatorId( daoUtil.getInt( nIndex++ ) );
                 document.setMailingListId( daoUtil.getInt( nIndex++ ) );
                 document.setPageTemplateDocumentId( daoUtil.getInt( nIndex++ ) );
                 document.setSkipPortlet( daoUtil.getBoolean( nIndex++ ) );
                 document.setSkipCategories( daoUtil.getBoolean( nIndex++ ) );
+                document.setValidatedTitle( daoUtil.getString( nIndex++ ) );
+                document.setValidatedSummary( daoUtil.getString( nIndex++ ) );
             }
         }
         return document;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Document> selectWithValidatedVersion( String strCodeDocumentType, String strTitleFragment, Collection<Integer> listSpaceIds, int nOffset,
+            int nLimit )
+    {
+        List<Document> listDocuments = new ArrayList<>( );
+
+        if ( listSpaceIds.isEmpty( ) )
+        {
+            return listDocuments;
+        }
+
+        String strSQL = SQL_QUERY_SELECT_WITH_VALIDATED_VERSION + getValidatedVersionFilter( strTitleFragment, listSpaceIds ) + SQL_ORDER_BY_LAST_CREATED
+                + nLimit + SQL_OFFSET + nOffset;
+
+        try ( DAOUtil daoUtil = new DAOUtil( strSQL ) )
+        {
+            setValidatedVersionFilter( daoUtil, strCodeDocumentType, strTitleFragment, listSpaceIds );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                Document document = new Document( );
+                document.setId( daoUtil.getInt( 1 ) );
+                document.setCodeDocumentType( daoUtil.getString( 2 ) );
+                document.setTitle( daoUtil.getString( 3 ) );
+                document.setValidatedTitle( daoUtil.getString( 4 ) );
+                document.setSpaceId( daoUtil.getInt( 5 ) );
+                document.setStateId( daoUtil.getInt( 6 ) );
+                document.setSpace( daoUtil.getString( 7 ) );
+                document.setDateCreation( daoUtil.getTimestamp( 8 ) );
+                listDocuments.add( document );
+            }
+        }
+
+        return listDocuments;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int countWithValidatedVersion( String strCodeDocumentType, String strTitleFragment, Collection<Integer> listSpaceIds )
+    {
+        if ( listSpaceIds.isEmpty( ) )
+        {
+            return 0;
+        }
+
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_COUNT_WITH_VALIDATED_VERSION + getValidatedVersionFilter( strTitleFragment, listSpaceIds ) ) )
+        {
+            setValidatedVersionFilter( daoUtil, strCodeDocumentType, strTitleFragment, listSpaceIds );
+            daoUtil.executeQuery( );
+
+            return daoUtil.next( ) ? daoUtil.getInt( 1 ) : 0;
+        }
+    }
+
+    /**
+     * Builds the filter of the documents with a validated version
+     *
+     * @param strTitleFragment
+     *            The fragment searched in the titles, empty for no title criteria
+     * @param listSpaceIds
+     *            The spaces of the documents, not empty
+     * @return The SQL filter
+     */
+    private static String getValidatedVersionFilter( String strTitleFragment, Collection<Integer> listSpaceIds )
+    {
+        StringBuilder sbFilter = new StringBuilder( SQL_FILTER_WITH_VALIDATED_VERSION );
+
+        if ( !strTitleFragment.isEmpty( ) )
+        {
+            sbFilter.append( SQL_FILTER_TITLE_FRAGMENT );
+        }
+
+        sbFilter.append( SQL_FILTER_SPACES_BEGIN ).append( String.join( ", ", Collections.nCopies( listSpaceIds.size( ), "?" ) ) )
+                .append( SQL_FILTER_SPACES_END );
+
+        return sbFilter.toString( );
+    }
+
+    /**
+     * Sets the parameters of the filter of the documents with a validated version
+     *
+     * @param daoUtil
+     *            The statement
+     * @param strCodeDocumentType
+     *            The document type code
+     * @param strTitleFragment
+     *            The fragment searched in the titles, empty for no title criteria
+     * @param listSpaceIds
+     *            The spaces of the documents
+     */
+    private static void setValidatedVersionFilter( DAOUtil daoUtil, String strCodeDocumentType, String strTitleFragment, Collection<Integer> listSpaceIds )
+    {
+        int nIndex = 1;
+        daoUtil.setString( nIndex++, strCodeDocumentType );
+
+        if ( !strTitleFragment.isEmpty( ) )
+        {
+            String strPattern = "%" + strTitleFragment.toLowerCase( ) + "%";
+            daoUtil.setString( nIndex++, strPattern );
+            daoUtil.setString( nIndex++, strPattern );
+        }
+
+        for ( int nSpaceId : listSpaceIds )
+        {
+            daoUtil.setInt( nIndex++, nSpaceId );
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<Integer, String> selectLegacyMetadata( )
+    {
+        Map<Integer, String> mapMetadata = new LinkedHashMap<>( );
+
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_LEGACY_METADATA ) )
+        {
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                mapMetadata.put( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            }
+        }
+
+        return mapMetadata;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void storeMigratedMetadata( int nDocumentId, String strMetadata )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_MIGRATED_METADATA ) )
+        {
+            int nIndex = 1;
+            daoUtil.setString( nIndex++, strMetadata );
+            daoUtil.setInt( nIndex, nDocumentId );
+
+            daoUtil.executeUpdate( );
+        }
     }
 }

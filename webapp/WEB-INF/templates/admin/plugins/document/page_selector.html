@@ -1,59 +1,133 @@
-<div class="insert-service" >
-	<@row>
-		<@columns>
-			<ol class="breadcrumb">
-			  <li><@link href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&selected_text='><@icon style='home' /></@link></li>
-			  <li>#i18n{document.selector.page.pageChoice}</li>
-			</ol>
-			<#if pages_list?size = 0>
-				<@alert color='danger'>
-					<@icon style='exclamation-triangle' /> #i18n{document.selector.page.noPage}
-					<@aButton href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelBack}' buttonIcon='times' color='default' />
-				</@alert>
+<#--
+ # First step of the insert service: the choice of the page of publication, in the tree of the pages of the site displayed with the luteceTree.js module of the core.
+ # Each page is a radio button named page_id. A page with children is a node that opens and closes with its toggle button, a page without children is an item.
+ # The root page is open, and so is the branch of the selected page. Styles: insert_service.css of the core (InsertServiceHeader.jsp).
+-->
+<#macro pagesTreeNodes nodes>
+<#list nodes as node>
+	<#local pageId = node.id?c>
+	<li class="${node.children?has_content?then( 'lutece-tree-node', 'lutece-tree-item' )}" data-tree-icon="">
+		<span class="document-pages-tree-line">
+			<#if node.children?has_content>
+			<button type="button" class="btn btn-link btn-sm text-secondary document-pages-tree-toggle" aria-expanded="false" aria-controls="pages_tree_children_${pageId}" title="${node.name!}"><@icon style='chevron-right' /><span class="visually-hidden">${node.name!}</span></button>
 			<#else>
-				<@tform method='post' name='fsubmit' id='fsubmit' action='jsp/admin/plugins/document/DoSelectPage.jsp'>
-					<@input type='hidden' name='input' value='${.data_model.input}' />
-					<@input type='hidden' name='name' value='' />
-					<@input type='hidden' name='subcategory' value='${type_filter}' />
-					<@listGroup>
-						<#list pages_list as page>
-							<@listGroupItem>
-								<@radioButton id='page_id_${page.id}' name='page_id' value='${page.id}'><span class="visually-hidden">${page.name}</span></@radioButton>
-								<@link href='jsp/admin/plugins/document/SelectPage.jsp?page_id=${page.id?c}&input=${.data_model.input?url}&subcategory=${type_filter?url}'>
-									${page.name} - ${page.description}
-								</@link>
-							</@listGroupItem>
-						</#list>
-					</@listGroup>
-					<nav>
-					  <ul class="pager">
-						<li>
-							<@link href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelPrevious}'>
-								<@icon style='chevron-left' />&nbsp;#i18n{portal.util.labelPrevious}
-							</@link>
-						</li>
-						<li>
-							<@link href='#' id='a-sub' class='sr-only'>
-								#i18n{portal.util.labelNext} <@icon style='chevron-right' />
-							</@link>
-							<@button type='submit' id='btn-sub' title='#i18n{portal.util.labelNext}' buttonIcon='chevron-right' />
-						</li>
-					  </ul>
-					</nav>
-				</@tform>
+			<span class="document-pages-tree-spacer"></span>
 			</#if>
-		</@columns>
-	</@row>
+			<input type="radio" class="form-check-input m-0" name="page_id" id="page_id_${pageId}" value="${pageId}"<#if pageId == selected_page_id> checked</#if> />
+			<label class="form-check-label" for="page_id_${pageId}">${node.name!}<#if node.description?has_content> <span class="text-muted">- ${node.description}</span></#if></label>
+		</span>
+		<#if node.children?has_content>
+		<ul id="pages_tree_children_${pageId}">
+			<@pagesTreeNodes nodes=node.children />
+		</ul>
+		</#if>
+	</li>
+</#list>
+</#macro>
+<div class="lutece-insert insert-service">
+	<nav class="lutece-insert-crumbs" aria-label="#i18n{document.selector.steps}">
+		<a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&amp;selected_text="><i class="ti ti-home" aria-hidden="true"></i><span class="visually-hidden">#i18n{portal.insert.page_insertservice.labelInsert}</span></a>
+		<i class="ti ti-chevron-right" aria-hidden="true"></i>
+		<span aria-current="page">#i18n{document.selector.page.label}</span>
+	</nav>
+	<div class="lutece-insert-head">
+		<span class="lutece-insert-badge lutece-insert-tint-2" aria-hidden="true"><i class="ti ti-sitemap"></i></span>
+		<h2>#i18n{document.selector.page.pageChoice}</h2>
+		<span class="lutece-insert-label">#i18n{document.selector.page.step}</span>
+	</div>
+	<#if !pages_tree?has_content>
+		<@empty title='#i18n{document.selector.page.noPage}' iconName='file-off' subtitle=' ' />
+		<div class="lutece-insert-footer">
+			<span></span>
+			<div class="lutece-insert-actions"><@aButton href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelBack}' buttonIcon='chevron-left' color='light' /></div>
+		</div>
+	<#else>
+		<@tform method='post' name='fsubmit' id='fsubmit' action='jsp/admin/plugins/document/DoSelectPage.jsp'>
+			<@input type='hidden' name='input' value='${.data_model.input}' />
+			<@input type='hidden' name='name' value='' />
+			<@input type='hidden' name='subcategory' value='${type_filter}' />
+			<div id="pages_tree" class="lutece-tree document-pages-tree" role="radiogroup" aria-label="#i18n{document.selector.page.pageChoice}">
+				<ul>
+					<@pagesTreeNodes nodes=pages_tree />
+				</ul>
+			</div>
+			<div class="lutece-insert-footer">
+				<span class="lutece-insert-selection" id="pages_tree_selection" aria-live="polite" data-text-none="#i18n{document.selector.page.noSelection}" data-text-selected="#i18n{document.selector.page.selected}">#i18n{document.selector.page.noSelection}</span>
+				<div class="lutece-insert-actions">
+					<@aButton href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelPrevious}' buttonIcon='chevron-left' color='light' />
+					<@button type='submit' id='btn-sub' title='#i18n{portal.util.labelNext}' buttonIcon='chevron-right' disabled=true />
+				</div>
+			</div>
+		</@tform>
+	</#if>
 </div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-	document.getElementById('btn-sub').remove();
-	document.getElementById('a-sub').classList.remove('visually-hidden');
-	document.getElementById('a-sub').addEventListener('click', function(e) {
-		e.preventDefault();
-		document.getElementById('fsubmit').submit();
-	});
-});
+<style>
+	<#-- Every row has the height of a line; the connector of the core tree (li::before) is half a row high, so that its stroke points at the radio button -->
+	.document-pages-tree { --document-pages-tree-row: 1.75rem; max-height: 28rem; overflow-y: auto; padding: .5rem .75rem; margin-bottom: 1rem; font-size: .875rem; line-height: var( --document-pages-tree-row ); border: 1px solid var( --lutece-insert-line ); border-radius: .375rem; }
+	.document-pages-tree ul { list-style: none; margin: 0; padding-inline-start: .75rem; }
+	.document-pages-tree > ul { padding-inline-start: 0; }
+	.document-pages-tree .lutece-tree-node > ul { display: none; }
+	.document-pages-tree .lutece-tree-node.lutece-tree-node-open > ul { display: block; }
+	.document-pages-tree .lutece-tree-node { cursor: pointer; }
+	.document-pages-tree ul li { color: var( --lutece-insert-fg ); padding: 0 0 0 .375rem; line-height: var( --document-pages-tree-row ); white-space: nowrap; }
+	.document-pages-tree ul li::before { vertical-align: top; top: 0; left: -.375rem; width: .75rem; height: calc( var( --document-pages-tree-row ) / 2 ); }
+	<#-- The core removes the vertical line of the last row with its border: a transparent border keeps the rows aligned -->
+	.document-pages-tree ul li:last-child, .document-pages-tree > ul > li:first-child { border-left: 1px solid transparent; }
+	.document-pages-tree .document-pages-tree-line { display: inline-flex; align-items: center; vertical-align: top; height: var( --document-pages-tree-row ); gap: .375rem; }
+	.document-pages-tree .document-pages-tree-line > .document-pages-tree-toggle { display: inline-flex; align-items: center; justify-content: center; width: 1.25rem; height: 1.25rem; min-width: 1.25rem; padding: 0; margin: 0; border: 0; text-decoration: none; }
+	.document-pages-tree .document-pages-tree-toggle .ti { transition: transform .2s; }
+	.document-pages-tree .lutece-tree-node-open > .document-pages-tree-line .document-pages-tree-toggle .ti { transform: rotate( 90deg ); }
+	.document-pages-tree .document-pages-tree-spacer { display: inline-block; width: 1.25rem; min-width: 1.25rem; }
+	.document-pages-tree .form-check-input { width: 1rem; height: 1rem; }
+	.document-pages-tree .form-check-label { cursor: pointer; }
+	.document-pages-tree .document-pages-tree-line:has( input:checked ) .form-check-label { font-weight: 600; color: var( --lutece-insert-accent ); }
+	@media ( prefers-reduced-motion: reduce ) { .document-pages-tree .document-pages-tree-toggle .ti { transition: none; } }
+</style>
+<script type="module">
+	import LuteceTree from './themes/shared/modules/luteceTree.js';
+	const openClass = 'lutece-tree-node-open';
+	const tree = document.getElementById( 'pages_tree' );
+	if ( tree ) {
+		new LuteceTree( tree );
+		const submit = document.getElementById( 'btn-sub' );
+		const selection = document.getElementById( 'pages_tree_selection' );
+		const syncState = ( ) => {
+			tree.querySelectorAll( '.document-pages-tree-toggle' ).forEach( ( toggle ) => {
+				toggle.setAttribute( 'aria-expanded', toggle.closest( '.lutece-tree-node' ).classList.contains( openClass ) );
+			} );
+			const checked = tree.querySelector( 'input:checked' );
+			submit.disabled = !checked;
+			// The footer names the selected page
+			selection.textContent = '';
+			if ( checked ) {
+				const name = document.createElement( 'b' );
+				name.textContent = checked.labels[ 0 ].firstChild.textContent.trim( );
+				selection.append( selection.dataset.textSelected + ' ', name );
+			} else {
+				selection.textContent = selection.dataset.textNone;
+			}
+		};
+		// A click on a radio button or its label selects the page, it does not open or close the node
+		tree.querySelectorAll( '.document-pages-tree-line input, .document-pages-tree-line label' ).forEach( ( element ) => {
+			element.addEventListener( 'click', ( event ) => event.stopPropagation( ) );
+		} );
+		tree.addEventListener( 'click', syncState );
+		tree.addEventListener( 'change', syncState );
+		// A double click on a page selects it and goes to the next step
+		tree.querySelectorAll( '.document-pages-tree-line label' ).forEach( ( label ) => {
+			label.addEventListener( 'dblclick', ( ) => {
+				document.getElementById( label.htmlFor ).checked = true;
+				document.getElementById( 'fsubmit' ).submit( );
+			} );
+		} );
+		tree.querySelectorAll( ':scope > ul > .lutece-tree-node' ).forEach( ( root ) => root.classList.add( openClass ) );
+		let ancestor = tree.querySelector( 'input:checked' )?.closest( 'li' ).parentElement.closest( '.lutece-tree-node' );
+		while ( ancestor ) {
+			ancestor.classList.add( openClass );
+			ancestor = ancestor.parentElement.closest( '.lutece-tree-node' );
+		}
+		syncState( );
+	}
 </script>
 <#-- the insert service pages do not load the admin scripts: data-lutece-action="back" needs lutece-actions.js -->
 <script src="themes/admin/shared/js/util/lutece-actions.js"></script>

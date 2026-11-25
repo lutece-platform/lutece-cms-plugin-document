@@ -1,0 +1,27 @@
+<@cTpl>
+<@cSection class='portlet portlet-document-list portlet-document-list-article ${device_class!}' id='portlet_${portlet_id?c}'>
+<#if portlet_name??>
+	<@cTitle level=2 class='portlet-header' id='article_${portlet_id?c}'>${portlet_name}</@cTitle>
+</#if>
+	<@cBlock class='portlet-content'>
+	<#if documents?has_content>
+		<@cRow class='g-3'>
+		<#list documents as doc>
+			<@cCol cols='12' class='col-md-6'>
+				<@cLink href='${site_path}?document_id=${doc.id?c}&portlet_id=${portlet_id?c}' label='' class='fw-bold' target='_top'><@documentValue value=doc.title /></@cLink>
+				<#if doc.summary?has_content>
+				<@cText class='mb-0'><@documentValue value=doc.summary /></@cText>
+				</#if>
+				<#if is_extend_installed>
+				<@cBlock class='small text-body-secondary'>
+					@Extender[${doc.id?c},document,rating,{show:"all"}]@
+					@Extender[${doc.id?c},document,hit,{show:true}]@
+				</@cBlock>
+				</#if>
+			</@cCol>
+		</#list>
+		</@cRow>
+	</#if>
+	</@cBlock>
+</@cSection>
+</@cTpl>

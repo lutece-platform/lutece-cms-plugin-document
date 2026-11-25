@@ -51,11 +51,6 @@ public interface Rule extends Localizable
     // Methods implemented by AbstractRule
 
     /**
-     * Initialize the rule
-     */
-    void init( );
-
-    /**
      * Sets the Rule Id
      * 
      * @param nId

@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.service.docsearch;
 
+import fr.paris.lutece.plugins.document.service.metadata.MetadataService;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.business.attributes.DocumentAttribute;
@@ -41,7 +42,7 @@ import fr.paris.lutece.portal.service.parser.ParserException;
 import fr.paris.lutece.portal.service.search.SearchItem;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.nio.charset.StandardCharsets;
@@ -78,6 +79,7 @@ public class DefaultDocSearchIndexer implements IDocSearchIndexer
 	//Flag preventing duplicate logs
 	private static boolean _parserWarningLogged = false;
 		
+	@Inject
 	private Parser _parser;
 
 	/**
@@ -144,8 +146,6 @@ public class DefaultDocSearchIndexer implements IDocSearchIndexer
 		String parsedContent = strContentToIndex;
 		
 		
-		_parser = CDI.current( ).select( Parser.class ).get( );
-		
 		if( _parser != null && containsHtmlTags( strContentToIndex ) )
 		{
 			try( ByteArrayInputStream bais = new ByteArrayInputStream(
@@ -208,8 +208,6 @@ public class DefaultDocSearchIndexer implements IDocSearchIndexer
 				{
 					// Binary attributes - If plugin-parser is present is enable, the parser selected is TikaAutoDetectParser
 					// else it's the html defaultParser presents in plugin-document. Tika parser can parse any document type.
-					_parser = CDI.current( ).select( Parser.class ).get( );
-
 					try( ByteArrayInputStream bais = new ByteArrayInputStream( attribute.getBinaryValue( ) ) )
 					{
 						try
@@ -230,24 +228,19 @@ public class DefaultDocSearchIndexer implements IDocSearchIndexer
 							}
 							
 							// Log for debug
-							if( AppLogService.isDebugEnabled( ) )
-							{
-								AppLogService.debug( "Failed to parse binary attribute for document ID: " + 
-									document.getId( ) + ", attribute: " + attribute.getName( ), e );
-							}
+							AppLogService.debug( "Failed to parse binary attribute for document ID: {}, attribute: {}", document.getId( ), attribute.getName( ), e );
 						}
 					}
 					catch( IOException e )
 					{
-						AppLogService.error( "Error reading binary stream for document ID: " + 
-							document.getId( ), e );
+						AppLogService.error( "Error reading binary stream for document ID: {}", document.getId( ), e );
 					}
 				}
 			}
 		}
 
-		// Add metadata in XML (xml tags will be ignored by the HTML parsing)
-		sbContentToIndex.append( document.getXmlMetadata( ) );
+		sbContentToIndex.append( " " );
+		sbContentToIndex.append( MetadataService.getIndexableText( document.getMetadata( ) ) );
 
 		return sbContentToIndex.toString( );
 	}

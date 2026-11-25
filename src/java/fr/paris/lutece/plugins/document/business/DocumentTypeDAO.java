@@ -38,8 +38,10 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This class provides Data Access methods for DocumentType objects
@@ -48,15 +50,17 @@ import java.util.Collection;
 public final class DocumentTypeDAO implements IDocumentTypeDAO
 {
     // Constants
-    private static final String SQL_QUERY_SELECT = "SELECT code_document_type, document_type_name, description, thumbnail_attr_id, default_thumbnail_url, admin_xsl, content_service_xsl, metadata_handler FROM document_type WHERE code_document_type = ?  ";
+    private static final String SQL_QUERY_SELECT = "SELECT code_document_type, document_type_name, description, thumbnail_attr_id, default_thumbnail_url, admin_template, content_template, metadata_handler FROM document_type WHERE code_document_type = ?  ";
     private static final String SQL_QUERY_INSERT = "INSERT INTO document_type ( code_document_type, document_type_name, description, thumbnail_attr_id, default_thumbnail_url, metadata_handler  ) VALUES ( ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM document_type WHERE code_document_type = ?  ";
     private static final String SQL_QUERY_UPDATE = "UPDATE document_type SET code_document_type = ?, document_type_name = ?, description = ?, thumbnail_attr_id = ?, default_thumbnail_url = ?, metadata_handler = ? WHERE code_document_type = ?  ";
     private static final String SQL_QUERY_SELECTALL = "SELECT code_document_type, document_type_name, description, thumbnail_attr_id, default_thumbnail_url, metadata_handler  FROM document_type ";
     private static final String SQL_QUERY_CHECK_DOCUMENTS = "SELECT id_document FROM document WHERE code_document_type = ? ";
     private static final String SQL_QUERY_REORDER_ATTRIBUTES = "UPDATE document_type_attr SET attr_order = ? WHERE id_document_attr = ? ";
-    private static final String SQL_QUERY_UPDATE_ADMIN_STYLESHEET = "UPDATE document_type SET admin_xsl = ? WHERE code_document_type = ? ";
-    private static final String SQL_QUERY_UPDATE_CONTENT_STYLESHEET = "UPDATE document_type SET content_service_xsl = ? WHERE code_document_type = ? ";
+    private static final String SQL_QUERY_UPDATE_TEMPLATES = "UPDATE document_type SET admin_template = ?, content_template = ? WHERE code_document_type = ? ";
+    private static final String SQL_QUERY_SELECT_CODES_WITH_LEGACY_STYLESHEETS = "SELECT code_document_type FROM document_type WHERE admin_xsl IS NOT NULL OR content_service_xsl IS NOT NULL ORDER BY code_document_type ";
+    private static final String SQL_QUERY_SELECT_LEGACY_STYLESHEETS = "SELECT admin_xsl, content_service_xsl FROM document_type WHERE code_document_type = ? ";
+    private static final String SQL_QUERY_DELETE_LEGACY_STYLESHEETS = "UPDATE document_type SET admin_xsl = NULL, content_service_xsl = NULL WHERE code_document_type = ? ";
 
     /**
      * Insert a new record in the table.
@@ -104,8 +108,8 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
                 documentType.setDescription( daoUtil.getString( 3 ) );
                 documentType.setThumbnailAttributeId( daoUtil.getInt( 4 ) );
                 documentType.setDefaultThumbnailUrl( daoUtil.getString( 5 ) );
-                documentType.setAdminXsl( daoUtil.getBytes( 6 ) );
-                documentType.setContentServiceXsl( daoUtil.getBytes( 7 ) );
+                documentType.setAdminTemplate( daoUtil.getString( 6 ) );
+                documentType.setContentTemplate( daoUtil.getString( 7 ) );
                 documentType.setMetadataHandler( daoUtil.getString( 8 ) );
                 DocumentAttributeHome.setDocumentTypeAttributes( documentType );
             }
@@ -253,42 +257,88 @@ public final class DocumentTypeDAO implements IDocumentTypeDAO
     }
 
     /**
-     * Sets the admin stylesheet
-     * 
-     * @param baXslAdmin
-     *            The stylesheet
-     * @param strCodeType
-     *            The code type
+     * {@inheritDoc}
      */
     @Override
-    public void setAdminStyleSheet( byte [ ] baXslAdmin, String strCodeType )
+    public void storeTemplates( String strCodeType, String strAdminTemplate, String strContentTemplate )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_ADMIN_STYLESHEET ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_TEMPLATES ) )
         {
-            daoUtil.setBytes( 1, baXslAdmin );
-            daoUtil.setString( 2, strCodeType );
+            int nIndex = 1;
+            daoUtil.setString( nIndex++, strAdminTemplate );
+            daoUtil.setString( nIndex++, strContentTemplate );
+            daoUtil.setString( nIndex, strCodeType );
 
             daoUtil.executeUpdate( );
         }
     }
 
     /**
-     * Sets the content service stylesheet
-     * 
-     * @param baXslContent
-     *            The stylesheet
-     * @param strCodeType
-     *            The code type
+     * {@inheritDoc}
      */
     @Override
-    public void setContentStyleSheet( byte [ ] baXslContent, String strCodeType )
+    public List<String> selectCodesWithLegacyStylesheets( )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_CONTENT_STYLESHEET ) )
+        List<String> listCodes = new ArrayList<>( );
+
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CODES_WITH_LEGACY_STYLESHEETS ) )
         {
-            daoUtil.setBytes( 1, baXslContent );
-            daoUtil.setString( 2, strCodeType );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                listCodes.add( daoUtil.getString( 1 ) );
+            }
+        }
+
+        return listCodes;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LegacyStylesheets loadLegacyStylesheets( String strCodeType )
+    {
+        LegacyStylesheets stylesheets = null;
+
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_LEGACY_STYLESHEETS ) )
+        {
+            daoUtil.setString( 1, strCodeType );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                stylesheets = new LegacyStylesheets( toText( daoUtil.getBytes( 1 ) ), toText( daoUtil.getBytes( 2 ) ) );
+            }
+        }
+
+        return stylesheets;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteLegacyStylesheets( String strCodeType )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_LEGACY_STYLESHEETS ) )
+        {
+            daoUtil.setString( 1, strCodeType );
 
             daoUtil.executeUpdate( );
         }
+    }
+
+    /**
+     * Decodes a stylesheet stored as bytes
+     *
+     * @param baStylesheet
+     *            The stylesheet, or null
+     * @return The stylesheet as a string, or null
+     */
+    private static String toText( byte [ ] baStylesheet )
+    {
+        return ( baStylesheet != null ) ? new String( baStylesheet, StandardCharsets.UTF_8 ) : null;
     }
 }

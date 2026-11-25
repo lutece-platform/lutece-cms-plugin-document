@@ -1,0 +1,15 @@
+<@cTpl>
+<#assign documentClass = 'document document-' + document.codeDocumentType>
+<@cBlock class=documentClass>
+	<@cText><@cInline type='strong'><@documentValue value=document.title /></@cInline></@cText>
+	<#if document.summary?has_content>
+	<@cText><@documentValue value=document.summary /></@cText>
+	</#if>
+	<#list document_type.attributes as attribute>
+	<#if document.attributes[attribute.code]??>
+	<#assign attributeClass = 'document-attribute document-attribute-' + attribute.code>
+	<@cBlock class=attributeClass><@documentAttribute document=document attribute=attribute /></@cBlock>
+	</#if>
+	</#list>
+</@cBlock>
+</@cTpl>

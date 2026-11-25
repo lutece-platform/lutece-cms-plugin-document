@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.document.web;
 
+import fr.paris.lutece.portal.service.security.ISecurityTokenService;
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.plugins.document.business.Document;
 import fr.paris.lutece.plugins.document.business.DocumentHome;
 import fr.paris.lutece.plugins.document.service.DocumentService;
@@ -122,6 +124,8 @@ public class DocumentDashboardComponent extends DashboardComponent
         model.put( MARK_LAST_PUBLISHED_DOCUMENT, lastPublishedDocument );
         model.put( MARK_URL, url.getUrl(  ) );
         model.put( MARK_ICON, plugin.getIconUrl(  ) );
+        model.put( SecurityTokenService.MARK_TOKEN,
+                CDI.current( ).select( ISecurityTokenService.class ).get( ).getToken( request, DocumentJspBean.SECURITY_TOKEN_ACTION ) );
 
         HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD, user.getLocale(  ), model );
 
