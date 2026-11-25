@@ -2,3 +2,16 @@
 .document-form-layout.document-properties-hidden > .document-properties-column { display: none; }
 .document-form-layout.document-properties-hidden > .document-main-column { flex: 0 0 100%; max-width: 100%; }
 .document-form-layout:not( .document-properties-hidden ) .document-properties-show { display: none; }
+
+/* The Extensions tab of the modify form: one row an extension, its name, then Add, or its state with Settings and Remove
+   (create_extender_from_resource.html of plugin extend; same layout as the extensions tab of the core admin_page.html) */
+.lutece-extend-actions { list-style: none; margin: 0; padding: 0; }
+.lutece-extend-actions > li + li { border-top: 1px solid var( --tblr-border-color ); }
+.lutece-extend-actions .extend-action-menu { display: flex; align-items: center; gap: .5rem; padding: .5rem 0; }
+.lutece-extend-actions .extend-action-name { display: flex; flex-direction: column; gap: .125rem; min-width: 0; margin-inline-end: auto; }
+.lutece-extend-actions .extend-action-name > span { display: inline-flex; align-items: center; gap: .5rem; }
+.lutece-extend-actions .extend-action-link { font-size: .75rem; padding-inline-start: 1.5rem; }
+.lutece-extend-actions .extend-action-buttons { display: grid; grid-template-columns: auto 2.25rem 2.25rem; align-items: center; justify-items: end; gap: .25rem; flex: none; }
+.lutece-extend-actions .extend-action-buttons > button[value="remove"] { grid-column: 3; }
+.lutece-extend-actions .extend-action-buttons > button:is( [value="configure"], [value="remove"] ) { width: 2.25rem; padding-inline: 0; justify-content: center; }
+.lutece-extend-actions .extend-action-buttons > button[value="add"] { grid-column: 1 / -1; }

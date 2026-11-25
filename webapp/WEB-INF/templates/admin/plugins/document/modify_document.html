@@ -1,3 +1,7 @@
+<#-- The plugin-extend actions of the document (extendable_resource_actions_list.html of the core), listed in the Extensions tab -->
+<#-- a markup value since the auto-escaping: compared as a string, printed as is -->
+<#assign extendActions = extendableResourceActionsHtml! />
+<#assign hasExtend = extendActions?is_markup_output && extendActions?markup_string?trim?has_content />
 <#include "/admin/plugins/document/macro_document_breadcrumb.html" />
 <#assign bc><@documentBreadcrumb spaces=breadcrumb_spaces![] items=[ { 'label': document.title!, 'url': 'jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${document.id?c}' } ] current='#i18n{document.breadcrumb.modify}' /></#assign>
 <@pageContainer>
@@ -11,9 +15,6 @@
 				<@columns xl=8 class='document-main-column'>
 					<@box>
 						<@boxHeader title=document.title boxTools=true>
-								<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
-									${extendableResourceActionsHtml!}
-								</#if>
 							<@button type='button' class='document-properties-show' color='light' size='sm' buttonIcon='layout-sidebar-right-expand' title='#i18n{document.create_document.buttonShowProperties}' hideTitle=['all'] params='aria-controls="documentPropertiesColumn" aria-expanded="false"' />
 						</@boxHeader>
 						<@boxBody>
@@ -42,6 +43,9 @@
 							<#if has_metadata>
 							<@tabLink href='#metadata' tabIcon='file-info' title='#i18n{document.modify_document_type.labelMetadata}' />
 							</#if>
+							<#if hasExtend>
+							<@tabLink href='#documentExtensions' tabIcon='puzzle' title='#i18n{document.modify_document.tabExtensions}' />
+							</#if>
 							<@tabLink href='' tabClass='ms-auto'><@button type='button' class='document-properties-hide' color='light' size='sm' buttonIcon='layout-sidebar-right-collapse' title='#i18n{document.create_document.buttonHideProperties}' hideTitle=['all'] params='aria-controls="documentPropertiesColumn" aria-expanded="true"' /></@tabLink>
 						</@tabList>
 						<@tabContent>
@@ -68,7 +72,8 @@
 										</@div>
 									</@fieldSet>
 									<@formGroup labelFor='document_page_template' labelKey='#i18n{document.create_document.labelDocumentPageTemplate}' helpKey='#i18n{document.create_document.helpDocumentPageTemplate}' rows=2>
-										${page_template_list}									</@formGroup>
+										${page_template_list}
+									</@formGroup>
 									<@formGroup helpKey='#i18n{document.modify_document.helpSkipPortlet}' rows=2>
 										<@checkBox orientation='switch' labelKey='#i18n{document.modify_document.labelSkipPortlet}' name='document_skip_portlet' id='document_skip_portlet' value='1' checked=document.skipPortlet />
 									</@formGroup>
@@ -82,12 +87,19 @@
 							</@tabPanel>
 							<@tabPanel id='categories'>
 								<@div id='category'>
-									${category}								</@div>
+									${category}
+								</@div>
 							</@tabPanel>
 							<#if has_metadata>
 							<@tabPanel id='metadata'>
 								<@div id='div_metadata'>
-								${metadata_form}								</@div>
+								${metadata_form}
+								</@div>
+							</@tabPanel>
+							</#if>
+							<#if hasExtend>
+							<@tabPanel id='documentExtensions'>
+								<ul class="lutece-extend-actions" id="documentExtendList"></ul>
 							</@tabPanel>
 							</#if>
 						</@tabContent>
@@ -95,9 +107,19 @@
 				</@columns>
 			</@row>
 		</@tform>
+		<#if hasExtend>
+		<#-- Each extend action is a form of its own, which cannot sit inside the document form: the forms stay here, hidden,
+		     their rows are moved to the Extensions tab and their buttons submit them through the form attribute -->
+		<div id="documentExtendForms" hidden>
+			${extendActions}
+		</div>
+		</#if>
 	</@pageColumn>
 </@pageContainer>
 <link rel="stylesheet" href="themes/shared/plugins/document/css/documentForm.css?v=${documentAssetsVersion!}" />
 <script src="themes/shared/plugins/document/js/documentPropertiesToggle.js?v=${documentAssetsVersion!}"></script>
+<#if hasExtend>
+<script src="themes/shared/plugins/document/js/documentExtendActions.js?v=${documentAssetsVersion!}"></script>
+</#if>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />
