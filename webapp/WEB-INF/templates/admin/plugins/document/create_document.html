@@ -64,7 +64,8 @@
 										</@div>
 									</@fieldSet>
 									<@formGroup labelFor='document_page_template' labelKey='#i18n{document.create_document.labelDocumentPageTemplate}' helpKey='#i18n{document.create_document.helpDocumentPageTemplate}' rows=2>
-										${page_template_list}									</@formGroup>
+										${page_template_list}
+									</@formGroup>
 									<@formGroup helpKey='#i18n{document.create_document.helpSkipPortlet}' rows=2>
 										<@checkBox orientation='switch' labelKey='#i18n{document.create_document.labelSkipPortlet}' name='document_skip_portlet' id='document_skip_portlet' value='1' />
 									</@formGroup>
@@ -77,7 +78,8 @@
 								</@tabPanel>
 								<@tabPanel id='categories'>
 									<@div id='category'>
-										${category}									</@div>
+										${category}
+									</@div>
 								</@tabPanel>
 								<#if has_metadata>
 								<@tabPanel id='metadata'>

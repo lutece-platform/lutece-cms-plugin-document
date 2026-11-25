@@ -785,8 +785,9 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         
         Map<String, Object> model = new HashMap<>( );
         
+        // The extend actions as a plain list, shown in the Extensions tab of the properties column
         ExtendableResourcePluginActionManager.fillModel( request, getUser(  ), model, strDocumentId,
-            Document.PROPERTY_RESOURCE_TYPE );
+            Document.PROPERTY_RESOURCE_TYPE, ExtendableResourcePluginActionManager.TEMPLATE_EXTENDABLE_RESOURCE_ACTION_LIST );
         
         ResourceEnhancer.getModifyResourceModelAddOn( model, PROPERTY_RESOURCE_TYPE, document.getId(  ) );
         
