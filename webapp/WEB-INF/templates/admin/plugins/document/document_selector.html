@@ -25,7 +25,7 @@
 			<div class="lutece-insert-actions"><@aButton href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelBack}' buttonIcon='chevron-left' color='light' /></div>
 		</div>
 	<#else>
-		<@tform method='post' name='fsubmit' id='document_link_form' action='jsp/admin/plugins/document/DoInsertDocumentLink.jsp' class='lutece-insert-main' params='data-lutece-insert-select'>
+		<@tform method='post' name='fsubmit' id='document_link_form' action='jsp/admin/plugins/document/DoInsertDocumentLink.jsp' class='lutece-insert-main' params={"data-lutece-insert-select": true}>
 			<@input type='hidden' name='input' value='${.data_model.input}' />
 			<@input type='hidden' name='portlet_id' value='${portlet_id}' />
 			<@input type='hidden' name='subcategory' value='${type_filter}' />
@@ -81,7 +81,7 @@
 				<span class="lutece-insert-selection" aria-live="polite" data-lutece-insert-selection data-text-none="#i18n{document.selector.document.noSelection}" data-text-selected="#i18n{document.selector.document.selected}">#i18n{document.selector.document.noSelection}</span>
 				<div class="lutece-insert-actions">
 					<@aButton href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input?url}&selected_text=' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelBack}' buttonIcon='chevron-left' color='light' />
-					<@button type='submit' title='#i18n{portal.util.labelValidate}' buttonIcon='check' disabled=true params='data-lutece-insert-submit' />
+					<@button type='submit' title='#i18n{portal.util.labelValidate}' buttonIcon='check' disabled=true params={"data-lutece-insert-submit": true} />
 				</div>
 			</div>
 		</@tform>

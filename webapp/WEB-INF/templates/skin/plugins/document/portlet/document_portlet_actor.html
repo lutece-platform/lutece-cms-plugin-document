@@ -8,7 +8,7 @@
 		<@cBlock class='d-flex align-items-center justify-content-between'>
 			<@cLink href='${site_path}?document_id=${document.id?c}&portlet_id=${portlet_id?c}' label='' target='_top'><@documentValue value=document.attributes.firstname! /> <@documentValue value=document.attributes.lastname! /></@cLink>
 			<#if document.attributes.photo??>
-			<@documentFile file=document.attributes.photo class='rounded-circle object-fit-cover' params='width="40" height="40"' />
+			<@documentFile file=document.attributes.photo class='rounded-circle object-fit-cover' params={"width": "40", "height": "40"} />
 			</#if>
 		</@cBlock>
 	</#if>

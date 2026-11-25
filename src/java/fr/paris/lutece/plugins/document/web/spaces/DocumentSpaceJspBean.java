@@ -360,7 +360,7 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
             url.addParameter( DocumentJspBean.PARAMETER_SPACE_ID_FILTER, nParentSpaceId );
         }
 
-        return url.getUrlWithEntity(  );
+        return url.getUrl( );
     }
 
     /**

@@ -1,14 +1,14 @@
-<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#include "/admin/plugins/document/macro_document_admin.html" />
 <#assign bc><@documentBreadcrumb section='rules' current='#i18n{document.breadcrumb.spaceSelection}' /></#assign>
 <@pageContainer>
-    <@pageColumn>
-		<@pageHeader title='#i18n{document.select_space_rule.title}' breadcrumb=bc />
-		<@tform id="spacesBrowser" name='formSelect' method='get' action='jsp/admin/plugins/document/DoSelectSpace.jsp'>
-			<@formGroup labelKey='#i18n{document.move_space.labelMove}'>
-				${spaces_browser}
-			</@formGroup>
-			<@formGroup>
-				<@aButton href='jsp/admin/plugins/document/CreateRule.jsp' params={"data-lutece-action": "back"} title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
+	<@pageColumn>
+		<@documentPageHeader title='#i18n{document.select_space_rule.title}' iconName='folder-search' color='orange' breadcrumb=bc>
+			<@aButton href='jsp/admin/plugins/document/CreateRule.jsp' params={"data-lutece-action": "back"} title='#i18n{portal.util.labelBack}' buttonIcon='arrow-left' color='light' hideTitle=['xs','sm','md'] />
+		</@documentPageHeader>
+		<#-- The id spacesBrowser is the one the script of the spaces browser submits -->
+		<@tform id='spacesBrowser' name='formSelect' method='get' action='jsp/admin/plugins/document/DoSelectSpace.jsp' boxed=true>
+			<@formGroup labelKey='#i18n{document.move_space.labelMove}' rows=2>
+				${spaces_browser!}
 			</@formGroup>
 		</@tform>
 	</@pageColumn>

@@ -9,7 +9,7 @@
 		<#list documents as doc>
 			<@chItem class="mb-3">
 				<#if doc.attributes.file??>
-				<@cLink href='${site_path}?document_id=${doc.id?c}&portlet_id=${portlet_id?c}' label='' target='_top'><@documentFile file=doc.attributes.file class='img-thumbnail object-fit-cover' alt=doc.title params='width="120" height="120"' /></@cLink>
+				<@cLink href='${site_path}?document_id=${doc.id?c}&portlet_id=${portlet_id?c}' label='' target='_top'><@documentFile file=doc.attributes.file class='img-thumbnail object-fit-cover' alt=doc.title params={"width": "120", "height": "120"} /></@cLink>
 				</#if>
 				<#if doc.summary?has_content>
 				<@cText class='mb-0'><@documentValue value=doc.summary /></@cText>

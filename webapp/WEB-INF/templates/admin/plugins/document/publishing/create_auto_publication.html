@@ -1,20 +1,20 @@
+<#include "/admin/plugins/document/macro_document_admin.html" />
+<#assign backUrl = 'jsp/admin/plugins/document/ManagePublishing.jsp?id_portlet=${portlet_id}' />
+<#assign bc><@documentBreadcrumb items=[ { 'label': '#i18n{document.manage_portlet_publishing.pageTitle}', 'url': backUrl } ] current='#i18n{document.breadcrumb.autoPublication}' /></#assign>
 <@pageContainer>
-    <@pageColumn> 
-        <@pageHeader title='#i18n{document.create_auto_publication.boxTitle}' />
-		<@tform id=spacesBrowser name='formCreateAutoPublication' method='get' action='jsp/admin/plugins/document/DoCreateAutoPublication.jsp' enctype='multipart/form-data'>
-				<@input type='hidden' name='token' value='${token}' />
+	<@pageColumn>
+		<@documentPageHeader title='#i18n{document.create_auto_publication.boxTitle}' iconName='folder-bolt' color='azure' breadcrumb=bc>
+			<@aButton href=backUrl title='#i18n{portal.util.labelBack}' buttonIcon='arrow-left' color='light' hideTitle=['xs','sm','md'] />
+		</@documentPageHeader>
+		<@messages errors=errors![] />
+		<#-- The id spacesBrowser is the one the script of the spaces browser submits -->
+		<@tform id='spacesBrowser' name='formCreateAutoPublication' method='get' action='jsp/admin/plugins/document/DoCreateAutoPublication.jsp' boxed=true>
+			<@input type='hidden' name='token' value='${token}' />
 			<@input type='hidden' name='id_portlet' value='${portlet_id}' />
 			<@input type='hidden' name='mode_publication' value='1' />
-			<@h level=2>#i18n{document.create_auto_publication.spaceChoice}</@h>
-			${spaces_browser}
+			<@formGroup labelKey='#i18n{document.create_auto_publication.spaceChoice}' rows=2>
+				${spaces_browser!}
+			</@formGroup>
 		</@tform>
 	</@pageColumn>
 </@pageContainer>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-	var sections = document.querySelectorAll("section");
-	sections.forEach(function(section) {
-		section.classList.remove("no-padding");
-	});
-});
-</script>

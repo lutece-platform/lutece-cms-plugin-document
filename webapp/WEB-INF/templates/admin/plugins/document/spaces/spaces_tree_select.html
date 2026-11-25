@@ -41,23 +41,27 @@
 <#if !documentSpacesTreeSelectLoaded??>
 <#global documentSpacesTreeSelectLoaded = true />
 <style>
-	<#-- Every row has the height of a line; the connector of the core tree (li::before) is half a row high, so that its stroke points at the radio button -->
-	.document-spaces-tree { --document-spaces-tree-row: 1.5rem; max-height: 24rem; overflow-y: auto; font-size: .875rem; line-height: var( --document-spaces-tree-row ); }
-	.document-spaces-tree ul { margin: 0; padding-inline-start: .75rem; }
-	.document-spaces-tree > ul { padding-inline-start: 0; }
-	.document-spaces-tree ul li { color: var( --tblr-body-color ); padding: 0 0 0 .375rem; line-height: var( --document-spaces-tree-row ); white-space: nowrap; }
-	.document-spaces-tree ul li::before { vertical-align: top; top: 0; left: -.375rem; width: .75rem; height: calc( var( --document-spaces-tree-row ) / 2 ); }
-	<#-- The core removes the vertical line of the last row with its border: a transparent border keeps the rows aligned -->
-	.document-spaces-tree ul li:last-child, .document-spaces-tree > ul > li:first-child { border-left: 1px solid transparent; }
-	.document-spaces-tree .document-spaces-tree-line { display: inline-flex; align-items: center; vertical-align: top; height: var( --document-spaces-tree-row ); gap: .375rem; }
-	.document-spaces-tree .document-spaces-tree-line > .document-spaces-tree-toggle { width: 1.25rem; height: 1.25rem; min-width: 1.25rem; padding: 0; margin: 0; border: 0; }
-	.document-spaces-tree .form-check-input { width: 1rem; height: 1rem; }
+	<#-- The connectors of the core tree (li borders and ::before elbows) are drawn for plain text rows of 20px: they are replaced here by one guide
+	     line per level, under the toggle of the parent. Every row has the same height; the row of the selected space is highlighted. A space that
+	     cannot be selected (not accepting the type, or the space being moved) keeps its place, without its radio button. -->
+	.document-spaces-tree { --document-spaces-tree-row: 2rem; --document-spaces-tree-toggle: 1.25rem; max-height: 24rem; overflow-y: auto; font-size: .875rem; }
+	.document-spaces-tree ul { list-style: none; margin: 0; padding: 0; }
+	.document-spaces-tree ul ul { margin-inline-start: calc( .25rem + var( --document-spaces-tree-toggle ) / 2 ); padding-inline-start: calc( var( --document-spaces-tree-toggle ) / 2 ); border-inline-start: 1px solid var( --tblr-border-color ); }
+	.document-spaces-tree ul li, .document-spaces-tree ul li:last-child, .document-spaces-tree > ul > li:first-child { margin: 0; padding: 0; border: 0; line-height: var( --document-spaces-tree-row ); white-space: nowrap; color: var( --tblr-body-color ); }
+	.document-spaces-tree ul li::before, .document-spaces-tree ul li:last-child::before { content: none; display: none; }
+	.document-spaces-tree .document-spaces-tree-line { display: flex; align-items: center; gap: .5rem; height: var( --document-spaces-tree-row ); padding-inline: .25rem .5rem; border-radius: var( --tblr-border-radius ); }
+	.document-spaces-tree .document-spaces-tree-line:hover { background: var( --tblr-bg-surface-secondary ); }
+	.document-spaces-tree .document-spaces-tree-line:has( input:checked ) { background: var( --tblr-primary-lt ); }
+	.document-spaces-tree .document-spaces-tree-line > .document-spaces-tree-toggle { width: var( --document-spaces-tree-toggle ); height: var( --document-spaces-tree-toggle ); min-width: var( --document-spaces-tree-toggle ); padding: 0; margin: 0; border: 0; color: var( --tblr-secondary ); }
+	.document-spaces-tree .document-spaces-tree-spacer { display: inline-block; width: var( --document-spaces-tree-toggle ); min-width: var( --document-spaces-tree-toggle ); }
+	.document-spaces-tree .form-check-input { width: 1rem; height: 1rem; min-width: 1rem; margin: 0; cursor: pointer; }
+	.document-spaces-tree .form-check-input:disabled { visibility: hidden; }
 	.document-spaces-tree .document-spaces-tree-toggle .ti { transition: transform .2s; }
 	.document-spaces-tree .lutece-tree-node-open > .document-spaces-tree-line .document-spaces-tree-toggle .ti { transform: rotate( 90deg ); }
-	.document-spaces-tree .document-spaces-tree-spacer { display: inline-block; width: 1.25rem; min-width: 1.25rem; }
-	.document-spaces-tree .document-spaces-tree-icon { width: 1rem; height: 1rem; margin-inline-end: .375rem; vertical-align: text-bottom; }
-	.document-spaces-tree .form-check-label { cursor: pointer; }
-	.document-spaces-tree .document-spaces-tree-line:has( input:checked ) .form-check-label { font-weight: var( --tblr-font-weight-bold, 600 ); color: var( --tblr-primary ); }
+	.document-spaces-tree .document-spaces-tree-icon { width: 1rem; height: 1rem; margin-inline-end: .5rem; vertical-align: -.125rem; }
+	.document-spaces-tree .form-check-label { display: inline-flex; align-items: center; cursor: pointer; }
+	.document-spaces-tree .form-check-input:disabled + .form-check-label { cursor: default; color: var( --tblr-secondary ); opacity: 1; }
+	.document-spaces-tree .document-spaces-tree-line:has( input:checked ) .form-check-label { font-weight: var( --tblr-font-weight-medium, 500 ); color: var( --tblr-primary ); }
 </style>
 <script type="module">
 	import LuteceTree from './themes/shared/modules/luteceTree.js';

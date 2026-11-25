@@ -1,98 +1,66 @@
+<#--
+ # Browser of the document spaces, inserted in a form (select_space_rule.html, create_auto_publication.html, files2docs degraded_mode.html):
+ # a space is chosen with its radio button, a space with children opens with its chevron, and the browser goes up with the up button.
+ # Opening a space posts the enclosing form to ${action} with browser_id_space set. Just before, the form receives the event
+ # 'spacesbrowser:browse', so that a caller can adjust its fields; a caller with its own buttons hides .js-spaces-browser-actions.
+-->
 <#if selected_space?has_content>
 	<@input type='hidden' name='browser_selected_space_id' value='${selected_space.id}' />
-	<@formGroup>
-		<@aButton href='#' params={"data-document-space-browser": "modify"} title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' />
-		<@staticText><img src="${selected_space.iconUrl}" alt="${selected_space.name}">${selected_space.name}</@staticText>
-	</@formGroup>
+	<@div class='d-flex align-items-center gap-2'>
+		<@tag color='' class='bg-yellow-lt'><#if selected_space.iconUrl?has_content><@img url=selected_space.iconUrl alt='' class='avatar avatar-xs me-1' /></#if>${selected_space.name}</@tag>
+		<@button type='button' color='light' size='sm' params={"data-document-space-browser": "modify"} buttonIcon='pencil' title='#i18n{document.browse_spaces.modify}' />
+	</@div>
 <#else>
 	<@input type='hidden' name='browser_id_space' value='${space.id}' />
-	<@formGroup>
-		<#if space.id gt 0 && go_up >
-			<@aButton href='#' params={"data-document-space-browser": "up"} title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' />
+	<@div class='d-flex align-items-center gap-2 mb-2'>
+		<@span class='fw-semibold'><@icon style='folder-open' class='me-1' />${space.name!}</@span>
+		<#if space.id gt 0 && go_up>
+			<@button type='button' color='light' size='sm' params={"data-document-space-browser": "up"} buttonIcon='arrow-up' title='#i18n{document.browse_spaces.go_up_link}' />
 		</#if>
-		<@button type='submit' title='#i18n{portal.util.labelValidate}' buttonIcon='check' />
-		<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
-	</@formGroup>
-	<@formGroup>
+	</@div>
+	<#if ( spaces_list![] )?has_content>
+	<@listGroup class='mb-3'>
 		<#list spaces_list as item_space>
-			<#assign labelKey>
-				<img src="${item_space.iconUrl}" alt="" class="img-fluid">
-				<#if has_childs?seq_contains(item_space.id)>
-					<@link href='#' params={"data-document-space-browser": "open", "data-space-id": item_space.id?c} title='${item_space.name}'>${item_space.name}</@link>
-				<#else>
-					${item_space.name}
+		<@listGroupItem>
+			<@div class='d-flex align-items-center gap-2'>
+				<#assign spaceLabel><#if item_space.iconUrl?has_content><@img url=item_space.iconUrl alt='' class='avatar avatar-xs me-1' /></#if>${item_space.name}</#assign>
+				<@radioButton name='browser_selected_space_id' id='space_${item_space?index}' value='${item_space.id}' labelKey=spaceLabel />
+				<#if ( has_childs![] )?seq_contains( item_space.id )>
+					<@aButton href='#' style='btn-action ms-auto' color='' buttonIcon='chevron-right' title='${item_space.name}' hideTitle=['all'] params={"data-document-space-browser": "open", "data-space-id": item_space.id?c} />
 				</#if>
-			</#assign>
-			<@radioButton labelFor='space_${item_space?index}' labelKey=labelKey name='browser_selected_space_id' id='space_${item_space?index}' value='${item_space.id}' />
+			</@div>
+		</@listGroupItem>
 		</#list>
-	</@formGroup>
-	<@formGroup>
-		<#if space.id gt 0 && go_up >
-		<@aButton href='#' params={"data-document-space-browser": "up"} title='#i18n{document.browse_spaces.go_up_link}' buttonIcon='arrow-up' />
-		</#if>
-		<@button type='submit' title='#i18n{portal.util.labelValidate}' buttonIcon='check' />
-		<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='times' color='default' />
-	</@formGroup>
+	</@listGroup>
+	<#else>
+		<@empty title='#i18n{document.manage_documents.labelSpaces}' iconName='folder-off' subtitle=' ' />
+	</#if>
+	<@div class='d-flex gap-2 js-spaces-browser-actions'>
+		<@button type='submit' title='#i18n{document.browse_spaces.validate}' buttonIcon='check' color='primary' />
+		<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{portal.util.labelCancel}' buttonIcon='x' color='light' />
+	</@div>
 </#if>
 <script>
-formId = "spacesBrowser";
-<!-- formId = "selectFilesForm"; -->
-function goUp(){ 
-	document.forms[formId].action='${action?js_string?no_esc}';
-	document.forms[formId].browser_id_space.value='${space.idParent?c}';
-	unselectRadioBtn( formId );
-	document.forms[formId].submit();
-}
-
-function openSpace(idSpace){
-	document.forms[formId].action='${action?js_string?no_esc}';
-	document.forms[formId].browser_id_space.value=idSpace;
-	unselectRadioBtn( formId );
-	document.forms[formId].submit();
-}
-
-function unselectRadioBtn( formId ){
-if(document.forms[formId].browser_selected_space_id != undefined){
-	if( document.forms[formId].browser_selected_space_id.length > 0 ){
-		for( var i=0; i<document.forms[formId].browser_selected_space_id.length; i++ ){
-			if (document.forms[formId].browser_selected_space_id[i].checked){
-				document.forms[formId].browser_selected_space_id[i].checked=false;
-			}
-		}
-	} else {
-		document.forms[formId].browser_selected_space_id.checked=false;
-		}
+( ( form ) => {
+	if ( !form ) {
+		return;
 	}
-}
-
-function modifyChoice(){
-	document.forms[formId].browser_selected_space_id.value=null;
-	document.forms[formId].action='${action?js_string?no_esc}';
-	document.forms[formId].submit();
-}
-
-<#-- the links of the browser call goUp, openSpace and modifyChoice when clicked: a page that includes the browser may wrap them -->
-if ( !window.documentSpaceBrowserReady ) {
-	window.documentSpaceBrowserReady = true;
-	document.addEventListener( 'click', function( event ) {
-		const link = event.target.closest( '[data-document-space-browser]' );
-		if ( !link ) {
-			return;
+	const browse = ( spaceId ) => {
+		form.dispatchEvent( new CustomEvent( 'spacesbrowser:browse' ) );
+		form.setAttribute( 'action', '${action?js_string?no_esc}' );
+		form.querySelectorAll( 'input[name="browser_selected_space_id"]' ).forEach( ( input ) => {
+			if ( input.type === 'radio' ) { input.checked = false; } else { input.value = ''; }
+		} );
+		if ( spaceId !== null && form.elements[ 'browser_id_space' ] ) {
+			form.elements[ 'browser_id_space' ].value = spaceId;
 		}
+		form.submit( );
+	};
+	form.querySelectorAll( '[data-document-space-browser="open"]' ).forEach( ( link ) => link.addEventListener( 'click', ( event ) => {
 		event.preventDefault( );
-		switch ( link.dataset.documentSpaceBrowser ) {
-			case 'up':
-				window.goUp( );
-				break;
-			case 'open':
-				window.openSpace( link.dataset.spaceId );
-				break;
-			case 'modify':
-				window.modifyChoice( );
-				break;
-			default:
-				break;
-		}
-	} );
-}
+		browse( link.dataset.spaceId );
+	} ) );
+	form.querySelectorAll( '[data-document-space-browser="up"]' ).forEach( ( button ) => button.addEventListener( 'click', ( ) => browse( '${((space.idParent)!0)?c}' ) ) );
+	form.querySelectorAll( '[data-document-space-browser="modify"]' ).forEach( ( button ) => button.addEventListener( 'click', ( ) => browse( null ) ) );
+} )( document.currentScript.closest( 'form' ) || document.getElementById( 'spacesBrowser' ) );
 </script>

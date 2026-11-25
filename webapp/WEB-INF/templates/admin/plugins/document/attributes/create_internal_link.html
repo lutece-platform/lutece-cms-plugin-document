@@ -1,6 +1,6 @@
-<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' checked=attribute.required>
+<@formGroup labelFor='${attribute.code}' labelKey='${attribute.name}' mandatory=attribute.required rows=2>
 	<@input type='textarea' id='${attribute.code}' name='${attribute.code}' readonly=true rows=5 cols=6 />
-	<@button params={"data-document-internal-link": "service", "data-code": attribute.code} buttonIcon='link' color='warning' title='#i18n{document.attributeType.internallink.labelLinkService}' hideTitle=['all'] />
+	<@button params={"data-document-internal-link": "service", "data-code": attribute.code} buttonIcon='link' color='light' title='#i18n{document.attributeType.internallink.labelLinkService}' hideTitle=['all'] />
 	<!-- DOCUMENT-97: enable clearing internal link field. -->
 	<@button params={"data-document-internal-link": "preview", "data-code": attribute.code} title='#i18n{document.attributeType.internallink.buttonShowPreview}' buttonIcon='eye' hideTitle=['all'] />
 	<@button params={"data-document-internal-link": "clear", "data-code": attribute.code} title='#i18n{document.attributeType.internallink.labelLinkServiceClear}' buttonIcon='trash' color='danger' hideTitle=['all'] />

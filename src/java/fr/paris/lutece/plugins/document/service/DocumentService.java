@@ -475,6 +475,12 @@ public class DocumentService
 			AdminUser user )
 	{
 		DocumentSpace documentSpace = DocumentSpaceHome.findByPrimaryKey( nIdSpace );
+
+		if( documentSpace == null )
+		{
+			return false;
+		}
+
 		boolean bPermissionCreate = strPermission.equals( DocumentTypeResourceIdService.PERMISSION_CREATE )
 				? documentSpace.isDocumentCreationAllowed( )
 				: true;

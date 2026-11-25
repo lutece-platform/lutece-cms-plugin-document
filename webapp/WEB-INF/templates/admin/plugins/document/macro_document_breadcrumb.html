@@ -5,7 +5,7 @@
  #
  # param section  the feature the screen belongs to: documents, types, rules or categories
  # param spaces   the path of the document space, from the root (model breadcrumb_spaces), each one a link to its documents
- # param items    the intermediate screens, links: [ { 'label': '...', 'url': '...' } ]
+ # param items    the intermediate screens, links: [ { 'label': '...', 'url': '...' } ] (an item without url is plain text)
  # param current  the label of the current screen; empty when the last space or item is the current screen
  # The space names and the labels of the items are HTML-escaped.
 -->
@@ -22,24 +22,26 @@
 	<#if spaces?has_content || hasItems>
 		<@breadcrumbItem><@link href=root.url label=root.label linkIcon=root.icon /></@breadcrumbItem>
 	<#else>
-		<@breadcrumbItem class='active' params='aria-current="page"'><@icon style=root.icon class='me-1' />${root.label}</@breadcrumbItem>
+		<@breadcrumbItem class='active' params={"aria-current": "page"}><@icon style=root.icon class='me-1' />${root.label}</@breadcrumbItem>
 	</#if>
 	<#list spaces as space>
 		<#if space?has_next || hasItems>
 			<@breadcrumbItem><@link href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${space.id?c}'><@documentValue value=space.name! /></@link></@breadcrumbItem>
 		<#else>
-			<@breadcrumbItem class='active' params='aria-current="page"'><@documentValue value=space.name! /></@breadcrumbItem>
+			<@breadcrumbItem class='active' params={"aria-current": "page"}><@documentValue value=space.name! /></@breadcrumbItem>
 		</#if>
 	</#list>
 	<#list items as item>
-		<#if item?has_next || current?has_content>
+		<#if ( item?has_next || current?has_content ) && item.url?has_content>
 			<@breadcrumbItem><@link href=item.url><@documentValue value=item.label! /></@link></@breadcrumbItem>
+		<#elseif item?has_next || current?has_content>
+			<@breadcrumbItem><@documentValue value=item.label! /></@breadcrumbItem>
 		<#else>
-			<@breadcrumbItem class='active' params='aria-current="page"'><@documentValue value=item.label! /></@breadcrumbItem>
+			<@breadcrumbItem class='active' params={"aria-current": "page"}><@documentValue value=item.label! /></@breadcrumbItem>
 		</#if>
 	</#list>
 	<#if current?has_content>
-		<@breadcrumbItem class='active' params='aria-current="page"'>${current}</@breadcrumbItem>
+		<@breadcrumbItem class='active' params={"aria-current": "page"}>${current}</@breadcrumbItem>
 	</#if>
 </@breadcrumbs>
 </#macro>

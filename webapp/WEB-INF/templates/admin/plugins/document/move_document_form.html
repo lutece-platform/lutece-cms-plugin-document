@@ -19,7 +19,7 @@
 		</#if>
 	</@fieldSet>
 </#macro>
-<#assign formParams><#if document??>data-document-type="${document.codeDocumentType}" data-space-id="${document.spaceId?c}"</#if></#assign>
+<#assign formParams = (document??)?then({"data-document-type": "${(document.codeDocumentType)!}", "data-space-id": "${(document.spaceId?c)!}"}, {}) />
 <#assign cancelUrl = 'jsp/admin/plugins/document/ManageDocuments.jsp' + document???then( '?id_space_filter=' + (document.spaceId?c)!'', '' ) />
 <#if in_modal!false>
 <@tform id='${idPrefix}move_document_form' method='post' action='jsp/admin/plugins/document/DoMoveDocument.jsp' params=formParams>
@@ -27,7 +27,7 @@
 		<@moveDocumentFields />
 	</@modalBody>
 	<@modalFooter>
-		<@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='light' />
+		<@button type='button' params={"data-bs-dismiss": "modal"} title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='light' />
 		<@button type='submit' id='${idPrefix}move_document_submit' title='#i18n{document.move_document.buttonMove}' buttonIcon='folder-symlink' disabled=true />
 	</@modalFooter>
 </@tform>

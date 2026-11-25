@@ -95,6 +95,10 @@ public class DocumentHistoryJspBean extends PluginAdminPageJspBean
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
+        if ( document != null )
+        {
+            document.setLocale( getLocale(  ) );
+        }
         Collection<HistoryEvent> listEvents = null;
 
         if ( ( document != null ) &&

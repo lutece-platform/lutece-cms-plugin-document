@@ -1,30 +1,48 @@
+<#include "/admin/plugins/document/macro_document_admin.html" />
+<#assign bc><@documentBreadcrumb section='rules' /></#assign>
+<#assign ruleIcons = { 'moveSpace': 'folder-symlink', 'notifyUsers': 'mail-forward' } />
+<#-- The create menu: one link per rule type -->
+<#macro createRuleMenu id>
+<@div class='dropdown'>
+	<@aButton href='#' id=id color='primary' class='dropdown-toggle' buttonIcon='plus' title='#i18n{document.manage_rules.buttonCreate}' hideTitle=['xs','sm','md'] params={"data-bs-toggle": "dropdown", "aria-haspopup": "true", "aria-expanded": "false"} />
+	<@div class='dropdown-menu dropdown-menu-end'>
+		<@div class='dropdown-header'>#i18n{document.manage_rules.labelCreate}</@div>
+		<#list rule_types_list![] as ruleType>
+			<@link href='jsp/admin/plugins/document/CreateRule.jsp?id_rule_type=${ruleType.code}' class='dropdown-item'><@icon style=ruleIcons[ruleType.code]!'reorder' class='me-2' />${ruleType.name}</@link>
+		</#list>
+	</@div>
+</@div>
+</#macro>
 <@pageContainer>
-    <@pageColumn>
-		<@pageHeader title='#i18n{document.manage_rules.listTitle}'>
-			<@tform type='inline' method='post' name='AddRule' action='jsp/admin/plugins/document/CreateRule.jsp'>
-				<@formGroup formStyle='inline' labelFor='id_rule_type' labelKey='#i18n{document.manage_rules.labelCreate}' hideLabel=['all']>
-					<@inputGroup>
-						<@select name='id_rule_type' default_value='' items=rule_types_list />
-						<@button type='submit' title='#i18n{document.manage_rules.buttonCreate}' buttonIcon='plus' />
-					</@inputGroup>
-				</@formGroup>
-			</@tform>
-		</@pageHeader>
-		<@manageFeature>
-		<#if rules_list?has_content>
-			<#list rules_list as rule >
-				<@manageFeatureItem>
-					<@manageFeatureItemColumn>${rules_descriptions[rule.id?c]!}</@manageFeatureItemColumn>
-					<@manageFeatureItemColumn align='end' auto=true>
-						<@aButton href='jsp/admin/plugins/document/DeleteRule.jsp?id_rule=${rule.id}' title='#i18n{document.manage_rules.tooltipDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' />
+	<@pageColumn>
+		<@documentPageHeader title='#i18n{document.manage_rules.listTitle}' iconName='reorder' color='orange' breadcrumb=bc>
+			<#if ( rule_types_list![] )?has_content><@createRuleMenu id='create-rule' /></#if>
+		</@documentPageHeader>
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
+		<#if ( rules_list![] )?has_content>
+			<@manageFeature layout='list' id='rules'>
+				<#list rules_list as rule>
+				<@manageFeatureItem id='rule_${rule.id?c}'>
+					<@manageFeatureItemColumn class='d-flex align-items-center gap-2 text-truncate'>
+						<span class="avatar avatar-sm bg-orange-lt" aria-hidden="true"><@icon style=ruleIcons[rule.ruleTypeId!]!'reorder' /></span>
+						<#-- The rule builds its description from a localised message holding HTML, from escaped data -->
+						<@div class='text-wrap'>${rules_descriptions[rule.id?c]!}</@div>
+					</@manageFeatureItemColumn>
+					<@manageFeatureItemColumn auto=true align='end'>
+						<@div class='btn-actions'>
+							<@aButton href='jsp/admin/plugins/document/DeleteRule.jsp?id_rule=${rule.id?c}' style='btn-action text-danger' color='' buttonIcon='trash' title='#i18n{document.manage_rules.tooltipDelete}' hideTitle=['all'] />
+						</@div>
 					</@manageFeatureItemColumn>
 				</@manageFeatureItem>
-			</#list>
+				</#list>
+			</@manageFeature>
+			<#if paginator?? && ( paginator.pagesCount gt 1 || paginator.itemsCount gt 10 )>
+				<@paginationAdmin paginator=paginator combo=1 />
+			</#if>
 		<#else>
-			<@box>
-				<@empty title='#i18n{document.manage_rules.noRules}' />
-			</@box>
+			<@card>
+				<@empty title='#i18n{document.manage_rules.noRules}' iconName='reorder' subtitle=' ' />
+			</@card>
 		</#if>
-		</@manageFeature>
 	</@pageColumn>
 </@pageContainer>

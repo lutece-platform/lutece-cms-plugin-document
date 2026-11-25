@@ -1,3 +1,9 @@
-<@manageFeature class='' colClass='' listClass=''>
-${published_document_list!}
-</@manageFeature>
+<#-- The rows of published_document_list.html, built by the bean for each document of the portlet -->
+<#assign rows>${published_document_list!}</#assign>
+<#if ( rows?is_markup_output?then( rows?markup_string, rows ) )?trim?has_content>
+<@listGroup class='list-group-flush'>
+${rows}
+</@listGroup>
+<#else>
+<@empty title='#i18n{document.manage_portlet_publishing.messageNoPublishedDocument}' iconName='world-off' subtitle=' ' />
+</#if>

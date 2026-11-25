@@ -1,29 +1,26 @@
-<@formGroup labelFor='id_space_source' labelKey='#i18n{module.document.rulemovespace.create_rule_move_space.ruleText1}'>
-	<@p>
-		<#if id_space_source?exists> 
-		<@input type='hidden' name='id_space_source' value='${id_space_source}' />
-		<strong>${path_space_source}</strong>
+<#-- Form of a move space rule, in create_rule.html: the buttons carrying data-space open the choice of that space -->
+<@formGroup labelKey='#i18n{module.document.rulemovespace.create_rule_move_space.ruleText1}' rows=2>
+	<@div class='d-flex align-items-center gap-2'>
+		<#if id_space_source??>
+			<@input type='hidden' name='id_space_source' value='${id_space_source}' />
+			<@tag color='' class='bg-yellow-lt' tagIcon='folder'>${path_space_source}</@tag>
 		<#else>
-		<strong>#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</strong> 
+			<@span class='text-secondary'>#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</@span>
 		</#if>
-	</@p>
-	<@button type='submit' params={"data-space": "id_space_source"} title='#i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}' buttonIcon='check' />
+		<@button type='submit' color='light' size='sm' params={"data-space": "id_space_source"} title='#i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}' buttonIcon='folder-search' />
+	</@div>
 </@formGroup>
-<@formGroup labelFor='id_state' labelKey='#i18n{module.document.rulemovespace.create_rule_move_space.ruleText2}'>
-	<#if id_state?exists >
-		<@select name='id_state' default_value='${id_state}' items=states_list />
-	<#else>
-		<@select name='id_state' default_value='' items=states_list />
-	</#if>
+<@formGroup labelFor='id_state' labelKey='#i18n{module.document.rulemovespace.create_rule_move_space.ruleText2}' rows=2>
+	<@select name='id_state' id='id_state' default_value='${id_state!}' items=states_list />
 </@formGroup>
-<@formGroup labelFor='id_space_destination' labelKey='#i18n{module.document.rulemovespace.create_rule_move_space.ruleText3} #i18n{module.document.rulemovespace.create_rule_move_space.ruleText4}'>
-	<@p>
-		<#if id_space_destination?exists> 
+<@formGroup labelKey='#i18n{module.document.rulemovespace.create_rule_move_space.ruleText3} #i18n{module.document.rulemovespace.create_rule_move_space.ruleText4}' rows=2>
+	<@div class='d-flex align-items-center gap-2'>
+		<#if id_space_destination??>
 			<@input type='hidden' name='id_space_destination' value='${id_space_destination}' />
-			<strong>${path_space_destination}</strong> 
+			<@tag color='' class='bg-yellow-lt' tagIcon='folder'>${path_space_destination}</@tag>
 		<#else>
-			<strong>#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</strong> 
+			<@span class='text-secondary'>#i18n{module.document.rulemovespace.create_rule_move_space.noSpaceSelected}</@span>
 		</#if>
-	</@p>
-	<@button type='submit' params={"data-space": "id_space_destination"} title='#i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}' buttonIcon='check' />
+		<@button type='submit' color='light' size='sm' params={"data-space": "id_space_destination"} title='#i18n{module.document.rulemovespace.create_rule_move_space.buttonChoose}' buttonIcon='folder-search' />
+	</@div>
 </@formGroup>

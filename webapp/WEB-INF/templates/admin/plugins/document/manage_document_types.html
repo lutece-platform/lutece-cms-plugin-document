@@ -1,23 +1,45 @@
+<#include "/admin/plugins/document/macro_document_admin.html" />
+<#assign bc><@documentBreadcrumb section='types' /></#assign>
+<#assign createUrl = 'jsp/admin/plugins/document/CreateDocumentType.jsp' />
 <@pageContainer>
-    <@pageColumn>
-		<@pageHeader title='#i18n{document.manage_document_types.listTitle}'>
-			<@tform method='post' action='jsp/admin/plugins/document/CreateDocumentType.jsp'>
-				<@button type='submit' title='#i18n{document.manage_document_types.buttonCreate}' buttonIcon='plus' hideTitle=['xs','sm'] />
-			</@tform>
-		</@pageHeader>
+	<@pageColumn>
+		<@documentPageHeader title='#i18n{document.manage_document_types.listTitle}' iconName='file-info' color='purple' breadcrumb=bc>
+			<@aButton href=createUrl title='#i18n{document.manage_document_types.buttonCreate}' buttonIcon='plus' color='primary' hideTitle=['xs','sm','md'] />
+		</@documentPageHeader>
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
 		<#if legacy_stylesheets_types?has_content>
-		<@alert color='warning'>#i18n{document.manage_document_types.helpLegacyStylesheets}</@alert>
+			<@alert color='warning' iconTitle='alert-triangle' title='#i18n{document.manage_document_types.helpLegacyStylesheets}' />
 		</#if>
-		<@manageFeature>
-		<#list document_types_list?sort_by('name') as type >
-		<@manageFeatureItem>
-			<@manageFeatureItemColumn auto=true>${type.name} - ${type.description}<#if (legacy_stylesheets_types![])?seq_contains(type.code)> <@tag color='warning'>#i18n{document.manage_document_types.labelLegacyStylesheets}</@tag></#if></@manageFeatureItemColumn>
-			<@manageFeatureItemColumn align='end'>
-				<@aButton href='jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.modify_document_type.buttonModify}' buttonIcon='edit' hideTitle=['all'] params={"aria-label": "#i18n{document.modify_document_type.buttonModify} ${type.name}"} />
-				<@aButton href='jsp/admin/plugins/document/DoConfirmDeleteDocumentType.jsp?document_type_code=${type.code}' title='#i18n{document.manage_document_types.buttonDelete}' buttonIcon='trash' color='danger' hideTitle=['all'] params={"aria-label": "#i18n{document.manage_document_types.buttonDelete} ${type.name}"} />
-			</@manageFeatureItemColumn>
-		</@manageFeatureItem>
-		</#list>
-		</@manageFeature>
+		<#if ( document_types_list![] )?has_content>
+			<@manageFeature layout='list' id='document-types'>
+				<#list document_types_list?sort_by( 'name' ) as type>
+				<#assign modifyUrl = 'jsp/admin/plugins/document/ModifyDocumentType.jsp?document_type_code=${type.code}' />
+				<@manageFeatureItem id='document_type_${type.code}'>
+					<@manageFeatureItemColumn class='d-flex align-items-center gap-2 text-truncate'>
+						<span class="avatar avatar-sm bg-purple-lt" aria-hidden="true"><@icon style='file-info' /></span>
+						<@div class='text-truncate'>
+							<@link href=modifyUrl class='text-reset fw-semibold' title='#i18n{document.modify_document_type.buttonModify} ${type.name}'>${type.name}</@link>
+							<#if ( legacy_stylesheets_types![] )?seq_contains( type.code )><@tag color='' class='bg-yellow-lt ms-1'>#i18n{document.manage_document_types.labelLegacyStylesheets}</@tag></#if>
+							<@div class='text-secondary small text-truncate'>${type.code}<#if type.description?has_content> &middot; ${type.description}</#if></@div>
+						</@div>
+					</@manageFeatureItemColumn>
+					<@manageFeatureItemColumn auto=true align='end'>
+						<@div class='btn-actions'>
+							<@aButton href=modifyUrl style='btn-action' color='' buttonIcon='pencil' title='#i18n{document.modify_document_type.buttonModify} ${type.name}' hideTitle=['all'] />
+							<@aButton href='#' id='document-type-actions-${type.code}' style='' color='' dropdownMenu=true buttonIcon='dots' title='#i18n{portal.util.labelActions} ${type.name}' hideTitle=['all']>
+								<@link href=modifyUrl class='dropdown-item'><@icon style='pencil' class='me-2' />#i18n{document.modify_document_type.buttonModify}</@link>
+								<@div class='dropdown-divider' />
+								<@link href='jsp/admin/plugins/document/DoConfirmDeleteDocumentType.jsp?document_type_code=${type.code}' class='dropdown-item text-danger'><@icon style='trash' class='me-2' />#i18n{document.manage_document_types.buttonDelete}</@link>
+							</@aButton>
+						</@div>
+					</@manageFeatureItemColumn>
+				</@manageFeatureItem>
+				</#list>
+			</@manageFeature>
+		<#else>
+			<@card>
+				<@empty title='#i18n{document.manage_document_types.listTitle}' iconName='file-off' subtitle=' ' actionTitle='#i18n{document.manage_document_types.buttonCreate}' actionUrl=createUrl />
+			</@card>
+		</#if>
 	</@pageColumn>
 </@pageContainer>

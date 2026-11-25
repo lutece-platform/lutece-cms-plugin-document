@@ -15,3 +15,8 @@
 .lutece-extend-actions .extend-action-buttons > button[value="remove"] { grid-column: 3; }
 .lutece-extend-actions .extend-action-buttons > button:is( [value="configure"], [value="remove"] ) { width: 2.25rem; padding-inline: 0; justify-content: center; }
 .lutece-extend-actions .extend-action-buttons > button[value="add"] { grid-column: 1 / -1; }
+/* Preview frame of an image or file attribute: the image is contained in a fixed box (the params of the macros carry no style) */
+.document-image-frame { height: 10rem; width: 14rem; }
+.document-image-frame-body { width: 14rem; }
+.document-image-input-group { max-width: 16rem; }
+.document-file-icon { height: 4rem; }
