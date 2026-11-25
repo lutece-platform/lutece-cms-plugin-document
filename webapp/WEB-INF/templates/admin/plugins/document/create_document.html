@@ -1,8 +1,10 @@
 <#include "/admin/util/document/macro_date_fix.html" />
 <@initDatePicker language=locale />
+<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#assign bc><@documentBreadcrumb spaces=breadcrumb_spaces![] current='#i18n{document.breadcrumb.create}' /></#assign>
 <@pageContainer>
     <@pageColumn>
-		<@pageHeader title='#i18n{document.adminFeature.documents_management.name}' />
+		<@pageHeader title='#i18n{document.adminFeature.documents_management.name}' breadcrumb=bc />
 			<@tform method='post' action='jsp/admin/plugins/document/DoCreateDocument.jsp' enctype='multipart/form-data'>
 				<@input type='hidden' name='token' value='${token}' />
 				<@input type='hidden' name='document_type_code' value='${document_type}' />    

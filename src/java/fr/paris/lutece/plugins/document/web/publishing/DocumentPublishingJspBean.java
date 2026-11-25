@@ -166,6 +166,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     private static final String PROPERTY_MANAGE_PUBLISHING = "document.portlet.publishing.pageTitle";
     private static final String PROPERTY_CREATE_AUTO_PUBLICATION = "document.portlet.publishing.pageTitle";
     private static final String PROPERTY_DISPLAY_LATEST_PORTLETS = "document.manage_document_publishing.labelDisplayLatestPortlets";
+    private static final String MARK_BREADCRUMB_SPACES = "breadcrumb_spaces";
     private static final String TEMPLATE_DOCUMENT_PUBLISHING = "/admin/plugins/document/publishing/manage_document_publishing.html";
     private static final String TEMPLATE_PORTLET_PUBLISHING = "/admin/plugins/document/publishing/manage_portlet_publishing.html";
     private static final String TEMPLATE_CREATE_AUTO_PUBLICATION = "/admin/plugins/document/publishing/create_auto_publication.html";
@@ -324,6 +325,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
             _model.put( MARK_ASSIGNED_PORTLET, listAssignedPortlets );
             _model.put( MARK_PUBLISHED_STATUS_VALUE, DocumentPublication.STATUS_PUBLISHED );
             _model.put( MARK_DOCUMENT, document );
+            _model.put( MARK_BREADCRUMB_SPACES, _documentSpacesService.getSpacePath( document.getSpaceId(  ), getUser(  ) ) );
             _model.put( MARK_UNPUBLISHED_STATUS_VALUE, DocumentPublication.STATUS_UNPUBLISHED );
             _model.put( MARK_PORTLET_FILTER, portletFilter );
             _model.put( MARK_LABEL_DISPLAY_LATEST_PORTLETS,

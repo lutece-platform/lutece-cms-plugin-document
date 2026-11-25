@@ -1,7 +1,9 @@
 <#if space_form?has_content>
+<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#assign bc><@documentBreadcrumb spaces=breadcrumb_spaces![] current='#i18n{document.breadcrumb.createSpace}' /></#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{document.create_space.title}' />
+		<@pageHeader title='#i18n{document.create_space.title}' breadcrumb=bc />
 		${space_form}
 	</@pageColumn>
 </@pageContainer>

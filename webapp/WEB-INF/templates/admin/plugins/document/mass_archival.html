@@ -1,8 +1,10 @@
 <#include "/admin/plugins/document/spaces/spaces_tree_select.html" />
 <#macro stepTitle number title subtitle><div><h3 class="card-title"><@tag color='info'>#i18n{document.manage_document.mass_archival.step} ${number}</@tag>&nbsp;${title}</h3><div class="card-subtitle mb-0 mt-1">${subtitle}</div></div></#macro>
+<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#assign bc><@documentBreadcrumb current='#i18n{document.breadcrumb.massArchival}' /></#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{document.manage_document.mass_archival_labelBtn}' description='#i18n{document.manage_document.mass_archival.archiveInfo}' />
+		<@pageHeader title='#i18n{document.manage_document.mass_archival_labelBtn}' description='#i18n{document.manage_document.mass_archival.archiveInfo}' breadcrumb=bc />
 		<@tform id='massArchivalForm' name='massArchivalForm' method='post' action='jsp/admin/plugins/document/DoSearchMassArchivalDocument.jsp'>
 			<@div class='container'>
 				<@ul id='archival_stepper' class='steps steps-counter mb-4'>

@@ -1,6 +1,8 @@
+<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#assign bc><@documentBreadcrumb section='types' current='#i18n{document.breadcrumb.create}' /></#assign>
 <@pageContainer>
     <@pageColumn>
-		<@pageHeader title='#i18n{document.create_document_type.titleProperties}' />
+		<@pageHeader title='#i18n{document.create_document_type.titleProperties}' breadcrumb=bc />
 		<@tform method='post' action='jsp/admin/plugins/document/DoCreateDocumentType.jsp' boxed=true>
 				<@input type='hidden' name='token' value='${token}' />
 			<@formGroup labelFor='code' labelKey='#i18n{document.create_document_type.labelCode}' helpKey='#i18n{document.create_document_type.helpCode}' mandatory=true>

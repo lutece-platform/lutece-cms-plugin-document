@@ -1,0 +1,45 @@
+<#--
+ # Breadcrumb of the back office screens of the document plugin, passed to the breadcrumb parameter of pageHeader:
+ #   <#assign bc><@documentBreadcrumb section='documents' spaces=breadcrumb_spaces![] current='#i18n{document.breadcrumb.modify}' /></#assign>
+ #   <@pageHeader title='...' breadcrumb=bc />
+ #
+ # param section  the feature the screen belongs to: documents, types, rules or categories
+ # param spaces   the path of the document space, from the root (model breadcrumb_spaces), each one a link to its documents
+ # param items    the intermediate screens, links: [ { 'label': '...', 'url': '...' } ]
+ # param current  the label of the current screen; empty when the last space or item is the current screen
+ # The space names and the labels of the items are HTML-escaped.
+-->
+<#macro documentBreadcrumb section='documents' spaces=[] items=[] current=''>
+<#local sections = {
+	'documents': { 'url': 'jsp/admin/plugins/document/ManageDocuments.jsp', 'icon': 'files', 'label': '#i18n{document.breadcrumb.documents}' },
+	'types': { 'url': 'jsp/admin/plugins/document/ManageDocumentTypes.jsp', 'icon': 'file-info', 'label': '#i18n{document.breadcrumb.types}' },
+	'rules': { 'url': 'jsp/admin/plugins/document/ManageRules.jsp', 'icon': 'reorder', 'label': '#i18n{document.breadcrumb.rules}' },
+	'categories': { 'url': 'jsp/admin/plugins/document/ManageCategory.jsp', 'icon': 'bookmarks', 'label': '#i18n{document.breadcrumb.categories}' }
+} />
+<#local root = sections[section] />
+<#local hasItems = items?has_content || current?has_content />
+<@breadcrumbs class='mb-1'>
+	<#if spaces?has_content || hasItems>
+		<@breadcrumbItem><@link href=root.url label=root.label linkIcon=root.icon /></@breadcrumbItem>
+	<#else>
+		<@breadcrumbItem class='active' params='aria-current="page"'><@icon style=root.icon class='me-1' />${root.label}</@breadcrumbItem>
+	</#if>
+	<#list spaces as space>
+		<#if space?has_next || hasItems>
+			<@breadcrumbItem><@link href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${space.id?c}'><@documentValue value=space.name! /></@link></@breadcrumbItem>
+		<#else>
+			<@breadcrumbItem class='active' params='aria-current="page"'><@documentValue value=space.name! /></@breadcrumbItem>
+		</#if>
+	</#list>
+	<#list items as item>
+		<#if item?has_next || current?has_content>
+			<@breadcrumbItem><@link href=item.url><@documentValue value=item.label! /></@link></@breadcrumbItem>
+		<#else>
+			<@breadcrumbItem class='active' params='aria-current="page"'><@documentValue value=item.label! /></@breadcrumbItem>
+		</#if>
+	</#list>
+	<#if current?has_content>
+		<@breadcrumbItem class='active' params='aria-current="page"'>${current}</@breadcrumbItem>
+	</#if>
+</@breadcrumbs>
+</#macro>

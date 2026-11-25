@@ -100,6 +100,7 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_ALLOW_CREATION = "allow_creation";
     private static final String PARAMETER_WORKGROUP_KEY = "workgroup_key";
     private static final String MARK_SPACE_FORM = "space_form";
+    private static final String MARK_BREADCRUMB_SPACES = "breadcrumb_spaces";
     private static final String MESSAGE_CANNOT_DELETE_HAS_CHILDS = "document.spaces.message.cannotDeleteHasChilds";
     private static final String MESSAGE_CANNOT_DELETE_HAS_DOCS = "document.spaces.message.cannotDeleteHasDocs";
     private static final String MESSAGE_CANNOT_DELETE = "document.spaces.message.cannotDelete";
@@ -131,6 +132,7 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
         setPageTitleProperty( PROPERTY_CREATE_SPACE_PAGE_TITLE );
 
         int nParentId = IntegerUtils.convert( request.getParameter( PARAMETER_SPACE_ID ) );
+        _model.put( MARK_BREADCRUMB_SPACES, _documentSpacesService.getSpacePath( nParentId, getUser(  ) ) );
         _model.put( MARK_SPACE_FORM, HtmlMarkup.of( _documentSpacesService.getCreateSpaceForm( nParentId, getUser(  ), getLocale(  ),
                 getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ), false, StringUtils.EMPTY ) ) );
 
@@ -183,6 +185,7 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
         setPageTitleProperty( PROPERTY_MODIFY_SPACE_PAGE_TITLE );
 
         int nIdSpace = IntegerUtils.convert( request.getParameter( PARAMETER_SPACE_ID ) );
+        _model.put( MARK_BREADCRUMB_SPACES, _documentSpacesService.getSpacePath( nIdSpace, getUser(  ) ) );
         _model.put( MARK_SPACE_FORM, HtmlMarkup.of( _documentSpacesService.getModifySpaceForm( nIdSpace, getUser(  ), getLocale(  ),
                 getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ), false, StringUtils.EMPTY ) ) );
 
@@ -376,6 +379,7 @@ public class DocumentSpaceJspBean extends PluginAdminPageJspBean
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_ERROR );
         }
 
+        _model.put( MARK_BREADCRUMB_SPACES, _documentSpacesService.getSpacePath( IntegerUtils.convert( strSpaceToMoveId ), getUser(  ) ) );
         _model.put( MARK_SPACE_FORM, HtmlMarkup.of( _documentSpacesService.getMoveSpaceForm( IntegerUtils.convert( strSpaceToMoveId ), getUser(  ),
                 getLocale(  ), getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ), false, StringUtils.EMPTY ) ) );
 

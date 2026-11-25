@@ -1,6 +1,8 @@
+<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#assign bc><@documentBreadcrumb section='rules' current='#i18n{document.breadcrumb.create}' /></#assign>
 <@pageContainer>
     <@pageColumn>
-		<@pageHeader title='#i18n{document.create_rule.title}' />
+		<@pageHeader title='#i18n{document.create_rule.title}' breadcrumb=bc />
 		<@tform method='post' name='createRule' id='createRule' action='jsp/admin/plugins/document/DoCreateRule.jsp'>
 				<@input type='hidden' name='token' value='${token}' />
 			<@input type='hidden' name='id_rule_type' value='${rule_type_id}' />

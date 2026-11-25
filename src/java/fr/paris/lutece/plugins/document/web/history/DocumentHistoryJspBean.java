@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.document.business.history.HistoryEvent;
 import fr.paris.lutece.plugins.document.business.history.HistoryEventHome;
 import fr.paris.lutece.plugins.document.service.DocumentService;
 import fr.paris.lutece.plugins.document.service.DocumentTypeResourceIdService;
+import fr.paris.lutece.plugins.document.service.spaces.DocumentSpacesService;
 import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
@@ -69,6 +70,7 @@ public class DocumentHistoryJspBean extends PluginAdminPageJspBean
     private static final String TEMPLATE_HISTORY = "admin/plugins/document/history/document_history.html";
     private static final String MARK_DOCUMENT = "document";
     private static final String MARK_EVENTS_LIST = "events_list";
+    private static final String MARK_BREADCRUMB_SPACES = "breadcrumb_spaces";
     private static final String PROPERTY_PAGE_TITLE = "document.document_history.pageTitle";
     private static final String PARAMETER_DOCUMENT_ID = "id_document";
 
@@ -77,6 +79,9 @@ public class DocumentHistoryJspBean extends PluginAdminPageJspBean
 
     @Inject
     private DocumentService _documentService;
+
+    @Inject
+    private DocumentSpacesService _documentSpacesService;
     
     /**
      * Get the history page
@@ -97,6 +102,7 @@ public class DocumentHistoryJspBean extends PluginAdminPageJspBean
                     document.getCodeDocumentType(  ), DocumentTypeResourceIdService.PERMISSION_VIEW_HISTORY, getUser(  ) ) )
         {
             listEvents = HistoryEventHome.findByDocument( nDocumentId, getLocale(  ) );
+            _model.put( MARK_BREADCRUMB_SPACES, _documentSpacesService.getSpacePath( document.getSpaceId(  ), getUser(  ) ) );
         }
         else
         {

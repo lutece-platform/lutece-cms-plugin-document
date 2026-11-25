@@ -166,6 +166,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
     private static final String MARK_CURRENT_SPACE_ID = "current_space_id";
     private static final String MARK_SPACE_ACTIONS_LIST = "space_actions_list";
     private static final String MARK_SPACE = "space";
+    private static final String MARK_BREADCRUMB_SPACES = "breadcrumb_spaces";
     private static final String MARK_STATE_ID = "id_state";
     private static final String MARK_CHILD_SPACES_LIST = "child_spaces_list";
     private static final String MARK_FIELDS = "fields";
@@ -435,6 +436,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         _model.put( MARK_SPACES_TREE, HtmlMarkup.of( strSpacesTree ) );
         _model.put( MARK_SPACE_ACTIONS_LIST, listSpaceActions );
         _model.put( MARK_SPACE, currentSpace );
+        _model.put( MARK_BREADCRUMB_SPACES, _documentSpacesService.getSpacePath( nCurrentSpaceId, getUser(  ) ) );
         _model.put( MARK_PAGINATOR, paginator );
         _model.put( MARK_NB_ITEMS_PER_PAGE, StringUtils.EMPTY + _nItemsPerPage );
         _model.put( MARK_VIEW_TYPES_LIST, DocumentSpaceHome.getViewTypeList( getLocale(  ) ) );
@@ -523,6 +525,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         _model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         _model.put( MARK_LOCALE, getLocale(  ).getLanguage(  ) );
         _model.put( MARK_DOCUMENT_TYPE, documentType.getCode(  ) );
+        _model.put( MARK_BREADCRUMB_SPACES,
+            _documentSpacesService.getSpacePath( IntegerUtils.convert( _strCurrentSpaceId ), getUser(  ) ) );
 
         _model.put( MARK_CATEGORY, HtmlMarkup.of( getCategoryCreateForm( request ) ) );
 
@@ -743,6 +747,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         _model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         _model.put( MARK_LOCALE, getLocale(  ).getLanguage(  ) );
         _model.put( MARK_DOCUMENT, document );
+        _model.put( MARK_BREADCRUMB_SPACES, _documentSpacesService.getSpacePath( document.getSpaceId(  ), getUser(  ) ) );
 
         // Date Management
         _model.put( MARK_DATE_VALIDITY_BEGIN,
@@ -1600,6 +1605,7 @@ public class DocumentJspBean extends PluginAdminPageJspBean
 
        
         _model.put( MARK_DOCUMENT, document );
+        _model.put( MARK_BREADCRUMB_SPACES, _documentSpacesService.getSpacePath( document.getSpaceId(  ), getUser(  ) ) );
         _model.put( MARK_PREVIEW, HtmlMarkup.of( strPreview ) );
 
         Map<String, Object> model = new HashMap<>( );
@@ -1638,6 +1644,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
             return getManageDocuments( request );
         }
 
+        _model.put( MARK_DOCUMENT, document );
+        _model.put( MARK_BREADCRUMB_SPACES, _documentSpacesService.getSpacePath( document.getSpaceId(  ), getUser(  ) ) );
         _model.put( MARK_MOVE_DOCUMENT_FORM, HtmlMarkup.of( getMoveDocumentForm( request, document, false ) ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MOVE_DOCUMENT, getLocale(  ), _model );
