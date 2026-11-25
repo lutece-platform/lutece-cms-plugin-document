@@ -43,7 +43,7 @@
 		</div>
 	<#else>
 		<@tform method='post' name='fsubmit' id='fsubmit' action='jsp/admin/plugins/document/DoSelectPage.jsp'>
-			<@input type='hidden' name='input' value='${.data_model.input}' />
+			<@input type='hidden' name='input' value='${(.data_model.input)!}' />
 			<@input type='hidden' name='name' value='' />
 			<@input type='hidden' name='subcategory' value='${type_filter}' />
 			<div id="pages_tree" class="lutece-tree document-pages-tree" role="radiogroup" aria-label="#i18n{document.selector.page.pageChoice}">

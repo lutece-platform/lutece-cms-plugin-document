@@ -1,7 +1,7 @@
 <#-- Document selector of the portlet forms: the selected documents, and a paginated list of the documents of the portlet type to pick them from -->
 <#macro documentTitle document><#if document.validatedTitle?has_content>${document.validatedTitle}<#else>${( document.title!'' )}</#if></#macro>
 <#macro documentItem id='' type='' title='' sortable=multiple>
-<@listGroupItem class='d-flex align-items-center gap-2' params='data-document-item data-type="${type}"'>
+<@listGroupItem class='d-flex align-items-center gap-2' params={"data-document-item": true, "data-type": "${type}"}>
 	<#if sortable>
 	<span class="cursor-move text-muted" data-drag-handle title="#i18n{document.document_list_portlet_type.labelDragToReorder}"><@icon style='grip-vertical' /></span>
 	</#if>
@@ -9,10 +9,10 @@
 	<span class="flex-fill" data-document-title>${title}</span>
 	<@btnGroup size='sm'>
 		<#if sortable>
-		<@button size='sm' color='default' buttonIcon='arrow-up' title='#i18n{document.document_list_portlet_type.buttonMoveUp}' hideTitle=['all'] params='data-action="up"' />
-		<@button size='sm' color='default' buttonIcon='arrow-down' title='#i18n{document.document_list_portlet_type.buttonMoveDown}' hideTitle=['all'] params='data-action="down"' />
+		<@button size='sm' color='default' buttonIcon='arrow-up' title='#i18n{document.document_list_portlet_type.buttonMoveUp}' hideTitle=['all'] params={"data-action": "up"} />
+		<@button size='sm' color='default' buttonIcon='arrow-down' title='#i18n{document.document_list_portlet_type.buttonMoveDown}' hideTitle=['all'] params={"data-action": "down"} />
 		</#if>
-		<@button size='sm' color='danger' buttonIcon='x' title='#i18n{document.document_list_portlet_type.buttonRemove}' hideTitle=['all'] params='data-action="remove"' />
+		<@button size='sm' color='danger' buttonIcon='x' title='#i18n{document.document_list_portlet_type.buttonRemove}' hideTitle=['all'] params={"data-action": "remove"} />
 	</@btnGroup>
 </@listGroupItem>
 </#macro>
@@ -33,7 +33,7 @@
 	data-label-error="#i18n{document.portlet_document_browser.labelError}"
 	data-label-loading="#i18n{portal.util.labelLoading}">
 	<div class="p-2 border-bottom">
-		<@input type='search' name='document_search' id='document-search' placeHolder='#i18n{document.portlet_document_browser.labelFilter}' params='aria-label="#i18n{document.portlet_document_browser.labelFilter}" autocomplete="off"' />
+		<@input type='search' name='document_search' id='document-search' placeHolder='#i18n{document.portlet_document_browser.labelFilter}' params={"aria-label": "#i18n{document.portlet_document_browser.labelFilter}", "autocomplete": "off"} />
 	</div>
 	<@table class='table-vcenter card-table mb-0' hover=false>
 		<@tableHead>

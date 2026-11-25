@@ -1,9 +1,11 @@
 <#if move_document_form?has_content>
-<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#include "/admin/plugins/document/macro_document_admin.html" />
 <#assign bc><@documentBreadcrumb spaces=breadcrumb_spaces![] items=[ { 'label': document.title!, 'url': 'jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${document.id?c}' } ] current='#i18n{document.breadcrumb.move}' /></#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{document.move_document.title}' breadcrumb=bc />
+		<@documentPageHeader title='#i18n{document.move_document.title}' iconName='folder-symlink' breadcrumb=bc>
+			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId?c}' title='#i18n{document.preview_document.space}' buttonIcon='arrow-left' color='light' hideTitle=['xs','sm','md'] />
+		</@documentPageHeader>
 		${move_document_form}
 	</@pageColumn>
 </@pageContainer>

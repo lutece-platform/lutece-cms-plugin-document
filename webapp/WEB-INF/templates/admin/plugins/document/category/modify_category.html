@@ -1,38 +1,35 @@
-<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
-<#assign bc><@documentBreadcrumb section='categories' items=[ { 'label': categoryDisplay.category.name! } ] /></#assign>
+<#include "/admin/plugins/document/macro_document_admin.html" />
+<#assign category = categoryDisplay.category />
+<#assign bc><@documentBreadcrumb section='categories' items=[ { 'label': category.name! } ] /></#assign>
+<#assign backUrl = 'jsp/admin/plugins/document/ManageCategory.jsp' />
 <@pageContainer>
-    <@pageColumn>
-		<@pageHeader title='#i18n{document.modify_category.boxTitle}' breadcrumb=bc />
+	<@pageColumn>
+		<@documentPageHeader title='#i18n{document.modify_category.boxTitle} : ${category.name}' iconName='bookmark' color='green' breadcrumb=bc>
+			<@aButton href=backUrl title='#i18n{portal.util.labelBack}' buttonIcon='arrow-left' color='light' hideTitle=['xs','sm','md'] />
+		</@documentPageHeader>
+		<@messages errors=errors![] />
 		<@tform method='post' action='jsp/admin/plugins/document/DoModifyCategory.jsp' enctype='multipart/form-data' boxed=true>
-				<@input type='hidden' name='token' value='${token}' />
-			<@input type='hidden' name='category_id' value='${categoryDisplay.category.id}' />
-			<@formGroup labelFor='category_name' labelKey='#i18n{document.modify_category.labelName}' mandatory=true>
-				<@input type='text' id='category_name' name='category_name' maxlength=100 value=categoryDisplay.category.name />
+			<@input type='hidden' name='token' value='${token}' />
+			<@input type='hidden' name='category_id' value='${category.id?c}' />
+			<@formGroup labelFor='category_name' labelKey='#i18n{document.modify_category.labelName}' mandatory=true rows=2>
+				<@input type='text' id='category_name' name='category_name' maxlength=100 value=category.name mandatory=true />
 			</@formGroup>
-			<@formGroup labelFor='category_description' labelKey='#i18n{document.modify_category.labelDescription}' mandatory=true>
-				<@input type='text' id='category_description' name='category_description' value=categoryDisplay.category.description! maxlength=255 />
+			<@formGroup labelFor='category_description' labelKey='#i18n{document.modify_category.labelDescription}' mandatory=true rows=2>
+				<@input type='text' id='category_description' name='category_description' value=category.description! maxlength=255 mandatory=true />
 			</@formGroup>
-			<@formGroup labelFor='workgroup_key' labelKey='#i18n{document.modify_category.labelWorkgroup}'>
-				<#if categoryDisplay.category.workgroup?has_content > 
-					<@select name='workgroup_key' items=user_workgroup_list default_value=categoryDisplay.category.workgroup />
-				<#else>
-					<@select name='workgroup_key' items=user_workgroup_list default_value=0 />
+			<@formGroup labelFor='workgroup_key' labelKey='#i18n{document.modify_category.labelWorkgroup}' rows=2>
+				<@select name='workgroup_key' id='workgroup_key' items=user_workgroup_list default_value=( category.workgroup?has_content )?then( category.workgroup, '0' ) />
+			</@formGroup>
+			<@formGroup labelFor='category_icon' labelKey='#i18n{document.modify_category.labelIcon}' rows=2>
+				<#if categoryDisplay.iconUrl?has_content>
+				<@div class='mb-2'><@img url=categoryDisplay.iconUrl alt='#i18n{document.modify_category.altIcon}' class='img-thumbnail' /></@div>
 				</#if>
-			</@formGroup>
-			<@formGroup labelFor='category_icon' labelKey='#i18n{document.modify_category.labelIcon}'>
-				<@staticText>
-				<#if categoryDisplay.iconUrl??>
-					<@img url=categoryDisplay.iconUrl! alt='#i18n{document.modify_category.altIcon}' class='img-thumbnail' />
-				</#if>
-				</@staticText>
 				<@input type='file' id='category_icon' name='category_icon' />
+				<@checkBox orientation='switch' labelKey='#i18n{document.modify_category.labelUpdateIcon}' name='update_icon' id='update_icon' value='on' wrapperClass='mt-2' />
 			</@formGroup>
-			<@formGroup>
-				<@checkBox labelFor='update_icon' labelKey='#i18n{document.modify_category.labelUpdateIcon}' name='update_icon' id='update_icon' />
-			</@formGroup>
-			<@formGroup>
-				<@button type='submit' title='#i18n{document.modify_category.buttonLabelModify}' buttonIcon='device-floppy' />
-				<@aButton href='jsp/admin/plugins/document/ManageCategory.jsp?plugin_name=document' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
+			<@formGroup rows=2>
+				<@button type='submit' title='#i18n{document.modify_category.buttonLabelModify}' buttonIcon='device-floppy' color='primary' />
+				<@aButton href=backUrl title='#i18n{portal.util.labelCancel}' buttonIcon='x' color='light' />
 			</@formGroup>
 		</@tform>
 	</@pageColumn>

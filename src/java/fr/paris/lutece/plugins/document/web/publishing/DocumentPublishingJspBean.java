@@ -167,6 +167,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
     private static final String PROPERTY_CREATE_AUTO_PUBLICATION = "document.portlet.publishing.pageTitle";
     private static final String PROPERTY_DISPLAY_LATEST_PORTLETS = "document.manage_document_publishing.labelDisplayLatestPortlets";
     private static final String MARK_BREADCRUMB_SPACES = "breadcrumb_spaces";
+    private static final String TEMPLATE_NOT_FOUND = "admin/plugins/document/not_found.html";
     private static final String TEMPLATE_DOCUMENT_PUBLISHING = "/admin/plugins/document/publishing/manage_document_publishing.html";
     private static final String TEMPLATE_PORTLET_PUBLISHING = "/admin/plugins/document/publishing/manage_portlet_publishing.html";
     private static final String TEMPLATE_CREATE_AUTO_PUBLICATION = "/admin/plugins/document/publishing/create_auto_publication.html";
@@ -233,6 +234,10 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         String strDocumentId = request.getParameter( PARAMETER_DOCUMENT_ID );
         Portlet portlet;
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
+        if ( document != null )
+        {
+            document.setLocale( getLocale(  ) );
+        }
 
         if ( ( document != null ) &&
         		_documentService.isAuthorizedAdminDocument( document.getSpaceId(  ),
@@ -626,6 +631,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
 
         Portlet portlet = PortletHome.findByPrimaryKey( nPortletId );
 
+        if ( portlet == null )
+        {
+            return getAdminPage( AppTemplateService.getTemplate( TEMPLATE_NOT_FOUND, getLocale(  ), _model ).getHtml(  ) );
+        }
+
         _model.put( MARK_PORTLET, portlet );
 
         Page page = PageHome.findByPrimaryKey( portlet.getPageId(  ) );
@@ -878,6 +888,11 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         setPageTitleProperty( PROPERTY_CREATE_AUTO_PUBLICATION );
 
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
+
+        if ( PortletHome.findByPrimaryKey( IntegerUtils.convert( strPortletId ) ) == null )
+        {
+            return getAdminPage( AppTemplateService.getTemplate( TEMPLATE_NOT_FOUND, getLocale(  ), _model ).getHtml(  ) );
+        }
 
         _model.put( MARK_PORTLET_ID, strPortletId );
 
@@ -1251,6 +1266,7 @@ public class DocumentPublishingJspBean extends PluginAdminPageJspBean
         }
 
         model.put( MARK_LIST_AUTO_PUBLICATION, listModels );
+        model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PORTLET_PUBLISHING, getLocale(  ), model );
 

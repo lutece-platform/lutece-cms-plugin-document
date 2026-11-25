@@ -1,12 +1,14 @@
 <#-- The plugin-extend actions of the document (extendable_resource_actions_list.html of the core), listed in the Extensions tab -->
-<#-- a markup value since the auto-escaping: compared as a string, printed as is -->
-<#assign extendActions = extendableResourceActionsHtml! />
-<#assign hasExtend = extendActions?is_markup_output && extendActions?markup_string?trim?has_content />
-<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#assign extendActions = extendableResourceActionsHtml!'' />
+<#assign hasExtend = ( extendActions?is_markup_output?then( extendActions?markup_string, extendActions ) )?trim?has_content />
+<#include "/admin/plugins/document/macro_document_admin.html" />
 <#assign bc><@documentBreadcrumb spaces=breadcrumb_spaces![] items=[ { 'label': document.title!, 'url': 'jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${document.id?c}' } ] current='#i18n{document.breadcrumb.modify}' /></#assign>
 <@pageContainer>
     <@pageColumn>
-		<@pageHeader title='#i18n{document.modify_document.title}' breadcrumb=bc />
+		<@documentPageHeader title='#i18n{document.modify_document.title}' iconName='pencil' breadcrumb=bc>
+			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId?c}' title='#i18n{document.preview_document.space}' buttonIcon='arrow-left' color='light' hideTitle=['xs','sm','md'] />
+			<@documentActionsMenu document=document exclude=[ 2, 9 ] />
+		</@documentPageHeader>
 		<@tform method='post' action='jsp/admin/plugins/document/DoModifyDocument.jsp' enctype='multipart/form-data'>
 			<@input type='hidden' name='token' value='${token}' />
 			<@input type='hidden' name='id_document' value='${document.id}' />
@@ -15,7 +17,7 @@
 				<@columns xl=8 class='document-main-column'>
 					<@box>
 						<@boxHeader title=document.title boxTools=true>
-							<@button type='button' class='document-properties-show' color='light' size='sm' buttonIcon='layout-sidebar-right-expand' title='#i18n{document.create_document.buttonShowProperties}' hideTitle=['all'] params='aria-controls="documentPropertiesColumn" aria-expanded="false"' />
+							<@button type='button' class='document-properties-show' color='light' size='sm' buttonIcon='layout-sidebar-right-expand' title='#i18n{document.create_document.buttonShowProperties}' hideTitle=['all'] params={"aria-controls": "documentPropertiesColumn", "aria-expanded": "false"} />
 						</@boxHeader>
 						<@boxBody>
 							<@formGroup labelFor='document_title' labelKey='#i18n{document.modify_document.labelDocumentTitle}' helpKey='#i18n{document.modify_document.helpDocumentTitle}' mandatory=true rows=2>
@@ -46,7 +48,7 @@
 							<#if hasExtend>
 							<@tabLink href='#documentExtensions' tabIcon='puzzle' title='#i18n{document.modify_document.tabExtensions}' />
 							</#if>
-							<@tabLink href='' tabClass='ms-auto'><@button type='button' class='document-properties-hide' color='light' size='sm' buttonIcon='layout-sidebar-right-collapse' title='#i18n{document.create_document.buttonHideProperties}' hideTitle=['all'] params='aria-controls="documentPropertiesColumn" aria-expanded="true"' /></@tabLink>
+							<@tabLink href='' tabClass='ms-auto'><@button type='button' class='document-properties-hide' color='light' size='sm' buttonIcon='layout-sidebar-right-collapse' title='#i18n{document.create_document.buttonHideProperties}' hideTitle=['all'] params={"aria-controls": "documentPropertiesColumn", "aria-expanded": "true"} /></@tabLink>
 						</@tabList>
 						<@tabContent>
 							<@tabPanel id='advProperties' active=true>

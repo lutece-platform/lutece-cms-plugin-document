@@ -1,63 +1,23 @@
-<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#include "/admin/plugins/document/macro_document_admin.html" />
 <#assign bc><@documentBreadcrumb spaces=breadcrumb_spaces![] items=[ { 'label': document.title! } ] /></#assign>
+<#assign modifyUrl = documentModifyUrl( document ) />
 <@pageContainer>
-    <@pageColumn>
-		<@pageHeader title='#i18n{document.attributeType.internallink.buttonShowPreview} : ${document.title}' class='mb-3' breadcrumb=bc>
-		<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder'  />
-		<@button type='button' class='btn-action' title='#i18n{document.manage_documents.labelActions}' hideTitle=['all'] buttonIcon='dots-vertical fs-2 ms-3' dropdownMenu=true>
-		<#list document.actions?sort_by("idAction") as action>
-			<#if action.url?has_content>
-				<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}&token=${token}' class='dropdown-item'><@icon style='${action.iconUrl}' title=action.description />${action.name}</@link>
+	<@pageColumn>
+		<@documentPageHeader title='#i18n{document.attributeType.internallink.buttonShowPreview} : ${document.title}' iconName='eye' breadcrumb=bc>
+			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId?c}' title='#i18n{document.preview_document.space}' buttonIcon='arrow-left' color='light' hideTitle=['xs','sm','md'] class='me-1' />
+			<#if modifyUrl?has_content>
+				<@aButton href=modifyUrl title='#i18n{portal.util.labelModify}' buttonIcon='pencil' color='primary' hideTitle=['xs','sm','md'] />
 			</#if>
-		</#list>
-		</@button>
-		</@pageHeader>
+			<@documentActionsMenu document=document exclude=[ 15 ] />
+		</@documentPageHeader>
 		<@row>
-			<@columns xl=3>
-				<@box id='document_info'>
-					<@boxHeader title='#${document.id} ${document.title}' />
-					<@boxBody>
-						<dl>
-							<dt>#i18n{document.preview_document.columnTitleType}</dt>
-							<dd>${document.type}</dd>
-							<#if document.state?has_content>
-							<dt>#i18n{document.preview_document.columnTitleState}</dt>
-							<dd>${document.state}</dd>
-							</#if> 
-							<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
-							<dd>${document.dateCreation}</dd> 
-							<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
-							<dd>${document.dateModification}</dd>
-							<dt>#i18n{document.preview_document.columnTitleDateValidity}</dt>
-							<#assign dateBegin="">
-							<#if document.dateValidityBegin?has_content>
-							<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
-							</#if>    
-							<#assign dateEnd="">
-							<#if document.dateValidityEnd?has_content>
-							<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
-							</#if>                        
-							<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
-							<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
-							<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
-							<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
-							<#if dateBegin?has_content && dateEnd?has_content>
-								<dd><@icon style='calendar' /> ${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</dd>
-								<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
-								<@tag color='warning'>#i18n{document.preview_document.labelDateValidityNotDefined}</@tag>
-								<#elseif dateBegin?has_content && !( dateEnd?has_content )>
-								<dd><@icon style='calendar' /> ${labelBeginSince} ${dateBegin}</dd>
-								<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
-								<dd><@icon style='calendar' /> ${labelEndUntil} ${dateEnd}</dd>
-							</#if> 
-						</dl>
-					</@boxBody>
-				</@box>
+			<@columns lg=4 xl=3>
+				<@documentInfoCard document=document />
 			</@columns>
-			<@columns xl=9>
+			<@columns lg=8 xl=9>
 				<@box>
 					<@boxBody>
-						${preview}
+						${preview!}
 					</@boxBody>
 				</@box>
 			</@columns>

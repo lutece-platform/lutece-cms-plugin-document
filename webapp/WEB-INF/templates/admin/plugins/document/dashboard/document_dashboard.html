@@ -3,7 +3,7 @@
 	the correction as icons (when the workflow offers them), every action of the workflow in the menu
 -->
 <#macro documentDashboardRow document>
-<#local documentStatus><#if document.publishedStatus=0>#i18n{document.dashboard.PublishedStatus}<#else>#i18n{document.dashboard.UnPublishedStatus}</#if></#local>
+<#local documentStatus><#if document.publishedStatus=0>#i18n{document.dashboard.PublishedStatus}<#else>#i18n{document.dashboard.UnPublishedStatus}</#if></#local><#local documentStatus = documentStatus?markup_string />
 <div class="list-group list-group-flush">
 	<div class="list-group-item">
 		<div class="row align-items-center g-2">

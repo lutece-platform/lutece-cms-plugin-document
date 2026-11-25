@@ -1,25 +1,29 @@
-<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#include "/admin/plugins/document/macro_document_admin.html" />
 <#assign bc><@documentBreadcrumb section='categories' current='#i18n{document.breadcrumb.create}' /></#assign>
+<#assign backUrl = 'jsp/admin/plugins/document/ManageCategory.jsp' />
 <@pageContainer>
-    <@pageColumn>
-		<@pageHeader title='#i18n{document.create_category.boxTitle}' breadcrumb=bc />
+	<@pageColumn>
+		<@documentPageHeader title='#i18n{document.create_category.boxTitle}' iconName='bookmark-plus' color='green' breadcrumb=bc>
+			<@aButton href=backUrl title='#i18n{portal.util.labelBack}' buttonIcon='arrow-left' color='light' hideTitle=['xs','sm','md'] />
+		</@documentPageHeader>
+		<@messages errors=errors![] />
 		<@tform method='post' action='jsp/admin/plugins/document/DoCreateCategory.jsp' enctype='multipart/form-data' boxed=true>
-				<@input type='hidden' name='token' value='${token}' />
-			<@formGroup labelFor='category_name' labelKey='#i18n{document.create_category.labelName}' mandatory=true>
-				<@input type='text' id='category_name' name='category_name' maxlength=100 />
+			<@input type='hidden' name='token' value='${token}' />
+			<@formGroup labelFor='category_name' labelKey='#i18n{document.create_category.labelName}' mandatory=true rows=2>
+				<@input type='text' id='category_name' name='category_name' maxlength=100 mandatory=true />
 			</@formGroup>
-			<@formGroup labelFor='category_description' labelKey='#i18n{document.create_category.labelDescription}' mandatory=true>
-				<@input type='text' id='category_description' name='category_description' value='' maxlength=255 />
+			<@formGroup labelFor='category_description' labelKey='#i18n{document.create_category.labelDescription}' mandatory=true rows=2>
+				<@input type='text' id='category_description' name='category_description' maxlength=255 mandatory=true />
 			</@formGroup>
-			<@formGroup labelFor='workgroup_key' labelKey='#i18n{document.create_category.labelWorkgroup}'>
-				<@select name='workgroup_key' items=user_workgroup_list default_value='${selected_workgroup}' />
+			<@formGroup labelFor='workgroup_key' labelKey='#i18n{document.create_category.labelWorkgroup}' rows=2>
+				<@select name='workgroup_key' id='workgroup_key' items=user_workgroup_list default_value='${selected_workgroup!}' />
 			</@formGroup>
-				<@formGroup labelFor='category_icon' labelKey='#i18n{document.create_category.labelIcon}'>
-				<@input type='file' id='category_icon' name='category_icon' value='' />
+			<@formGroup labelFor='category_icon' labelKey='#i18n{document.create_category.labelIcon}' rows=2>
+				<@input type='file' id='category_icon' name='category_icon' />
 			</@formGroup>
-			<@formGroup>
-				<@button type='submit' title='#i18n{document.create_category.buttonLabelCreate}' buttonIcon='device-floppy' />
-				<@aButton href='jsp/admin/plugins/document/ManageCategory.jsp?plugin_name=document' title='#i18n{portal.admin.message.buttonCancel}' buttonIcon='x' color='default' />
+			<@formGroup rows=2>
+				<@button type='submit' title='#i18n{document.create_category.buttonLabelCreate}' buttonIcon='device-floppy' color='primary' />
+				<@aButton href=backUrl title='#i18n{portal.util.labelCancel}' buttonIcon='x' color='light' />
 			</@formGroup>
 		</@tform>
 	</@pageColumn>

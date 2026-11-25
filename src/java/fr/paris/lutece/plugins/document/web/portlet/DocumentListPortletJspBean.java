@@ -87,6 +87,7 @@ public class DocumentListPortletJspBean extends PortletJspBean
     private static final String COMBO_DOCUMENT_TYPE_LIST = "@combo_document_type@";
     private static final String COMBO_DOCUMENT_CATEGORY_LIST = "@combo_category_document@";
     private static final String COMBO_DOCUMENT_LIST = "@combo_document@";
+    private static final String TEMPLATE_NOT_FOUND = "admin/plugins/document/not_found.html";
     private static final String TEMPLATE_DOCUMENT_TYPE_LIST = "admin/plugins/document/portlet/document_type_list.html";
     private static final String TEMPLATE_CATEGORY_DOCUMENT_LIST = "admin/plugins/document/portlet/category_document_list.html";
     private static final String MESSAGE_ERROR_DOCUMENTS_MUST_BE_UNASSIGNED = "document.message.errorDocumentsMustBeUnassigned";
@@ -151,6 +152,11 @@ public class DocumentListPortletJspBean extends PortletJspBean
         int nPortletId = IntegerUtils.convert( strPortletId );
         AdminUser user = getUser(  );
         DocumentListPortlet portlet = (DocumentListPortlet) PortletHome.findByPrimaryKey( nPortletId );
+
+        if ( portlet == null )
+        {
+            return AppTemplateService.getTemplate( TEMPLATE_NOT_FOUND, getLocale(  ) ).getHtml(  );
+        }
 
         HtmlTemplate template = getModifyTemplate( portlet );
         // Format the specific modify form (composed of the list of articles and buttons to modify the order of the articles)

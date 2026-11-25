@@ -1,25 +1,43 @@
+<#include "/admin/plugins/document/macro_document_admin.html" />
+<#assign bc><@documentBreadcrumb section='categories' /></#assign>
+<#assign createUrl = 'jsp/admin/plugins/document/CreateCategory.jsp' />
 <@pageContainer>
-    <@pageColumn>
-		<@pageHeader title='#i18n{document.manage_category.boxTitle}'>
-			<@tform method='post' action='jsp/admin/plugins/document/CreateCategory.jsp'>
-				<@button type='submit' title='#i18n{document.manage_category.buttonLabelCreate}' buttonIcon='plus' hideTitle=['xs','sm'] />
-			</@tform>
-		</@pageHeader>
-		<@manageFeature>
-		<#if category_list?has_content >
-			<#list category_list as categoryDisplay>
-			<@manageFeatureItem>
-				<@manageFeatureItemColumn auto=true>
-					<#if categoryDisplay.iconUrl??><@img class='img-thumbnail thumbnail-sm me-5' url=categoryDisplay.iconUrl! alt='' /></#if>
-					${(categoryDisplay.category).name} : ${(categoryDisplay.category).description!} - #i18n{document.manage_category.columnTitleCountLinkedDocuments} : ${categoryDisplay.countLinkedDocuments!}
-				</@manageFeatureItemColumn>
-				<@manageFeatureItemColumn align='end'>
-					<@aButton href='jsp/admin/plugins/document/ModifyCategory.jsp?category_id=${(categoryDisplay.category).id}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' hideTitle=['all'] params={"aria-label": "#i18n{portal.util.labelModify} ${(categoryDisplay.category).name}"} />
-					<@aButton href='jsp/admin/plugins/document/RemoveCategory.jsp?category_id=${(categoryDisplay.category).id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' hideTitle=['all'] params={"aria-label": "#i18n{portal.util.labelDelete} ${(categoryDisplay.category).name}"} />
-				</@manageFeatureItemColumn>
-			</@manageFeatureItem>
-			</#list>
+	<@pageColumn>
+		<@documentPageHeader title='#i18n{document.manage_category.boxTitle}' iconName='bookmarks' color='green' breadcrumb=bc>
+			<@aButton href=createUrl title='#i18n{document.manage_category.buttonLabelCreate}' buttonIcon='plus' color='primary' hideTitle=['xs','sm','md'] />
+		</@documentPageHeader>
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
+		<#if ( category_list![] )?has_content>
+			<@manageFeature layout='list' id='categories'>
+				<#list category_list as categoryDisplay>
+				<#assign category = categoryDisplay.category />
+				<#assign modifyUrl = 'jsp/admin/plugins/document/ModifyCategory.jsp?category_id=${category.id?c}' />
+				<@manageFeatureItem id='category_${category.id?c}'>
+					<@manageFeatureItemColumn class='d-flex align-items-center gap-2 text-truncate'>
+						<#if categoryDisplay.iconUrl?has_content>
+						<span class="avatar avatar-sm" aria-hidden="true"><@img url=categoryDisplay.iconUrl alt='' class='object-fit-contain w-100 h-100' /></span>
+						<#else>
+						<span class="avatar avatar-sm bg-green-lt" aria-hidden="true"><@icon style='bookmark' /></span>
+						</#if>
+						<@div class='text-truncate'>
+							<@link href=modifyUrl class='text-reset fw-semibold' title='#i18n{portal.util.labelModify} ${category.name}'>${category.name}</@link>
+							<#if category.description?has_content><@div class='text-secondary small text-truncate'>${category.description}</@div></#if>
+						</@div>
+					</@manageFeatureItemColumn>
+					<@manageFeatureItemColumn auto=true align='end' class='d-flex align-items-center gap-2'>
+						<@tag color='' class='bg-green-lt' tagIcon='files' title='#i18n{document.manage_category.columnTitleCountLinkedDocuments}'>${categoryDisplay.countLinkedDocuments!0}<@span class='visually-hidden'> #i18n{document.manage_category.columnTitleCountLinkedDocuments}</@span></@tag>
+						<@div class='btn-actions'>
+							<@aButton href=modifyUrl style='btn-action' color='' buttonIcon='pencil' title='#i18n{portal.util.labelModify} ${category.name}' hideTitle=['all'] />
+							<@aButton href='jsp/admin/plugins/document/RemoveCategory.jsp?category_id=${category.id?c}' style='btn-action text-danger' color='' buttonIcon='trash' title='#i18n{portal.util.labelDelete} ${category.name}' hideTitle=['all'] />
+						</@div>
+					</@manageFeatureItemColumn>
+				</@manageFeatureItem>
+				</#list>
+			</@manageFeature>
+		<#else>
+			<@card>
+				<@empty title='#i18n{portal.util.labelNoItem}' iconName='bookmark-off' subtitle=' ' actionTitle='#i18n{document.manage_category.buttonLabelCreate}' actionUrl=createUrl />
+			</@card>
 		</#if>
-		</@manageFeature>
 	</@pageColumn>
 </@pageContainer>

@@ -226,7 +226,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 	{
 		setPageTitleProperty( PROPERTY_PAGE_TITLE_CREATE_DOCUMENT_TYPE );
 
-		_model.put( MARK_METADATA_HANDLERS_LIST, MetadataService.getMetadataHandlersList( ) );
+		_model.put( MARK_METADATA_HANDLERS_LIST, MetadataService.getMetadataHandlersList( getLocale( ) ) );
 
 		_model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, SECURITY_TOKEN_ACTION ) );
 		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_CREATE_DOCUMENT_TYPE, getLocale( ), _model );
@@ -311,7 +311,7 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 
 		_model.put( MARK_DOCUMENT_TYPE, documentType );
 		_model.put( MARK_THUMBNAIL_ATTRIBUTES_LIST, getThumbnailAttributesList( documentType ) );
-		_model.put( MARK_METADATA_HANDLERS_LIST, MetadataService.getMetadataHandlersList( ) );
+		_model.put( MARK_METADATA_HANDLERS_LIST, MetadataService.getMetadataHandlersList( getLocale( ) ) );
 		_model.put( MARK_ATTRIBUTE_TYPES_LIST, listAttributeTypes );
 		_model.put( MARK_DEFAULT_ADMIN_TEMPLATE, _documentTemplateService.getDefaultTemplateSource( true ) );
 		_model.put( MARK_DEFAULT_CONTENT_TEMPLATE, _documentTemplateService.getDefaultTemplateSource( false ) );
@@ -389,6 +389,11 @@ public class DocumentTypeJspBean extends PluginAdminPageJspBean
 		String strAttributeTypeCode = request.getParameter( PARAMETER_ATTRIBUTE_TYPE_CODE );
 		AttributeManager manager = _attributeService.getManager( strAttributeTypeCode );
 		_strDocumentTypeCode = request.getParameter( PARAMETER_DOCUMENT_TYPE_CODE );
+
+		if( manager == null || DocumentTypeHome.findByPrimaryKey( _strDocumentTypeCode ) == null )
+		{
+			return getManageDocumentTypes( request );
+		}
 
 		_model.put( MARK_ATTRIBUTE_TYPE_CODE, strAttributeTypeCode );
 		_model.put( MARK_DOCUMENT_TYPE, DocumentTypeHome.findByPrimaryKey( _strDocumentTypeCode ) );

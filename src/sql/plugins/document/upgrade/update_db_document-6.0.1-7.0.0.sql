@@ -135,3 +135,8 @@ UPDATE document_type SET default_thumbnail_url = REPLACE( default_thumbnail_url,
 -- preconditions onFail:MARK_RAN onError:WARN
 -- comment The default thumbnail of the pdf document type pointed to an image that the plugin no longer ships
 UPDATE document_type SET default_thumbnail_url = 'themes/shared/plugins/document/images/filetypes/file-type-pdf.svg' WHERE default_thumbnail_url = 'images/local/skin/plugins/document/filetypes/pdf.png';
+
+-- changeset document:update_db_document-6.0.1-7.0.0.sql-rev11.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- comment The action URLs were stored with their ampersands escaped (&amp;): the templates escape on output now, which wrote &amp;amp; and lost the id_document parameter
+UPDATE document_workflow_action SET action_url = REPLACE( action_url, '&amp;', '&' ) WHERE action_url LIKE '%&amp;%';

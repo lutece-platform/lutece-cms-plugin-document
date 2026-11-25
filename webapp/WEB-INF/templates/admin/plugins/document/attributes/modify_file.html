@@ -20,14 +20,14 @@
 				<#if hasValue>
 				<@div id='${attrCode}_current' class='card mb-0'>
 					<#assign imgUrl><@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl=resourceUrl + "&nocache" /></#assign>
-					<@link href='${resourceUrl}&nocache' target='_blank' class='d-flex align-items-center justify-content-center bg-light rounded-top' params='style="height:10rem;width:14rem"'>
+					<@link href='${resourceUrl}&nocache' target='_blank' class='d-flex align-items-center justify-content-center bg-light rounded-top document-image-frame'>
 						<#if attribute.valueContentType?starts_with( 'image/' )>
-						<@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='mw-100 mh-100' params='style="object-fit:contain" loading="lazy"' />
+						<@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='mw-100 mh-100 object-fit-contain' params={"loading": "lazy"} />
 						<#else>
-						<@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='' params='style="height:4rem"' />
+						<@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='document-file-icon' />
 						</#if>
 					</@link>
-					<@div class='card-body p-2' params='style="width:14rem"'>
+					<@div class='card-body p-2 document-image-frame-body'>
 						<@div class='small fw-bold'>#i18n{document.attributeType.file.labelCurrent}</@div>
 						<@link href='${resourceUrl}&nocache' target='_blank' class='small d-block text-truncate' title=attribute.textValue>${attribute.textValue}</@link>
 						<@div class='small text-muted'>${attribute.valueContentType!}</@div>

@@ -18,9 +18,9 @@
 				<@checkBox orientation='switch' wrapperClass='mb-0' labelKey='#i18n{document.attributeType.image.resize}' name='${attrCode}_croppable' id='${attrCode}_crop' value='1' />
 			</@div>
 			<@div id='${attrCode}_crop_group' class='mt-2 d-none'>
-				<@inputGroup params='style="max-width:16rem"'>
+				<@inputGroup class='document-image-input-group'>
 					<@inputGroupItem type='text'><@icon style='arrows-horizontal' /></@inputGroupItem>
-					<@input type='number' name='${attrCode}_width' id='${attrCode}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' params='min="1" aria-label="#i18n{document.attributeType.image.width}"' disabled=true />
+					<@input type='number' name='${attrCode}_width' id='${attrCode}_width' value='' placeHolder='#i18n{document.attributeType.image.width}' params={"min": "1", "aria-label": "#i18n{document.attributeType.image.width}"} disabled=true />
 					<@inputGroupItem type='text'>px</@inputGroupItem>
 				</@inputGroup>
 			</@div>
@@ -29,22 +29,22 @@
 			<@div id='${attrCode}_preview' class='d-flex flex-wrap gap-3'>
 				<#if hasValue>
 					<@div id='${attrCode}_current' class='card mb-0'>
-						<@link href='${resourceUrl}&nocache' target='_blank' class='d-flex align-items-center justify-content-center bg-light rounded-top' params='style="height:10rem;width:14rem"'>
+						<@link href='${resourceUrl}&nocache' target='_blank' class='d-flex align-items-center justify-content-center bg-light rounded-top document-image-frame'>
 							<#assign imgUrl><@getDocumentThumbnailUrlFromMimeType mimeType=attribute.valueContentType fileUrl=resourceUrl + "&nocache" /></#assign>
-							<@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='mw-100 mh-100' params='style="object-fit:contain" loading="lazy"' />
+							<@img url=imgUrl alt=attribute.textValue title=attribute.textValue class='mw-100 mh-100 object-fit-contain' params={"loading": "lazy"} />
 						</@link>
-						<@div class='card-body p-2' params='style="width:14rem"'>
+						<@div class='card-body p-2 document-image-frame-body'>
 							<@div class='small fw-bold'>#i18n{document.attributeType.image.labelCurrent}</@div>
-							<@div class='small text-truncate' params='title="${attribute.textValue}"'>${attribute.textValue}</@div>
+							<@div class='small text-truncate' params={"title": "${attribute.textValue}"}>${attribute.textValue}</@div>
 							<@div class='small text-muted' id='${attrCode}_current_size'>${attribute.valueContentType!}</@div>
 						</@div>
 					</@div>
 				</#if>
 				<@div id='${attrCode}_new' class='card mb-0 d-none'>
-					<@div class='d-flex align-items-center justify-content-center bg-light rounded-top' params='style="height:10rem;width:14rem"'>
-						<@img id='${attrCode}_new_img' alt='' class='mw-100 mh-100' params='style="object-fit:contain"' />
+					<@div class='d-flex align-items-center justify-content-center bg-light rounded-top document-image-frame'>
+						<@img id='${attrCode}_new_img' alt='' class='mw-100 mh-100 object-fit-contain' />
 					</@div>
-					<@div class='card-body p-2' params='style="width:14rem"'>
+					<@div class='card-body p-2 document-image-frame-body'>
 						<@div class='small fw-bold text-primary'>#i18n{document.attributeType.image.labelNew}</@div>
 						<@div class='small text-truncate' id='${attrCode}_new_name'></@div>
 						<@div class='small text-muted' id='${attrCode}_new_size'></@div>

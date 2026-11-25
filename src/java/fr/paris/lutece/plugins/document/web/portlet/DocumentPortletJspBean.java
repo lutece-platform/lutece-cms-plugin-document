@@ -93,6 +93,7 @@ public class DocumentPortletJspBean extends PortletJspBean
     private static final String MESSAGE_ERROR_DOCUMENT_NOT_PUBLISHABLE = "document.message.errorDocumentNotPublishable";
     private static final String COMBO_DOCUMENT_TYPE_LIST = "@combo_document_type@";
     private static final String COMBO_DOCUMENT_CATEGORY_LIST = "@combo_category_document@";
+    private static final String TEMPLATE_NOT_FOUND = "admin/plugins/document/not_found.html";
     private static final String TEMPLATE_DOCUMENT_TYPE_LIST = "admin/plugins/document/portlet/document_type_list.html";
     private static final String TEMPLATE_CATEGORY_DOCUMENT_LIST = "admin/plugins/document/portlet/category_document_list.html";
     private static final String MESSAGE_ERROR_DOCUMENTS_MUST_BE_UNASSIGNED = "document.message.errorDocumentsMustBeUnassigned";
@@ -153,6 +154,11 @@ public class DocumentPortletJspBean extends PortletJspBean
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = IntegerUtils.convert( strPortletId );
         DocumentPortlet portlet = (DocumentPortlet) PortletHome.findByPrimaryKey( nPortletId );
+
+        if ( portlet == null )
+        {
+            return AppTemplateService.getTemplate( TEMPLATE_NOT_FOUND, getLocale(  ) ).getHtml(  );
+        }
         AdminUser user = getUser(  );
 
         HtmlTemplate template = getModifyTemplate( portlet );

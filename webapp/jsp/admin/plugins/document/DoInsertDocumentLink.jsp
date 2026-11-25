@@ -2,4 +2,4 @@
 
 <%@page import="fr.paris.lutece.plugins.document.web.DocumentServiceJspBean"%>
 
-${ documentServiceJspBean.doInsertUrl( pageContext.request ) }
+${ pageContext.response.sendRedirect( documentServiceJspBean.doInsertUrl( pageContext.request ) ) }

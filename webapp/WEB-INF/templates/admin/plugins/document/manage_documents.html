@@ -1,253 +1,224 @@
-<#-- Values shared by the title and the actions menu of a document: the modify link and the move modal attributes -->
-<#macro documentRefs document>
-<#assign documentModifyUrl = '' />
-<#list document.actions?sort_by("idAction") as action>
-	<#-- 2: modify, 9: change a published document -->
-	<#if action.url?has_content && ( action.idAction == 2 || action.idAction == 9 )>
-		<#assign documentModifyUrl = '${action.url}id_document=${document.id}&id_action=${action.idAction}&token=${token}' />
-		<#break>
-	</#if>
-</#list>
-<#assign moveDocumentParams><#outputformat "HTML">data-bs-toggle="modal" data-bs-target="#moveDocumentModal" data-document-id="${document.id?c}" data-document-title="${document.title}" data-document-type="${document.codeDocumentType}" data-space-id="${document.spaceId?c}"</#outputformat></#assign>
-</#macro>
+<#include "/admin/plugins/document/macro_document_admin.html" />
+<#assign bc><@documentBreadcrumb spaces=breadcrumb_spaces![] /></#assign>
+<#assign hasDocuments = ( documents_list![] )?has_content />
+<#assign filterActive = ( default_document_type!'-1' ) != '-1' || ( default_state!'-1' ) != '-1' />
+<#assign createTypes = ( space?has_content && space.documentCreationAllowed && ( document_types_list![] )?has_content )?then( document_types_list, [] ) />
+<#assign files2docs = ( is_files2docs_plugin_active!false ) />
+<#-- Attributes of the link that opens the move modal of a document, instead of the move page -->
+<#function moveParams document>
+<#if !move_document_form?has_content><#return {} /></#if>
+<#return { "data-bs-toggle": "modal", "data-bs-target": "#moveDocumentModal", "data-document-id": document.id?c, "data-document-title": document.title, "data-document-type": document.codeDocumentType, "data-space-id": document.spaceId?c } />
+</#function>
 <#-- Title of a document, a link to its modification when the user may modify it -->
 <#macro documentTitle document>
-<#if documentModifyUrl != ''>
-	<@link href=documentModifyUrl class='text-reset fw-bold d-block text-truncate' title='#i18n{portal.util.labelModify} ${document.title}'>${document.title}</@link>
+<#local modifyUrl = documentModifyUrl( document ) />
+<#if modifyUrl?has_content>
+	<@link href=modifyUrl class='text-reset fw-semibold text-truncate' title='#i18n{portal.util.labelModify} ${document.title}'><strong class='fw-semibold'>${document.title}</strong></@link>
 <#else>
-	<strong class="d-block text-truncate" title="${document.title}">${document.title}</strong>
+	<strong class="fw-semibold text-truncate" title="${document.title}">${document.title}</strong>
 </#if>
 </#macro>
-<#-- Workflow state and publication of a document, as soft badges -->
-<#macro documentStatus document>
-<#-- 1 writing, 2 waiting for approval, 3 approved, 4 rejected, 5 archived, 6 in change, 7 waiting for changes approval -->
-<#assign stateColors = { '1': 'azure', '2': 'yellow', '3': 'green', '4': 'red', '5': 'secondary', '6': 'blue', '7': 'yellow' } />
-<@div class='badge-list flex-nowrap'>
-	<@tag color='' class='bg-${stateColors[document.stateId?c]!"secondary"}-lt' title='#i18n{document.manage_documents.labelState}'>${document.state}</@tag>
-	<#if document.publishedStatus = 0>
-		<@tag color='' class='bg-green-lt' tagIcon='world'>#i18n{document.manage_documents.PublishedStatus}</@tag>
-	<#else>
-		<@tag color='' class='bg-secondary-lt' tagIcon='world-off'>#i18n{document.manage_documents.UnPublishedStatus}</@tag>
-	</#if>
-</@div>
-</#macro>
-<#-- Actions menu of a document -->
-<#macro documentActions document>
-<@button type='button' id='document-actions-${document.id?c}' buttonIcon='dots' title='#i18n{document.manage_documents.labelActions}' hideTitle=['all'] params={"aria-label": "#i18n{document.manage_documents.labelActions} ${document.title}"} dropdownMenu=true>
-<#list document.actions?sort_by("idAction") as action>
-	<#if action.idAction == 16 && move_document_form?has_content>
-		<@link href='#' class='dropdown-item' params=moveDocumentParams><@icon style='${action.iconUrl}' class='me-2' />${action.name}</@link>
-	<#elseif action.url?has_content>
-		<@link href='${action.url}id_document=${document.id}&id_action=${action.idAction}&token=${token}' class='dropdown-item${(action.idAction == 1)?then(" text-danger", "")}' title='${action.description}'><@icon style='${action.iconUrl}' class='me-2' />${action.name}</@link>
-	</#if>
-</#list>
-</@button>
-</#macro>
-<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
-<#assign bc><@documentBreadcrumb spaces=breadcrumb_spaces![] /></#assign>
 <@pageContainer>
-    <@pageColumn>
-		<@pageHeader title='#i18n{document.adminFeature.documents_management.name}' breadcrumb=bc>
-		<#if view_type = 'detail' >
-			<#-- The action controls sit in the header but submit the documents_form of the list, where the document_selection checkboxes are -->
-			<@div class='d-inline-flex align-items-center'>
-				<@formGroup rows=2 formStyle='' class='me-2' >
-					<@checkBox id='select_all' orientation='switch' name='select_all' value='1' labelKey='#i18n{document.manage_document.labelSelectAll}' wrapperClass='mb-0' />
-				</@formGroup>
-				<@formGroup labelKey='#i18n{document.manage_documents.labelSelectionAction}' labelFor='selection' hideLabel=['all'] rows=2 formStyle='inline' >
-					<@inputGroup>
-						<@select id='selection' name='selection' disabled=true params='form="documents_form"'>
-							<@option value='validate' label='#i18n{document.manage_document.validate}' />
-							<@option value='submit' label='#i18n{document.manage_document.submit}' />
-							<@option value='refuse' label='#i18n{document.manage_document.refuse}' />
-							<@option value='remove' label='#i18n{document.manage_document.remove}' />
-							<@option value='archive' label='#i18n{document.manage_document.archive}' />
-							<@option value='unarchive' label='#i18n{document.manage_document.unarchive}' />
-						</@select>
-						<@button type='submit' formId='documents_form' title='#i18n{document.manage_documents.applyToSelection}' buttonIcon='check' hideTitle=['all'] />
-					</@inputGroup>
-				</@formGroup>
-			</@div>
-		</#if>
-		<#if space?has_content && space.documentCreationAllowed >
-			<#if document_types_list?has_content>
-				<@tform method='get' type='inline' name='CreateDocument' action='jsp/admin/plugins/document/CreateDocument.jsp' >
-					<@formGroup labelFor='document_type_code' labelKey='#i18n{document.manage_documents.labelCreate}' formStyle='inline' class='me-2' hideLabel=['all']>
+	<@pageColumn>
+		<@documentPageHeader title='#i18n{document.adminFeature.documents_management.name}' iconName='files' breadcrumb=bc>
+			<#if hasDocuments>
+				<#-- Full-text search; an identifier opens the document (see the script) -->
+				<@tform type='inline' method='post' id='FullTextSearchDocument' name='FullTextSearchDocument' action='jsp/admin/plugins/document/DocumentSearch.jsp' class='me-1'>
+					<@input type='hidden' id='id_document' name='id_document' />
+					<@formGroup labelFor='query' labelKey='#i18n{document.manage_documents.labelAllTextSearch}' hideLabel=['all'] formStyle='inline'>
 						<@inputGroup>
-							<@select name='document_type_code' default_value='' items=document_types_list />
-							<@button type='submit' title='#i18n{document.manage_documents.buttonCreate}' buttonIcon='plus' />
+							<@input type='text' id='query' name='query' maxlength=50 placeHolder='#i18n{document.manage_documents.buttonSearch}' params={"autocomplete": "off", "title": "#i18n{document.manage_documents.labelAllTextSearch}"} />
+							<@button type='submit' color='primary' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' hideTitle=['all'] />
+							<@button type='button' color=filterActive?then( 'primary', 'light' ) title='#i18n{document.manage_documents.buttonFilter}' buttonIcon='filter' hideTitle=['all'] params={"data-bs-toggle": "modal", "data-bs-target": "#documentFilterModal"} />
 						</@inputGroup>
 					</@formGroup>
-					<#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>
-						<@button type='button' title='#i18n{document.manage_documents.buttonImport}' id='importLinkButton' buttonIcon='plus-circle' /> 
-					</#if>
-				</@tform>                                                                
+				</@tform>
 			</#if>
-		</#if>
-		</@pageHeader>
-		<@row>
-			<@columns md=3 xl=2>
-				<@box>
-					<@boxHeader title='#i18n{document.manage_documents.labelSpaces}'>
-					<#if space_actions_list?size != 0>
-						<#list space_actions_list as space_action>
-							<#if space_action.permission == 'CREATE' && create_space_form?has_content>
-							<@button type='button' params='data-bs-toggle="modal" data-bs-target="#createSpaceModal"' title='${space_action.description}' style='btn btn-action' color='' buttonIcon='${space_action.iconUrl}' hideTitle=['all'] />
-							<#elseif space_action.permission == 'MODIFY' && modify_space_form?has_content>
-							<@button type='button' params='data-bs-toggle="modal" data-bs-target="#modifySpaceModal"' title='${space_action.description}' style='btn btn-action' color='' buttonIcon='${space_action.iconUrl}' hideTitle=['all'] />
-							<#elseif space_action.permission == 'MOVE' && move_space_form?has_content>
-							<@button type='button' params='data-bs-toggle="modal" data-bs-target="#moveSpaceModal"' title='${space_action.description}' style='btn btn-action' color='' buttonIcon='${space_action.iconUrl}' hideTitle=['all'] />
-							<#else>
-							<@aButton href='${space_action.url}?id_space=${space.id}' title='${space_action.description}' style='btn btn-action' color='' buttonIcon='${space_action.iconUrl}' hideTitle=['all'] />
-							</#if>
+			<#if filterActive>
+				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?document_type_code_filter=-1&id_state_filter=-1' title='#i18n{portal.util.labelReset}' buttonIcon='filter-off' color='light' hideTitle=['xs','sm','md'] class='me-1' />
+			</#if>
+			<#if hasDocuments>
+				<#-- The display of the space (list or thumbnails), kept by the space -->
+				<@tform type='inline' method='post' name='ViewTypeForm' action='jsp/admin/plugins/document/ManageDocuments.jsp' class='me-1'>
+					<@btnGroup ariaLabel='#i18n{document.manage_documents.labelViewType}'>
+					<#list view_types_list as view>
+						<@button type='submit' name='view_type' value=view.code color=( view_type = view.code )?then( 'primary', 'light' ) buttonIcon=( view.code = 'thumbnail' )?then( 'layout-grid', 'list' ) title=view.name hideTitle=['all'] params={"aria-pressed": ( view_type = view.code )?c} />
+					</#list>
+					</@btnGroup>
+				</@tform>
+			</#if>
+			<#if mass_action?has_content && mass_action>
+				<@aButton href='jsp/admin/plugins/document/MassArchivalDocument.jsp' title='#i18n{document.manage_document.mass_archival_labelBtn}' buttonIcon='archive' color='light' hideTitle=['all'] class='me-1' />
+			</#if>
+			<#if createTypes?size == 1 && !files2docs>
+				<@aButton href='jsp/admin/plugins/document/CreateDocument.jsp?document_type_code=${createTypes[0].code}' title='#i18n{document.manage_documents.buttonCreate} : ${createTypes[0].name}' buttonIcon='plus' color='primary' hideTitle=['xs','sm','md'] />
+			<#elseif createTypes?has_content>
+				<@div class='dropdown'>
+					<@aButton href='#' id='document-create' color='primary' class='dropdown-toggle' buttonIcon='plus' title='#i18n{document.manage_documents.buttonCreate}' hideTitle=['xs','sm','md'] params={"data-bs-toggle": "dropdown", "aria-haspopup": "true", "aria-expanded": "false"} />
+					<@div class='dropdown-menu dropdown-menu-end'>
+						<@div class='dropdown-header'>#i18n{document.manage_documents.labelCreate}</@div>
+						<#list createTypes as type>
+							<@link href='jsp/admin/plugins/document/CreateDocument.jsp?document_type_code=${type.code}' class='dropdown-item'><@icon style='file-plus' class='me-2' />${type.name}</@link>
 						</#list>
+						<#if files2docs>
+							<@div class='dropdown-divider' />
+							<@div class='dropdown-header'>#i18n{document.manage_documents.labelImport}</@div>
+							<#list createTypes as type>
+								<@link href='jsp/admin/plugins/files2docs/SelectFiles.jsp?browser_selected_space_id=${current_space_id?url}&document_type_code=${type.code?url}' class='dropdown-item'><@icon style='file-upload' class='me-2' />${type.name}</@link>
+							</#list>
+						</#if>
+					</@div>
+				</@div>
+			</#if>
+		</@documentPageHeader>
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
+		<@row>
+			<@columns md=4 lg=3 xl=2>
+				<@box class='card-sm'>
+					<@boxHeader title='#i18n{document.manage_documents.labelSpaces}' class='py-2' boxTools=true>
+					<#if space?has_content && space_actions_list?has_content>
+						<#-- The actions of the current space: a modal for the forms the page carries, a link otherwise; the deletion comes last, in red -->
+						<@aButton href='#' id='space-actions' style='' color='' dropdownMenu=true buttonIcon='dots' title='#i18n{document.manage_documents.labelActions} : ${space.name}' hideTitle=['all']>
+							<#list space_actions_list as space_action>
+								<#if space_action.permission! != 'DELETE'>
+									<#assign space_action_modal = '' />
+									<#if space_action.permission! == 'CREATE' && create_space_form?has_content>
+										<#assign space_action_modal = 'createSpaceModal' />
+									<#elseif space_action.permission! == 'MODIFY' && modify_space_form?has_content>
+										<#assign space_action_modal = 'modifySpaceModal' />
+									<#elseif space_action.permission! == 'MOVE' && move_space_form?has_content>
+										<#assign space_action_modal = 'moveSpaceModal' />
+									</#if>
+									<#if space_action_modal?has_content>
+										<@link href='#' class='dropdown-item' title=space_action.description! params={"data-bs-toggle": "modal", "data-bs-target": "#${space_action_modal}"}><@icon style=( space_action.iconUrl!'' )?replace( 'fs-2', '' )?trim class='me-2' />${space_action.name!}</@link>
+									<#else>
+										<@link href='${space_action.url}?id_space=${space.id?c}' class='dropdown-item' title=space_action.description!><@icon style=( space_action.iconUrl!'' )?replace( 'fs-2', '' )?trim class='me-2' />${space_action.name!}</@link>
+									</#if>
+								</#if>
+							</#list>
+							<#list space_actions_list as space_action>
+								<#if space_action.permission! == 'DELETE'>
+									<@div class='dropdown-divider' />
+									<@link href='${space_action.url}?id_space=${space.id?c}' class='dropdown-item text-danger' title=space_action.description!><@icon style=( space_action.iconUrl!'' )?replace( 'fs-2', '' )?trim class='me-2' />${space_action.name!}</@link>
+								</#if>
+							</#list>
+						</@aButton>
 					</#if>
 					</@boxHeader>
 					<@boxBody class='px-0 pb-0'>
 					${spaces_tree}
 					</@boxBody>
 				</@box>
-				<#if documents_list?size gt 0 >
-				<@box>
-					<@boxBody>
-					<@tform method='post' id='FullTextSearchDocument' name='FullTextSearchDocument' action='jsp/admin/plugins/document/DocumentSearch.jsp'>
-					<@input type='hidden' id='id_document' name='id_document' />
-					<@formGroup labelFor='query' labelKey='#i18n{document.manage_documents.buttonSearch}' helpKey='#i18n{document.manage_documents.labelFullTextSearch}' >
-						<@inputGroup>
-							<@input type='text' id='query' name='query' maxlength=50 />
-							<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' hideTitle=['all'] />
-						</@inputGroup>
-					</@formGroup>
-					</@tform>
-					</@boxBody>
-				</@box>
-				<@box>
-					<@boxHeader title='#i18n{document.manage_documents.buttonFilter}' />
-					<@boxBody>
-					<@tform method='post' name='FilterDocumentsForm' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
-					<#if document_types_filter_list?size gt 2 >
-					<@formGroup labelFor='document_type_code_filter' labelKey='#i18n{document.manage_documents.labelType}'>
-						<@select name='document_type_code_filter' default_value='${default_document_type}' items=document_types_filter_list />
-					</@formGroup>
-					</#if>
-					<@formGroup labelFor='id_state_filter' labelKey='#i18n{document.manage_documents.labelState}'>
-						<@inputGroup>
-							<@select name='id_state_filter' default_value='${default_state}' items=states_filter_list />
-							<@button type='submit' title='#i18n{document.manage_documents.buttonFilter}' buttonIcon='filter' hideTitle=['all'] />
-						</@inputGroup>
-					</@formGroup>
-					</@tform>
-					</@boxBody>
-				</@box>
-				<@box>
-					<@boxHeader title='#i18n{document.manage_documents.buttonShow}' />
-					<@boxBody>
-					<@tform method='post' name='FilterDocumentsForm' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
-					<@formGroup labelFor='view_type' labelKey='#i18n{document.manage_documents.labelViewType}' hideLabel=['all']>
-						<@inputGroup>
-							<@select name='view_type' default_value='${view_type}' items=view_types_list />
-							<@button type='submit' title='#i18n{portal.util.labelValidate}' buttonIcon='check' hideTitle=['all'] />
-						</@inputGroup>
-					</@formGroup>
-					</@tform>
-					<@tform method='post' id='SearchDocumentById' name='SearchDocumentById' action='jsp/admin/plugins/document/DoSearchDocumentById.jsp'>
-					<@formGroup labelFor='id_document' labelKey='#i18n{document.manage_documents.buttonSearch}' helpKey='#i18n{document.manage_documents.labelSearchById}' hideLabel=['all']>
-						<@inputGroup>
-							<@input type='text' id='id_document' name='id_document' maxlength=10 />
-							<@inputGroupItem>
-								<@button type='submit' title='#i18n{document.manage_documents.buttonSearch}' buttonIcon='search' hideTitle=['all'] />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-					</@tform>
-					</@boxBody>
-				</@box>
-				</#if>	
-				<#if mass_action?has_content && mass_action>
-					<@box>
-						<@boxHeader title='#i18n{document.manage_documents.labelMoreActions}' />
-						<@boxBody>
-							<@tform type='inline' method='post' id='archiveForm' name='archiveForm' action='jsp/admin/plugins/document/MassArchivalDocument.jsp'>
-								<@button color='link text-fg-dark' type='submit' buttonIcon='archive' title='#i18n{document.manage_document.mass_archival_labelBtn}' />
-							</@tform>
-						</@boxBody>
-					</@box>
-				</#if>
 			</@columns>
-			<@columns md=9 xl=10>			
+			<@columns md=8 lg=9 xl=10>
 			<#if space?has_content>
-				<#if documents_list?size = 0>
-					<#if child_spaces_list?size != 0 >
-						<@box>
-							<@boxHeader title='#i18n{document.manage_documents.childSpacesList}' />
-							<@boxBody>
-								<@ul class='list-unstyled mb-0'>
-									<#list child_spaces_list as child_space>
-									<@li>
-										<@link href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${child_space.id}'>
-											<@img url=child_space.iconUrl alt=child_space.description title=child_space.description /> ${child_space.name} <small>${child_space.description}</small>
-										</@link>
-									</@li>
-									</#list>
-								</@ul>
-							</@boxBody>
-						</@box>
+				<#if !hasDocuments>
+					<#if child_spaces_list?has_content>
+						<@manageFeature layout='list' id='child-spaces' class='mb-3'>
+							<#list child_spaces_list as child_space>
+							<@manageFeatureItem id='child_space_${child_space.id?c}'>
+								<@manageFeatureItemColumn class='d-flex align-items-center gap-2 text-truncate'>
+									<span class="avatar avatar-sm bg-yellow-lt" aria-hidden="true"><@img url=child_space.iconUrl! alt='' class='w-50' /></span>
+									<@div class='text-truncate'>
+										<@link href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${child_space.id?c}' class='text-reset fw-semibold'><@documentValue value=child_space.name! /></@link>
+										<#if child_space.description?has_content><@div class='text-secondary small text-truncate'><@documentValue value=child_space.description /></@div></#if>
+									</@div>
+								</@manageFeatureItemColumn>
+								<@manageFeatureItemColumn auto=true align='end'>
+									<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${child_space.id?c}' style='btn-action' color='' buttonIcon='chevron-right' title='${child_space.name!}' hideTitle=['all'] />
+								</@manageFeatureItemColumn>
+							</@manageFeatureItem>
+							</#list>
+						</@manageFeature>
 					</#if>
 					<@card>
-						<@empty title='#i18n{document.message.noDocumentInspace}' iconName='file-off' subtitle='#i18n{document.manage_documents.emptySpaceHelp}' />
+						<#if filterActive>
+							<@empty title='#i18n{document.manage_documents.noDocument}' iconName='filter-off' subtitle=' ' actionTitle='#i18n{portal.util.labelReset}' actionIcon='filter-off' actionUrl='jsp/admin/plugins/document/ManageDocuments.jsp?document_type_code_filter=-1&id_state_filter=-1' />
+						<#elseif createTypes?size == 1>
+							<@empty title='#i18n{document.message.noDocumentInspace}' iconName='file-off' subtitle='#i18n{document.manage_documents.emptySpaceHelp}' actionTitle='#i18n{document.manage_documents.buttonCreate} : ${createTypes[0].name}' actionUrl='jsp/admin/plugins/document/CreateDocument.jsp?document_type_code=${createTypes[0].code}' />
+						<#elseif createTypes?has_content>
+							<@empty title='#i18n{document.message.noDocumentInspace}' iconName='file-off' subtitle='#i18n{document.manage_documents.emptySpaceHelp}' />
+						<#else>
+							<@empty title='#i18n{document.message.noDocumentInspace}' iconName='file-off' subtitle='#i18n{document.manage_documents.emptySpaceHelpNoCreation}' />
+						</#if>
 					</@card>
+				<#elseif view_type = 'thumbnail'>
+					<#-- Every thumbnail has the same height, the image contained in it, so that the cards line up in rows and columns -->
+					<style>.document-list-thumbnail { height: 8rem; width: 100%; padding: .5rem; background: var( --tblr-bg-surface-secondary ); }</style>
+					<@row class='row-cards row-cols-2 row-cols-lg-3 row-cols-xl-4'>
+					<#list documents_list as document>
+						<#assign modifyUrl = documentModifyUrl( document ) />
+						<@columns class='document-row' params={"data-document": "${document.id?c} ${document.title}"}>
+							<@box id="document_${document.id?c}" class='card-sm h-100'>
+								<#-- The thumbnail opens the document, like its title; the link is out of the tab order and of the accessibility tree, the title link already being there -->
+								<#if modifyUrl?has_content>
+								<@link href=modifyUrl class='d-block' params={"tabindex": "-1", "aria-hidden": "true"}><@img url=document.thumbnail! class='card-img-top object-fit-contain document-list-thumbnail' alt='' /></@link>
+								<#else>
+								<@img url=document.thumbnail! class='card-img-top object-fit-contain document-list-thumbnail' alt='' />
+								</#if>
+								<@boxBody>
+									<@div class='d-flex align-items-start gap-2'>
+										<@div class='flex-fill text-truncate'>
+											<@div class='text-truncate'><@documentTitle document=document /></@div>
+											<@div class='text-secondary small text-truncate'>#${document.id?c} &middot; ${document.type}</@div>
+										</@div>
+										<@aButton href='#' id='document-actions-${document.id?c}' style='' color='' dropdownMenu=true buttonIcon='dots' title='#i18n{portal.util.labelActions} ${document.title}' hideTitle=['all']>
+											<@documentActionItems document=document moveParams=moveParams( document ) />
+										</@aButton>
+									</@div>
+									<@div class='mt-2'><@documentStatus document=document nowrap=false /></@div>
+								</@boxBody>
+							</@box>
+						</@columns>
+					</#list>
+					</@row>
 				<#else>
-					<#if view_type = 'detail' >
-						<@tform id='documents_form' name='documents_form' method='post' action='jsp/admin/plugins/document/DoActionSelectionDocument.jsp'>
-							<@input type='hidden' name='token' value='${token}' />
-							<@manageFeature class=''>
-								<#list documents_list as document >
-								<@documentRefs document=document />
-								<@manageFeatureItem class='document-row searchable' params={"data-document": "${document.id?c} ${document.title}"}>
-									<@manageFeatureItemColumn auto=true>
-										<@checkBox id='document_selection_${document.id?c}' orientation='switch' name='document_selection' value='${document.id}' labelKey=i18n( 'document.manage_documents.labelSelectDocument', document.title ) labelClass='visually-hidden' wrapperClass='mb-0' />
-									</@manageFeatureItemColumn>
-									<@manageFeatureItemColumn flex=false class='text-truncate'>
+					<@tform id='documents_form' name='documents_form' method='post' action='jsp/admin/plugins/document/DoActionSelectionDocument.jsp'>
+						<@input type='hidden' name='token' value='${token}' />
+						<#-- Actions on the selected documents -->
+						<@div class='d-flex flex-wrap align-items-center gap-2 mb-2'>
+							<@checkBox id='select_all' orientation='switch' name='select_all' value='1' labelKey='#i18n{document.manage_document.labelSelectAll}' wrapperClass='mb-0 me-auto' />
+							<@formGroup labelKey='#i18n{document.manage_documents.applyToSelection}' labelFor='selection' hideLabel=['all'] formStyle='' class='mb-0'>
+								<@inputGroup>
+									<@select id='selection' name='selection' disabled=true>
+										<@option value='validate' label='#i18n{document.manage_document.validate}' />
+										<@option value='submit' label='#i18n{document.manage_document.submit}' />
+										<@option value='refuse' label='#i18n{document.manage_document.refuse}' />
+										<@option value='archive' label='#i18n{document.manage_document.archive}' />
+										<@option value='unarchive' label='#i18n{document.manage_document.unarchive}' />
+										<@option value='remove' label='#i18n{document.manage_document.remove}' />
+									</@select>
+									<@button type='submit' id='selection_apply' color='light' disabled=true title='#i18n{document.manage_documents.applyToSelection}' buttonIcon='check' hideTitle=['xs','sm','md'] />
+								</@inputGroup>
+							</@formGroup>
+						</@div>
+						<@manageFeature layout='list' id='documents-list' class=''>
+							<#list documents_list as document>
+							<@manageFeatureItem id='document_${document.id?c}' class='document-row' params={"data-document": "${document.id?c} ${document.title}"}>
+								<@manageFeatureItemColumn auto=true>
+									<@checkBox id='document_selection_${document.id?c}' orientation='switch' name='document_selection' value='${document.id?c}' labelKey=i18n( 'document.manage_documents.labelSelectDocument', document.title ) labelClass='visually-hidden' wrapperClass='mb-0' />
+								</@manageFeatureItemColumn>
+								<@manageFeatureItemColumn class='d-flex align-items-center gap-2 text-truncate'>
+									<@documentStatus document=document dot=true />
+									<@div class='text-truncate'>
 										<@documentTitle document=document />
 										<@div class='text-secondary small text-truncate'>
-											#${document.id}
-											<span class="ms-2" title="#i18n{document.manage_documents.labelDateModification}"><@icon style='calendar' /> ${document.dateModification}</span>
-											<#if document.comment != ''><span class="ms-2" title="${document.comment}"><@icon style='message-circle' /> ${document.comment}</span></#if>
+											#${document.id?c} &middot; ${document.type}
+											<span title="#i18n{document.manage_documents.labelDateModification}"> &middot; ${document.dateModification}</span>
+											<#if document.comment?has_content><span class="d-none d-lg-inline" title="${document.comment}"> &middot; <@icon style='message-circle' /> ${document.comment}</span></#if>
 										</@div>
-									</@manageFeatureItemColumn>
-									<@manageFeatureItemColumn auto=true>
-										<@documentStatus document=document />
-									</@manageFeatureItemColumn>
-									<@manageFeatureItemColumn auto=true>
-										<@documentActions document=document />
-									</@manageFeatureItemColumn>
-								</@manageFeatureItem>
-								</#list>
-							</@manageFeature>
-						</@tform>
-					</#if>
-					<#if view_type='thumbnail'>
-						<@row class='row-cards row-cols-2 row-cols-lg-3 row-cols-xl-4'>
-						<#list documents_list as document >
-							<@documentRefs document=document />
-							<@columns class='document-row' params={"data-document": "${document.id?c} ${document.title}"}>
-								<@box id="document_${document.id}" class='card-sm h-100'>
-									<@img url=document.thumbnail! class='card-img-top object-fit-contain' alt='' params={"height": "120"} />
-									<@boxBody>
-										<@div class='d-flex align-items-start'>
-											<@div class='flex-fill text-truncate'>
-												<@documentTitle document=document />
-												<@div class='text-secondary small text-truncate'>#${document.id} <span class="ms-1">${document.type}</span></@div>
-											</@div>
-											<@div class='ms-2'><@documentActions document=document /></@div>
-										</@div>
-										<@div class='mt-2'><@documentStatus document=document /></@div>
-									</@boxBody>
-								</@box>
-							</@columns>
-						</#list>
-						</@row>
-					</#if>
+									</@div>
+								</@manageFeatureItemColumn>
+								<@manageFeatureItemColumn auto=true align='end' class='d-flex align-items-center gap-2'>
+									<@div class='d-none d-xl-block'><@documentStatus document=document /></@div>
+									<@documentQuickActions document=document moveParams=moveParams( document ) />
+								</@manageFeatureItemColumn>
+							</@manageFeatureItem>
+							</#list>
+						</@manageFeature>
+					</@tform>
+				</#if>
+				<#if hasDocuments && ( paginator.pagesCount gt 1 || paginator.itemsCount gt 10 )>
 					<@paginationAdmin paginator=paginator combo=1 />
 				</#if>
 			<#else>
@@ -257,27 +228,48 @@
 		</@row>
 	</@pageColumn>
 </@pageContainer>
+<#if hasDocuments>
+<@modal id='documentFilterModal' params={"aria-labelledby": "documentFilterModalTitle"}>
+	<@modalHeader modalTitle='#i18n{document.manage_documents.buttonFilter}' id='documentFilterModalTitle' />
+	<@modalBody>
+		<@tform id='FilterDocumentsForm' method='post' name='FilterDocumentsForm' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
+			<#if document_types_filter_list?size gt 2>
+			<@formGroup labelFor='document_type_code_filter' labelKey='#i18n{document.manage_documents.labelType}' rows=2>
+				<@select name='document_type_code_filter' id='document_type_code_filter' default_value='${default_document_type}' items=document_types_filter_list />
+			</@formGroup>
+			</#if>
+			<@formGroup labelFor='id_state_filter' labelKey='#i18n{document.manage_documents.labelState}' rows=2>
+				<@select name='id_state_filter' id='id_state_filter' default_value='${default_state}' items=states_filter_list />
+			</@formGroup>
+		</@tform>
+	</@modalBody>
+	<@modalFooter>
+		<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?document_type_code_filter=-1&id_state_filter=-1' buttonIcon='x' title='#i18n{portal.util.labelReset}' color='light' />
+		<@button type='submit' formId='FilterDocumentsForm' buttonIcon='filter' title='#i18n{document.manage_documents.buttonFilter}' color='primary' />
+	</@modalFooter>
+</@modal>
+</#if>
 <#if create_space_form?has_content>
-<@modal id='createSpaceModal' size='lg' params='tabindex="-1" aria-labelledby="createSpaceModalTitle"'>
+<@modal id='createSpaceModal' size='lg' params={"tabindex": "-1", "aria-labelledby": "createSpaceModalTitle"}>
 	<@modalHeader modalTitle='#i18n{document.create_space.title}' id='createSpaceModalTitle' />
 	${create_space_form}
 </@modal>
 </#if>
 <#if modify_space_form?has_content>
-<@modal id='modifySpaceModal' size='lg' params='tabindex="-1" aria-labelledby="modifySpaceModalTitle"'>
+<@modal id='modifySpaceModal' size='lg' params={"tabindex": "-1", "aria-labelledby": "modifySpaceModalTitle"}>
 	<@modalHeader modalTitle='#i18n{document.modify_space.title}' id='modifySpaceModalTitle' />
 	${modify_space_form}
 </@modal>
 </#if>
 <#if move_document_form?has_content>
-<@modal id='moveDocumentModal' params='tabindex="-1" aria-labelledby="moveDocumentModalTitle"'>
+<@modal id='moveDocumentModal' params={"tabindex": "-1", "aria-labelledby": "moveDocumentModalTitle"}>
 	<@modalHeader modalTitle='#i18n{document.move_document.title}' id='moveDocumentModalTitle' />
 	${move_document_form}
 </@modal>
 </#if>
 <#if move_space_form?has_content>
 <#assign moveSpaceModalTitle>#i18n{document.move_space.title} <em><@documentValue value=space.name! /></em></#assign>
-<@modal id='moveSpaceModal' params='tabindex="-1" aria-labelledby="moveSpaceModalTitle"'>
+<@modal id='moveSpaceModal' params={"tabindex": "-1", "aria-labelledby": "moveSpaceModalTitle"}>
 	<@modalHeader modalTitle=moveSpaceModalTitle id='moveSpaceModalTitle' />
 	${move_space_form}
 </@modal>
@@ -286,71 +278,53 @@
 import LuteceTree from './themes/shared/modules/luteceTree.js';
 const tree = document.querySelector( '#lutece-tree' );
 const spacesTree = new LuteceTree( tree );
-<#if space?has_content>
-spacesTree.selectTreeNode( '#node-${space.id?c}' );
-</#if>
+spacesTree.selectTreeNode( '#node-${((space.id)!0)?c}' );
 </script>
 <#-- Document Drag and Drop Module -->
 <script src="themes/shared/plugins/document/js/documentDragDrop.js?v=${documentAssetsVersion!}"></script>
 <script>
-DocumentDragDrop.config.moveDocumentToken = '${token}';
-DocumentDragDrop.config.moveSpaceToken = '${space_token}';
+DocumentDragDrop.config.moveDocumentToken = '${token?js_string?no_esc}';
+DocumentDragDrop.config.moveSpaceToken = '${space_token?js_string?no_esc}';
 </script>
 <script>
-/****** Document search ******/
-/* The search forms only exist when the space lists documents */
-const searchForm = document.getElementById("FullTextSearchDocument");
-if (searchForm) {
-	const searchHelp = searchForm.querySelector(".form-text");
-	if (searchHelp) { searchHelp.textContent = '${i18n('document.manage_documents.labelAllTextSearch')?js_string?no_esc}'; }
-	searchForm.addEventListener("submit", function(e) {
-		const queryInput = searchForm.querySelector("input#query");
-		if (!isNaN(queryInput.value) && queryInput.value.trim() !== "") {
-			searchForm.querySelector("input#id_document").value = queryInput.value;
-			this.setAttribute("action", "jsp/admin/plugins/document/DoSearchDocumentById.jsp");
+/****** Document search: an identifier opens the document, any other text runs the full-text search; typing filters the documents of the page ******/
+const searchForm = document.getElementById( 'FullTextSearchDocument' );
+if ( searchForm ) {
+	const queryInput = searchForm.querySelector( '#query' );
+	searchForm.addEventListener( 'submit', function( ) {
+		const query = queryInput.value.trim( );
+		if ( query !== '' && /^\d+$/.test( query ) ) {
+			searchForm.querySelector( '#id_document' ).value = query;
+			searchForm.setAttribute( 'action', 'jsp/admin/plugins/document/DoSearchDocumentById.jsp' );
 		}
-	});
-	const searchById = document.getElementById("SearchDocumentById");
-	if (searchById) { searchById.style.display = "none"; }
-
-	/* Filter document list */
-	searchForm.querySelector("#query").addEventListener("keyup", function() {
-		const search = this.value.toLowerCase();
-		document.querySelectorAll(".document-row").forEach(function(row) {
-			const doc = row.getAttribute("data-document").toLowerCase();
-			if (doc.indexOf(search) === -1) {
-				row.classList.add("d-none");
-			} else {
-				row.classList.remove("d-none");
-			}
-		});
-	});
+	} );
+	queryInput.addEventListener( 'input', function( ) {
+		const search = this.value.toLowerCase( );
+		document.querySelectorAll( '.document-row' ).forEach( function( row ) {
+			row.classList.toggle( 'd-none', row.getAttribute( 'data-document' ).toLowerCase( ).indexOf( search ) === -1 );
+		} );
+	} );
 }
 
-/****** Multiple selection ******/
-/* select_all (in the page header) and selection only exist when the space lists documents in detail view */
-const selectAll = document.getElementById('select_all');
-const selectionAction = document.getElementById('selection');
-const documentCheckboxes = document.querySelectorAll('#documents_form input[name="document_selection"]');
-function updateSelectionAction() {
-	if (!selectionAction) { return; }
-	const anyChecked = Array.from(documentCheckboxes).some(function(checkbox) { return checkbox.checked; });
-	selectionAction.disabled = !anyChecked;
+/****** Multiple selection: the action and its button are enabled while a document is selected ******/
+const selectAll = document.getElementById( 'select_all' );
+const selectionAction = document.getElementById( 'selection' );
+const selectionApply = document.getElementById( 'selection_apply' );
+const documentCheckboxes = document.querySelectorAll( '#documents_form input[name="document_selection"]' );
+function updateSelectionAction( ) {
+	const anyChecked = Array.from( documentCheckboxes ).some( function( checkbox ) { return checkbox.checked; } );
+	if ( selectionAction ) { selectionAction.disabled = !anyChecked; }
+	if ( selectionApply ) {
+		selectionApply.disabled = !anyChecked;
+		selectionApply.classList.toggle( 'btn-primary', anyChecked );
+		selectionApply.classList.toggle( 'btn-light', !anyChecked );
+	}
 }
-if (selectAll) {
-	selectAll.addEventListener('change', function() {
-		documentCheckboxes.forEach(function(checkbox) { checkbox.checked = selectAll.checked; });
-		updateSelectionAction();
-	});
+if ( selectAll ) {
+	selectAll.addEventListener( 'change', function( ) {
+		documentCheckboxes.forEach( function( checkbox ) { checkbox.checked = selectAll.checked; } );
+		updateSelectionAction( );
+	} );
 }
-documentCheckboxes.forEach(function(checkbox) { checkbox.addEventListener('change', updateSelectionAction); });
-<#if is_files2docs_plugin_active?has_content && is_files2docs_plugin_active>
-/* document MASS import redirection */
-const importLinkButton = document.getElementById('importLinkButton');
-if (importLinkButton) {
-	importLinkButton.addEventListener('click', function() {
-		window.location.href = 'jsp/admin/plugins/files2docs/SelectFiles.jsp?browser_selected_space_id=${current_space_id?url?js_string?no_esc}&document_type_code=' + encodeURIComponent( document.getElementById('document_type_code').value );
-	});
-}
-</#if>
+documentCheckboxes.forEach( function( checkbox ) { checkbox.addEventListener( 'change', updateSelectionAction ); } );
 </script>

@@ -470,13 +470,18 @@ public class DocumentServiceJspBean extends InsertServiceJspBean implements Inse
 
         document = DocumentHome.findByPrimaryKeyWithoutBinaries( IntegerUtils.convert( strDocumentId ) );
 
+        if ( document == null )
+        {
+            return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
+        }
+
         UrlItem url = new UrlItem( AppPathService.getPortalUrl(  ) );
         url.addParameter( PARAMETER_DOCUMENT_ID, document.getId(  ) );
         url.addParameter( PARAMETER_PORTLET_ID, strPortletId );
         model.put( MARK_URL, url.getUrl(  ) );
         model.put( MARK_TARGET, strTarget );
         model.put( MARK_ALT, strAlt );
-        model.put( MARK_NAME, ( strName.length(  ) == 0 ) ? document.getTitle(  ) : strName );
+        model.put( MARK_NAME, StringUtils.isEmpty( strName ) ? document.getTitle(  ) : strName );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_LINK, null, model );
 

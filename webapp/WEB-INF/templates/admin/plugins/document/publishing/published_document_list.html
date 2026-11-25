@@ -1,34 +1,37 @@
+<#-- A document published in the portlet, with its order (rendered for every assigned document, the unpublished ones skipped) -->
 <#if status == status_published>
-<@manageFeatureItem>
-	<@manageFeatureItemColumn>
-		<#if page_template_picture?has_content><@img url=page_template_picture alt='' /> </#if>${document_published.title}
-	</@manageFeatureItemColumn>            
-	<@manageFeatureItemColumn auto=true align='around'>
-		<@tform type='inline' method='post' name='modifyOrderDocument' action='jsp/admin/plugins/document/DoModifyDocumentOrder.jsp'>
+<@listGroupItem id='published_document_${document_published.id?c}'>
+	<@div class='row g-2 align-items-center'>
+		<@div class='col d-flex align-items-center gap-2 text-truncate'>
+			<span class="status-dot status-green"></span>
+			<#if page_template_picture?has_content><@img url=page_template_picture alt='' class='avatar avatar-sm' /></#if>
+			<@div class='text-truncate'>
+				<@link href='jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${document_published.id?c}' class='text-reset fw-semibold'>${document_published.title}</@link>
+				<@div class='text-secondary small'>#${document_published.id?c}</@div>
+			</@div>
+		</@div>
+		<@div class='col-auto d-flex align-items-center gap-2'>
+			<@tform type='inline' method='post' name='modifyOrderDocument' action='jsp/admin/plugins/document/DoModifyDocumentOrder.jsp'>
 				<@input type='hidden' name='token' value='${token}' />
-			<@input type='hidden' name='id_document' value='${document_published.id}' />
-			<@input type='hidden' name='id_portlet' value='${portlet_id}' />
-			<@formGroup formStyle=''>
-				<@inputGroup size='sm'>
-					<@select name='document_order' default_value='${document_order}' items=document_order_list />
-					<@button type='submit' title='#i18n{document.published_document_list.labelChangeOrder}' hideTitle=['all'] buttonIcon='arrows-down-up' color='outline-primary' size='sm' params={"aria-label": "#i18n{document.published_document_list.labelChangeOrder} ${document_published.title}"} />
-				</@inputGroup>
-			</@formGroup>
-		</@tform>
-		<@tform method='post' class='ms-1' name='unpublishDocument' action='jsp/admin/plugins/document/DoUnPublishingDocument.jsp'>
-				<@input type='hidden' name='token' value='${token}' />
-			<@input type='hidden' name='id_document' value='${document_published.id}' />
-			<@input type='hidden' name='id_portlet' value='${portlet_id}' />
-			<@button type='submit' title='#i18n{document.published_document_list.buttonUnPublish}' hideTitle=['all'] buttonIcon='mailbox-off' color='outline-warning' size='sm' params={"aria-label": "#i18n{document.published_document_list.buttonUnPublish} ${document_published.title}"} />
-		</@tform>
-		<@tform method='post' class='ms-1' name='previewDocument' action='jsp/admin/plugins/document/PreviewDocument.jsp'>
-			<@input type='hidden' name='id_document' value='${document_published.id}' />
-			<@button type='submit' title='#i18n{document.published_document_list.labelPreview}' hideTitle=['all'] buttonIcon='eye' color='outline-primary' size='sm' params={"aria-label": "#i18n{document.published_document_list.labelPreview} ${document_published.title}"} />
-		</@tform>
-		<@tform method='post' class='ms-1' name='manageDocument' action='jsp/admin/plugins/document/ManageDocuments.jsp'>
-			<@input type='hidden' name='id_space_filter' value='${document_published.spaceId}' />
-			<@button type='submit' title='#i18n{document.published_document_list.labelManageDocument}' hideTitle=['all'] buttonIcon='folder-open' color='outline-primary' size='sm' params={"aria-label": "#i18n{document.published_document_list.labelManageDocument} ${document_published.title}"} />
-		</@tform>
-	</@manageFeatureItemColumn>
-</@manageFeatureItem>
+				<@input type='hidden' name='id_document' value='${document_published.id?c}' />
+				<@input type='hidden' name='id_portlet' value='${portlet_id}' />
+				<@formGroup labelFor='document_order_${document_published.id?c}' labelKey='#i18n{document.published_document_list.labelChangeOrder}' hideLabel=['all'] formStyle='inline' class='mb-0'>
+					<@inputGroup size='sm'>
+						<@select name='document_order' id='document_order_${document_published.id?c}' default_value='${document_order}' items=document_order_list />
+						<@button type='submit' color='light' title='#i18n{document.published_document_list.labelChangeOrder}' hideTitle=['all'] buttonIcon='arrows-sort' />
+					</@inputGroup>
+				</@formGroup>
+			</@tform>
+			<@div class='btn-actions'>
+				<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document_published.spaceId?c}' style='btn-action' color='' buttonIcon='folder-open' title='#i18n{document.published_document_list.labelManageDocument}' hideTitle=['all'] />
+				<@tform method='post' name='unpublishDocument' action='jsp/admin/plugins/document/DoUnPublishingDocument.jsp' class='d-inline'>
+					<@input type='hidden' name='token' value='${token}' />
+					<@input type='hidden' name='id_document' value='${document_published.id?c}' />
+					<@input type='hidden' name='id_portlet' value='${portlet_id}' />
+					<@button type='submit' color='ghost-warning' class='btn-icon' title='#i18n{document.published_document_list.buttonUnPublish} ${document_published.title}' hideTitle=['all'] buttonIcon='player-stop' />
+				</@tform>
+			</@div>
+		</@div>
+	</@div>
+</@listGroupItem>
 </#if>

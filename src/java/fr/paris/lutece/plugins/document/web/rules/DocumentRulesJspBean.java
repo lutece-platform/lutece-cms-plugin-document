@@ -45,6 +45,7 @@ import fr.paris.lutece.portal.service.message.MessageHtml;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppPathService;
+
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.constants.Messages;
@@ -248,7 +249,7 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
 
         if ( getRuleSession(  ) == null )
         {
-            return getHomeUrl( request );
+            return AppPathService.getBaseUrl( request ) + JSP_MANAGE_RULES;
         }
 
         int nSpaceId = IntegerUtils.convert( strSpaceId );
@@ -273,6 +274,11 @@ public class DocumentRulesJspBean extends PluginAdminPageJspBean
         {
             strRuleTypeId = request.getParameter( PARAMETER_RULE_TYPE_ID );
             rule = RuleHome.newInstance( strRuleTypeId );
+
+            if ( rule == null )
+            {
+                return getManageRules( request );
+            }
         }
         else
         {

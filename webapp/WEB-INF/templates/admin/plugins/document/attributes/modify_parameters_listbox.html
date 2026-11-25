@@ -1,74 +1,45 @@
+<#--
+ # Items of a list box attribute (create and modify forms of an attribute). The add, delete and default buttons submit the form without
+ # 'save': the bean (ListBoxManager.getValueParameters) applies the operation and shows the form again. The hidden multiple select sends every item.
+-->
 <#list parameters as parameter>
-	<#if parameter_index = 0>
-		<#assign defaultValue = parameter>
-	</#if>
-	<#if parameter_index = 1>
-		<#assign items = parameter>
-	</#if>
+	<#if parameter?index = 0><#assign defaultValue = parameter></#if>
+	<#if parameter?index = 1><#assign items = parameter></#if>
 </#list>
-<@formGroup formStyle='inline' labelFor='${items.name}_value' labelKey='${items.label}'>
+<#if items.valueList?has_content>
+	<#assign listValues = items.valueList>
+<#else>
+	<#assign listValues = items.defaultValue![]>
+</#if>
+<#assign valueDefaultValue = ''>
+<#list ( defaultValue.valueList?has_content )?then( defaultValue.valueList, defaultValue.defaultValue![] ) as value>
+	<#assign valueDefaultValue = value>
+	<#break>
+</#list>
+<@formGroup labelFor='${items.name}_value' labelKey='${items.label}' rows=2>
 	<@inputGroup>
 		<@input type='text' id='${items.name}_value' name='${items.name}_value' placeHolder='${items.description}' />
-		<@inputGroupItem>
-			<@button type='submit' id='${items.name}_add' name='add' value='add' buttonIcon='plus-circle' title='#i18n{document.attributeType.listbox.btnAddItem}' />
-		</@inputGroupItem>
+		<@button type='submit' name='add' value='add' color='light' title='#i18n{document.attributeType.listbox.btnAddItem}' buttonIcon='plus' hideTitle=['xs','sm'] />
 	</@inputGroup>
 </@formGroup>
-<@formGroup formStyle='inline' labelFor='${items.name}_select' labelKey='${items.label}' hideLabel=['all']>
-	<@select id='${items.name}_select' name='${items.name}_select' inputSize=4>
-		<#list items.valueList as values >
-			<option value="${values}" <#list defaultValue.valueList as defaultvalue ><#if values==defaultvalue> class="bg-primary"</#if></#list>>${values}</option>
+<@formGroup labelFor='${items.name}_select' labelKey='${items.label}' hideLabel=['all'] rows=2>
+	<#if listValues?has_content>
+	<@select id='${items.name}_select' name='${items.name}_select' multiple=6>
+		<#list listValues as value>
+			<@option value=value label=( value == valueDefaultValue )?then( value + ' ★', value ) />
 		</#list>
 	</@select>
-	<@div class="d-none">
+	<@div class='d-flex gap-2 mt-2'>
+		<@button type='submit' name='bydefault' value='bydefault' color='light' title='#i18n{document.attributeType.listbox.btnDefItem}' buttonIcon='star' />
+		<@button type='submit' name='delete' value='delete' color='ghost-danger' title='#i18n{document.attributeType.listbox.btnDelItem}' buttonIcon='trash' />
+	</@div>
+	</#if>
+	<@div params={"hidden": true}>
 		<@select id='${items.name}' name='${items.name}' multiple=4>
-			<#list items.valueList as values >
-				<option value="${values}" selected="selected">${values}</option>
+			<#list listValues as value>
+				<@option value=value label=value selected=true />
 			</#list>
 		</@select>
 	</@div>
-	<@button type='submit' id='${items.name}_delete' name='delete' value='delete' title='#i18n{document.attributeType.listbox.btnDelItem}' buttonIcon='trash' color='danger' />
-	<@button type='submit' id='${items.name}_bydefault' name='bydefault' value='bydefault' title='#i18n{document.attributeType.listbox.btnDefItem}' buttonIcon='star' />
-	<@input type='hidden' id='${defaultValue.name}' name='${defaultValue.name}' value='${valueDefaultValue!}' />
+	<@input type='hidden' id='${defaultValue.name}' name='${defaultValue.name}' value='${valueDefaultValue}' />
 </@formGroup>
-<script src="js/selectbox.js"></script>
-<script>
-{
-const itemsName = '${items.name?js_string?no_esc}';
-const defaultValueName = '${defaultValue.name?js_string?no_esc}';
-const manageItems = function( actionItem ){
-objVisible = document.getElementsByName(itemsName + '_select')[0];
-objHidden = document.getElementsByName(itemsName)[0];
-objValue = document.getElementsByName(itemsName + '_value')[0];
-objDefaultValue = document.getElementsByName(defaultValueName)[0];
-objHidden.selectedIndex = objVisible.selectedIndex;
-
-// add an option into list
-if( actionItem == 1){
-	addOption(objVisible, objValue.value, objValue.value, false);
-	addOption(objHidden, objValue.value, objValue.value, false);
-	objValue.value='';
-	objValue.focus();
-	} else {
-	 // delete an option from list
-	if( objDefaultValue.value == objVisible.options[objVisible.selectedIndex].value ){
-		objDefaultValue.value = '';
-		}
-		removeSelectedOptions(objVisible);
-		removeSelectedOptions(objHidden);
-	}
-	 selectAllOptions(objHidden);
-}
-
-const setByDefault = function(objName){
-objSelect = document.getElementsByName(objName)[0];
-choice = objSelect.selectedIndex;
-if(choice > -1){
-	document.getElementsByName(defaultValueName)[0].value = objSelect.options[choice].text;
-	}
-};
-document.getElementById(itemsName + '_add').addEventListener('click', function(e){ e.preventDefault(); manageItems(1); });
-document.getElementById(itemsName + '_delete').addEventListener('click', function(e){ e.preventDefault(); manageItems(-1); });
-document.getElementById(itemsName + '_bydefault').addEventListener('click', function(e){ e.preventDefault(); setByDefault(itemsName + '_select'); });
-}
-</script>

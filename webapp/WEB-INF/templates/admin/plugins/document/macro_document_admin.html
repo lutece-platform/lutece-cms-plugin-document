@@ -1,0 +1,174 @@
+<#--
+ # Shared pieces of the back office screens of the document management (the list of the documents and the screens
+ # reached from it), so that they look like the other Tabler screens (newsletter, forms):
+ #   documentPageHeader     the page header, its title preceded by the avatar of the feature
+ #   documentStateColor     the Tabler colour of a workflow state
+ #   documentStatus         the state dot, then the state and publication badges of a document
+ #   documentActionUrl      the URL of a workflow action of a document
+ #   documentModifyUrl      the URL of the modification of a document, '' when the user may not modify it
+ #   documentQuickActions   the icon buttons of the frequent actions of a document, then the menu of all its actions
+ #   documentActionsMenu    the menu of all the actions of a document, for a page header
+ #   documentInfoCard       the card of the properties of a document (type, state, dates, validity)
+ #   documentNotFound       the page shown in place of a screen whose document, portlet or rule does not exist
+-->
+<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#--
+ # param title       the page title (already localised; HTML-escaped when the template auto-escapes)
+ # param iconName    the Tabler icon of the avatar
+ # param color       the Tabler colour of the avatar
+ # param breadcrumb  the breadcrumb (see documentBreadcrumb)
+ # param description an optional line under the title
+ # The nested content is the tools of the header (buttons, menus, inline search).
+-->
+<#macro documentPageHeader title iconName='files' color='blue' breadcrumb='' description=''>
+<#local pageTitle><span class="avatar avatar-sm bg-${color}-lt me-2" aria-hidden="true"><@icon style=iconName /></span>${title}</#local>
+<@pageHeader title=pageTitle breadcrumb=breadcrumb description=description>
+<#nested>
+</@pageHeader>
+</#macro>
+
+<#-- 1 writing, 2 waiting for approval, 3 approved, 4 rejected, 5 archived, 6 in change, 7 waiting for changes approval -->
+<#function documentStateColor stateId>
+<#local colors = { '1': 'azure', '2': 'yellow', '3': 'green', '4': 'red', '5': 'secondary', '6': 'blue', '7': 'yellow' } />
+<#return colors[stateId?c]!'secondary' />
+</#function>
+
+<#function documentActionUrl document action>
+<#return '${action.url}id_document=${document.id?c}&id_action=${action.idAction?c}' + ( token?? )?then( '&token=${token}', '' ) />
+</#function>
+
+<#-- 2: modify, 9: change a published document -->
+<#function documentModifyUrl document>
+<#list document.actions![] as action>
+	<#if action.url?has_content && ( action.idAction == 2 || action.idAction == 9 )>
+		<#return documentActionUrl( document, action ) />
+	</#if>
+</#list>
+<#return '' />
+</#function>
+
+<#-- The state as a dot, or as a badge followed by the publication badge (published: only where the bean computed it) -->
+<#macro documentStatus document dot=false published=true nowrap=true>
+<#local color = documentStateColor( document.stateId ) />
+<#if dot><span class="status-dot status-${color}" title="${document.state!}"></span><span class="visually-hidden">${document.state!}</span><#else>
+<@div class='badge-list${nowrap?then(" flex-nowrap", "")}'>
+	<@tag color='' class='bg-${color}-lt' title='#i18n{document.manage_documents.labelState}'>${document.state!}</@tag>
+	<#if published>
+	<#if document.publishedStatus = 0>
+		<@tag color='' class='bg-green-lt' tagIcon='world'>#i18n{document.manage_documents.PublishedStatus}</@tag>
+	<#else>
+		<@tag color='' class='bg-secondary-lt' tagIcon='world-off'>#i18n{document.manage_documents.UnPublishedStatus}</@tag>
+	</#if>
+	</#if>
+</@div>
+</#if>
+</#macro>
+
+<#--
+ # The items of the menu of the actions of a document; the deletion comes last, in red, after a divider
+ # param moveParams  the attributes that open the move modal instead of the move page, {} to keep the link
+ # param exclude     the action ids not listed (the current screen)
+-->
+<#macro documentActionItems document moveParams={} exclude=[]>
+<#local actions = ( document.actions![] )?sort_by( 'idAction' ) />
+<#list actions as action>
+	<#if action.idAction != 1 && !exclude?seq_contains( action.idAction )>
+		<#if action.idAction == 16 && moveParams?has_content>
+			<@link href='#' class='dropdown-item' params=moveParams><@icon style=action.iconUrl! class='me-2' />${action.name}</@link>
+		<#elseif action.url?has_content>
+			<@link href=documentActionUrl( document, action ) class='dropdown-item' title=action.description!><@icon style=action.iconUrl! class='me-2' />${action.name}</@link>
+		</#if>
+	</#if>
+</#list>
+<#list actions as action>
+	<#if action.idAction == 1 && action.url?has_content && !exclude?seq_contains( 1 )>
+		<@div class='dropdown-divider' />
+		<@link href=documentActionUrl( document, action ) class='dropdown-item text-danger' title=action.description!><@icon style=action.iconUrl! class='me-2' />${action.name}</@link>
+	</#if>
+</#list>
+</#macro>
+
+<#-- The frequent actions as icon buttons (preview, modify, publishing), then the menu of all the actions -->
+<#macro documentQuickActions document moveParams={}>
+<@div class='btn-actions'>
+	<#list ( document.actions![] )?sort_by( 'idAction' ) as action>
+		<#if action.url?has_content && [ 15, 2, 9, 5 ]?seq_contains( action.idAction )>
+			<@aButton href=documentActionUrl( document, action ) style='btn-action' color='' buttonIcon=action.iconUrl! title='${action.name} ${document.title}' hideTitle=['all'] />
+		</#if>
+	</#list>
+	<@aButton href='#' id='document-actions-${document.id?c}' style='' color='' dropdownMenu=true buttonIcon='dots' title='#i18n{portal.util.labelActions} ${document.title}' hideTitle=['all']>
+		<@documentActionItems document=document moveParams=moveParams />
+	</@aButton>
+</@div>
+</#macro>
+
+<#-- The menu of all the actions of a document, in the tools of a page header -->
+<#macro documentActionsMenu document exclude=[]>
+<#if !( document.actions![] )?filter( a -> a.url?has_content && !exclude?seq_contains( a.idAction ) )?has_content><#return></#if>
+<@aButton href='#' id='document-actions' style='' color='' dropdownMenu=true buttonIcon='dots-vertical' title='#i18n{portal.util.labelActions}' hideTitle=['all'] class='ms-1'>
+	<@documentActionItems document=document exclude=exclude />
+</@aButton>
+</#macro>
+
+<#-- The card of the properties of a document -->
+<#macro documentInfoCard document>
+<#local dateBegin = ( document.dateValidityBegin?has_content )?then( document.dateValidityBegin?string( 'dd/MM/yyyy' ), '' ) />
+<#local dateEnd = ( document.dateValidityEnd?has_content )?then( document.dateValidityEnd?string( 'dd/MM/yyyy' ), '' ) />
+<@box id='document_info'>
+	<@boxBody>
+		<@div class='d-flex align-items-center gap-2 mb-3'>
+			<#if document.stateId??><@documentStatus document=document dot=true /></#if>
+			<@div class='text-truncate'>
+				<@div class='fw-semibold text-truncate' params={"title": document.title!}>${document.title!}</@div>
+				<@div class='text-secondary small'>#${document.id?c} &middot; ${document.type!}</@div>
+			</@div>
+		</@div>
+		<@div class='datagrid'>
+			<#if document.state?has_content>
+			<@div class='datagrid-item'>
+				<@div class='datagrid-title'>#i18n{document.preview_document.columnTitleState}</@div>
+				<@div class='datagrid-content'><@documentStatus document=document published=false /></@div>
+			</@div>
+			</#if>
+			<@div class='datagrid-item'>
+				<@div class='datagrid-title'>#i18n{document.preview_document.columnTitleDateCreation}</@div>
+				<@div class='datagrid-content'>${document.dateCreation!}</@div>
+			</@div>
+			<@div class='datagrid-item'>
+				<@div class='datagrid-title'>#i18n{document.preview_document.columnTitleDateModification}</@div>
+				<@div class='datagrid-content'>${document.dateModification!}</@div>
+			</@div>
+			<@div class='datagrid-item'>
+				<@div class='datagrid-title'>#i18n{document.preview_document.columnTitleDateValidity}</@div>
+				<@div class='datagrid-content'>
+				<#if dateBegin?has_content && dateEnd?has_content>
+					<@icon style='calendar' class='me-1' />#i18n{document.preview_document.labelDateValidityBegin} ${dateBegin} #i18n{document.preview_document.labelDateValidityEnd} ${dateEnd}
+				<#elseif dateBegin?has_content>
+					<@icon style='calendar' class='me-1' />#i18n{document.preview_document.labelDateValidityBeginSince} ${dateBegin}
+				<#elseif dateEnd?has_content>
+					<@icon style='calendar' class='me-1' />#i18n{document.preview_document.labelDateValidityEndUntil} ${dateEnd}
+				<#else>
+					<@tag color='' class='bg-yellow-lt'>#i18n{document.preview_document.labelDateValidityNotDefined}</@tag>
+				</#if>
+				</@div>
+			</@div>
+		</@div>
+	</@boxBody>
+</@box>
+</#macro>
+<#--
+ # The page shown in place of a screen whose object (document, portlet, rule) does not exist, with a way back.
+ # param backUrl  where the back button leads
+-->
+<#macro documentNotFound backUrl='jsp/admin/plugins/document/ManageDocuments.jsp'>
+<@pageContainer>
+	<@pageColumn>
+		<@documentPageHeader title='#i18n{document.message.elementNotFound}' iconName='alert-triangle' color='yellow'>
+			<@aButton href=backUrl title='#i18n{portal.util.labelBack}' buttonIcon='arrow-left' color='light' hideTitle=['xs','sm','md'] />
+		</@documentPageHeader>
+		<@card>
+			<@empty title='#i18n{document.message.elementNotFound}' iconName='file-off' subtitle=' ' />
+		</@card>
+	</@pageColumn>
+</@pageContainer>
+</#macro>

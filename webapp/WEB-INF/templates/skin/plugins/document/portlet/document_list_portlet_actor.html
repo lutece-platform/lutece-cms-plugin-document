@@ -10,7 +10,7 @@
 			<@chItem class="d-flex align-items-center justify-content-between border-bottom py-2">
 				<@cLink href='${site_path}?document_id=${doc.id?c}&portlet_id=${portlet_id?c}' label='' target='_top'><@documentValue value=doc.attributes.firstname! /> <@documentValue value=doc.attributes.lastname! /></@cLink>
 				<#if doc.attributes.photo??>
-				<@documentFile file=doc.attributes.photo class='rounded-circle object-fit-cover' params='width="40" height="40"' />
+				<@documentFile file=doc.attributes.photo class='rounded-circle object-fit-cover' params={"width": "40", "height": "40"} />
 				</#if>
 			</@chItem>
 		</#list>

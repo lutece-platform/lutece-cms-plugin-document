@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.document.service.metadata;
 
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceList;
@@ -44,6 +45,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.StringJoiner;
 import java.util.StringTokenizer;
 
@@ -58,7 +60,7 @@ public class MetadataService
     private static final String PREFIX_HANDLER = "document.metadata.handler.";
     private static final String SUFFIX_DESCRIPTION = ".description";
     private static final String SUFFIX_BEAN_NAME = ".beanName";
-    private static final String NO_HANDLER_LABEL = "None";
+    private static final String MESSAGE_NO_HANDLER = "document.modify_document_type.labelNoMetadataHandler";
     private static final String SEPARATOR = " ";
     private static final ObjectMapper MAPPER = new ObjectMapper( );
 
@@ -66,13 +68,14 @@ public class MetadataService
     // Metadata handling
     /**
      * Get the list of metadata handlers
+     * @param locale The locale of the label of the choice without handler
      * @return The list fo metadata handlers
      */
-    public static ReferenceList getMetadataHandlersList(  )
+    public static ReferenceList getMetadataHandlersList( Locale locale )
     {
         ReferenceList listHandlers = new ReferenceList(  );
 
-        listHandlers.addItem( NO_HANDLER, NO_HANDLER_LABEL );
+        listHandlers.addItem( NO_HANDLER, I18nService.getLocalizedString( MESSAGE_NO_HANDLER, locale ) );
 
         String strHandlersList = AppPropertiesService.getProperty( PROPERTY_HANDLERS_LIST );
         StringTokenizer st = new StringTokenizer( strHandlersList );

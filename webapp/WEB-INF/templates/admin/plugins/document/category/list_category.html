@@ -1,10 +1,9 @@
-<#if category_list?has_content >
-<@ul class='list-unstyled'>
+<#-- The categories of the document form (properties panel), one switch per category -->
+<#if ( category_list![] )?has_content>
+<@div class='d-flex flex-column gap-1'>
 <#list category_list as categoryDisplay>
-	<@li>
-		<#assign labelKey><#if categoryDisplay.iconUrl??><@img url=categoryDisplay.iconUrl! class='img-thumbnail thumbnail-sm' alt='' /></#if> ${categoryDisplay.category.name}</#assign>
-		<@checkBox labelFor='category_id_${categoryDisplay?index}' labelKey=labelKey name='category_id' id='category_id_${categoryDisplay?index}' checked=categoryDisplay.assigned value='${categoryDisplay.category.id}' />
-	</@li>
+	<#assign labelKey><#if categoryDisplay.iconUrl?has_content><@img url=categoryDisplay.iconUrl class='avatar avatar-xs me-1' alt='' /></#if>${categoryDisplay.category.name}</#assign>
+	<@checkBox orientation='switch' labelKey=labelKey name='category_id' id='category_id_${categoryDisplay?index}' checked=categoryDisplay.assigned value='${categoryDisplay.category.id?c}' wrapperClass='mb-0' />
 </#list>
-</@ul>
+</@div>
 </#if>

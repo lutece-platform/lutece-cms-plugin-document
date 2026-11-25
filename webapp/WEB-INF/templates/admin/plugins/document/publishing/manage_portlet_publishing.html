@@ -1,101 +1,100 @@
+<#include "/admin/plugins/document/macro_document_admin.html" />
+<#assign bc><@documentBreadcrumb items=[ { 'label': page_name!'' } ] current=portlet.name /></#assign>
+<#assign pageDescription>#i18n{document.manage_portlet_publishing.columnTitlePage} ${page_name!} (#${portlet.pageId?c})</#assign>
 <@pageContainer>
-    <@pageColumn> 
-        <@pageHeader class='col-md-6 col-lg-6' title='#i18n{document.manage_document_publishing.labelManagePortlet} - ${portlet.name} - #i18n{document.manage_portlet_publishing.columnTitlePage} ${portlet.pageId}'>
-			<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${portlet.pageId}' title='#i18n{document.manage_portlet_publishing.labelAdminSiteAccess}' hideTitle=['xs','sm','md'] buttonIcon='globe' />
-			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{document.manage_portlet_publishing.columnManageDocumentAccess}' hideTitle=['xs','sm','md'] buttonIcon='folder' />
-		</@pageHeader>
-		<@row class='mt-3'>
-			<@columns md=3>
-			<@box>
-				<@boxBody>
-					<@h level=3>#i18n{document.manage_portlet_publishing.labelModePublication}</@h>
-					<@tform name='formModifyModePublication' method='post' class='mb-3' action='jsp/admin/plugins/document/DoConfirmChangeModePublication.jsp' enctype='multipart/form-data'>
-						<@input type='hidden' name='id_portlet' value='${portlet.id}' />
-						<@input type='hidden' name='old_mode_publication' value='${mode_publication}' />
-						<@btnGroup>
-							<#if mode_publication = 0>
-								<#assign buttonClass = 'active' />
-							<#else>
-								<#assign buttonClass = '' />
-							</#if>
-							<@button type='submit' value='0' name='mode_publication' id='standard_publication' class=buttonClass buttonIcon='check' title='#i18n{document.manage_portlet_publishing.radioStandardPublication}' />
-							<#if mode_publication = 1>
-								<#assign buttonClass = 'active' />
-							<#else>
-								<#assign buttonClass = '' />
-							</#if>
-							<@button type='submit' value='1' name='mode_publication' id='auto_publication' class=buttonClass buttonIcon='cog' title='#i18n{document.manage_portlet_publishing.radioAutoPublication}' />
-						</@btnGroup>
-					</@tform>  
-					<#if portlet.status = 0>
-						<@alert color='success'><@icon style='check' /><strong>#i18n{document.manage_portlet_publishing.columnTitleState} #i18n{document.manage_portlet_publishing.labelStatusPublished}</strong></@alert>
+	<@pageColumn>
+		<@documentPageHeader title='#i18n{document.manage_document_publishing.labelManagePortlet} : ${portlet.name}' iconName='layout' color='azure' description=pageDescription breadcrumb=bc>
+			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{document.manage_portlet_publishing.columnManageDocumentAccess}' buttonIcon='files' color='light' hideTitle=['xs','sm','md','lg'] class='me-1' />
+			<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${portlet.pageId?c}' title='#i18n{document.manage_portlet_publishing.labelAdminSiteAccess}' buttonIcon='world' color='light' hideTitle=['xs','sm','md','lg'] />
+		</@documentPageHeader>
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
+		<@row>
+			<@columns lg=4 xl=3>
+				<@box>
+					<@boxBody>
+						<@div class='d-flex align-items-center gap-2 mb-3'>
+							<span class="status-dot status-${( portlet.status = 0 )?then( 'green', 'red' )}"></span>
+							<@div>
+								<@div class='fw-semibold'>${portlet.name}</@div>
+								<@div class='text-secondary small'>#${portlet.id?c}</@div>
+							</@div>
+						</@div>
+						<@div class='datagrid'>
+							<@div class='datagrid-item'>
+								<@div class='datagrid-title'>#i18n{document.manage_portlet_publishing.columnTitleState}</@div>
+								<@div class='datagrid-content'>
+									<#if portlet.status = 0>
+										<@tag color='' class='bg-green-lt' tagIcon='world'>#i18n{document.manage_portlet_publishing.labelStatusPublished}</@tag>
+									<#else>
+										<@tag color='' class='bg-red-lt' tagIcon='world-off'>#i18n{document.manage_portlet_publishing.labelStatusUnPublished}</@tag>
+									</#if>
+								</@div>
+							</@div>
+							<@div class='datagrid-item'>
+								<@div class='datagrid-title'>#i18n{document.manage_portlet_publishing.labelModePublication}</@div>
+								<@div class='datagrid-content'>
+									<#-- Each button submits its mode; the change is confirmed by the bean -->
+									<@tform name='formModifyModePublication' method='post' action='jsp/admin/plugins/document/DoConfirmChangeModePublication.jsp' enctype='multipart/form-data'>
+										<@input type='hidden' name='token' value='${token!}' />
+										<@input type='hidden' name='id_portlet' value='${portlet.id?c}' />
+										<@input type='hidden' name='old_mode_publication' value='${mode_publication}' />
+										<@btnGroup ariaLabel='#i18n{document.manage_portlet_publishing.labelModePublication}'>
+											<@button type='submit' name='mode_publication' value='0' id='standard_publication' color=( mode_publication = 0 )?then( 'primary', 'light' ) buttonIcon='hand-click' title='#i18n{document.manage_portlet_publishing.radioStandardPublication}' params={"aria-pressed": ( mode_publication = 0 )?c} />
+											<@button type='submit' name='mode_publication' value='1' id='auto_publication' color=( mode_publication = 1 )?then( 'primary', 'light' ) buttonIcon='bolt' title='#i18n{document.manage_portlet_publishing.radioAutoPublication}' params={"aria-pressed": ( mode_publication = 1 )?c} />
+										</@btnGroup>
+									</@tform>
+								</@div>
+							</@div>
+						</@div>
+					</@boxBody>
+				</@box>
+			</@columns>
+			<@columns lg=8 xl=9>
+			<#if mode_publication = 0>
+				<@row>
+					<@columns xl=6>
+						<@box>
+							<@boxHeader title='#i18n{document.manage_portlet_publishing.labelPublishedDocumentsList}' />
+							${published_document_list!}
+						</@box>
+					</@columns>
+					<@columns xl=6>
+						<@box>
+							<@boxHeader title='#i18n{document.manage_portlet_publishing.labelAssignedDocumentsList}' />
+							${assigned_document_list!}
+						</@box>
+					</@columns>
+				</@row>
+			<#else>
+				<@box>
+					<@boxHeader title='#i18n{document.manage_portlet_publishing.labelAutoPublication}' boxTools=true>
+						<@aButton href='jsp/admin/plugins/document/CreateDocumentAutoPublication.jsp?id_portlet=${portlet.id?c}&mode_publication=1' title='#i18n{document.manage_portlet_publishing.buttonAddAutoPublication}' buttonIcon='plus' color='primary' hideTitle=['xs','sm','md'] />
+					</@boxHeader>
+					<#if ( list_auto_publication![] )?has_content>
+					<@listGroup class='list-group-flush'>
+						<#list list_auto_publication as auto_publication>
+						<@listGroupItem>
+							<@div class='row g-2 align-items-center'>
+								<@div class='col d-flex align-items-center gap-2 text-truncate'>
+									<span class="avatar avatar-sm bg-yellow-lt" aria-hidden="true"><@icon style='folder-bolt' /></span>
+									<@span class='fw-semibold text-truncate'>${auto_publication.space_name}</@span>
+								</@div>
+								<@div class='col-auto d-flex align-items-center gap-2'>
+									<@tag color='' class='bg-green-lt' tagIcon='world' title='#i18n{document.manage_portlet_publishing.colNumPublishedDocuments}'>${auto_publication.number_auto_published_documents}<@span class='visually-hidden'> #i18n{document.manage_portlet_publishing.colNumPublishedDocuments}</@span></@tag>
+									<@aButton href='jsp/admin/plugins/document/DeleteAutoPublication.jsp?id_portlet=${auto_publication.document_auto_publication.idPortlet?c}&id_space=${auto_publication.document_auto_publication.idSpace?c}&mode_publication=1' style='btn-action text-danger' color='' buttonIcon='trash' title='#i18n{document.manage_portlet_publishing.actionDelete} ${auto_publication.space_name}' hideTitle=['all'] />
+								</@div>
+							</@div>
+						</@listGroupItem>
+						</#list>
+					</@listGroup>
 					<#else>
-						<@alert color='danger'><@icon style='ban' /><strong>#i18n{document.manage_portlet_publishing.columnTitleState}  #i18n{document.manage_portlet_publishing.labelStatusUnPublished}</strong></@alert>
+					<@boxBody>
+						<@empty title='#i18n{document.manage_portlet_publishing.labelAutoPublication}' iconName='folder-off' subtitle=' ' actionTitle='#i18n{document.manage_portlet_publishing.buttonAddAutoPublication}' actionUrl='jsp/admin/plugins/document/CreateDocumentAutoPublication.jsp?id_portlet=${portlet.id?c}&mode_publication=1' />
+					</@boxBody>
 					</#if>
-				</@boxBody>
-			</@box>
-		</@columns>
-		<@columns md=9>
-		<#if mode_publication = 0>
-			<@row>
-				<@columns lg=6>
-					<@box title='#i18n{document.manage_portlet_publishing.labelAssignedDocumentsList}'>
-					${assigned_document_list} 
-					</@box>								
-				</@columns>
-				<@columns lg=6>
-					<@box title='#i18n{document.manage_portlet_publishing.labelPublishedDocumentsList}'>
-					${published_document_list}
-					</@box>
-				</@columns>
-			</@row>								
-		<#else>
-			<@h level=3>
-				#i18n{document.manage_portlet_publishing.labelAutoPublication}
-				<@tform name='formAddSpaceAutoPublication' method='post' action='jsp/admin/plugins/document/CreateDocumentAutoPublication.jsp' enctype='multipart/form-data'>
-					<@input type='hidden' name='id_portlet' value='${portlet.id}' />
-					<@input type='hidden' name='mode_publication' value='1' />
-					<@div align='right'>
-						<@button type='submit' title='#i18n{document.manage_portlet_publishing.buttonAddAutoPublication}' hideTitle=['xs','sm','md'] buttonIcon='plus'  />
-					</@div>
-				</@tform>
-			</@h>
-			<@table>
-				<@tableHead>
-					<@tr>
-						<@th>#i18n{document.manage_portlet_publishing.colSpaceName}</@th>
-						<@th>#i18n{document.manage_portlet_publishing.colNumPublishedDocuments}</@th>
-						<@th>#i18n{document.manage_portlet_publishing.colActions}</@th>
-					</@tr>
-				</@tableHead>
-				<@tableBody>
-				<#list list_auto_publication as auto_publication >
-					<@tr>
-						<@td>${auto_publication.space_name}</@td>
-						<@td>${auto_publication.number_auto_published_documents}</@td>
-						<@td>
-							<@aButton href='jsp/admin/plugins/document/DeleteAutoPublication.jsp?id_portlet=${auto_publication.document_auto_publication.idPortlet}&id_space=${auto_publication.document_auto_publication.idSpace}&mode_publication=1' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' params={"aria-label": "#i18n{portal.util.labelDelete} ${auto_publication.space_name}"} />
-						</@td>
-					</@tr>
-				</#list>
-				</@tableBody>
-			</@table>
-		</#if>
-		</@columns>
-	</@row>
+				</@box>
+			</#if>
+			</@columns>
+		</@row>
 	</@pageColumn>
 </@pageContainer>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  var sections = document.querySelectorAll("section");
-  sections.forEach(function(section) {
-    section.classList.remove("no-padding");
-  });
-
-  var backButton = document.getElementById("btn-back");
-  backButton.addEventListener("click", function() {
-    window.history.back();
-    return false;
-  });
-});
-</script>

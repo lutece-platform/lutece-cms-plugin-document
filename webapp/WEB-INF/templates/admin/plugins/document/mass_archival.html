@@ -1,19 +1,21 @@
 <#include "/admin/plugins/document/spaces/spaces_tree_select.html" />
 <#macro stepTitle number title subtitle><div><h3 class="card-title"><@tag color='info'>#i18n{document.manage_document.mass_archival.step} ${number}</@tag>&nbsp;${title}</h3><div class="card-subtitle mb-0 mt-1">${subtitle}</div></div></#macro>
-<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#include "/admin/plugins/document/macro_document_admin.html" />
 <#assign bc><@documentBreadcrumb current='#i18n{document.breadcrumb.massArchival}' /></#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{document.manage_document.mass_archival_labelBtn}' description='#i18n{document.manage_document.mass_archival.archiveInfo}' breadcrumb=bc />
+		<@documentPageHeader title='#i18n{document.manage_document.mass_archival_labelBtn}' iconName='archive' color='orange' description='#i18n{document.manage_document.mass_archival.archiveInfo}' breadcrumb=bc>
+			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp' title='#i18n{portal.util.labelBack}' buttonIcon='arrow-left' color='light' hideTitle=['xs','sm','md'] />
+		</@documentPageHeader>
 		<@tform id='massArchivalForm' name='massArchivalForm' method='post' action='jsp/admin/plugins/document/DoSearchMassArchivalDocument.jsp'>
 			<@div class='container'>
 				<@ul id='archival_stepper' class='steps steps-counter mb-4'>
-					<@li class='step-item active' params='aria-current="step" data-bs-toggle="tooltip" title="#i18n{document.manage_document.mass_archival.titleCriteria}"'>#i18n{document.manage_document.mass_archival.stepCriteria}</@li>
-					<@li class='step-item' params='data-bs-toggle="tooltip" title="#i18n{document.manage_document.mass_archival.titleSelection}"'>#i18n{document.manage_document.mass_archival.stepSelection}</@li>
-					<@li class='step-item' params='data-bs-toggle="tooltip" title="#i18n{document.manage_document.mass_archival.titleArchive}"'>#i18n{document.manage_document.mass_archival.stepArchive}</@li>
+					<@li class='step-item active' params={"aria-current": "step", "data-bs-toggle": "tooltip", "title": "#i18n{document.manage_document.mass_archival.titleCriteria}"}>#i18n{document.manage_document.mass_archival.stepCriteria}</@li>
+					<@li class='step-item' params={"data-bs-toggle": "tooltip", "title": "#i18n{document.manage_document.mass_archival.titleSelection}"}>#i18n{document.manage_document.mass_archival.stepSelection}</@li>
+					<@li class='step-item' params={"data-bs-toggle": "tooltip", "title": "#i18n{document.manage_document.mass_archival.titleArchive}"}>#i18n{document.manage_document.mass_archival.stepArchive}</@li>
 				</@ul>
 				<@row class='g-3'>
-				<@columns xs=12 lg=4 params='data-archival-step'>
+				<@columns xs=12 lg=4 params={"data-archival-step": true}>
 				<#assign headerTitle><@stepTitle number=1 title='#i18n{document.manage_document.mass_archival.titleCriteria}' subtitle='#i18n{document.manage_document.mass_archival.helpCriteria}' /></#assign>
 				<@card class='h-100 archival-step-card' headerTitle=headerTitle headerClass=''>
 					<@fieldSet legend='#i18n{document.manage_document.mass_archival.stepCriteria}' hideLegend=['all']>
@@ -25,10 +27,10 @@
 					</@fieldSet>
 				</@card>
 				</@columns>
-				<@columns xs=12 lg=4 params='data-archival-step'>
+				<@columns xs=12 lg=4 params={"data-archival-step": true}>
 				<#assign headerTitle><@stepTitle number=2 title='#i18n{document.manage_document.mass_archival.titleSelection}' subtitle='#i18n{document.manage_document.mass_archival.helpSelection}' /></#assign>
 				<@card class='h-100 archival-step-card' headerTitle=headerTitle headerClass=''>
-					<@div class='archival-panel' params='data-criteria="space"'>
+					<@div class='archival-panel' params={"data-criteria": "space"}>
 						<@fieldSet legend='#i18n{document.manage_document.mass_archival.criteriaSpace}'>
 							<#if spaces_tree?has_content>
 							<@spacesTreeSelect id='archival_spaces_tree' nodes=spaces_tree selectedId=browser_selected_space_id!'' label='#i18n{document.manage_document.mass_archival.criteriaSpace}' />
@@ -37,7 +39,7 @@
 							</#if>
 						</@fieldSet>
 					</@div>
-					<@div class='archival-panel' params='data-criteria="date"'>
+					<@div class='archival-panel' params={"data-criteria": "date"}>
 						<@fieldSet legend='#i18n{document.manage_document.mass_archival.criteriaDate}'>
 							<@row>
 								<@columns md=6>
@@ -59,7 +61,7 @@
 							</@row>
 						</@fieldSet>
 					</@div>
-					<@div class='archival-panel' params='data-criteria="type"'>
+					<@div class='archival-panel' params={"data-criteria": "type"}>
 						<@fieldSet legend='#i18n{document.manage_document.mass_archival.criteriaType}'>
 							<#if document_types_list?has_content>
 								<@formGroup labelFor='document_type_code' labelKey='#i18n{document.manage_document.mass_archival.criteriaType}' hideLabel=['all'] rows=2>
@@ -76,7 +78,7 @@
 					</@div>
 				</@card>
 				</@columns>
-				<@columns xs=12 lg=4 params='data-archival-step'>
+				<@columns xs=12 lg=4 params={"data-archival-step": true}>
 				<#assign headerTitle><@stepTitle number=3 title='#i18n{document.manage_document.mass_archival.titleArchive}' subtitle='#i18n{document.manage_document.mass_archival.helpArchiveCard}' /></#assign>
 				<@card class='h-100 archival-step-card' headerTitle=headerTitle headerClass=''>
 					<p class="text-muted small">#i18n{document.manage_document.mass_archival.helpArchive}</p>

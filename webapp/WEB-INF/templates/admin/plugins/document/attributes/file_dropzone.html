@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="themes/shared/plugins/document/css/documentDropzone.css?v=${documentAssetsVersion!}" />
 <div class="dropzone document-dropzone"<#if preview?has_content> data-preview="${preview}"</#if>>
 	<#if accept?has_content>
-	<@input type='file' name=name id=id class='visually-hidden' params='accept="${accept}"' />
+	<@input type='file' name=name id=id class='visually-hidden' params={"accept": "${accept}"} />
 	<#else>
 	<@input type='file' name=name id=id class='visually-hidden' />
 	</#if>

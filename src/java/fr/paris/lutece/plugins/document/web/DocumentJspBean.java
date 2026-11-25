@@ -902,7 +902,8 @@ public class DocumentJspBean extends PluginAdminPageJspBean
         int nDocumentId = IntegerUtils.convert( strDocumentId );
         Document document = DocumentHome.findByPrimaryKeyWithoutBinaries( nDocumentId );
 
-        if ( !_documentService.isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
+        if ( ( document == null ) ||
+                !_documentService.isAuthorizedAdminDocument( document.getSpaceId(  ), document.getCodeDocumentType(  ),
                     DocumentTypeResourceIdService.PERMISSION_DELETE, getUser(  ) ) )
         {
             return getHomeUrl( request );

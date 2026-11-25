@@ -1,65 +1,43 @@
-<#include "/admin/plugins/document/macro_document_breadcrumb.html" />
+<#include "/admin/plugins/document/macro_document_admin.html" />
+<#if !document??>
+<@documentNotFound />
+<#else>
 <#assign bc><@documentBreadcrumb spaces=breadcrumb_spaces![] items=[ { 'label': document.title!, 'url': 'jsp/admin/plugins/document/PreviewDocument.jsp?id_document=${document.id?c}' } ] current='#i18n{document.breadcrumb.history}' /></#assign>
 <@pageContainer>
-    <@pageColumn>
-		<@pageHeader title='#i18n{document.document_history.title} ${document.title}' breadcrumb=bc>
-			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId}' title='#i18n{document.preview_document.space}' buttonIcon='folder' hideTitle=['xs','sm'] />
-		</@pageHeader>
+	<@pageColumn>
+		<@documentPageHeader title='#i18n{document.document_history.title} ${document.title}' iconName='history' breadcrumb=bc>
+			<@aButton href='jsp/admin/plugins/document/ManageDocuments.jsp?id_space_filter=${document.spaceId?c}' title='#i18n{document.preview_document.space}' buttonIcon='arrow-left' color='light' hideTitle=['xs','sm','md'] />
+			<@documentActionsMenu document=document exclude=[ 14 ] />
+		</@documentPageHeader>
 		<@row>
-			<@columns xl=3>
-				<@box>
-					<@boxHeader title='#${document.id} - ${document.title}' />
-					<@boxBody>
-						<dl>
-							<dt>#i18n{document.preview_document.columnTitleType}</dt>
-							<dd>${document.type}</dd>
-							<#if document.state?has_content>
-								<dt>#i18n{document.preview_document.columnTitleState}</dt>
-								<dd>${document.state}</dd>
-							</#if> 
-							<dt>#i18n{document.preview_document.columnTitleDateCreation}</dt>
-							<dd>${document.dateCreation}</dd> 
-							<dt>#i18n{document.preview_document.columnTitleDateModification}</dt>
-							<dd>${document.dateModification}</dd>
-							<dt>#i18n{document.preview_document.columnTitleDateValidity}</dt>
-							<#assign dateBegin="">
-							<#if document.dateValidityBegin?has_content>
-								<#assign dateBegin=document.dateValidityBegin?string("dd/MM/yyyy")>
-							</#if>    
-							<#assign dateEnd="">
-							<#if document.dateValidityEnd?has_content>
-								<#assign dateEnd=document.dateValidityEnd?string("dd/MM/yyyy")>
-							</#if>                        
-							<#assign labelBeginSince="#i18n{document.preview_document.labelDateValidityBeginSince}">
-							<#assign labelBegin="#i18n{document.preview_document.labelDateValidityBegin}">
-							<#assign labelEndUntil="#i18n{document.preview_document.labelDateValidityEndUntil}">
-							<#assign labelEnd="#i18n{document.preview_document.labelDateValidityEnd}">
-							<#if dateBegin?has_content && dateEnd?has_content>
-								<dd><@icon style='calendar' /> ${labelBegin} ${dateBegin} ${labelEnd} ${dateEnd}</dd>
-							<#elseif ! ( dateBegin?has_content ) && ! ( dateEnd?has_content )>   
-								<@alert color='warning'>#i18n{document.preview_document.labelDateValidityNotDefined}</@alert>
-							<#elseif dateBegin?has_content && !( dateEnd?has_content )>
-								<dd><@icon style='calendar' /> ${labelBeginSince} ${dateBegin}</dd>
-							<#elseif ! ( dateBegin?has_content ) && dateEnd?has_content>  
-								<dd><@icon style='calendar' /> ${labelEndUntil} ${dateEnd}</dd> 
-							</#if>
-						</dl>
-					</@boxBody>
-				</@box>
+			<@columns lg=4 xl=3>
+				<@documentInfoCard document=document />
 			</@columns>
-			<@columns xl=9>
+			<@columns lg=8 xl=9>
+				<#if ( events_list![] )?has_content>
 				<@box>
-					<@boxBody>
-						<@listGroup>
-							<#list events_list?reverse as event >
-								<@listGroupItem>
-									<@icon style='info-circle' /> <em>${event.date}</em> - ${event.description}
-								</@listGroupItem>
-							</#list>
-						</@listGroup>
-					</@boxBody>
+					<@listGroup class='list-group-flush'>
+						<#list events_list?reverse as event>
+						<@listGroupItem>
+							<@div class='row g-2 align-items-center'>
+								<@div class='col-auto'><span class="avatar avatar-sm bg-blue-lt" aria-hidden="true"><@icon style='history' /></span></@div>
+								<@div class='col'>
+									<#-- The bean builds the description from a localised message holding HTML (the values in bold), the values escaped -->
+									<@div>${event.description!}</@div>
+									<@div class='text-secondary small'><@icon style='clock' class='me-1' />${event.date!}</@div>
+								</@div>
+							</@div>
+						</@listGroupItem>
+						</#list>
+					</@listGroup>
 				</@box>
+				<#else>
+				<@card>
+					<@empty title='#i18n{document.document_history.title} ${document.title}' iconName='history-off' subtitle=' ' />
+				</@card>
+				</#if>
 			</@columns>
 		</@row>
 	</@pageColumn>
 </@pageContainer>
+</#if>

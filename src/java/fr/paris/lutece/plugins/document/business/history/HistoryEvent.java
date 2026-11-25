@@ -40,6 +40,7 @@ import fr.paris.lutece.portal.service.i18n.Localizable;
 
 import java.util.Locale;
 
+
 /**
  * This class represents the business object HistoryEvent
  */
