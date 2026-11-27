@@ -57,7 +57,7 @@ public class DocumentParameterService
      */
     public boolean isWorkflowAutoValidation( )
     {
-        String strDefault = Boolean.toString( AppPropertiesService.getPropertyBoolean( PROPERTY_WORKFLOW_AUTO_VALIDATION, true ) );
+        String strDefault = Boolean.toString( AppPropertiesService.getPropertyBoolean( PROPERTY_WORKFLOW_AUTO_VALIDATION, false ) );
 
         return Boolean.parseBoolean( DatastoreService.getDataValue( DATASTORE_KEY_WORKFLOW_AUTO_VALIDATION, strDefault ) );
     }

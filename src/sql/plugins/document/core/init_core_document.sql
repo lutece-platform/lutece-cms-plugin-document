@@ -103,7 +103,7 @@ INSERT INTO core_dashboard(dashboard_name, dashboard_column, dashboard_order) VA
 INSERT INTO core_datastore (entity_key, entity_value) VALUES ('core.cache.status.DocumentResourceServletCache.enabled', 0);
 
 -- Advanced parameters, managed in the admin dashboard (Document - Advanced configuration)
-INSERT INTO core_datastore (entity_key, entity_value) VALUES ('document.advanced_parameters.workflow_auto_validation', 'true');
+INSERT INTO core_datastore (entity_key, entity_value) VALUES ('document.advanced_parameters.workflow_auto_validation', 'false');
 
 --
 -- FreeMarker templates of the document portlets, registered in the core (Section Template Management feature). The first one of a type is its default template

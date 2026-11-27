@@ -63,10 +63,11 @@ DELETE FROM core_style WHERE id_style IN (1700, 1701, 1703, 1704, 1706, 1708, 17
 DELETE FROM core_stylesheet WHERE id_stylesheet IN (297, 298, 300, 302, 304, 305, 306, 403, 408, 505, 506, 510);
 
 -- changeset document:update_db_core_document-6.0.1-7.0.0.sql-rev6.sql
+-- validCheckSum: ANY
 -- preconditions onFail:MARK_RAN onError:WARN
--- comment The automatic validation of the documents is managed in the admin dashboard (Document - Advanced configuration) instead of document.properties
+-- comment The automatic validation of the documents is managed in the admin dashboard (Document - Advanced configuration) instead of document.properties. It stays off, as the default of document.workflow.auto_validation before 7.0.0: the validation workflow (moderation) keeps applying until an administrator turns it on
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM core_datastore WHERE entity_key = 'document.advanced_parameters.workflow_auto_validation'
-INSERT INTO core_datastore (entity_key, entity_value) VALUES ('document.advanced_parameters.workflow_auto_validation', 'true');
+INSERT INTO core_datastore (entity_key, entity_value) VALUES ('document.advanced_parameters.workflow_auto_validation', 'false');
 
 -- changeset document:update_db_core_document-6.0.1-7.0.0.sql-rev7.sql
 -- preconditions onFail:MARK_RAN onError:WARN
